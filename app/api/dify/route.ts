@@ -76,17 +76,16 @@ export async function GET(req: NextRequest) {
     try {
 
         console.log('Dify API Key:', process.env.DIFY_API_KEY);
-
-        const response = await fetch(`https://api.dify.ai/v1/meta?user=${req.ip || "unknown"}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${process.env.DIFY_API_KEY!}`,
-            },
-        });
-        console.log('response:', response.body)
-        // 返回流给客户端
-        return response;
-
+        return NextResponse.json({ message: 'Hello from Dify API' });
+        // const response = await fetch(`https://api.dify.ai/v1/meta?user=${req.ip || "unknown"}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         Authorization: `Bearer ${process.env.DIFY_API_KEY!}`,
+        //     },
+        // });
+        // console.log('response:', response.body)
+        // // 返回流给客户端
+        // return response;
     } catch (error: any) {
         console.error('Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
