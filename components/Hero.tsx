@@ -56,6 +56,7 @@ export default function Component() {
                 headers: { 'Content-Type': 'application/json' },
                 body: inputText,
             })
+            console.log(res)
 
             if (!res.body) {
                 throw new Error("请求失败，请重试")
