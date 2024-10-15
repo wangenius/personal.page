@@ -1,13 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  images: {
-    unoptimized: true,
-  },
-  // Use basePath only in production
-  ...(process.env.NODE_ENV === 'production' ? {
-    basePath: '/wangenius.com',
-  } : {}),
-}
+  images: { unoptimized: true },
+  basePath: '',
+  optimizeFonts: false,
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
