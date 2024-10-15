@@ -75,8 +75,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     try {
 
-        console.log('Dify API Key:', process.env.DIFY_API_KEY);
-        return NextResponse.json({ message: 'Hello from Dify API' });
+        return NextResponse.json({ message: 'process.env.DIFY_API_KEY' });
         // const response = await fetch(`https://api.dify.ai/v1/meta?user=${req.ip || "unknown"}`, {
         //     method: 'GET',
         //     headers: {
