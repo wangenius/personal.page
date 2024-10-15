@@ -23,6 +23,7 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: production
+        DIFY_API_KEY: app-AtMFJLYUgEpue6GOT95TQ2zj
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3

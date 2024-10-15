@@ -1,7 +1,9 @@
 "use client"
 
-import {Button} from "@/components/ui/button"
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import { useEffect, useRef, useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Dialog,
     DialogContent,
@@ -10,90 +12,101 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import {Input} from "@/components/ui/input"
-import {ArrowRight, ChevronRight, FileText, Heart, Send} from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { ArrowRight, ChevronRight, FileText, Heart, Send } from "lucide-react"
 import Image from "next/image"
-import {useState} from "react"
-import AnimatedGradientText from "@/components/ui/animated-gradient-text";
-import {cn} from "@/lib/utils";
-import {RainbowButton} from "./ui/rainbow-button"
-import ShinyButton from "@/components/ui/shiny-button";
-import {CommandLoading} from "cmdk";
+import AnimatedGradientText from "@/components/ui/animated-gradient-text"
+import { cn } from "@/lib/utils"
+import { RainbowButton } from "./ui/rainbow-button"
+import ShinyButton from "@/components/ui/shiny-button"
 
+interface Message {
+    id: number
+    content: string
+    isUser: boolean
+}
 
 export default function Component() {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [res, setRes] = useState<Record<number, string>>({})
-    const [reqs, setReqs] = useState<Record<number, string>>({})
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [messages, setMessages] = useState<Message[]>([
+        { id: 0, content: "欢迎来到我的个人页面，有什么想聊的吗？", isUser: false }
+    ])
+    const [inputText, setInputText] = useState("")
     const [loading, setLoading] = useState(false)
-    const [current, setCurrent] = useState(0)
-    const [text, setText] = useState("")
+    const scrollAreaRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+        }
+    }, [messages])
 
     const handleSubmit = async () => {
+        if (!inputText.trim() || loading) return
+
+        setLoading(true)
+        const newUserMessage: Message = { id: messages.length, content: inputText, isUser: true }
+        setMessages(prev => [...prev, newUserMessage])
+        setInputText("")
+
         try {
-            /** 创建一个新的请求，并设置请求体为用户输入的文本*/
-            if (loading) return;
-            setLoading(true)
-            setText("")
-            setCurrent(prevState => prevState + 1)
-            setReqs((prev)=>{
-                return {
-                    ...prev,
-                    [current]: text
-                }
-            })
             const res = await fetch('/api/dify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:text,
-            });
-            if (!res.body) {
-                return setRes(prev=>{
-                    return {
-                        ...prev,
-                        [current]: "请求失败，请重试"
-                    };
-                })
-            }
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder('utf-8');
+                body: inputText,
+            })
 
-            let result = '';
-            let partial = ''; // 用于存储未完整解析的数据块
+            if (!res.body) {
+                throw new Error("请求失败，请重试")
+            }
+
+            const reader = res.body.getReader()
+            const decoder = new TextDecoder('utf-8')
+
+            let result = ''
+            let partial = ''
 
             while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
+                const { done, value } = await reader.read()
+                if (done) break
 
-                partial += decoder.decode(value, { stream: true }); // 使用流模式解码
+                partial += decoder.decode(value, { stream: true })
 
-                let lines = partial.split('\n'); // 每个事件块以 '\n' 分隔
-                partial = lines.pop() || ''; // 如果最后一块不完整，留在 partial 中等待下一块数据
+                let lines = partial.split('\n')
+                partial = lines.pop() || ''
 
                 for (let line of lines) {
                     if (line.trim().startsWith('data:')) {
-                        let jsonData = line.slice(5).trim(); // 去除 'data: ' 前缀
+                        let jsonData = line.slice(5).trim()
                         try {
-                            const parsedData = JSON.parse(jsonData);
+                            const parsedData = JSON.parse(jsonData)
                             if (parsedData.answer) {
-                                result += parsedData.answer; // 逐块累积答案
-                                setRes((prev) => ({
-                                    ...prev,
-                                    [current]: result,
-                                }));
+                                result += parsedData.answer
+                                setMessages(prev => {
+                                    const lastMessage = prev[prev.length - 1]
+                                    if (!lastMessage.isUser) {
+                                        return [...prev.slice(0, -1), { ...lastMessage, content: result }]
+                                    } else {
+                                        return [...prev, { id: prev.length, content: result, isUser: false }]
+                                    }
+                                })
                             }
                         } catch (err) {
-                            console.error('JSON parse error:', err);
+                            console.error('JSON parse error:', err)
                         }
                     }
                 }
             }
+
             setLoading(false)
-            console.log('Final result:', result);
+            console.log('Final result:', result)
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error)
+            setMessages(prev => [...prev, { id: prev.length, content: "请求失败，请重试", isUser: false }])
+            setLoading(false)
         }
-    };
+    }
 
     return (
         <section className="bg-gradient-to-b from-background to-secondary py-20">
@@ -111,13 +124,11 @@ export default function Component() {
                         <p className="mb-8 text-lg text-muted-foreground">
                             功败也极乐，我即是佛莲
                         </p>
-                        <div className={'flex gap-5 mb-8 items-center'}>
-                            <RainbowButton className={'font-semibold'}> 了解更多 <ArrowRight className="ml-2 h-4 w-4"/>
-                            </RainbowButton>
+                        <div className="flex gap-5 mb-8 items-center">
+                            <RainbowButton className="font-semibold"> 了解更多 <ArrowRight className="ml-2 h-4 w-4"/></RainbowButton>
                             <ShinyButton onClick={() => {
                                 window.open("https://giant-origami-e45.notion.site/WANGENIUS-11f7a4f8703f80ae8da1ca4721971097?pvs=4")
-                            }}> <FileText className="mr-2 h-4 w-4"/>
-                                我的简历</ShinyButton>
+                            }}> <FileText className="mr-2 h-4 w-4"/>我的简历</ShinyButton>
                         </div>
 
                         <Card className="w-full mb-8">
@@ -133,80 +144,90 @@ export default function Component() {
                                 </p>
                             </CardContent>
                         </Card>
-
-                        <Card className="w-full">
-                            <CardHeader>
-                                <CardTitle className="text-xl">赞赏支持</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="mb-4 text-muted-foreground">如果您喜欢我的内容，您可以进行赞赏，以支持我继续创作。</p>
-                                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button variant="outline" className="w-full">
-                                            <Heart className="mr-2 h-4 w-4 text-red-500"/> 赞赏作者
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>赞赏作者</DialogTitle>
-                                            <DialogDescription>
-                                                您的支持是我继续创作的动力。请选择赞赏金额或输入自定义金额。
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="grid grid-cols-3 gap-4 py-4">
-                                            {[10, 20, 50].map((amount) => (
-                                                <Button key={amount} variant="outline">
-                                                    {amount} 元
-                                                </Button>
-                                            ))}
-                                        </div>
-                                        <Input type="number" placeholder="其他金额" className="mb-4"/>
-                                        <Button className="w-full">确认赞赏</Button>
-                                    </DialogContent>
-                                </Dialog>
-                            </CardContent>
-                        </Card>
                     </div>
 
-                    <Card className="flex flex-col h-full">
-                        <CardHeader className={'flex flex-row items-center justify-between'}>
+                    <Card className="flex flex-col h-[600px]">
+                        <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-2xl">与我对话</CardTitle>
-                            <AnimatedGradientText>
-                                🎉 <hr className="mx-2 h-4 shrink-0 bg-gray-300"/>
-                                <span
-                                    className={cn(
-                                        `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`,
-                                    )}
-                                >你好</span>
-                                <ChevronRight
-                                    className="ml-1 size-3 p-0.5 stroke-1 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"/>
-                            </AnimatedGradientText>
-                        </CardHeader>
-                        <CardContent className="flex-grow overflow-hidden flex flex-col">
-                            <div className="flex-grow mb-4 max-h-[800px] overflow-y-scroll space-y-4">
-                                <p className="text-muted-foreground">欢迎来到我的个人页面，有什么想聊的吗？</p>
-                                {Object.keys(reqs).sort((a, b) => Number(a) - Number(b)).map((item) => (
-                                    <div key={item} className="space-y-1">
-                                        <div className="bg-gray-100 p-2 rounded-lg">{reqs[Number(item)]}</div>
-                                        <div className="flex items-center space-x-2">
-                                            <span>{res[Number(item)]}</span>
-                                            {loading && current === Number(item) ? "正在加载" : ""}
-                                        </div>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button className={cn(
+                                        `flex animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent hover:text-transparent`,
+                                    )} variant="outline">
+                                        <Heart className="mr-2 h-4 w-4 text-red-500"/> 赞赏作者
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>赞赏作者</DialogTitle>
+                                        <DialogDescription>
+                                            您的支持是我继续创作的动力。请选择赞赏金额或输入自定义金额。
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid grid-cols-3 gap-4 py-4">
+                                        {[10, 20, 50].map((amount) => (
+                                            <Button key={amount} variant="outline">
+                                                {amount} 元
+                                            </Button>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                    <Input type="number" placeholder="其他金额" className="mb-4"/>
+                                    <Button className="w-full">确认赞赏</Button>
+                                </DialogContent>
+                            </Dialog>
+                        </CardHeader>
+                        <CardContent className="flex-grow overflow-hidden p-0">
+                            <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
+                                <div className="space-y-4">
+                                    {messages.map((message) => (
+                                        <div
+                                            key={message.id}
+                                            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                                        >
+                                            <div
+                                                className={`flex items-end space-x-2 max-w-[80%] ${
+                                                    message.isUser ? 'flex-row-reverse space-x-reverse' : 'flex-row'
+                                                }`}
+                                            >
+                                                <Avatar className="w-8 h-8">
+                                                    <AvatarImage src={message.isUser ? "/user.png" : "/me.png"} />
+                                                    <AvatarFallback>{message.isUser ? "你" : "我"}</AvatarFallback>
+                                                </Avatar>
+                                                <div
+                                                    className={`rounded-lg p-3 ${
+                                                        message.isUser
+                                                            ? 'bg-primary text-primary-foreground'
+                                                            : 'bg-muted'
+                                                    }`}
+                                                >
+                                                    <p className="text-sm">{message.content}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {loading && (
+                                        <div className="flex justify-start">
+                                            <div className="bg-muted rounded-lg p-3">
+                                                <p className="text-sm">正在输入...</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </ScrollArea>
                         </CardContent>
-                        <div className="flex p-6">
-                            <Input onChange={e => setText(e.target.value)} value={text} onKeyDown={(event) => {
-                                /*如果按下回车执行提交*/
-                                if (event.key === 'Enter') {
-                                    handleSubmit();
-                                }
-                            }} placeholder="输入您的消息..." className="flex-grow mr-2"/>
-                            <Button disabled={loading} onClick={handleSubmit} size="icon">
-                                <Send className="h-4 w-4"/>
-                            </Button>
-                        </div>
+                        <CardFooter className="p-4">
+                            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="flex w-full space-x-2">
+                                <Input
+                                    value={inputText}
+                                    onChange={(e) => setInputText(e.target.value)}
+                                    placeholder="输入您的消息..."
+                                    className="flex-grow"
+                                />
+                                <Button type="submit" size="icon" disabled={loading}>
+                                    <Send className="h-4 w-4" />
+                                </Button>
+                            </form>
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
