@@ -1,24 +1,21 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from "@/components/theme-provider"
-import {ReactNode} from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ReactNode } from "react";
 
-import './globals.css';
+import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
-
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'WANGENIUS',
-  icons: '/app.svg',
-  description: 'Welcome to the personal website of Wangenius',
+  title: "WANGENIUS",
+  icons: "/app.svg",
+  description: "Welcome to the personal website of Wangenius",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
@@ -28,7 +25,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="min-h-screen bg-background flex flex-col">
+            <Header />
+            <main className={"flex-grow"}>{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

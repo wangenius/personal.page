@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
+import Image from "next/image";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +16,14 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 m-auto items-center">
         <div className="mr-4 hidden md:flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mr-2 hidden h-10 w-10 rounded-full p-1 lg:flex"
+            onClick={toggleMenu}
+          >
+            <img src={'/app.svg'} alt={""}/>
+          </Button>
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <span className="hidden font-bold sm:inline-block">WANGENIUS</span>
           </Link>
