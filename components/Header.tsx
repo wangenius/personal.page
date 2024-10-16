@@ -29,7 +29,7 @@ const Header = () => {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link href="#base">Knowledge Base</Link>
-            <Link href="#blogs">Blogs</Link>
+            <Link href="#blog">Blogs</Link>
             <Link href="#portfolios">Portfolios</Link>
             <Link href="#contact">Contact</Link>
           </nav>

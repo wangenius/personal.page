@@ -216,7 +216,7 @@ export default function Component() {
                   这里是我的个人网站，基于工作、生活日志、作品和笔记搭建的个人知识库。欢迎您的访问，希望对您有所帮助。{" "}
                 </p>
               </CardHeader>
-              <CardContent className={"flex-1 flex flex-col justify-between"}>
+              <CardContent className={"flex-1 flex flex-col justify-end"}>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
                     <Button

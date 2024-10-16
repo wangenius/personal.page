@@ -3,6 +3,7 @@ import About from "@/components/About";
 import Projects from "@/components/Projects";
 import { Base } from "@/components/Base";
 import { Fragment } from "react";
+import {Blog} from "@/components/Blog";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <Base />
       <Projects />
+      <Blog />
       <About />
     </Fragment>
   );

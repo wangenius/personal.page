@@ -1,10 +1,10 @@
-import { BoxIcon, Share2Icon, SparklesIcon } from "lucide-react";
+import {BoxIcon, ChefHat, Share2Icon, SparklesIcon} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import Marquee from "@/components/ui/marquee";
-import { IconBrandProducthunt } from "@tabler/icons-react";
+import {IconBrandOpenai, IconBrandProducthunt} from "@tabler/icons-react";
 import Globe from "@/components/ui/globe";
 
 const files = [
@@ -35,7 +35,7 @@ const features = [
     Icon: IconBrandProducthunt,
     name: "快速创建一个产品",
     description:
-      "从最初的想法到MVP（最小可行产品）上线，全流程涵盖产品构思、技术实现、前端开发（包括Web和小程序）和市场测试。帮助团队在短时间内验证产品概念，提高产品迭代效率。",
+      "从开发的角度，想法到MVP全流程涵盖产品构思、技术实现、程序开发、流程需要和市场测试。这一部分旨在将整个流程快速跑通，以便快速验证想法。为之后的再次创建制作适合自己的模板。",
     href: "https://best-picture-cb6.notion.site/121f95213f8380509fbbff0d94d2f221?pvs=4",
     cta: "开始",
     className: "col-span-3 lg:col-span-1",
@@ -71,28 +71,34 @@ const features = [
     Icon: SparklesIcon,
     name: "AI+",
     description:
-      "深入了解AI如何赋能产品设计与开发，掌握应用层面的AI使用场景。课程涵盖NLP、计算机视觉等领域的功能开发、AI基础理论以及真实项目中的AI实践，助力打造智能化产品。",
+      "深入了解AI如何赋能产品设计与开发，掌握应用层面的AI使用场景。NLP、SD等场景的功能开发、AI基础理论以及真实项目中的AI实践，助力打造智能化产品。",
     href: "https://best-picture-cb6.notion.site/AI-11ff95213f8380c09e90c03762b1a288?pvs=4",
     cta: "开始",
     className: "col-span-3 lg:col-span-2",
-    background: <Globe />,
+    background: (
+      <div className="absolute right-2 top-4 h-[300px] border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105">
+        <img src={"/openai.png"} className={"h-72 text-neutral-500"} />
+      </div>
+    ),
   },
   {
     Icon: Share2Icon,
     name: "计算机基础知识",
     description:
-      "探索计算机科学的核心领域，包括计算机体系结构、操作系统、计算机网络和信息安全。通过案例学习理解各模块之间的交互与应用，打下扎实的技术基础，为未来编程和系统开发做好准备。",
+      "系统总结计算机科学的基础知识，包括计算机体系结构、操作系统、计算机网络和信息安全。方便后期对程序的Dev过程。",
     href: "https://best-picture-cb6.notion.site/11ff95213f83807d8d7ef4eb6e115b20?pvs=4",
     cta: "开始",
     className: "col-span-3 lg:col-span-2",
     background: (
-      <div className="absolute right-2 top-4 h-[300px] border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+      <div className="absolute right-2 top-4 h-[300px] border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105">
+        <img src={"/cs.png"} className={"h-96 text-neutral-500"} />
+      </div>
     ),
   },
   {
     Icon: BoxIcon,
     name: "更多",
-    description: "Use the calendar to filter your files by date.",
+    description: "了解更多相关知识，为超级个体时代做准备",
     className: "col-span-3 lg:col-span-1",
     href: "/knowledge",
     cta: "了解更多",
