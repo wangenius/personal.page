@@ -3,11 +3,17 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import path from 'path'
 import fs from 'fs/promises'
 import matter from 'gray-matter'
+import { Callout } from '@/components/ui/callout'
 
 interface Props {
   params: {
     slug: string[]
   }
+}
+
+// 定义 MDX 组件
+const components = {
+  Callout: Callout,
 }
 
 async function getDocFromParams(slug: string[]) {
@@ -31,7 +37,10 @@ export default async function DocPage({ params }: Props) {
 
   return (
     <article className="prose prose-lg max-w-none">
-      <MDXRemote source={doc} />
+      <MDXRemote 
+        source={doc} 
+        components={components}
+      />
     </article>
   )
 } 

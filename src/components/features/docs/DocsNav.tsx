@@ -1,12 +1,22 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { type DocSection, type DocItem } from '@/lib/docs'
 import { ChevronRight } from 'lucide-react'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import path from 'path'
+
+interface DirectoryInfo {
+  path: string;
+  meta: {
+    title: string;
+    order: number;
+    description?: string;
+  } | null;
+}
 
 interface DocsNavProps {
   sections: DocSection[]
@@ -21,7 +31,7 @@ function NavItem({ item, level = 0 }: { item: DocItem; level?: number }) {
 
   return (
     <li className={cn(
-      'relative',
+      'relative select-none',
       isActive && 'before:absolute before:-left-4 before:top-1/2 before:-translate-y-1/2 before:h-[calc(100%-0.5rem)] before:w-[2px] before:bg-primary before:rounded-full'
     )}>
       <div 
@@ -70,10 +80,42 @@ function NavItem({ item, level = 0 }: { item: DocItem; level?: number }) {
 }
 
 export default function DocsNav({ sections }: DocsNavProps) {
+  const [directories, setDirectories] = useState<DirectoryInfo[]>([]);
+  
+  useEffect(() => {
+    fetch('/api/docs/directories')
+      .then(res => res.json())
+      .then(data => setDirectories(data))
+      .catch(console.error);
+  }, []);
+
+  // 使用目录的 meta 信息来增强现有的 sections
+  const enhancedSections = sections.map(section => {
+    const sectionDir = directories.find(dir => 
+      path.basename(dir.path).toLowerCase() === section.title.toLowerCase()
+    );
+    
+    return {
+      ...section,
+      title: sectionDir?.meta?.title || section.title,
+      order: sectionDir?.meta?.order ?? section.order ?? Infinity
+    };
+  });
+  
+  // 按照 order 从小到大排序
+  const sortedSections = [...enhancedSections].sort((a, b) => {
+    const orderA = a.order ?? Infinity;
+    const orderB = b.order ?? Infinity;
+    if (orderA === orderB) {
+      return a.title.localeCompare(b.title);
+    }
+    return orderA - orderB;
+  });
+
   return (
-    <ScrollArea className=" w-60 flex-shrink-0 border-r border-border/10">
+    <ScrollArea className="w-60 flex-shrink-0 border-r border-border/10">
       <nav className="px-4 py-8">
-        {sections.map((section) => (
+        {sortedSections.map((section) => (
           <div key={section.title} className="mb-8 last:mb-0">
             <div className="mb-4 text-xs font-medium text-foreground/40 uppercase tracking-wider px-2">
               {section.title}
@@ -87,5 +129,5 @@ export default function DocsNav({ sections }: DocsNavProps) {
         ))}
       </nav>
     </ScrollArea>
-  )
+  );
 } 
