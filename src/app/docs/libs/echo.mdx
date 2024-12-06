@@ -1,0 +1,852 @@
+---
+title: Echo
+order: 1
+---
+
+# Echo
+
+作者: [@wangenius](https://github.com/wangenius)
+
+> 目前暂未开放
+
+Echo 是一个基于 Zustand 的轻量级状态管理工具,专注于提供简单且强大的状态管理解决方案。
+
+基于 Echo 的特性,可以轻松实现状态管理,数据持久化,响应式更新等功能。
+
+轻松封装路由,表单,数据请求等操作。
+
+## 目录
+
+- [特性](#特性)
+- [安装](#安装)
+- [基础使用](#基础使用)
+- [高级特性](#高级特性)
+- [API 参考](#api-参考)
+- [最佳实践](#最佳实践)
+
+## 特性
+
+- 🚀 轻量级,体积小巧
+- 💾 内置持久化支持(localStorage/indexedDB)
+- 🎯 支持 React Hooks 和命令式调用
+- 🔄 响应式更新
+- 🛠 完整的 TypeScript 支持
+- 📦 模块化设计
+- 🔍 深度状态比较
+- ⚡ 批量更新支持
+- 🛡️ 错误恢复机制
+
+## 安装
+
+```bash
+npm install @your-org/echo
+# 或
+yarn add @your-org/echo
+```
+
+## 基础使用
+
+### 创建 Store
+
+```typescript
+interface UserStore {
+  name: string;
+  age: number;
+  settings: {
+    theme: 'light' | 'dark';
+  };
+}
+
+const echo = new Echo<UserStore>(
+  'user',
+  {
+    name: '',
+    age: 0,
+    settings: {
+      theme: 'light',
+    },
+  },
+  {
+    methods: {
+      incrementAge: state => ({ age: state.age + 1 }),
+      updateTheme: state => ({
+        settings: { ...state.settings, theme: 'dark' },
+      }),
+    },
+    storage: 'localStorage', // 或 'indexedDB'
+  }
+);
+```
+
+### 在 React 组件中使用
+
+```typescript
+function UserProfile() {
+  // 获取单个状态
+  const name = echo.use(state => state.name);
+
+  // 获取多个状态和方法
+  const { age, settings, incrementAge } = echo.use(state => ({
+    age: state.age,
+    settings: state.settings,
+    incrementAge: state.incrementAge
+  }));
+
+  // 使用内置方法
+  const { set, remove, clear } = echo.use();
+
+  return (
+    <div>
+      <h2>{name}</h2>
+      <p>Age: {age}</p>
+      <p>Theme: {settings.theme}</p>
+      <button onClick={incrementAge}>Add Age</button>
+      <button onClick={() => set({ name: 'John' })}>Set Name</button>
+    </div>
+  );
+}
+```
+
+### 命令式调用
+
+```typescript
+// 获取状态快照
+const currentState = echo.snapshot;
+
+// 使用 set 方法更新状态
+echo.set({ name: 'John' }); // 默认浅合并
+echo.set({ settings: { theme: 'dark' } }, 'deep'); // 深度合并
+echo.set(state => ({ age: state.age + 1 })); // 函数式更新
+
+// 使用自定义方法
+const { incrementAge } = echo.beats;
+incrementAge();
+
+// 订阅状态变化
+const unsubscribe = echo.subscribe(
+  state => state.name,
+  (newName, prevName) => console.log('name changed:', prevName, '->', newName)
+);
+```
+
+## 高级特性
+
+### 状态更新模式
+
+Echo 提供三种状态更新模式:
+
+```typescript
+// 1. 浅合并模式(默认)
+echo.set({ name: 'John' });
+
+// 2. 深度合并模式
+echo.set(
+  {
+    settings: {
+      theme: 'dark', // 只更新 theme,保留其他设置
+    },
+  },
+  'deep'
+);
+
+// 3. 完全替换模式
+echo.set({ name: 'John', age: 25 }, 'replace');
+```
+
+### 批量更新
+
+```typescript
+echo.workflow([
+  { name: 'John' },
+  state => ({ age: state.age + 1 }),
+  { settings: { theme: 'dark' } },
+]);
+```
+
+### 错误处理
+
+```typescript
+// 设置错误处理器
+echo.setErrorHandler(error => {
+  console.error('Store operation failed:', error);
+  // 执行错误恢复逻辑
+});
+
+// 使用 try-catch 捕获错误
+try {
+  echo.set({ invalidValue: null });
+} catch (error) {
+  console.error('Update failed:', error);
+}
+```
+
+### 状态比较
+
+```typescript
+// 使用 equals 进行状态比较
+const isAdult = echo.equals(state => state.age >= 18, true);
+const isDarkTheme = echo.equals(state => state.settings.theme === 'dark', true);
+```
+
+## API 参考
+
+### Echo 类
+
+```typescript
+class Echo<T extends Record<string, any>, AllowNull = undefined> {
+  // 属性
+  readonly snapshot: AllowNull extends null ? T | null : T;
+  readonly beats: { [K in keyof Methods]: () => ReturnType<Methods[K]> };
+
+  // 构造函数
+  constructor(
+    name: string,
+    defaultValue: AllowNull extends null ? T | null : T,
+    options?: {
+      storage?: 'localStorage' | 'indexedDB';
+      persist?: boolean;
+      methods?: Record<string, (state: T) => Partial<T>>;
+    }
+  );
+
+  // 核心方法
+  set(
+    value: Partial<T> | ((state: T) => Partial<T>),
+    mode?: 'merge' | 'replace' | 'deep'
+  ): void;
+
+  remove(key: keyof T): void;
+  clear(): void;
+  toDefault(): void;
+
+  // Hook 方法
+  use<S>(selector?: (state: T & Methods) => S): S;
+
+  // 订阅方法
+  subscribe<U>(
+    selector: (state: T) => U,
+    listener: (newState: U, prevState?: U) => void
+  ): () => void;
+
+  // 工具方法
+  equals<S>(selector: (state: T) => S, value: S): boolean;
+  workflow(updates: Array<Partial<T> | ((state: T) => Partial<T>)>): void;
+  resetKey<K extends keyof T>(key: K): void;
+  setErrorHandler(handler: (error: any) => void): void;
+}
+```
+
+### 状态更新模式
+
+```typescript
+type UpdateMode = 'merge' | 'replace' | 'deep';
+```
+
+### 存储类型
+
+```typescript
+type StorageType = 'localStorage' | 'indexedDB';
+```
+
+## 最佳实践
+
+### 状态设计
+
+```typescript
+// 1. 使用接口定义状态结构
+interface AppState {
+  user: {
+    id: string;
+    name: string;
+    preferences: {
+      theme: 'light' | 'dark';
+      language: string;
+    };
+  };
+  settings: {
+    notifications: boolean;
+    autoSave: boolean;
+  };
+}
+
+// 2. 分离状态和方法
+const methods = {
+  updateTheme: (state: AppState) => ({
+    user: {
+      ...state.user,
+      preferences: {
+        ...state.user.preferences,
+        theme: state.user.preferences.theme === 'light' ? 'dark' : 'light',
+      },
+    },
+  }),
+  toggleNotifications: (state: AppState) => ({
+    settings: {
+      ...state.settings,
+      notifications: !state.settings.notifications,
+    },
+  }),
+};
+
+// 3. 创建 store
+const appStore = new Echo<AppState>('app', initialState, { methods });
+```
+
+### 性能优化
+
+```typescript
+// 1. 使用细粒度的选择器
+const userName = echo.use(state => state.user.name); // 推荐
+const user = echo.use(state => state.user); // 不推荐
+
+// 2. 使用 equals 进行状态比较
+if (echo.equals(state => state.settings.theme, 'dark')) {
+  // 执行相关逻辑
+}
+
+// 3. 批量更新避免多次渲染
+echo.workflow([
+  { name: 'John' },
+  state => ({ age: state.age + 1 }),
+  { theme: 'dark' },
+]);
+```
+
+### 错误处理
+
+```typescript
+// 1. 设置全局错误处理器
+echo.setErrorHandler(error => {
+  console.error('Store error:', error);
+  // 可以触发全局提示或执行回滚操作
+});
+
+// 2. 使用 try-catch 处理特定操作
+try {
+  echo.workflow([
+    { name: 'John' },
+    state => {
+      if (state.age < 0) throw new Error('Invalid age');
+      return { age: state.age + 1 };
+    },
+  ]);
+} catch (error) {
+  // 处理特定错误
+}
+```
+
+### TypeScript 支持
+
+```typescript
+// 完整的类型推导
+interface UserState {
+  name: string;
+  age: number;
+  settings: {
+    theme: 'light' | 'dark';
+  };
+}
+
+const echo = new Echo<UserState>('user', {
+  name: '',
+  age: 0,
+  settings: { theme: 'light' },
+});
+
+// TypeScript 会提供完整的类型检查和自动补全
+echo.use(state => state.settings.theme); // 类型安全
+echo.set({ theme: 'invalid' }); // TS 错误
+```
+
+## 补充说明
+
+### 构造函数详解
+
+```typescript
+constructor(
+  name: string,          // store 唯一标识名
+  defaultValue: T,       // 初始状态值
+  options?: {
+    storage?: 'localStorage' | 'indexedDB', // 存储类型
+    persist?: boolean,   // 是否启用持久化(默认true)
+    methods?: StoreMethods<T> // 自定义方法
+  }
+)
+```
+
+构造函数会进行以下验证:
+
+- name 必须是非空字符串
+- defaultValue 必须是对象或 null(当 AllowNull=true)
+- 如果验证失败会抛出错误
+
+### 状态更新机制详解
+
+Echo 内部使用了 Zustand 作为状态管理核心,并在此���础上扩展了更多特性:
+
+1. 状态验证
+
+```typescript
+private validateState(value: Partial<T>): void {
+  if (value !== null && typeof value !== 'object') {
+    throw new Error('State must be an object or null');
+  }
+}
+```
+
+2. 安全的状态更新
+
+```typescript
+const safeSet = (fn: Function) => {
+  try {
+    fn();
+  } catch (error) {
+    console.error(`Store operation failed:`, error);
+    set(this.defaultValue);
+    this.onError?.(error);
+  }
+};
+```
+
+3. 深度比较实现
+
+```typescript
+private isEqual(a: any, b: any): boolean {
+  if (a === b) return true;
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object') {
+    return false;
+  }
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  return keysA.every(key => this.isEqual(a[key], b[key]));
+}
+```
+
+### 持久化存储详解
+
+Echo 的持久化存储基于 Zustand/middleware 实现:
+
+```typescript
+persist(createStoreImpl, {
+  name: this.name,
+  storage: createJSONStorage(() =>
+    this.storageType === 'localStorage' ? localStorage : localforage
+  ),
+  onRehydrateStorage: () => state => {
+    if (state) {
+      console.log(`Store ${this.name} rehydrated`);
+    }
+  },
+});
+```
+
+特点:
+
+1. 自动序列化/反序列化
+2. 支持存储类型切换
+3. 提供重水化回调
+4. 错误自动恢复
+
+### 状态订阅增强
+
+subscribe 方法支持前一个状态值:
+
+```typescript
+subscribe<U>(
+  selector: (state: T) => U,
+  listener: (newState: U, prevState?: U) => void
+): () => void
+```
+
+使用场景:
+
+1. 状态变化日志
+
+```typescript
+echo.subscribe(
+  state => state,
+  (newState, prevState) => {
+    console.log('State changed:', {
+      from: prevState,
+      to: newState,
+      diff: getDiff(prevState, newState),
+    });
+  }
+);
+```
+
+2. 条件动作触发
+
+```typescript
+echo.subscribe(
+  state => state.settings.theme,
+  (newTheme, prevTheme) => {
+    if (newTheme !== prevTheme) {
+      updateSystemTheme(newTheme);
+    }
+  }
+);
+```
+
+### 工作流批处理详解
+
+workflow 方法的实现细节:
+
+```typescript
+workflow(
+  updates: Array<Partial<T> | ((state: T) => Partial<T>)>
+) {
+  try {
+    const state = this.snapshot;
+    const batchedUpdates = updates.reduce<Partial<T>>((acc, update) => {
+      const nextUpdate = typeof update === 'function'
+        ? update(state)
+        : update;
+
+      if (nextUpdate !== null && typeof nextUpdate !== 'object') {
+        throw new Error('Invalid update in workflow');
+      }
+
+      return {
+        ...acc,
+        ...nextUpdate
+      };
+    }, {});
+
+    this.store.getState().set(batchedUpdates);
+  } catch (error) {
+    console.error('Workflow execution failed:', error);
+    this.onError?.(error);
+  }
+}
+```
+
+使用场景:
+
+1. 表单提交
+
+```typescript
+echo.workflow([
+  { loading: true },
+  async state => {
+    const result = await submitForm(state.form);
+    return { submitResult: result };
+  },
+  { loading: false },
+]);
+```
+
+2. 多步骤操作
+
+```typescript
+echo.workflow([
+  // 步骤1: 更新用户信息
+  { user: { name: 'John', age: 25 } },
+
+  // 步骤2: 更新设置
+  state => ({
+    settings: {
+      ...state.settings,
+      theme: 'dark',
+    },
+  }),
+
+  // 步骤3: 清理临时数据
+  state => {
+    const { temporary, ...rest } = state;
+    return rest;
+  },
+]);
+```
+
+### 性能优化建议补充
+
+1. 选择器优化
+
+```typescript
+// 避免在每次渲染时创建新的选择器函数
+const selectUserName = state => state.user.name;
+const selectUserAge = state => state.user.age;
+
+function UserProfile() {
+  const name = echo.use(selectUserName);
+  const age = echo.use(selectUserAge);
+  // ...
+}
+```
+
+2. 状态分割
+
+```typescript
+// 避免大型状态对象
+const userStore = new Echo<UserState>('user', {...});
+const settingsStore = new Echo<SettingsState>('settings', {...});
+const tempStore = new Echo<TempState>('temp', {...});
+```
+
+3. 合理使用 workflow
+
+```typescript
+// 好的做法
+echo.workflow([{ loading: true }, { data: newData }, { loading: false }]);
+
+// 避免
+echo.set({ loading: true });
+echo.set({ data: newData });
+echo.set({ loading: false });
+```
+
+### 完整的错误处理示例
+
+```typescript
+const echo = new Echo<AppState>('app', initialState, {
+  methods: {
+    riskyOperation: state => {
+      if (!state.user) {
+        throw new Error('User not found');
+      }
+      return {
+        user: {
+          ...state.user,
+          lastOperation: Date.now(),
+        },
+      };
+    },
+  },
+});
+
+// 全局错误处理
+echo.setErrorHandler(error => {
+  console.error('Store error:', error);
+  notification.error({
+    message: 'Operation Failed',
+    description: error.message,
+  });
+});
+
+// 特定操作错误处理
+try {
+  echo.workflow([
+    { loading: true },
+    state => {
+      if (!state.user.permissions.includes('admin')) {
+        throw new Error('Permission denied');
+      }
+      return { adminOperation: true };
+    },
+    { loading: false },
+  ]);
+} catch (error) {
+  // 处理特定错误
+  handleSpecificError(error);
+} finally {
+  // 确保 loading 状态被重置
+  echo.set({ loading: false });
+}
+```
+
+### AllowNull 类型支持
+
+Echo 支持通过泛型参数 AllowNull 来控制状态是否允许为 null:
+
+```typescript
+// 1. 基础用法
+interface UserState {
+  name: string;
+  age: number;
+  settings: {
+    theme: 'light' | 'dark';
+  };
+}
+
+// 允许状态为 null
+const nullableStore = new Echo<UserState, null>(
+  'nullable-user',
+  null, // 初始值可以为 null
+  {
+    methods: {
+      clearAll: () => null, // 方法可以返回 null
+      initialize: () => ({
+        name: '',
+        age: 0,
+        settings: { theme: 'light' },
+      }),
+    },
+  }
+);
+
+// 不允许状态为 null (默认)
+const normalStore = new Echo<UserState>('normal-user', {
+  name: '',
+  age: 0,
+  settings: { theme: 'light' },
+});
+```
+
+2. 完整示例:
+
+```typescript
+interface SessionState {
+  user: {
+    id: string;
+    name: string;
+  };
+  token: string;
+  lastActive: number;
+}
+
+// 创建可空会话存储
+const sessionStore = new Echo<SessionState, null>(
+  'session',
+  null, // 初始为 null 表示未登录
+  {
+    storage: 'localStorage',
+    methods: {
+      // 登录
+      login: (_, userData: SessionState) => userData,
+
+      // 登出
+      logout: () => null,
+
+      // 更新最后活动时间
+      updateActivity: state => {
+        if (!state) return null;
+        return {
+          ...state,
+          lastActive: Date.now()
+        };
+      }
+    }
+  }
+);
+
+// 使用示例
+function App() {
+  // 获取会话状态
+  const session = sessionStore.use(state => state);
+
+  // 处理登录
+  const handleLogin = async (credentials) => {
+    try {
+      const userData = await loginAPI(credentials);
+      sessionStore.beats.login(userData);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  // 处理登出
+  const handleLogout = () => {
+    sessionStore.beats.logout();
+  };
+
+  // 根据会话状态渲染
+  if (!session) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
+
+  return (
+    <div>
+      <h1>Welcome, {session.user.name}</h1>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
+  );
+}
+
+// 状态订阅示例
+sessionStore.subscribe(
+  state => state,
+  (newState, prevState) => {
+    if (!prevState && newState) {
+      console.log('User logged in:', newState.user);
+    } else if (prevState && !newState) {
+      console.log('User logged out');
+    }
+  }
+);
+
+// 类型安全示例
+function someOperation() {
+  const state = sessionStore.snapshot;
+
+  // 需要进行 null 检查
+  if (!state) {
+    console.log('No active session');
+    return;
+  }
+
+  // 这里 state 的类型已经被收窄为 SessionState
+  console.log(`User ${state.user.name} last active:`, state.lastActive);
+}
+
+// 错误处理示例
+sessionStore.setErrorHandler(error => {
+  if (error.message.includes('auth')) {
+    // 处理认证相关错误
+    sessionStore.beats.logout();
+    showAuthError(error);
+  } else {
+    // 处理其他错误
+    console.error('Session error:', error);
+  }
+});
+```
+
+3. 工作流中使用:
+
+```typescript
+// 处理登录流程
+async function handleLogin(credentials) {
+  try {
+    await sessionStore.workflow([
+      { loading: true },
+      async () => {
+        const userData = await loginAPI(credentials);
+        return userData; // 返回完整的会话状态
+      },
+      state => {
+        if (!state) throw new Error('Login failed');
+        return {
+          ...state,
+          lastActive: Date.now(),
+        };
+      },
+      { loading: false },
+    ]);
+  } catch (error) {
+    sessionStore.set(null); // 登录失败时清空状态
+    throw error;
+  }
+}
+```
+
+4. 类型约束说明:
+
+```typescript
+// AllowNull 类型参数会影响以下方法的类型定义:
+
+// 1. 构造函数
+constructor(
+  name: string,
+  defaultValue: AllowNull extends null ? T | null : T,
+  options?: EchoOptions<T>
+);
+
+// 2. snapshot 属性
+readonly snapshot: AllowNull extends null ? T | null : T;
+
+// 3. set 方法
+set(
+  value: AllowNull extends null
+    ? Partial<T> | null | ((state: T | null) => Partial<T> | null)
+    : Partial<T> | ((state: T) => Partial<T>)
+): void;
+
+// 4. 自定义方法返回值
+methods: {
+  [key: string]: AllowNull extends null
+    ? (state: T | null) => Partial<T> | null
+    : (state: T) => Partial<T>
+}
+```

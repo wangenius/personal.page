@@ -1,0 +1,210 @@
+---
+title: tauri
+order: 2
+---
+
+# tauri 应用开发指南
+
+### 1. 项目初始化
+
+```bash
+# 使用 electron-vite 创建项目
+pnpm create electron-vite my-electron-app
+
+# 安装依赖
+cd my-electron-app
+pnpm install
+```
+
+### 2. 项目结构
+
+```
+├── electron/        # 主进程源码
+│   ├── main.ts     # 主进程入口
+│   └── preload.ts  # 预加载脚本
+├── src/            # 渲染进程源码
+│   ├── components/ # React 组件
+│   ├── pages/      # 页面文件
+│   └── main.tsx    # 渲染进程入口
+└── electron.vite.config.ts  # 构建配置
+```
+
+### 3. 主进程开发
+
+```typescript
+// electron/main.ts
+import { app, BrowserWindow, ipcMain } from 'electron'
+import path from 'path'
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  })
+
+  // 开发环境加载本地服务
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(process.env.VITE_DEV_SERVER_URL)
+  } else {
+    win.loadFile('dist/index.html')
+  }
+}
+
+app.whenReady().then(createWindow)
+```
+
+### 4. 渲染进程开发
+
+```typescript
+// src/App.tsx
+import { FC, useState } from 'react'
+import { ipcRenderer } from 'electron'
+
+const App: FC = () => {
+  const [message, setMessage] = useState('')
+
+  const handleClick = async () => {
+    const response = await ipcRenderer.invoke('some-event')
+    setMessage(response)
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>发送消息</button>
+      <p>{message}</p>
+    </div>
+  )
+}
+```
+
+### 5. 进程通信
+
+```typescript
+// electron/main.ts
+ipcMain.handle('some-event', async (event, args) => {
+  // 处理来自渲染进程的请求
+  return '处理结果'
+})
+
+// electron/preload.ts
+import { contextBridge, ipcRenderer } from 'electron'
+
+contextBridge.exposeInMainWorld('electron', {
+  sendMessage: (message: string) => ipcRenderer.send('message', message),
+  onResponse: (callback: Function) => ipcRenderer.on('response', callback)
+})
+```
+
+### 6. 数据持久化
+
+```typescript
+import Store from 'electron-store'
+
+const store = new Store({
+  defaults: {
+    config: {
+      theme: 'light',
+      language: 'zh-CN'
+    }
+  }
+})
+
+// 存储数据
+store.set('user.name', 'John')
+
+// 读取数据
+const userName = store.get('user.name')
+```
+
+### 7. 应用打包
+
+```json
+{
+  "scripts": {
+    "build": "electron-vite build",
+    "package": "electron-builder"
+  },
+  "build": {
+    "appId": "com.example.app",
+    "productName": "My App",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "windows": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  }
+}
+```
+
+### 8. 性能优化
+
+- **主进程优化**
+  - 延迟加载
+  - 进程通信优化
+  - 内存管理
+
+- **渲染进程优化**
+  ```typescript
+  // 使用 Web Workers
+  const worker = new Worker('worker.js')
+  worker.postMessage({ type: 'heavy-task', data: someData })
+  worker.onmessage = (event) => {
+    console.log('任务完成:', event.data)
+  }
+  ```
+
+### 9. 安全最佳实践
+
+```typescript
+// main.ts
+new BrowserWindow({
+  webPreferences: {
+    nodeIntegration: false,
+    contextIsolation: true,
+    sandbox: true
+  }
+})
+
+// 内容安全策略
+app.on('web-contents-created', (event, contents) => {
+  contents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ["default-src 'self'"]
+      }
+    })
+  })
+})
+```
+
+### 10. 自动更新
+
+```typescript
+import { autoUpdater } from 'electron-updater'
+
+export function checkForUpdates() {
+  autoUpdater.checkForUpdates()
+
+  autoUpdater.on('update-available', () => {
+    // 发现新版本
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    // 更新下载完成，准备安装
+    autoUpdater.quitAndInstall()
+  })
+}
+```

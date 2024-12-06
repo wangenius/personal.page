@@ -1,0 +1,86 @@
+---
+title: Next.js
+order: 3
+---
+
+### 2. Next.js 全栈方案
+
+- **App Router 架构**
+  ```typescript
+  // app/layout.tsx
+  export default function RootLayout({
+    children,
+  }: {
+    children: React.ReactNode
+  }) {
+    return (
+      <html lang="zh">
+        <body>{children}</body>
+      </html>
+    )
+  }
+  ```
+
+- **服务端组件**
+  ```typescript
+  // app/page.tsx
+  async function getData() {
+    const res = await fetch('https://api.example.com/data')
+    return res.json()
+  }
+
+  export default async function Page() {
+    const data = await getData()
+    return <main>{/* 渲染数据 */}</main>
+  }
+  ```
+
+## 性能优化
+
+### 1. 前端优化
+
+- **代码分割**
+  ```typescript
+  const MyComponent = dynamic(() => import('../components/MyComponent'))
+  ```
+
+- **图片优化**
+  ```typescript
+  import Image from 'next/image'
+  
+  export default function Hero() {
+    return (
+      <Image
+        src="/hero.jpg"
+        alt="Hero"
+        width={1200}
+        height={600}
+        priority
+      />
+    )
+  }
+  ```
+
+### 2. 后端优化
+
+- **缓存策略**
+  - Redis 缓存
+  - 内存缓存
+  - CDN 缓存
+
+- **数据库优化**
+  - 索引优化
+  - 查询优化
+  - 连接池管理
+
+## 安全最佳实践
+
+- **前端安全**
+  - XSS 防护
+  - CSRF 防护
+  - CSP 配置
+
+- **后端安全**
+  - 参数校验
+  - 权限控制
+  - 加密传输

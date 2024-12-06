@@ -1,0 +1,370 @@
+---
+title: React
+order: 1
+---
+
+# Web App 开发指南
+
+## 技术栈介绍
+
+项目采用现代化的前端技术栈：
+
+- `TypeScript`: 类型安全的 JavaScript 超集
+- `React`: 用于构建用户界面的 JavaScript 库
+- `Vite`: 下一代前端构建工具
+- `Zustand`: 轻量级状态管理方案
+- `Tailwind CSS`: 实用优先的 CSS 框架
+- `shadcn/ui`: 高质量的 React 组件库
+
+## 深入技术细节
+
+### TypeScript 配置
+
+推荐在 `tsconfig.json` 中启用严格模式和其他重要配置：
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+### React 最佳实践
+
+#### 1. 组件设计原则
+
+```tsx
+// ✅ 好的实践
+const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
+  // 使用解构获取props
+  const { name, avatar } = user
+  
+  // 使用自定义hook管理复杂逻辑
+  const { loading, error, updateProfile } = useProfileUpdate()
+  
+  return (
+    <div>
+      {/* 实现内容 */}
+    </div>
+  )
+}
+
+// ❌ 避免的做法
+const BadComponent = (props) => {
+  // 直接使用props.xxx
+  // 逻辑和UI混杂
+}
+```
+
+#### 2. 性能优化示例
+
+```tsx
+// 使用 useMemo 优化计算
+const memoizedValue = useMemo(() => {
+  return expensiveOperation(deps)
+}, [deps])
+
+// 使用 useCallback 优化回调
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b)
+}, [a, b])
+
+// 使用 React.memo 优化组件
+const MemoizedComponent = React.memo(({ value }) => {
+  return <div>{value}</div>
+}, (prevProps, nextProps) => {
+  return prevProps.value === nextProps.value
+})
+```
+
+### Zustand 进阶用法
+
+```typescript
+interface AppState {
+  user: User | null
+  theme: 'light' | 'dark'
+  setUser: (user: User | null) => void
+  toggleTheme: () => void
+}
+
+const useStore = create<AppState>((set) => ({
+  user: null,
+  theme: 'light',
+  setUser: (user) => set({ user }),
+  toggleTheme: () => 
+    set((state) => ({ 
+      theme: state.theme === 'light' ? 'dark' : 'light' 
+    })),
+}))
+
+// 持久化存储
+const usePersistedStore = create(
+  persist(
+    (set) => ({
+      // 状态定义...
+    }),
+    {
+      name: 'app-storage',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+)
+```
+
+### 自定义 Hooks 示例
+
+```typescript
+// 管理异步请求状态
+function useAsync<T>(asyncFn: () => Promise<T>) {
+  const [state, setState] = useState<{
+    loading: boolean
+    error: Error | null
+    data: T | null
+  }>({
+    loading: false,
+    error: null,
+    data: null,
+  })
+
+  const execute = useCallback(async () => {
+    setState({ loading: true, error: null, data: null })
+    try {
+      const data = await asyncFn()
+      setState({ loading: false, error: null, data })
+    } catch (error) {
+      setState({ loading: false, error: error as Error, data: null })
+    }
+  }, [asyncFn])
+
+  return { ...state, execute }
+}
+```
+
+### 测试策略
+
+```typescript
+// 组件测试示例
+import { render, screen, fireEvent } from '@testing-library/react'
+
+describe('Button Component', () => {
+  it('renders correctly', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText('Click me')).toBeInTheDocument()
+  })
+
+  it('handles click events', () => {
+    const handleClick = jest.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+    fireEvent.click(screen.getByText('Click me'))
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+## CI/CD 配置
+
+### Github Actions 完整示例
+
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build
+      run: npm run build
+      
+    - name: Deploy
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+```
+
+## 快速开始
+
+### 获取模板
+
+```bash
+git clone https://github.com/wangenius/react-template
+cd react-template
+npm install
+```
+
+> 注意: 该模版为私有仓库。如需访问权限，请联系仓库维护者。
+
+### 项目结构
+
+```
+├── public/           # 静态资源目录
+├── src/             # 源代码目录
+│   ├── @consts/     # 常量定义
+│   ├── @types/      # TypeScript 类型定义
+│   ├── @styles/     # 全局样式文件
+│   ├── components/  # 可复用组件
+│   │   ├── ui/     # 基础UI组件
+│   │   └── common/ # 通用业务组件
+│   ├── examples/    # 示例代码
+│   ├── lib/         # 工具函数库
+│   ├── pages/       # 页面组件
+│   ├── services/    # API 服务
+│   ├── App.tsx      # 应用根组件
+│   └── main.tsx     # 应用入口文件
+├── vite.config.ts   # Vite 配置文件
+└── package.json     # 项目配置文件
+```
+
+## 开发命令
+
+```bash
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 本地预览生产构建
+npm run preview
+
+# 运行测试
+npm run test
+
+# 代码格式化
+npm run format
+```
+
+## 环境配置
+
+### 开发环境要求
+
+- Node.js >= 16
+- npm >= 7
+
+### 环境变量配置
+
+在项目根目录创建 `.env` 文件：
+
+```env
+VITE_API_BASE_URL=http://api.example.com
+VITE_APP_TITLE=My React App
+```
+
+## 部署指南
+
+### Github Pages 部署
+
+1. 配置 `vite.config.ts`:
+
+```ts
+export default defineConfig({
+  base: '/your-repo-name/',
+})
+```
+
+2. 配置 Github Actions:
+
+```yaml
+name: Deploy to Github Pages
+on:
+  push:
+    branches: [ main ]
+```
+
+### Vercel 部署
+
+1. 在 Vercel 导入项目
+2. 配置构建命令：
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+
+### 自定义域名配置
+
+1. 在域名服务商添加 DNS 记录
+2. 在部署平台配置域名
+3. 等待 DNS 生效
+
+### SSL 证书配置
+
+- Github Pages: 自动配置 HTTPS
+- Vercel: 自动配置 Let's Encrypt 证书
+
+## 开发规范
+
+### Git 提交规范
+
+使用 Conventional Commits 规范：
+
+```bash
+feat: 新功能
+fix: 修复问题
+docs: 文档更新
+style: 代码格式调整
+refactor: 代码重构
+test: 测试相关
+chore: 构建/工具相关
+```
+
+### 代码风格
+
+- 使用 ESLint 进行代码检查
+- 使用 Prettier 进行代码格式化
+- 遵循 TypeScript 严格模式
+
+## 其他配置
+
+### shadcn/ui 组件使用
+
+```typescript
+import { Button } from "@/components/ui/button"
+
+export function MyComponent() {
+  return (
+    <Button variant="outline">
+      点击我
+    </Button>
+  )
+}
+```
+
+### 性能优化建议
+
+1. 使用 React.memo() 优化组件重渲染
+2. 使用 useMemo 和 useCallback 缓存计算结果和回调函数
+3. 使用 Code Splitting 实现按需加载
+4. 优化图片资源，使用适当的图片格式
+
+### 调试工具
+
+- React Developer Tools
+- Vite DevTools
+- Chrome DevTools
+

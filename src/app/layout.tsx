@@ -1,33 +1,39 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "../components/ui/toaster";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { ThemeProvider } from "@/providers/theme-provider";
+import type { Metadata } from "next";
+import { Toaster } from "../components/ui/toaster";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "wangenius",
   description: "A special solution from Le Corbusier to Dijkstra.",
   icons: {
-    icon: '/icon_b.png',
-
-  },  
+    icon: "/icon_b.png",
+  },
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="zh" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {children}
-        </main>
-        <Toaster />
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <main className="flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8">
+            {children}
+          </main>
+          <Toaster />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
