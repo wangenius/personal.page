@@ -23,8 +23,6 @@ export interface DocSection {
   slug: string
 }
 
-const DOCS_DIR = path.join(process.cwd(), 'src/app/docs')
-const BLOGS_DIR = path.join(process.cwd(), 'src/app/blogs')
 
 // 缓存文件 metadata
 const metadataCache = new Map<string, any>();
@@ -81,12 +79,9 @@ function getDirectoryMeta(dirPath: string) {
 }
 
 // 递归扫描目录
-function scanDirectory(dir: string, isRoot = true): DocItem[] {
+function scanDirectory(dir: string, basePath = '', rootDir = ''): DocItem[] {
   const items: DocItem[] = []
   const entries = fs.readdirSync(dir, { withFileTypes: true })
-
-  // 获取当前目录的 meta.json
-  const dirMeta = getDirectoryMeta(dir)
 
   const directories = entries.filter(entry => 
     entry.isDirectory() && 
@@ -96,33 +91,33 @@ function scanDirectory(dir: string, isRoot = true): DocItem[] {
 
   for (const directory of directories) {
     const fullPath = path.join(dir, directory.name)
-    const relativePath = path.relative(DOCS_DIR, fullPath)
-    const dirItems = scanDirectory(fullPath, false)
+    const relativePath = basePath ? path.join(basePath, directory.name) : directory.name
+    const dirItems = scanDirectory(fullPath, relativePath, rootDir)
     
-    if (dirItems.length > 0) {
-      const indexFile = path.join(fullPath, 'index.mdx')
-      const pageFile = path.join(fullPath, 'page.mdx')
-      const dirMeta = getDirectoryMeta(fullPath)
-      const metadata = {
-        ...(fs.existsSync(indexFile) ? extractMetadata(indexFile) : {}),
-        ...(fs.existsSync(pageFile) ? extractMetadata(pageFile) : {}),
-        ...dirMeta
-      }
-
-      items.push({
-        title: generateTitle(directory.name),
-        href: '', 
-        metadata: {
-          title: metadata.title || generateTitle(directory.name),
-          order: metadata.order,
-          description: metadata.description
-        },
-        items: dirItems
-      })
+    const indexFile = path.join(fullPath, 'index.mdx')
+    const pageFile = path.join(fullPath, 'page.mdx')
+    const dirMeta = getDirectoryMeta(fullPath)
+    const metadata = {
+      ...(fs.existsSync(indexFile) ? extractMetadata(indexFile) : {}),
+      ...(fs.existsSync(pageFile) ? extractMetadata(pageFile) : {}),
+      ...dirMeta
     }
+
+    const href = `/${path.join(rootDir, relativePath).replace(/\\/g, '/')}`
+
+    items.push({
+      title: generateTitle(directory.name),
+      href, 
+      metadata: {
+        title: metadata.title || generateTitle(directory.name),
+        order: metadata.order,
+        description: metadata.description,
+        parentDir: basePath
+      },
+      items: dirItems
+    })
   }
 
-  // 然后处理文件
   const files = entries.filter(entry => 
     entry.isFile() && 
     entry.name.endsWith('.mdx') && 
@@ -133,17 +128,23 @@ function scanDirectory(dir: string, isRoot = true): DocItem[] {
 
   for (const file of files) {
     const fullPath = path.join(dir, file.name)
-    const relativePath = path.relative(DOCS_DIR, fullPath)
     const metadata = extractMetadata(fullPath)
+    const href = `/${path.join(
+      rootDir,
+      basePath,
+      file.name.replace(/\.mdx$/, '')
+    ).replace(/\\/g, '/')}`
 
     items.push({
       title: metadata.title || generateTitle(file.name),
-      href: '/docs/' + relativePath.replace(/\.mdx$/, '').replace(/\\/g, '/'),
-      metadata
+      href,
+      metadata: {
+        ...metadata,
+        parentDir: basePath
+      }
     })
   }
 
-  // 修改排序逻辑，考虑 meta.json 中的 order
   return items.sort((a, b) => {
     const orderA = a.metadata?.order ?? Infinity
     const orderB = b.metadata?.order ?? Infinity
@@ -155,44 +156,36 @@ function scanDirectory(dir: string, isRoot = true): DocItem[] {
 }
 
 // 修改 groupDocItems 函数
-function groupDocItems(items: DocItem[]): DocSection[] {
+function groupDocItems(items: DocItem[], dir: string): DocSection[] {
   const sections = new Map<string, {
     items: DocItem[];
     meta: any;
     slug: string;
   }>()
 
-  // 处理顶层项目
+  // 处理所有项目
   items.forEach(item => {
-    if (!item.href) {  // 如果是目录
-      const dirName = item.title.toLowerCase()
-      if (dirName === 'person') {
-        // 对 person 目录特殊处理
-        sections.set('person', {
-          items: item.items || [], // 直接使用子项而不是整个目录项
-          meta: getDirectoryMeta(path.join(DOCS_DIR, 'person')) || {},
-          slug: 'person'
-        })
-      } else {
-        // 其他目录也直接使用子项
+    if (!item.metadata?.parentDir || item.metadata.parentDir === '') {
+      // 顶层项目处理
+      if (item.items) {  // 如果是目录（有子项）
+        const dirName = item.title.toLowerCase()
         sections.set(dirName, {
-          items: item.items || [],
-          meta: getDirectoryMeta(path.join(DOCS_DIR, dirName)) || {},
+          items: item.items || [], // 直接使用子项
+          meta: getDirectoryMeta(path.join(dir, dirName)) || {},
           slug: dirName
         })
+      } else {
+        // 处理不在任何目录下的文件
+        const section = 'other'
+        if (!sections.has(section)) {
+          sections.set(section, {
+            items: [],
+            meta: { title: '其他', order: Infinity },
+            slug: section
+          })
+        }
+        sections.get(section)!.items.push(item)
       }
-    } else {
-      // 处理不在任何目录下的文件
-      const section = 'other'
-      if (!sections.has(section)) {
-        sections.set(section, {
-          items: [],
-          meta: { title: '其他', order: Infinity
-          },
-          slug: section
-        })
-      }
-      sections.get(section)!.items.push(item)
     }
   })
 
@@ -219,7 +212,7 @@ function groupDocItems(items: DocItem[]): DocSection[] {
 }
 
 // 修改为一个统一的函数,接收类型参数，使用 React cache
-export const getNavigation = cache((type: string): DocSection[] => {
-  const items = scanDirectory(`src/app/${type}`)
-  return groupDocItems(items)
+export const getNavigation = cache((dir: string): DocSection[] => {
+  const items = scanDirectory(`src/app/${dir}`, '', dir)
+  return groupDocItems(items, dir)
 })

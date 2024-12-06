@@ -1,20 +1,31 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Menu, ChevronDown, Globe, Smartphone, Library, Brain, Wallet, ArrowRight, ExternalLink, Component, Terminal, Box, Cpu, Layers, Workflow, Bot, Sparkles, Fingerprint, Network, CreditCard, Settings, Database } from "lucide-react";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import { DesktopIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import React from "react";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { DesktopIcon, GitHubLogoIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Brain,
+  Globe,
+  Library,
+  Menu,
+  Smartphone,
+  Wallet,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 type NavItem = {
   title: string;
@@ -24,7 +35,16 @@ type NavItem = {
     title: string;
     url: string;
   }[];
-}
+};
+
+const baseNav: NavItem[] = [
+  {
+    title: "基础",
+    url: "/base",
+    icon: Brain,
+    items: [{ title: "基础知识", url: "/base/knowledge" }],
+  },
+];
 
 const docsNav: NavItem[] = [
   {
@@ -50,9 +70,7 @@ const docsNav: NavItem[] = [
     title: "小程序",
     url: "/docs/weapp",
     icon: Smartphone,
-    items: [
-      { title: "开发指南", url: "/docs/weapp/guide" },
-    ],
+    items: [{ title: "开发指南", url: "/docs/weapp/guide" }],
   },
   {
     title: "Libraries",
@@ -89,7 +107,8 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const [activeSection, setActiveSection] = useState(0);
+  const { theme, setTheme } = useTheme();
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -98,146 +117,283 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const menuVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 }
+  };
+
   return (
     <motion.header
-      className={cn(
-        "sticky top-0 z-50 w-full",
-        scrolled 
-          ? "bg-background/50 backdrop-blur-sm" 
-          : "bg-background"
-      )}
+      initial={false}
+      animate={scrolled ? "scrolled" : "top"}
+      variants={{
+        scrolled: {
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          backdropFilter: "blur(12px)",
+        },
+        top: {
+          backgroundColor: "transparent",
+          backdropFilter: "none",
+          boxShadow: "none"
+        }
+      }}
+      className="sticky top-0 z-50 w-full transition-all duration-300"
     >
-      <div className="container h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <Image
-            src="/icon_b.png"
-            alt="WANGENIUS Logo"
-            width={24}
-            height={24}
-            className="w-6 h-6"
-          />
-          <span className="font-bold">WANGENIUS</span>
+      <div className="container h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center space-x-3 group">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image
+              src="/icon_b.png"
+              alt="WANGENIUS Logo"
+              width={28}
+              height={28}
+              className="w-7 h-7"
+            />
+          </motion.div>
+          <span className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">
+            WANGENIUS
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                variant="ghost" 
-                className={cn(
-                  "text-sm transition-colors relative py-1 flex items-center gap-1 font-normal",
-                  pathname.startsWith("/docs")
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                文档
-                <ChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[480px] p-4" align="start">
-              <div className="grid grid-cols-2 gap-4">
-                {docsNav.map((section) => (
-                  <div key={section.title} className="group">
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="bg-transparent">文档</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="w-[650px] p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h4 className="text-sm font-medium text-muted-foreground/80">开发文档</h4>
                     <Link 
-                      href={section.url}
-                      className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50"
+                      href="/docs" 
+                      className="text-xs text-muted-foreground hover:text-primary transition-colors"
                     >
-                      <section.icon className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">{section.title}</span>
+                      浏览全部 →
                     </Link>
-                    <div className="mt-1 ml-6 space-y-1">
-                      {section.items.map((item) => (
-                        <Link
-                          key={item.title}
-                          href={item.url}
-                          className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
                   </div>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
 
-          {[
-            ["博客", "/blogs"],
-            ["作品", "/portfolios"],
-            ["联系", "/contact"],
-          ].map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "text-sm transition-colors relative py-1",
-                pathname === href
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-                "after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:scale-x-0 after:bg-foreground after:transition-transform after:duration-300",
-                pathname === href && "after:scale-x-100",
-                "hover:after:scale-x-100"
-              )}
-            >
-              {label}
-            </Link>
-          ))}
-          
+                  <div className="grid grid-cols-3 gap-3">
+                    {docsNav.map((section) => (
+                      <div 
+                        key={section.title} 
+                        className="group aspect-square p-4 bg-muted/30 hover:bg-muted/50
+                          border border-border/40 hover:border-border
+                          transition-colors duration-200"
+                      >
+                        <div className="h-full flex flex-col">
+                          <Link
+                            href={section.url}
+                            className="flex items-center gap-2.5 group-hover:text-primary transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center">
+                              <section.icon className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="text-sm font-medium">{section.title}</span>
+                          </Link>
+                          
+                          <div className="h-px bg-border/40 my-3" />
+                          
+                          <div className="flex-1 space-y-2 overflow-hidden">
+                            {section.items.map((item) => (
+                              <Link
+                                key={item.title}
+                                href={item.url}
+                                className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                {item.title}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="bg-transparent">知识库</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="w-[650px] p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h4 className="text-sm font-medium text-muted-foreground/80">知识库</h4>
+                    <Link 
+                      href="/base" 
+                      className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      浏览全部 →
+                    </Link>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    {baseNav.map((section) => (
+                      <div 
+                        key={section.title} 
+                        className="group aspect-square p-4 bg-muted/30 hover:bg-muted/50
+                          border border-border/40 hover:border-border
+                          transition-colors duration-200"
+                      >
+                        <div className="h-full flex flex-col">
+                          <Link
+                            href={section.url}
+                            className="flex items-center gap-2.5 group-hover:text-primary transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center">
+                              <section.icon className="w-4 h-4 text-primary" />
+                            </div>
+                            <span className="text-sm font-medium">{section.title}</span>
+                          </Link>
+                          
+                          <div className="h-px bg-border/40 my-3" />
+                          
+                          <div className="flex-1 space-y-2 overflow-hidden">
+                            {section.items.map((item) => (
+                              <Link
+                                key={item.title}
+                                href={item.url}
+                                className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                {item.title}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem className="bg-transparent">
+              <Link href="/blogs" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+                    pathname === "/blogs" ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  博客
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem className="bg-transparent">
+              <Link href="/portfolios" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+                    pathname === "/portfolios" ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  作品
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem className="bg-transparent">
+              <Link href="/contact" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+                    pathname === "/contact" ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  联系
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
-            onClick={()=>{
-              window.open("https://github.com/wangenius/main","_blank")
-            }}
-            className="space-x-2 gap-2"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="rounded-full"
           >
-            <GitHubLogoIcon/>
-            github
+            <motion.div
+              initial={false}
+              animate={{ rotate: theme === "dark" ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+            </motion.div>
           </Button>
-        </nav>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => window.open("https://github.com/wangenius/main", "_blank")}
+            className="hidden md:flex items-center gap-2 rounded-full"
+          >
+            <GitHubLogoIcon className="w-5 h-5" />
+            <span>GitHub</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden rounded-full"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isMenuOpen ? "close" : "menu"}
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </motion.div>
+            </AnimatePresence>
+          </Button>
+        </div>
       </div>
 
-      {/* 移动端菜单 */}
-      {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden border-t bg-background"
-        >
-          <nav className="container py-4">
-            {[
-              ["文档", "/docs"],
-              ["博客", "/blogs"],
-              ["作品", "/portfolios"],
-              ["联系", "/contact"],
-            ].map(([label, href]) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "block py-2 text-sm transition-colors",
-                  pathname === href
-                    ? "text-foreground font-medium"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="md:hidden border-t bg-background/80 backdrop-blur-lg"
+          >
+            <nav className="container py-4 space-y-1">
+              {[
+                ["文档", "/docs"],
+                ["博客", "/blogs"],
+                ["作品", "/portfolios"],
+                ["联系", "/contact"],
+              ].map(([label, href]) => (
+                <motion.div
+                  key={href}
+                  whileHover={{ x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Link
+                    href={href}
+                    className={cn(
+                      "block py-2 px-4 text-sm rounded-lg transition-colors",
+                      pathname === href
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    {label}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };

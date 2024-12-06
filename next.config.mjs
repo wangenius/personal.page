@@ -51,6 +51,7 @@ const nextConfig = {
     deviceSizes: [640, 768, 1024, 1280, 1536],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
   },
   // 优化构建输出
   output: 'standalone',
@@ -64,6 +65,8 @@ const nextConfig = {
     }
     return config
   },
+  // 开启页面优化
+  optimizeFonts: true,
 }
 
 export default withMDX(nextConfig)

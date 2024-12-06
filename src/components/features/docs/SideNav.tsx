@@ -37,42 +37,53 @@ function NavItem({ item, level = 0 }: { item: DocItem; level?: number }) {
   };
 
   return (
-    <li
-      className={cn(
-        "relative select-none",
-        isActive &&
-          "before:absolute before:-left-4 before:top-1/2 before:-translate-y-1/2 before:h-[calc(100%-0.5rem)] before:w-[2px] before:bg-primary before:rounded-full"
-      )}
-    >
+    <li className="relative select-none">
       <div
         className={cn(
-          "group flex items-center py-1.5 text-sm rounded-md transition-colors duration-200",
-          isDirectory
-            ? "text-foreground/70 hover:text-foreground hover:bg-foreground/[0.03]"
-            : "text-foreground/60",
-          !isDirectory && "hover:text-foreground hover:bg-foreground/[0.03]",
-          isActive && "text-foreground font-medium bg-foreground/[0.05]"
+          "group flex items-center h-8 text-[13px] rounded-md transition-all duration-200",
+          isDirectory 
+            ? "hover:bg-gray-100/80 dark:hover:bg-gray-800/50" 
+            : "hover:bg-gray-100/80 dark:hover:bg-gray-800/50",
+          isActive && [
+            "bg-primary/[0.08] dark:bg-primary/10",
+            "text-primary dark:text-primary",
+            "font-medium"
+          ],
+          !isActive && [
+            "text-gray-600 dark:text-gray-300",
+            "hover:text-gray-900 dark:hover:text-gray-100"
+          ],
+          level === 0 && "font-medium"
         )}
         onClick={hasItems ? handleClick : undefined}
-        style={{ paddingLeft: `${level * 1}rem` }}
+        style={{ 
+          paddingLeft: level === 0 ? '0.75rem' : `${level * 1}rem`,
+          marginLeft: level === 0 ? '0' : '0.25rem'
+        }}
       >
         {hasItems && (
           <button
             onClick={handleClick}
             className="flex items-center focus:outline-none"
-            aria-label={isOpen ? "收起" : "展开"}
           >
             <ChevronRight
               className={cn(
-                "h-3 w-3 shrink-0 transition-transform duration-200 text-foreground/30 group-hover:text-foreground/60",
-                isOpen && "rotate-90"
+                "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
+                isOpen && "rotate-90",
+                isActive 
+                  ? "text-primary/70" 
+                  : "text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400"
               )}
             />
           </button>
         )}
         {isDirectory ? (
           <span
-            className="ml-2 font-medium transition-colors duration-200 flex-1 cursor-pointer"
+            className={cn(
+              "ml-2 transition-colors duration-200 flex-1 cursor-pointer",
+              level === 0 && "uppercase tracking-wide text-[12px] font-semibold",
+              !isActive && level === 0 && "text-gray-400 dark:text-gray-500"
+            )}
             onClick={hasItems ? handleClick : undefined}
           >
             {item.metadata?.title || item.title}
@@ -81,8 +92,7 @@ function NavItem({ item, level = 0 }: { item: DocItem; level?: number }) {
           <Link
             href={item.href}
             className={cn(
-              "ml-5 block w-full flex-1 transition-colors duration-200",
-              "hover:text-foreground"
+              "ml-5 block w-full flex-1 transition-colors duration-200"
             )}
           >
             {item.metadata?.title || item.title}
@@ -90,7 +100,11 @@ function NavItem({ item, level = 0 }: { item: DocItem; level?: number }) {
         )}
       </div>
       {hasItems && isOpen && item.items && (
-        <ul>
+        <ul className={cn(
+          "relative pl-3",
+          level === 0 && "mt-1 mb-4",
+          level !== 0 && "mt-0.5 mb-1"
+        )}>
           {item.items.map((subItem) => (
             <NavItem
               key={subItem.href || subItem.title}
@@ -126,7 +140,7 @@ export default function DocsNav({ sections }: DocsNavProps) {
 
   return (
     <aside className="w-72 shrink-0">
-      <div className="fixed top-0 pt-8 w-72 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+      <div className="fixed top-10 pt-8 w-72 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
         <div className="pr-4">
           <ScrollArea className="w-60 select-none flex-shrink-0 border-r border-border/10">
             <nav className="px-4 py-8">

@@ -3,19 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, BookOpen, Code, Compass, FileText, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code, Compass, Sparkles } from "lucide-react";
 import { getNavigation } from "@/lib/navigations";
 import Link from "next/link";
-import { LightningBoltIcon } from "@radix-ui/react-icons";
-import { getFirstDocumentLink } from "@/lib/get";
+import { LightningBoltIcon, HeartIcon } from "@radix-ui/react-icons";
 import DocNav from "@/components/docNav";
-
-
 
 export default function DocsPage() {
 
-  const sections = getNavigation("docs");
+  const sections = getNavigation("base");
+  console.log(sections[0].items[0]);
   
+
   return (
     <div className="relative min-h-screen">
       {/* 背景装饰 */}
@@ -27,24 +26,24 @@ export default function DocsPage() {
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
           <Badge variant="outline" className="mb-4">
             <Sparkles className="mr-2 h-3 w-3" />
-            AI+ 应用开发文档 v2.0
+            知识库 v2.0
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-            快速构建 AI+ 时代的应用产品
+            我的知识库
           </h1>
           <p className="text-lg text-muted-foreground max-w-[600px] mx-auto">
-            探索全面的开发指南，快速构建出色的 AI+ 应用产品
+            从这里开始，继续探索，永不停止
           </p>
           <div className="flex gap-4 mt-8">
-            <Link href="/docs/webapp">
+            <Link href="/base/cs">
               <Button size="lg">
                 <BookOpen className="mr-2 h-4 w-4" />
                 开始学习
               </Button>
             </Link>
             <Button variant="outline" size="lg">
-              <Code className="mr-2 h-4 w-4" />
-              示例代码
+              <HeartIcon className="mr-2 h-4 w-4" />
+              支持我
             </Button>
           </div>
         </div>
@@ -91,7 +90,9 @@ export default function DocsPage() {
         </div>
 
         {/* 文档导航区域 */}
-        <DocNav sections={sections} />
+        <div className="space-y-16">
+          <DocNav sections={sections} />
+        </div>
       </div>
     </div>
   );

@@ -19,9 +19,10 @@ interface Props {
 
 // 缓存 MDX 文件内容
 const getDocFromParams = cache(async (slug: string[]) => {
+  console.log(slug);
   const docPath = path.join(
     process.cwd(),
-    "src/app/docs",
+    "src/app/base",
     `${slug.join("/")}.mdx`
   );
 
@@ -52,7 +53,7 @@ export const revalidate = 3600; // 1小时更新一次
 
 // 缓存所有文档路径
 const getAllDocPaths = cache(async () => {
-  const docsDir = path.join(process.cwd(), "src/app/docs");
+  const docsDir = path.join(process.cwd(), "src/app/base");
   const paths: string[] = [];
 
   async function scanDir(dir: string) {
@@ -76,14 +77,14 @@ const getAllDocPaths = cache(async () => {
 
 export default async function DocPage({ params }: Props) {
   const doc = await getDocFromParams(params.slug);
-
+  console.log(params.slug[0]);
   if (!doc) {
     notFound();
   }
 
   return (
       <div className="flex gap-16 relative max-w-7xl mx-auto px-4">
-        <SideNav sections={getNavigation(`docs/${params.slug[0]}`)} />
+        <SideNav sections={getNavigation(`base/${params.slug[0]}`)} />
         <article className="w-full prose max-w-3xl flex-grow">
           <MDXRemote
             source={doc.content}
