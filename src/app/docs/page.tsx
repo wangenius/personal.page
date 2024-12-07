@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, BookOpen, Code, Compass, FileText, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code, Compass, FileText, Heart, Sparkles } from "lucide-react";
 import { getNavigation } from "@/lib/navigations";
 import Link from "next/link";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
@@ -36,15 +36,15 @@ export default function DocsPage() {
             探索全面的开发指南，快速构建出色的 AI+ 应用产品
           </p>
           <div className="flex gap-4 mt-8">
-            <Link href="/docs/webapp">
+            <Link href="/docs/start/begin">
               <Button size="lg">
                 <BookOpen className="mr-2 h-4 w-4" />
-                开始学习
+                开始构建
               </Button>
             </Link>
             <Button variant="outline" size="lg">
-              <Code className="mr-2 h-4 w-4" />
-              示例代码
+              <Heart className="mr-2 h-4 w-4" />
+              支持我
             </Button>
           </div>
         </div>
@@ -55,36 +55,33 @@ export default function DocsPage() {
             {
               icon: LightningBoltIcon,
               title: "快速上手",
-              desc: "简洁明了的文档结构",
+              desc: "从零开始，利用套路和模板，快速开始项目开发",
             },
             {
               icon: Compass,
-              title: "最佳实践",
-              desc: "行业推荐的开发模式",
+              title: "AI+",
+              desc: "深度探索结合AI的开发模式",
             },
             {
               icon: Code,
-              title: "代码示例",
-              desc: "详尽的示例代码",
+              title: "全栈开发",
+              desc: "提供全栈方案，包括支付体系",
             },
           ].map((item) => (
             <Card 
               key={item.title} 
-              className="group relative overflow-hidden border border-border/50 bg-background/50 backdrop-blur-sm"
+              className="group relative border border-border/50 bg-background/50 hover:border-border transition-colors duration-200"
             >
               <CardContent className="p-6">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10">
-                  <div className="mb-6 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <item.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold tracking-tight mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.desc}
-                  </p>
+                <div className="mb-6 w-12 h-12 rounded-lg bg-primary/5 flex items-center justify-center">
+                  <item.icon className="h-5 w-5 text-primary" />
                 </div>
+                <h3 className="text-base font-semibold tracking-tight mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {item.desc}
+                </p>
               </CardContent>
             </Card>
           ))}

@@ -19,7 +19,7 @@ export default function DocNav({ sections }: { sections: DocSection[] }) {
                 {section.title}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                探索{section.title}相关的开发文档和指南
+                {section.metadata?.description || `探索${section.title}相关的开发文档和指南`}
               </p>
             </div>
             <Link 

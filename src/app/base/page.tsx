@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, BookOpen, Code, Compass, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code, Compass, Heart, Sparkles } from "lucide-react";
 import { getNavigation } from "@/lib/navigations";
 import Link from "next/link";
 import { LightningBoltIcon, HeartIcon } from "@radix-ui/react-icons";
@@ -35,14 +35,14 @@ export default function DocsPage() {
             从这里开始，继续探索，永不停止
           </p>
           <div className="flex gap-4 mt-8">
-            <Link href="/base/cs">
+            <Link href="/base/cs/begin">
               <Button size="lg">
                 <BookOpen className="mr-2 h-4 w-4" />
                 开始学习
               </Button>
             </Link>
             <Button variant="outline" size="lg">
-              <HeartIcon className="mr-2 h-4 w-4" />
+              <Heart className="mr-2 h-4 w-4" />
               支持我
             </Button>
           </div>

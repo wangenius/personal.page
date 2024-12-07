@@ -1,3 +1,5 @@
+import DocNav from "@/components/docNav";
+import { getNavigation } from "@/lib/navigations";
 import { cn } from "@/lib/utils";
 
 interface BlogPost {
@@ -24,32 +26,12 @@ const MOCK_POSTS: BlogPost[] = [
 ];
 
 export default function Blogs() {
+  const sections = getNavigation('blogs')
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8">博客文章</h1>
-      
       <div className="grid gap-6">
-        {MOCK_POSTS.map((post) => (
-          <article 
-            key={post.slug}
-            className={cn(
-              "p-6 rounded-lg",
-              "border border-gray-200",
-              "hover:border-gray-300 transition-colors",
-              "cursor-pointer"
-            )}
-          >
-            <h2 className="text-2xl font-semibold mb-2">
-              {post.title}
-            </h2>
-            <p className="text-gray-600 mb-4">
-              {post.description}
-            </p>
-            <time className="text-sm text-gray-500">
-              {new Date(post.date).toLocaleDateString('zh-CN')}
-            </time>
-          </article>
-        ))}
+       <DocNav sections={sections} />
       </div>
     </div>
   );

@@ -21,8 +21,27 @@ export interface DocSection {
   items: DocItem[]
   order?: number
   slug: string
+  metadata: {
+    description?: string
+  }
 }
 
+// 建议添加更严格的类型定义
+interface DirectoryMeta {
+  title?: string;
+  order?: number;
+  description?: string;
+  [key: string]: any;
+}
+
+interface FileMetadata {
+  title?: string;
+  description?: string;
+  date?: string;
+  order?: number;
+  parentDir?: string;
+  [key: string]: any;
+}
 
 // 缓存文件 metadata
 const metadataCache = new Map<string, any>();
@@ -36,14 +55,19 @@ function extractMetadata(filePath: string) {
     return {};
   }
 
-  if (metadataCache.has(filePath)) {
-    return metadataCache.get(filePath);
-  }
+  try {
+    if (metadataCache.has(filePath)) {
+      return metadataCache.get(filePath);
+    }
 
-  const fileContent = fs.readFileSync(filePath, 'utf8')
-  const { data } = matter(fileContent)
-  metadataCache.set(filePath, data);
-  return data;
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+    const { data } = matter(fileContent)
+    metadataCache.set(filePath, data);
+    return data;
+  } catch (error) {
+    console.error(`Error extracting metadata from ${filePath}:`, error)
+    return {};
+  }
 }
 
 // 从文件名生成标题
@@ -83,6 +107,9 @@ function scanDirectory(dir: string, basePath = '', rootDir = ''): DocItem[] {
   const items: DocItem[] = []
   const entries = fs.readdirSync(dir, { withFileTypes: true })
 
+  // 先获取当前目录的 meta.json
+  const currentDirMeta = getDirectoryMeta(dir)
+
   const directories = entries.filter(entry => 
     entry.isDirectory() && 
     !entry.name.startsWith('.') && 
@@ -92,32 +119,36 @@ function scanDirectory(dir: string, basePath = '', rootDir = ''): DocItem[] {
   for (const directory of directories) {
     const fullPath = path.join(dir, directory.name)
     const relativePath = basePath ? path.join(basePath, directory.name) : directory.name
+    
+    // 获取子目录的 meta.json
+    const dirMeta = getDirectoryMeta(fullPath)
     const dirItems = scanDirectory(fullPath, relativePath, rootDir)
     
     const indexFile = path.join(fullPath, 'index.mdx')
     const pageFile = path.join(fullPath, 'page.mdx')
-    const dirMeta = getDirectoryMeta(fullPath)
+    
+    // 合并元数据，优先使用 meta.json 中的配置
     const metadata = {
+      ...dirMeta,
       ...(fs.existsSync(indexFile) ? extractMetadata(indexFile) : {}),
-      ...(fs.existsSync(pageFile) ? extractMetadata(pageFile) : {}),
-      ...dirMeta
+      ...(fs.existsSync(pageFile) ? extractMetadata(pageFile) : {})
     }
 
     const href = `/${path.join(rootDir, relativePath).replace(/\\/g, '/')}`
 
     items.push({
-      title: generateTitle(directory.name),
+      title: metadata.title || generateTitle(directory.name),
       href, 
       metadata: {
-        title: metadata.title || generateTitle(directory.name),
-        order: metadata.order,
-        description: metadata.description,
+        ...metadata,
+        order: dirMeta?.order ?? metadata.order,
         parentDir: basePath
       },
       items: dirItems
     })
   }
 
+  // 处理文件
   const files = entries.filter(entry => 
     entry.isFile() && 
     entry.name.endsWith('.mdx') && 
@@ -140,14 +171,16 @@ function scanDirectory(dir: string, basePath = '', rootDir = ''): DocItem[] {
       href,
       metadata: {
         ...metadata,
+        order: metadata.order ?? Number.MAX_SAFE_INTEGER,
         parentDir: basePath
       }
     })
   }
 
+  // 确保排序考虑 undefined 的情况
   return items.sort((a, b) => {
-    const orderA = a.metadata?.order ?? Infinity
-    const orderB = b.metadata?.order ?? Infinity
+    const orderA = a.metadata?.order ?? Number.MAX_SAFE_INTEGER
+    const orderB = b.metadata?.order ?? Number.MAX_SAFE_INTEGER
     if (orderA === orderB) {
       return a.title.localeCompare(b.title)
     }
@@ -155,32 +188,42 @@ function scanDirectory(dir: string, basePath = '', rootDir = ''): DocItem[] {
   })
 }
 
-// 修改 groupDocItems 函数
+// 修改 groupDocItems 函数，确保正确处理顶层目录的排序
 function groupDocItems(items: DocItem[], dir: string): DocSection[] {
   const sections = new Map<string, {
     items: DocItem[];
-    meta: any;
+    meta: DirectoryMeta;
     slug: string;
   }>()
 
   // 处理所有项目
   items.forEach(item => {
     if (!item.metadata?.parentDir || item.metadata.parentDir === '') {
-      // 顶层项目处理
-      if (item.items) {  // 如果是目录（有子项）
-        const dirName = item.title.toLowerCase()
+      if (item.items) {
+        const dirName = item.href.split('/').pop() || ''
+        const dirMeta = getDirectoryMeta(path.join('src/app', dir, dirName)) || {}
         sections.set(dirName, {
-          items: item.items || [], // 直接使用子项
-          meta: getDirectoryMeta(path.join(dir, dirName)) || {},
+          items: item.items.sort((a, b) => {
+            // 在这里就对子项进行排序
+            const orderA = a.metadata?.order ?? Number.MAX_SAFE_INTEGER
+            const orderB = b.metadata?.order ?? Number.MAX_SAFE_INTEGER
+            return orderA === orderB ? 
+              a.title.localeCompare(b.title) : 
+              orderA - orderB
+          }),
+          meta: {
+            ...dirMeta,
+            title: dirMeta.title || item.title,
+            order: item.metadata?.order ?? dirMeta.order
+          },
           slug: dirName
         })
       } else {
-        // 处理不在任何目录下的文件
         const section = 'other'
         if (!sections.has(section)) {
           sections.set(section, {
             items: [],
-            meta: { title: '其他', order: Infinity },
+            meta: { title: '其他', order: Number.MAX_SAFE_INTEGER },
             slug: section
           })
         }
@@ -189,25 +232,33 @@ function groupDocItems(items: DocItem[], dir: string): DocSection[] {
     }
   })
 
+  // 对 other section 的 items 进行排序
+  sections.forEach(section => {
+    if (section.slug === 'other') {
+      section.items.sort((a, b) => {
+        const orderA = a.metadata?.order ?? Number.MAX_SAFE_INTEGER
+        const orderB = b.metadata?.order ?? Number.MAX_SAFE_INTEGER
+        return orderA === orderB ? 
+          a.title.localeCompare(b.title) : 
+          orderA - orderB
+      })
+    }
+  })
+
   return Array.from(sections.entries())
-    .map(([title, { items, meta }]) => ({
-      title: meta.title || generateTitle(title),
-      items: items.sort((a, b) => {
-        const orderA = a.metadata?.order ?? Infinity
-        const orderB = b.metadata?.order ?? Infinity
-        if (orderA === orderB) {
-          return a.title.localeCompare(b.title)
-        }
-        return orderA - orderB
-      }),
-      order: meta.order ?? Infinity,
-      slug: title
+    .map(([slug, { items, meta }]) => ({
+      title: meta.title || generateTitle(slug),
+      items, // items 已经在上面排序好了
+      order: meta.order ?? Number.MAX_SAFE_INTEGER,
+      slug,
+      metadata: {
+        description: meta.description
+      }
     }))
     .sort((a, b) => {
-      if (a.order === b.order) {
-        return a.title.localeCompare(b.title)
-      }
-      return a.order - b.order
+      return a.order === b.order ? 
+        a.title.localeCompare(b.title) : 
+        a.order - b.order
     })
 }
 
@@ -216,3 +267,9 @@ export const getNavigation = cache((dir: string): DocSection[] => {
   const items = scanDirectory(`src/app/${dir}`, '', dir)
   return groupDocItems(items, dir)
 })
+
+// 建议添加缓存清理机制，避免内存泄漏
+function clearCache() {
+  metadataCache.clear();
+  directoryMetaCache.clear();
+}

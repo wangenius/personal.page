@@ -3,14 +3,17 @@
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
+  NavigationMenuList
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { DesktopIcon, GitHubLogoIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import {
+  DesktopIcon,
+  GitHubLogoIcon,
+  MoonIcon,
+  SunIcon,
+} from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Brain,
@@ -21,11 +24,11 @@ import {
   Wallet,
   X,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 
 type NavItem = {
   title: string;
@@ -106,8 +109,13 @@ const docsNav: NavItem[] = [
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,8 +128,40 @@ const Header = () => {
   const menuVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
+    exit: { opacity: 0, y: -10 },
   };
+
+  const renderThemeChanger = () => {
+    if (!mounted) {
+      return (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+        >
+          <div className="w-4 h-4" />
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="rounded-full"
+      >
+        <motion.div
+          initial={false}
+          animate={{ rotate: theme === "dark" ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+        </motion.div>
+      </Button>
+    );
+  };
+
 
   return (
     <motion.header
@@ -129,14 +169,14 @@ const Header = () => {
       animate={scrolled ? "scrolled" : "top"}
       variants={{
         scrolled: {
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          backgroundColor: theme === "dark" ? "rgba(0, 0, 0, 0.7)" :  "rgba(255, 255, 255, 0.7)",
           backdropFilter: "blur(12px)",
         },
         top: {
           backgroundColor: "transparent",
           backdropFilter: "none",
-          boxShadow: "none"
-        }
+          boxShadow: "none",
+        },
       }}
       className="sticky top-0 z-50 w-full transition-all duration-300"
     >
@@ -161,120 +201,44 @@ const Header = () => {
 
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="bg-transparent">文档</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="w-[650px] p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h4 className="text-sm font-medium text-muted-foreground/80">开发文档</h4>
-                    <Link 
-                      href="/docs" 
-                      className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      浏览全部 →
-                    </Link>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    {docsNav.map((section) => (
-                      <div 
-                        key={section.title} 
-                        className="group aspect-square p-4 bg-muted/30 hover:bg-muted/50
-                          border border-border/40 hover:border-border
-                          transition-colors duration-200"
-                      >
-                        <div className="h-full flex flex-col">
-                          <Link
-                            href={section.url}
-                            className="flex items-center gap-2.5 group-hover:text-primary transition-colors"
-                          >
-                            <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center">
-                              <section.icon className="w-4 h-4 text-primary" />
-                            </div>
-                            <span className="text-sm font-medium">{section.title}</span>
-                          </Link>
-                          
-                          <div className="h-px bg-border/40 my-3" />
-                          
-                          <div className="flex-1 space-y-2 overflow-hidden">
-                            {section.items.map((item) => (
-                              <Link
-                                key={item.title}
-                                href={item.url}
-                                className="block text-sm text-muted-foreground hover:text-primary transition-colors"
-                              >
-                                {item.title}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </NavigationMenuContent>
+            <NavigationMenuItem className="bg-transparent hover:border-muted hover:bg-transparent">
+              <Link href="/docs" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50  hover:border-muted hover:bg-transparent",
+                    pathname === "/blogs"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  文档
+                </NavigationMenuLink>
+              </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="bg-transparent">知识库</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="w-[650px] p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h4 className="text-sm font-medium text-muted-foreground/80">知识库</h4>
-                    <Link 
-                      href="/base" 
-                      className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      浏览全部 →
-                    </Link>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    {baseNav.map((section) => (
-                      <div 
-                        key={section.title} 
-                        className="group aspect-square p-4 bg-muted/30 hover:bg-muted/50
-                          border border-border/40 hover:border-border
-                          transition-colors duration-200"
-                      >
-                        <div className="h-full flex flex-col">
-                          <Link
-                            href={section.url}
-                            className="flex items-center gap-2.5 group-hover:text-primary transition-colors"
-                          >
-                            <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center">
-                              <section.icon className="w-4 h-4 text-primary" />
-                            </div>
-                            <span className="text-sm font-medium">{section.title}</span>
-                          </Link>
-                          
-                          <div className="h-px bg-border/40 my-3" />
-                          
-                          <div className="flex-1 space-y-2 overflow-hidden">
-                            {section.items.map((item) => (
-                              <Link
-                                key={item.title}
-                                href={item.url}
-                                className="block text-sm text-muted-foreground hover:text-primary transition-colors"
-                              >
-                                {item.title}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </NavigationMenuContent>
+            <NavigationMenuItem className="bg-transparent hover:border-muted hover:bg-transparent">
+              <Link href="/base" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50  hover:border-muted hover:bg-transparent",
+                    pathname === "/blogs"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  知识库
+                </NavigationMenuLink>
+              </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem className="bg-transparent">
+            <NavigationMenuItem className="bg-transparent hover:border-muted hover:bg-transparent">
               <Link href="/blogs" legacyBehavior passHref>
                 <NavigationMenuLink
                   className={cn(
-                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                    pathname === "/blogs" ? "text-foreground" : "text-muted-foreground"
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50  hover:border-muted hover:bg-transparent",
+                    pathname === "/blogs"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
                   博客
@@ -282,28 +246,17 @@ const Header = () => {
               </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem className="bg-transparent">
+            <NavigationMenuItem className="bg-transparent hover:border-muted hover:bg-transparent">
               <Link href="/portfolios" legacyBehavior passHref>
                 <NavigationMenuLink
                   className={cn(
-                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                    pathname === "/portfolios" ? "text-foreground" : "text-muted-foreground"
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50  hover:border-muted hover:bg-transparent",
+                    pathname === "/portfolios"
+                      ? "text-foreground"
+                      : "text-muted-foreground"
                   )}
                 >
                   作品
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem className="bg-transparent">
-              <Link href="/contact" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                    pathname === "/contact" ? "text-foreground" : "text-muted-foreground"
-                  )}
-                >
-                  联系
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -311,24 +264,13 @@ const Header = () => {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="rounded-full"
-          >
-            <motion.div
-              initial={false}
-              animate={{ rotate: theme === "dark" ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-            </motion.div>
-          </Button>
+          {renderThemeChanger()}
 
           <Button
             variant="ghost"
-            onClick={() => window.open("https://github.com/wangenius/main", "_blank")}
+            onClick={() =>
+              window.open("https://github.com/wangenius/main", "_blank")
+            }
             className="hidden md:flex items-center gap-2 rounded-full"
           >
             <GitHubLogoIcon className="w-5 h-5" />
@@ -349,7 +291,11 @@ const Header = () => {
                 exit={{ opacity: 0, rotate: 90 }}
                 transition={{ duration: 0.2 }}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </motion.div>
             </AnimatePresence>
           </Button>

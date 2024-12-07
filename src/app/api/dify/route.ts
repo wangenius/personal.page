@@ -4,11 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.text(); // 解析请求体
-        console.log(body)
-        console.log('Request Body:', body);
-        console.log('Dify API Key:', process.env.DIFY_API_KEY);
-
+        const body = await req.text();
+        
         const response = await fetch('https://api.dify.ai/v1/chat-messages', {
             method: 'POST',
             headers: {
@@ -18,57 +15,46 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify({
                 user: req.ip || 'unknown',
                 query: body,
-                response_mode: 'streaming', // 使用流模式
-                inputs:{}
+                response_mode: 'streaming',
+                inputs: {}
             }),
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Dify API Error:', errorData);
-            return NextResponse.json(errorData, { status: response.status });
+            throw new Error(`Dify API 错误: ${response.status}`);
         }
 
-        // 创建一个新的流，将 Dify API 的响应流式转发给客户端
-        const readableStream = new ReadableStream({
-            start(controller) {
-                const reader = response.body?.getReader();
-
-                if (!reader) {
-                    controller.close();
-                    return;
-                }
-
-                // 处理流数据
-                function push() {
-                    reader?.read().then(({ done, value }) => {
-                        if (done) {
-                            console.log('Stream completed');
-                            controller.close();
-                            return;
+        // 创建转换流来处理 SSE 数据
+        const transformStream = new TransformStream({
+            transform(chunk, controller) {
+                const text = new TextDecoder().decode(chunk);
+                try {
+                    // 解析返回的数据
+                    const lines = text.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('data:')) {
+                            const data = JSON.parse(line.slice(5));
+                            if (data.event === 'message') {
+                                controller.enqueue(data.answer);
+                            }
                         }
-
-                        // 将流中的数据块传递给客户端
-                        controller.enqueue(value);
-                        push(); // 继续读取
-                    }).catch((error) => {
-                        console.error('Stream error:', error);
-                        controller.error(error);
-                    });
+                    }
+                } catch (e) {
+                    console.error('解析响应数据时出错:', e);
                 }
+            }
+        });
 
-                push();
+        return new Response(response.body?.pipeThrough(transformStream), {
+            headers: {
+                'Content-Type': 'text/plain',
+                'Cache-Control': 'no-cache',
             },
         });
 
-        // 返回流给客户端
-        return new Response(readableStream, {
-            headers: { 'Content-Type': 'text/event-stream' },
-        });
-
     } catch (error: any) {
-        console.error('Error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error('错误:', error);
+        return NextResponse.json({ error: '服务器内部错误' }, { status: 500 });
     }
 }
 
