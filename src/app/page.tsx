@@ -167,52 +167,50 @@ export default function Home() {
         throw new Error(`API 请求失败: ${response.status} ${response.statusText}`);
       }
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error("无法获取响应流");
-      }
-
+      const reader = new ReadableStreamDefaultReader(response.body!);
+      const decoder = new TextDecoder();
       let accumulatedContent = "";
-      let lastUpdateTime = Date.now();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const text = new TextDecoder().decode(value);
-        accumulatedContent += text;
-
-        if (isComponentMounted) {
-          const now = Date.now();
-          if (now - lastUpdateTime > 50) {
-            updateLastBotMessage(accumulatedContent);
-            lastUpdateTime = now;
+        const text = decoder.decode(value);
+        const lines = text.split('\n');
+        
+        for (const line of lines) {
+          console.log(line);
+          if (line.startsWith('data:')) {
+            try {
+              const data = JSON.parse(line.slice(5));
+              if (data.event === 'message' && data.answer) {
+                accumulatedContent += data.answer;
+                if (isComponentMounted) {
+                  updateLastBotMessage(accumulatedContent);
+                }
+              }
+            } catch (e) {
+              // 忽略解析错误，继续处理下一行
+              continue;
+            }
           }
         }
       }
 
       if (isComponentMounted) {
-        updateLastBotMessage(accumulatedContent);
-        
-        setTimeout(() => {
-          if (isComponentMounted) {
-            updateLastBotMessage(accumulatedContent, false);
-          }
-        }, 200);
+        updateLastBotMessage(accumulatedContent, false);
       }
+
     } catch (error: any) {
       console.error("发送消息时出错:", error);
       if (error.name !== 'AbortError' && isComponentMounted) {
-        updateLastBotMessage(
-          `抱歉，发生了错误: ${error instanceof Error ? error.message : '未知错误'}`,
-          false
-        );
+        let errorMessage = '抱歉，发生了错误';
+        if (error instanceof Error) {
+          errorMessage += `: ${error.message}`;
+        }
+        updateLastBotMessage(errorMessage, false);
       }
     }
-
-    return () => {
-      isComponentMounted = false;
-    };
   };
 
   useEffect(() => {
@@ -349,7 +347,7 @@ export default function Home() {
                     {messages.length > 0 ? (
                       messages.map((message, index) => (
                         <div
-                          key={message.timestamp}
+                          key={index}
                           className={`flex ${
                             message.type === "bot"
                               ? "justify-start"
