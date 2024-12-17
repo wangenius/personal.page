@@ -101,6 +101,7 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -127,6 +128,13 @@ export default function Home() {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    let isComponentMounted = true;
+
     const userMessage = {
       content: inputValue,
       type: "user" as const,
@@ -152,6 +160,7 @@ export default function Home() {
           "Content-Type": "text/plain",
         },
         body: inputValue,
+        signal: abortControllerRef.current.signal,
       });
 
       if (!response.ok) {
@@ -173,27 +182,46 @@ export default function Home() {
         const text = new TextDecoder().decode(value);
         accumulatedContent += text;
 
-        // 控制更新频率，避免过于频繁的更新
-        const now = Date.now();
-        if (now - lastUpdateTime > 50) {
-          // 每50ms更新一次
-          updateLastBotMessage(accumulatedContent);
-          lastUpdateTime = now;
+        if (isComponentMounted) {
+          const now = Date.now();
+          if (now - lastUpdateTime > 50) {
+            updateLastBotMessage(accumulatedContent);
+            lastUpdateTime = now;
+          }
         }
       }
 
-      // 最后一次更新，确保显示完整内容
-      updateLastBotMessage(accumulatedContent);
-
-      // 延迟移除加载动画
-      setTimeout(() => {
-        updateLastBotMessage(accumulatedContent, false);
-      }, 200);
-    } catch (error) {
+      if (isComponentMounted) {
+        updateLastBotMessage(accumulatedContent);
+        
+        setTimeout(() => {
+          if (isComponentMounted) {
+            updateLastBotMessage(accumulatedContent, false);
+          }
+        }, 200);
+      }
+    } catch (error: any) {
       console.error("发送消息时出错:", error);
-      updateLastBotMessage(`抱歉，发生了错误: ${error instanceof Error ? error.message : '未知错误'}`, false);
+      if (error.name !== 'AbortError' && isComponentMounted) {
+        updateLastBotMessage(
+          `抱歉，发生了错误: ${error instanceof Error ? error.message : '未知错误'}`,
+          false
+        );
+      }
     }
+
+    return () => {
+      isComponentMounted = false;
+    };
   };
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   return (
     <div className="bg-background">

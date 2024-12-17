@@ -27,30 +27,18 @@ export const useChatStore = create<ChatState>()(
           messages: [...state.messages, message],
         })),
 
-      updateLastBotMessage: (content: string, isStreaming?: boolean) =>
+      updateLastBotMessage: (content: string, isStreaming: boolean = true) =>
         set((state) => {
-          const newMessages = [...state.messages];
-          const lastMessage = newMessages[newMessages.length - 1];
-          if (lastMessage?.type === "bot") {
-            lastMessage.content = content;
-            if (isStreaming !== undefined) {
-              if (!isStreaming) {
-                setTimeout(() => {
-                  set((state) => {
-                    const messages = [...state.messages];
-                    const lastMsg = messages[messages.length - 1];
-                    if (lastMsg?.type === "bot") {
-                      lastMsg.isStreaming = false;
-                    }
-                    return { messages };
-                  });
-                }, 100);
-                return { messages: newMessages };
-              }
-              lastMessage.isStreaming = isStreaming;
-            }
+          const messages = [...state.messages];
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage && lastMessage.type === 'bot') {
+            messages[messages.length - 1] = {
+              ...lastMessage,
+              content,
+              isStreaming,
+            };
           }
-          return { messages: newMessages };
+          return { messages };
         }),
 
       clearHistory: () =>
