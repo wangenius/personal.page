@@ -136,7 +136,6 @@ export default function Home() {
     setInputValue("");
     addMessage(userMessage);
 
-    // 创建一个带有加载动画的机器人消息
     const botMessage = {
       content: "",
       type: "bot" as const,
@@ -146,13 +145,17 @@ export default function Home() {
     addMessage(botMessage);
 
     try {
-      const response = await fetch("/api/dify", {
+      const apiUrl = `${window.location.origin}/api/dify`;
+      const response = await fetch(apiUrl, {
         method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
         body: inputValue,
       });
 
       if (!response.ok) {
-        throw new Error("API 请求失败");
+        throw new Error(`API 请求失败: ${response.status} ${response.statusText}`);
       }
 
       const reader = response.body?.getReader();
@@ -188,7 +191,7 @@ export default function Home() {
       }, 200);
     } catch (error) {
       console.error("发送消息时出错:", error);
-      updateLastBotMessage("抱歉，发生了一些错误。请稍后再试。", false);
+      updateLastBotMessage(`抱歉，发生了错误: ${error instanceof Error ? error.message : '未知错误'}`, false);
     }
   };
 

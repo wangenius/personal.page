@@ -1,21 +1,15 @@
+import DocNav from "@/components/docNav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { ArrowRight, BookOpen, Code, Compass, FileText, Heart, Sparkles } from "lucide-react";
 import { getNavigation } from "@/lib/navigations";
-import Link from "next/link";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
-import { getFirstDocumentLink } from "@/lib/get";
-import DocNav from "@/components/docNav";
-
-
+import { BookOpen, Code, Compass, Heart, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export default function DocsPage() {
-
   const sections = getNavigation("docs");
-  
+
   return (
     <div className="relative min-h-screen">
       {/* 背景装饰 */}
@@ -68,8 +62,8 @@ export default function DocsPage() {
               desc: "提供全栈方案，包括支付体系",
             },
           ].map((item) => (
-            <Card 
-              key={item.title} 
+            <Card
+              key={item.title}
               className="group relative border border-border/50 bg-background/50 hover:border-border transition-colors duration-200"
             >
               <CardContent className="p-6">
@@ -79,9 +73,7 @@ export default function DocsPage() {
                 <h3 className="text-base font-semibold tracking-tight mb-2">
                   {item.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  {item.desc}
-                </p>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -92,5 +84,4 @@ export default function DocsPage() {
       </div>
     </div>
   );
-
 }

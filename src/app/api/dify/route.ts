@@ -2,6 +2,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
     try {
         const body = await req.text();
@@ -75,4 +78,16 @@ export async function GET(req: NextRequest) {
         console.error('Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
+}
+
+export async function OPTIONS(request: NextRequest) {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
 }
