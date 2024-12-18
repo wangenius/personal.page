@@ -67,6 +67,7 @@
 
   /* 基础元素样式 */
   html {
+    overflow-x: hidden;
     overflow-y: scroll;
   }
 
@@ -75,6 +76,8 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     scrollbar-gutter: stable;
     padding-right: calc(100vw - 100%);
+
+
   }
 
   *,

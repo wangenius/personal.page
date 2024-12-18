@@ -178,7 +178,7 @@ const Header = () => {
           boxShadow: "none",
         },
       }}
-      className="sticky top-0 z-50 w-full transition-all duration-300"
+      className="fixed top-0 z-50 w-full transition-all duration-300"
     >
       <div className="container h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-3 group">

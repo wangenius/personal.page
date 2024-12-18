@@ -5,6 +5,7 @@ import type { MDXComponents } from "mdx/types";
 import Image from "next/image";
 import type { DetailedHTMLProps, ImgHTMLAttributes } from "react";
 import React, { createElement } from "react";
+import { UserTag } from "@/components/ui/user-tag";
 
 // 定义 MDX img 组件的 props 类型
 type MDXImgProps = DetailedHTMLProps<
@@ -210,6 +211,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
     // Callout 组件保持不变
     Callout,
+    UserTag,
     ...components,
   };
 }

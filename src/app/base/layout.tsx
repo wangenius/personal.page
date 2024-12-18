@@ -6,7 +6,7 @@ export default function DocsLayout({
 }) {
 
   return (
-    <div className="flex w-full max-w-7xl m-auto gap-5 justify-between">
+    <div className="flex w-full max-w-[1600px] m-auto gap-5 justify-between">
       <main className="flex-1 min-w-0 py-8">{children}</main>
     </div>
   );

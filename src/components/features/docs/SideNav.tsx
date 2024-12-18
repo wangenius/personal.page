@@ -140,9 +140,9 @@ export default function DocsNav({ sections }: DocsNavProps) {
 
   return (
     <aside className="w-72 shrink-0">
-      <div className="fixed top-10 pt-8 w-72 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+      <div className="fixed top-10 pt-8 w-92 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
         <div className="pr-4">
-          <ScrollArea className="w-60 select-none flex-shrink-0 border-r border-border/10">
+          <ScrollArea className="w-72 select-none flex-shrink-0 border-r border-border/10">
             <nav className="px-4 py-8">
               {sortedSections.map((section) => (
                 <div key={section.title} className="mb-8 last:mb-0">

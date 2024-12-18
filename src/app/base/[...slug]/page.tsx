@@ -7,7 +7,7 @@ import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 import path from "path";
-import { cache, Suspense } from "react";
+import { cache } from "react";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 
@@ -19,7 +19,6 @@ interface Props {
 
 // 缓存 MDX 文件内容
 const getDocFromParams = cache(async (slug: string[]) => {
-  console.log(slug);
   const docPath = path.join(
     process.cwd(),
     "src/app/base",
@@ -83,26 +82,25 @@ export default async function DocPage({ params }: Props) {
   }
 
   return (
-      <div className="flex gap-16 relative max-w-7xl mx-auto px-4">
-        <SideNav sections={getNavigation(`base/${params.slug[0]}`)} />
-        <article className="w-full prose max-w-3xl flex-grow">
-          <MDXRemote
-            source={doc.content}
-            components={components}
-            options={{
-              parseFrontmatter: false,
-              mdxOptions: {
-                remarkPlugins: [remarkGfm],
-                rehypePlugins: [rehypeSlug],
-                format: "mdx",
-              },
-            }}
-          />
-        </article>
-        <div className="w-64 flex-none">
-          <TableOfContents source={doc.content} />
-        </div>
+    <div className="flex flex-1 gap-16 relative px-4">
+      <SideNav sections={getNavigation(`base/${params.slug[0]}`)} />
+      <div className="flex-1">
+        <MDXRemote
+          source={doc.content}
+          components={components}
+          options={{
+            parseFrontmatter: false,
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [rehypeSlug],
+              format: "mdx",
+            },
+          }}
+        />
+      </div>
+      <div className="w-64 flex-none">
+        <TableOfContents source={doc.content} />
+      </div>
     </div>
   );
 }
-  

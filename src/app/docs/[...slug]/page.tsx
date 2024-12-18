@@ -81,9 +81,9 @@ export default async function DocPage({ params }: Props) {
   }
 
   return (
-    <div className="flex gap-16 relative max-w-7xl mx-auto px-4">
+    <div className="flex flex-1 gap-16 relative px-4">
       <SideNav sections={getNavigation(`docs/${params.slug[0]}`)} />
-      <article className="w-full prose max-w-3xl flex-grow">
+      <div className="flex-1">
         <MDXRemote
           source={doc.content}
           components={components}
@@ -96,7 +96,7 @@ export default async function DocPage({ params }: Props) {
             },
           }}
         />
-      </article>
+      </div>
       <div className="w-64 flex-none">
         <TableOfContents source={doc.content} />
       </div>
