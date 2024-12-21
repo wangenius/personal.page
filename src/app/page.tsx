@@ -25,37 +25,6 @@ import Lenis from '@studio-freight/lenis';
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
-interface Repository {
-  name: string;
-  description: string;
-  stars: number;
-  forks: number;
-  language: string;
-  languageColor: string;
-  updatedAt: string;
-}
-
-const featuredRepos: Repository[] = [
-  {
-    name: "jezzlab-front",
-    description: "A modern web application built with Next.js and TypeScript",
-    stars: 128,
-    forks: 23,
-    language: "TypeScript",
-    languageColor: "#3178c6",
-    updatedAt: "Updated 2 days ago",
-  },
-  {
-    name: "personal-page",
-    description: "My personal website built with modern tech stack",
-    stars: 45,
-    forks: 12,
-    language: "JavaScript",
-    languageColor: "#f1e05a",
-    updatedAt: "Updated last week",
-  },
-];
-
 // 修改活动历史的接口
 interface ActivityItem {
   type: "work" | "project" | "study";
@@ -143,14 +112,14 @@ const projects: Project[] = [
     description: "A lightweight GPT access tool for terminal, support multi-platform models, and support highly customized",
     image: "/projects/gpt-shell.png",
     tags: ["GPT", "AI", "terminal","rust"],
-    link: "https://gpt-shell.wangenius.com",
+    link: "https://github.com/wangenius/gpt-shell/releases/latest",
     github: "https://github.com/wangenius/gpt-shell"
   },{
     title: "Porfolio in Architect",
     description: "a portfolio in my architect career",
     image: "/projects/architect.png",
     tags: ["Urban Design", "Architect", "Rendering", "Design"],
-    link: "https://www.wangenius.com",
+    link: "/projects/protfolio4.0.pdf",
   }
 ];
 
