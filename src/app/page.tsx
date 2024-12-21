@@ -17,7 +17,8 @@ import {
   Menu,
   Sparkles,
   MessageCircle,
-  Hash
+  Hash,
+  X
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView, useVelocity } from "framer-motion";
@@ -123,6 +124,95 @@ const projects: Project[] = [
   }
 ];
 
+// 添加标签详情数据接口和内容
+interface TagDetail {
+  name: string;
+  icon: string;
+  desc: string;
+  longDesc: string;
+  items: string[];
+}
+
+const tagDetails: TagDetail[] = [
+  {
+    name: "音乐",
+    icon: "🎵",
+    desc: "Eason",
+    longDesc: "音乐是我生活中不可或缺的一部分，尤其喜欢陈奕迅的音乐。",
+    items: [
+      "陈奕迅、谭咏麟、beyond、王菲、Dear Jane",
+      "黄伟文",
+      "从何时开始忌讳空山无人，从何时害怕遥望星辰",
+      "想反胜你便再熬",
+      "情愿你有读心的超能力，能发现我的心计，提早阻止",
+      "唯独壮烈离座，可百世流芳"
+    ]
+  },
+  {
+    name: "篮球",
+    icon: "🏀",
+    desc: "GSW",
+    longDesc: "热爱篮球运动，是金州勇士队的粉丝。",
+    items: [
+      "最喜欢的球队：Golden State Warriors",
+      "最喜欢的球员：Stephen Curry",
+      "最爱的比赛：2022赛季总决赛",
+      "Stephen：I can do all things"
+    ]
+  },
+  {
+    name: "开发",
+    icon: "💻",
+    desc: "Full Stack",
+    longDesc: "全栈开发工程师，热衷于探索新技术和创新解决方案。",
+    items: [
+      "前端技术：React、TypeScript",
+      "后端技术：Node.js、Python、Rust",
+      "数据库：MongoDB、PostgreSQL",
+      "开发理念：产品为主，以解决实际问题为导向"
+    ]
+  },
+  {
+    name: "AI",
+    icon: "🤖",
+    desc: "application",
+    longDesc: "AI在创意领域的应用",
+    items: [
+      "Gen AI",
+      "LLM",
+      "AI",
+      "应用领域：创意生成、自然语言处理",
+      "项目经验：AI创意平台开发",
+      "发展愿景：AI赋能创意产业"
+    ]
+  },
+  {
+    name: "创作",
+    icon: "🌐",
+    desc: "Builder",
+    longDesc: "具象的和抽象的艺术，故事性",
+    items: [
+      "探索生命的故事",
+      "less is more",
+      "The only dream that I've been chasing is my own",
+      "这十八层怎么跳"
+    ]
+  },
+  {
+    name: "设计",
+    icon: "🎨",
+    desc: "UI/UX",
+    longDesc: "注重用户体验的UI/UX设计师，追求美感与实用的平衡。",
+    items: [
+      "对空间、形态的探索",
+      "从建筑到产品",
+      "专注领域：交互设计、视觉设计",
+      "项目类型：Web应用、移动应用",
+      "设计方法：以用户为中心"
+    ]
+  }
+];
+
 export default function Home() {
   const { scrollY, scrollYProgress } = useScroll();
   
@@ -152,7 +242,7 @@ export default function Home() {
   // 化滚动动画参数
   const smoothScroll = useSpring(scrollY, {
     stiffness: 35,    // 降低刚度
-    damping: 20,      // 适中的阻尼
+    damping: 20,      // 适中阻��
     mass: 0.2,        // 适中的量
     restDelta: 0.001,
     restSpeed: 0.001,
@@ -233,7 +323,7 @@ export default function Home() {
     }
   };
 
-  // 简化滚动检测，只更新当前区域
+  // 简滚动检测，只更新当前区域
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
@@ -404,6 +494,8 @@ export default function Home() {
       }
     }
   };
+
+  const [selectedTag, setSelectedTag] = useState<TagDetail | null>(null);
 
   return (
     <div className="relative bg-gradient-to-b from-background via-background to-muted min-h-screen">
@@ -663,7 +755,7 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
-              {/* About 右侧标签部分 */}
+              {/* About 右侧标签部分 - 更新卡片使其可点击 */}
               <motion.div 
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
                 variants={containerVariants}
@@ -671,36 +763,163 @@ export default function Home() {
                 whileInView="visible"
                 viewport={{ once: true }}
               >
-                {[
-                  { name: "音乐", icon: "🎵", desc: "Eason" },
-                  { name: "篮球", icon: "🏀", desc: "GSW" },
-                  { name: "开发", icon: "💻", desc: "Full Stack" },
-                  { name: "AI", icon: "🤖", desc: "Researcher" },
-                  { name: "Web3", icon: "🌐", desc: "Builder" },
-                  { name: "设计", icon: "🎨", desc: "UI/UX" },
-                ].map((tag, index) => (
-                  <motion.div
-                    key={tag.name}
-                    variants={itemVariants}
-                    className="relative group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                    <div className="relative p-4 bg-background/50 backdrop-blur-sm rounded-2xl border border-primary/10 hover:border-primary/20 transition-all duration-500">
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        <span className="text-2xl">{tag.icon}</span>
-                        <div>
-                          <p className="font-medium text-primary">{tag.name}</p>
-                          <p className="text-xs text-muted-foreground">{tag.desc}</p>
+                {tagDetails.map((tag, index) => (
+                  <div key={tag.name} className="relative">
+                    <motion.div
+                      layoutId={`card-container-${tag.name}`}
+                      variants={itemVariants}
+                      className="relative group cursor-pointer"
+                      onClick={() => setSelectedTag(tag)}
+                      layout
+                    >
+                      <motion.div 
+                        layoutId={`card-bg-${tag.name}`}
+                        className="absolute inset-0 bg-gradient-to-br from-primary/5 via-blue-500/5 to-violet-500/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" 
+                      />
+                      <motion.div 
+                        layoutId={`card-content-${tag.name}`}
+                        className="relative p-4 bg-background/30 backdrop-blur-md rounded-2xl border border-primary/5 hover:border-primary/10 hover:bg-background/40 transition-all duration-500"
+                      >
+                        <div className="flex flex-col items-center gap-2 text-center">
+                          <motion.span 
+                            layoutId={`card-icon-${tag.name}`} 
+                            className="text-2xl"
+                          >
+                            {tag.icon}
+                          </motion.span>
+                          <div>
+                            <motion.p 
+                              layoutId={`card-title-${tag.name}`} 
+                              className="font-medium text-foreground/90"
+                            >
+                              {tag.name}
+                            </motion.p>
+                            <motion.p 
+                              layoutId={`card-desc-${tag.name}`} 
+                              className="text-xs text-muted-foreground/60"
+                            >
+                              {tag.desc}
+                            </motion.p>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                      </motion.div>
+                    </motion.div>
+                  </div>
                 ))}
               </motion.div>
             </div>
           </motion.div>
         </div>
       </section>
+
+      {/* 标签详情模态框 */}
+      <AnimatePresence mode="wait">
+        {selectedTag && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-background/90 backdrop-blur-md z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedTag(null)}
+          >
+            <motion.div
+              layoutId={`card-container-${selectedTag.name}`}
+              className="relative w-full max-w-lg bg-background/50 rounded-2xl shadow-xl overflow-hidden border border-primary/10"
+              onClick={(e) => e.stopPropagation()}
+              layout
+            >
+              <motion.div
+                layoutId={`card-bg-${selectedTag.name}`}
+                className="absolute inset-0 bg-gradient-to-br from-primary/5 via-blue-500/5 to-violet-500/5 opacity-30"
+                transition={{ type: "spring", bounce: 0.2 }}
+              />
+              
+              <motion.div
+                layoutId={`card-content-${selectedTag.name}`}
+                className="relative p-6 backdrop-blur-sm"
+                transition={{ type: "spring", bounce: 0.2 }}
+              >
+                {/* 关闭按钮 */}
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setSelectedTag(null)}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-primary/5 transition-colors"
+                >
+                  <X className="w-4 h-4 text-foreground/60" />
+                </motion.button>
+
+                {/* 标签头部 */}
+                <div className="flex items-center gap-4 mb-6">
+                  <motion.div
+                    layoutId={`card-icon-${selectedTag.name}`}
+                    className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/5 via-blue-500/5 to-violet-500/5 flex items-center justify-center"
+                    transition={{ type: "spring", bounce: 0.2 }}
+                  >
+                    <span className="text-4xl">{selectedTag.icon}</span>
+                  </motion.div>
+                  <div>
+                    <motion.h3
+                      layoutId={`card-title-${selectedTag.name}`}
+                      className="text-2xl font-bold text-foreground/90"
+                      transition={{ type: "spring", bounce: 0.2 }}
+                    >
+                      {selectedTag.name}
+                    </motion.h3>
+                    <motion.p
+                      layoutId={`card-desc-${selectedTag.name}`}
+                      className="text-muted-foreground/70"
+                      transition={{ type: "spring", bounce: 0.2 }}
+                    >
+                      {selectedTag.desc}
+                    </motion.p>
+                  </div>
+                </div>
+
+                {/* 详细内容 - 带入场动画 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ 
+                    duration: 0.3,
+                    delay: 0.2,
+                    ease: "easeOut"
+                  }}
+                >
+                  {/* 详细描述 */}
+                  <p className="text-muted-foreground/80 mb-6 leading-relaxed">
+                    {selectedTag.longDesc}
+                  </p>
+
+                  {/* 详细列表 */}
+                  <div className="space-y-3">
+                    {selectedTag.items.map((item, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ 
+                          duration: 0.3,
+                          delay: 0.3 + index * 0.05,
+                          ease: "easeOut"
+                        }}
+                        className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-primary/5 via-blue-500/5 to-violet-500/5 hover:from-primary/10 hover:via-blue-500/10 hover:to-violet-500/10 transition-colors group"
+                      >
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary/40 to-blue-500/40 group-hover:from-primary/60 group-hover:to-blue-500/60 transition-colors" />
+                        <span className="text-foreground/80 group-hover:text-foreground/90 transition-colors">{item}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 作品展示区域 - 高级设计 */}
       <section 
