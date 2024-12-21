@@ -7,6 +7,8 @@ import { useMDXComponents } from '@/mdx-components'
 import { TableOfContents } from '@/components/features/docs/TableOfContents'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
+import SideNav from '@/components/features/docs/SideNav'
+import { getNavigation } from '@/lib/navigations'
 
 interface Props {
   params: {
@@ -31,14 +33,22 @@ async function getDocFromParams(slug: string[]) {
 
 export default async function DocPage({ params }: Props) {
   const doc = await getDocFromParams(params.slug)
+  const sections = getNavigation("blogs");
   
   if (!doc) {
     notFound()
   }
 
   return (
-    <div className="flex gap-16 relative max-w-7xl mx-auto px-4">
-      <article className="w-full prose max-w-3xl flex-grow">
+    <div className="flex-1 flex gap-16 relative max-w-[1600px] w-full mx-auto px-4">
+      <aside className="w-72 shrink-0">
+        <div className="fixed top-0 pt-8 w-72 h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+          <div className="pr-4">
+            <SideNav sections={sections} />
+          </div>
+        </div>
+      </aside>
+      <article className="flex-1">
         <MDXRemote
           source={doc}
           components={components}

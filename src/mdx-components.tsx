@@ -19,7 +19,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h1: (props) =>
       createElement("h1", {
         ...props,
-        className: "font-bold text-gray-900 dark:text-gray-50 mb-6 mt-8",
+        className: "text-4xl font-bold text-gray-900 dark:text-gray-50 mb-6 mt-8",
 
         id: props.children
           ?.toString()

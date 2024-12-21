@@ -31,7 +31,7 @@ export const UserTag: React.FC<UserTagProps> = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 pl-1 py-1 pr-3 text-xs font-medium border rounded-full',
+        'inline-flex items-center gap-1.5 pl-1 py-1 pr-3 my-1 text-xs font-medium border rounded-full',
         'select-none transition-colors',
         typeStyles[type],
         className

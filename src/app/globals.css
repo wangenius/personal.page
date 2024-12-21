@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 导入ttf字体 */
+@font-face {
+  font-family: 'title';
+  src: url('title.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* @font-face {
+  font-family: 'title2';
+  src: url('title5.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}  */
+
+.title_font {
+  font-family: 'title', sans-serif;
+}
+
 @layer base {
   /* 根变量定义 */
   :root {
@@ -76,8 +95,6 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     scrollbar-gutter: stable;
     padding-right: calc(100vw - 100%);
-
-
   }
 
   *,
@@ -86,6 +103,7 @@
     box-sizing: border-box;
     margin: 0;
     font-weight: normal;
+    font-family: 'title2', sans-serif;  
     @apply border-border;
   }
 }

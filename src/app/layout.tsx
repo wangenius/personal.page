@@ -1,5 +1,4 @@
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
 import { Toaster } from "../components/ui/toaster";
@@ -27,12 +26,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
           <main className="flex-1 pt-16">
             {children}
           </main>
           <Toaster />
-          <Footer />
         </ThemeProvider>
       </body>
     </html>
