@@ -213,6 +213,17 @@ const tagDetails: TagDetail[] = [
   }
 ];
 
+interface Message {
+  content: string;
+  type: "user" | "bot";
+  timestamp: number;
+  isStreaming?: boolean;
+  followUpQuestions?: {
+    id: string;
+    content: string;
+  }[];
+}
+
 export default function Home() {
   const { scrollY, scrollYProgress } = useScroll();
   
@@ -242,7 +253,7 @@ export default function Home() {
   // 化滚动动画参数
   const smoothScroll = useSpring(scrollY, {
     stiffness: 35,    // 降低刚度
-    damping: 20,      // 适中阻��
+    damping: 20,      // 适中阻尼
     mass: 0.2,        // 适中的量
     restDelta: 0.001,
     restSpeed: 0.001,
@@ -361,25 +372,28 @@ export default function Home() {
         "[data-radix-scroll-area-viewport]"
       );
       if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
+        viewport.scrollTo({
+          top: viewport.scrollHeight,
+          behavior: "smooth"
+        });
       }
     }
   };
 
+  // 监听消息变化自动滚动
   useEffect(() => {
-    if (!isFirstRender.current && messages.length > 0) {
-      const timer = setTimeout(() => {
-        scrollToBottom();
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-    isFirstRender.current = false;
+    scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
+  // 监听消息内容变化自动滚动
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.type === "bot" && lastMessage.content) {
+      scrollToBottom();
+    }
+  }, [messages.length > 0 ? messages[messages.length - 1]?.content : null]);
 
+  const handleFollowUpClick = async (content: string) => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -388,12 +402,11 @@ export default function Home() {
     let isComponentMounted = true;
 
     const userMessage = {
-      content: inputValue,
+      content,
       type: "user" as const,
       timestamp: Date.now(),
     };
 
-    setInputValue("");
     addMessage(userMessage);
 
     const botMessage = {
@@ -411,8 +424,8 @@ export default function Home() {
         headers: {
           "Content-Type": "text/plain",
         },
-        body: inputValue,
-        signal: abortControllerRef.current.signal,
+        body: content,
+        signal: abortControllerRef.current?.signal,
       });
 
       if (!response.ok) {
@@ -422,6 +435,7 @@ export default function Home() {
       const reader = new ReadableStreamDefaultReader(response.body!);
       const decoder = new TextDecoder();
       let accumulatedContent = "";
+      let currentFollowUps: { id: string; content: string; }[] = [];
 
       while (true) {
         const { done, value } = await reader.read();
@@ -431,18 +445,25 @@ export default function Home() {
         const lines = text.split('\n');
         
         for (const line of lines) {
-          console.log(line);
           if (line.startsWith('data:')) {
+            console.log(line);
             try {
               const data = JSON.parse(line.slice(5));
-              if (data.event === 'message' && data.answer) {
-                accumulatedContent += data.answer;
+              if (data.type === 'answer' && data.content && !data.created_at) {
+                accumulatedContent += data.content;
                 if (isComponentMounted) {
-                  updateLastBotMessage(accumulatedContent);
+                  updateLastBotMessage(accumulatedContent, true, currentFollowUps);
+                }
+              } else if (data.type === 'follow_up' && data.content) {
+                currentFollowUps = [...currentFollowUps, {
+                  id: data.id,
+                  content: data.content
+                }];
+                if (isComponentMounted) {
+                  updateLastBotMessage(accumulatedContent, true, currentFollowUps);
                 }
               }
             } catch (e) {
-              // 忽略解析错误，继续理下行
               continue;
             }
           }
@@ -450,7 +471,7 @@ export default function Home() {
       }
 
       if (isComponentMounted) {
-        updateLastBotMessage(accumulatedContent, false);
+        updateLastBotMessage(accumulatedContent, false, currentFollowUps);
       }
 
     } catch (error: any) {
@@ -463,6 +484,22 @@ export default function Home() {
         updateLastBotMessage(errorMessage, false);
       }
     }
+
+    return () => {
+      isComponentMounted = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+    
+    const content = inputValue;
+    setInputValue("");
+    await handleFollowUpClick(content);
   };
 
   useEffect(() => {
@@ -755,7 +792,7 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
-              {/* About 右侧标签部分 - 更新卡片使其可点击 */}
+              {/* About 右侧标签部分 - 新卡片使其可点击 */}
               <motion.div 
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
                 variants={containerVariants}
@@ -1482,7 +1519,12 @@ export default function Home() {
               </Button>
             </div>
 
-            <ScrollArea className="h-[400px]">
+            <ScrollArea 
+              className="h-[400px]"
+              onWheel={(e) => {
+                e.stopPropagation();
+              }}
+            >
               <div className="p-4">
                 <AnimatePresence>
                   {messages.length > 0 ? (
@@ -1505,32 +1547,67 @@ export default function Home() {
                               <AvatarFallback>WG</AvatarFallback>
                             </Avatar>
                           )}
-                          <motion.div
-                            className={`
-                              relative max-w-[80%] px-4 py-2 rounded-2xl
-                              ${
-                                message.type === "bot"
-                                  ? "bg-muted text-foreground rounded-tl-sm"
-                                  : "bg-primary text-primary-foreground rounded-tr-sm"
-                              }
-                            `}
-                            whileHover={{ scale: 1.02 }}
-                          >
-                            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                              {message.content}
-                              {message.isStreaming && (
-                                <motion.span 
-                                  className="inline-flex items-center ml-2 gap-[2px]"
-                                  animate={{ opacity: [0.4, 1] }}
-                                  transition={{ repeat: Infinity, duration: 1 }}
-                                >
-                                  <span className="w-1 h-1 rounded-full bg-current" />
-                                  <span className="w-1 h-1 rounded-full bg-current" />
-                                  <span className="w-1 h-1 rounded-full bg-current" />
-                                </motion.span>
-                              )}
-                            </p>
-                          </motion.div>
+                          <div className="flex flex-col gap-2 max-w-[80%]">
+                            <motion.div
+                              className={`
+                                relative px-4 py-2 rounded-2xl
+                                ${
+                                  message.type === "bot"
+                                    ? "bg-muted text-foreground rounded-tl-sm"
+                                    : "bg-primary text-primary-foreground rounded-tr-sm"
+                                }
+                              `}
+                              whileHover={{ scale: 1.02 }}
+                            >
+                              <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                                {message.content}
+                                {message.isStreaming && (
+                                  <motion.span 
+                                    className="inline-flex items-center ml-2 gap-[2px]"
+                                    animate={{ opacity: [0.4, 1] }}
+                                    transition={{ repeat: Infinity, duration: 1 }}
+                                  >
+                                    <span className="w-1 h-1 rounded-full bg-current" />
+                                    <span className="w-1 h-1 rounded-full bg-current" />
+                                    <span className="w-1 h-1 rounded-full bg-current" />
+                                  </motion.span>
+                                )}
+                              </p>
+                            </motion.div>
+                            
+                            {/* 进问题展示 */}
+                            {message.type === "bot" && message.followUpQuestions && message.followUpQuestions.length > 0 && (
+                              <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-col gap-2"
+                              >
+                                <div className="text-xs text-muted-foreground ml-1">建议的问题：</div>
+                                <div className="flex flex-wrap gap-2">
+                                  {message.followUpQuestions.map((question, idx) => (
+                                    <motion.button
+                                      key={question.id}
+                                      initial={{ opacity: 0, scale: 0.8 }}
+                                      animate={{ opacity: 1, scale: 1 }}
+                                      transition={{
+                                        delay: 0.5 + idx * 0.1,
+                                        type: "spring",
+                                        stiffness: 100,
+                                        damping: 10
+                                      }}
+                                      onClick={() => handleFollowUpClick(question.content)}
+                                      className="px-3 py-1.5 text-xs bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground rounded-full transition-colors cursor-pointer"
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
+                                    >
+                                      {question.content}
+                                    </motion.button>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </div>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -1599,7 +1676,7 @@ export default function Home() {
                 </motion.div>
               </div>
 
-              {/* 创意标语 */}
+              {/* 意标语 */}
               <motion.div 
                 className="flex flex-col items-center gap-4 mt-8"
                 variants={containerVariants}

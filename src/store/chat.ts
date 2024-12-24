@@ -1,53 +1,39 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface Message {
   content: string;
-  type: "bot" | "user";
+  type: "user" | "bot";
   timestamp: number;
   isStreaming?: boolean;
+  followUpQuestions?: {
+    id: string;
+    content: string;
+  }[];
 }
 
-const initialMessages: Message[] = [];
-
-interface ChatState {
+interface ChatStore {
   messages: Message[];
   addMessage: (message: Message) => void;
-  updateLastBotMessage: (content: string, isStreaming?: boolean) => void;
+  updateLastBotMessage: (content: string, isStreaming?: boolean, followUpQuestions?: Message['followUpQuestions']) => void;
   clearHistory: () => void;
 }
 
-export const useChatStore = create<ChatState>()(
-  persist(
-    (set) => ({
-      messages: initialMessages,
-
-      addMessage: (message) =>
-        set((state) => ({
-          messages: [...state.messages, message],
-        })),
-
-      updateLastBotMessage: (content: string, isStreaming: boolean = true) =>
-        set((state) => {
-          const messages = [...state.messages];
-          const lastMessage = messages[messages.length - 1];
-          if (lastMessage && lastMessage.type === 'bot') {
-            messages[messages.length - 1] = {
-              ...lastMessage,
-              content,
-              isStreaming,
-            };
-          }
-          return { messages };
-        }),
-
-      clearHistory: () =>
-        set(() => ({
-          messages: initialMessages,
-        })),
+export const useChatStore = create<ChatStore>((set) => ({
+  messages: [],
+  addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+  updateLastBotMessage: (content, isStreaming = false, followUpQuestions) =>
+    set((state) => {
+      const messages = [...state.messages];
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage && lastMessage.type === "bot") {
+        messages[messages.length - 1] = {
+          ...lastMessage,
+          content,
+          isStreaming,
+          followUpQuestions
+        };
+      }
+      return { messages };
     }),
-    {
-      name: "chat-storage",
-    }
-  )
-);
+  clearHistory: () => set({ messages: [] }),
+}));
