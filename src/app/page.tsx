@@ -439,6 +439,8 @@ export default function Home() {
 
       while (true) {
         const { done, value } = await reader.read();
+        console.log(value);
+        
         if (done) break;
 
         const text = decoder.decode(value);
