@@ -678,8 +678,8 @@ export default function Home() {
           >
             {[
               { icon: Github, href: "https://github.com/wangenius", label: "GitHub" },
-              { icon: Mail, href: "mailto:contact@example.com", label: "Email" },
-              { icon: Twitter, href: "https://twitter.com/wangenius", label: "Twitter" },
+              { icon: Mail, href: "mailto:wangenius@qq.com", label: "Email" },
+              { icon: Twitter, href: "https://twitter.com/wangenius314", label: "Twitter" },
             ].map((social, i) => (
               <motion.a
                 key={i}
