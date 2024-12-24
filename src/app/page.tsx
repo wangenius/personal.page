@@ -439,11 +439,11 @@ export default function Home() {
 
       while (true) {
         const { done, value } = await reader.read();
-        console.log(value);
-        
+        console.log(decoder.decode(value));
         if (done) break;
 
         const text = decoder.decode(value);
+        console.log(text);
         const lines = text.split('\n');
         
         for (const line of lines) {
