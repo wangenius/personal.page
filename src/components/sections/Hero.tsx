@@ -118,7 +118,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
         />
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 relative -mt-20 md:-mt-32 z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 relative -mt-12 md:-mt-32 z-10">
         <motion.div 
           className="flex flex-col items-center relative"
           animate={{
@@ -136,14 +136,14 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute -top-24 w-[300px] left-0 z-10"
+                  className="absolute left-0 -translate-x-1/2 bottom-full mb-4 w-[260px] md:w-[300px] z-10"
                 >
-                  <div className="relative w-full px-6 py-3">
+                  <div className="relative w-full px-4 md:px-6 py-3">
                     <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-md rounded-2xl border border-primary/20" />
-                    <div className="absolute -bottom-2 left-16 w-4 h-4 bg-background/80 border-b border-r border-primary/20 transform rotate-45" />
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-background/80 border-b border-r border-primary/20 transform rotate-45" />
                     <div className="relative w-full flex items-center gap-3">
                       <motion.div
-                        className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"
+                        className="w-7 md:w-8 h-7 md:h-8 rounded-full bg-primary/10 flex items-center justify-center"
                         animate={{
                           scale: [1, 1.2, 1],
                         }}
@@ -169,7 +169,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
               whileHover="hover"
               onClick={() => handleChatToggle(!showChat)}
             >
-              {/* 外层光晕效果 */}
+              {/* 外层��晕效果 */}
               <motion.div
                 className="absolute -inset-8 rounded-full opacity-70"
                 style={{
@@ -247,7 +247,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             </motion.div>
           </div>
 
-          <div className="mt-16 space-y-12">
+          <div className="mt-8 md:mt-16 space-y-8 md:space-y-12">
             <motion.div 
               className="text-center relative"
               initial={{ opacity: 0, y: 20 }}
@@ -486,8 +486,12 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
 
         <motion.div
           className={cn(
-            "absolute -top-12 right-8 w-[90%] md:w-[45%] h-[600px] md:h-[700px]",
-            "origin-right"
+            isDesktop 
+              ? "absolute -top-12 right-8 w-[45%] h-[700px]" 
+              : "fixed inset-0 bg-background z-[100]",
+            "origin-right",
+            !isDesktop && "translate-x-full",
+            !showChat && "pointer-events-none"
           )}
           initial={false}
           animate={{
@@ -499,8 +503,37 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             ease: [0.32, 0.72, 0, 1]
           }}
         >
-          <div className="relative h-full">
-            <div className="absolute inset-0 rounded-2xl overflow-hidden">
+          <div className={cn(
+            "relative h-full", 
+            showChat && "pointer-events-auto"
+          )}>
+            {!isDesktop && showChat && (
+              <div className="sticky top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-md border-b border-primary/10 px-4 flex items-center z-[101]">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-primary/10"
+                  onClick={() => handleChatToggle(false)}
+                >
+                  <motion.div
+                    initial={{ rotate: 0 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Avatar>
+						<AvatarImage src="/avatar.jpg" alt="Wang" />
+						<AvatarFallback>WG</AvatarFallback>
+					</Avatar>
+                  </motion.div>
+                </Button>
+
+              </div>
+            )}
+            <div className={cn(
+              "absolute inset-0 overflow-hidden",
+              isDesktop && "rounded-2xl",
+              !isDesktop && "top-16"
+            )}>
               <ChatWindow setShowChat={handleChatToggle} showChat={showChat} />
             </div>
           </div>

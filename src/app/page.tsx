@@ -116,12 +116,6 @@ export default function Home() {
         scrollY={scrollY}
       />
 
-      {/* 背景装饰 */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-      </div>
-
       {/* 主要内容区域 */}
       <div 
         ref={(el) => (sectionRefs.current.hero = el)}
