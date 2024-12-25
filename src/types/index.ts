@@ -1,29 +1,41 @@
-// 通用响应类型
-export interface ApiResponse<T = any> {
-  code: number
-  message: string
-  data: T
+// 活动历史的接口
+export interface ActivityItem {
+  type: "work" | "project" | "study";
+  title: string;
+  company?: string;
+  description: string;
+  period: string;
+  skills?: string[];
+  link?: string;
 }
 
-// 分页请求参数
-export interface PaginationParams {
-  page: number
-  pageSize: number
+// 项目接口
+export interface Project {
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  link?: string;
+  github?: string;
 }
 
-// 分页响应
-export interface PaginatedResponse<T> {
-  total: number
-  items: T[]
-  page: number
-  pageSize: number
+// 标签详情数据接口
+export interface TagDetail {
+  name: string;
+  icon: string;
+  desc: string;
+  longDesc: string;
+  items: string[];
 }
 
-// 通用 ID 类型
-export type ID = string | number
-
-// 基础时间戳类型
-export interface TimeStamps {
-  createdAt: string
-  updatedAt: string
+// 聊天消息接口
+export interface Message {
+  content: string;
+  type: "user" | "bot";
+  timestamp: number;
+  isStreaming?: boolean;
+  followUpQuestions?: {
+    id: string;
+    content: string;
+  }[];
 } 
