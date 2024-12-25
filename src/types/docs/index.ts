@@ -1,4 +1,3 @@
-import { TimeStamps, ID } from "../index"
 
 export interface DocMeta {
   title: string
@@ -10,7 +9,7 @@ export interface DocMeta {
 }
 
 export interface Doc extends DocMeta {
-  id: ID
+  id: string
   slug: string
   content?: string
   published?: boolean
@@ -18,17 +17,17 @@ export interface Doc extends DocMeta {
 }
 
 export interface DocCategory {
-  id: ID
+  id: string
   name: string
   slug: string
   description?: string
-  parentId?: ID
+  parentId?: string
   order?: number
   docs: Doc[]
 }
 
 export interface DocTag {
-  id: ID
+  id: string
   name: string
   slug: string
   description?: string
