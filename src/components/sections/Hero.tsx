@@ -4,10 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Github, Mail, Twitter } from "lucide-react";
 import { motion, MotionValue, useTransform, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatWindow } from "../ui/chat/ChatWindow";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
+import { createPortal } from "react-dom";
 
 interface HeroProps {
   scrollY: MotionValue<number>;
@@ -19,6 +20,17 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
   const [showChat, setShowChat] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  useEffect(() => {
+    if (!isDesktop && showChat) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showChat, isDesktop]);
+
   const handleChatToggle = (isOpen: boolean) => {
     setShowChat(isOpen);
     onChatToggle?.(isOpen);
@@ -26,6 +38,38 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
 
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
   const yOffset = useTransform(scrollY, [0, 400], [0, -50]);
+
+  const renderMobileChat = () => {
+    if (!showChat || isDesktop) return null;
+    
+    return createPortal(
+      <div className="fixed inset-0 bg-background z-[100]">
+        <div className="sticky top-0 left-0 right-0 h-14 sm:h-16 bg-background/80 backdrop-blur-md border-b border-primary/10 px-3 sm:px-4 flex items-center z-[101]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hover:bg-primary/10"
+            onClick={() => handleChatToggle(false)}
+          >
+            <motion.div
+              initial={{ rotate: 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
+                <AvatarImage src="/avatar.jpg" alt="Wang" />
+                <AvatarFallback>WG</AvatarFallback>
+              </Avatar>
+            </motion.div>
+          </Button>
+        </div>
+        <div className="absolute inset-0 top-14 sm:top-16 overflow-hidden">
+          <ChatWindow setShowChat={handleChatToggle} showChat={showChat} />
+        </div>
+      </div>,
+      document.body
+    );
+  };
 
   return (
     <motion.section 
@@ -459,60 +503,30 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
           </div>
         </motion.div>
 
-        <motion.div
-          className={cn(
-            isDesktop 
-              ? "absolute -top-12 right-8 w-[45%] h-[700px]" 
-              : "fixed inset-0 bg-background z-[100]",
-            "origin-right",
-            !isDesktop && "translate-x-full",
-            !showChat && "pointer-events-none"
-          )}
-          initial={false}
-          animate={{
-            x: showChat ? "0%" : "100%",
-            opacity: showChat ? 1 : 0,
-          }}
-          transition={{
-            duration: 0.6,
-            ease: [0.32, 0.72, 0, 1]
-          }}
-        >
-          <div className={cn(
-            "relative h-full", 
-            showChat && "pointer-events-auto"
-          )}>
-            {!isDesktop && showChat && (
-              <div className="sticky top-0 left-0 right-0 h-14 sm:h-16 bg-background/80 backdrop-blur-md border-b border-primary/10 px-3 sm:px-4 flex items-center z-[101]">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-primary/10"
-                  onClick={() => handleChatToggle(false)}
-                >
-                  <motion.div
-                    initial={{ rotate: 0 }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
-                      <AvatarImage src="/avatar.jpg" alt="Wang" />
-                      <AvatarFallback>WG</AvatarFallback>
-                    </Avatar>
-                  </motion.div>
-                </Button>
-              </div>
-            )}
+        {isDesktop && (
+          <motion.div
+            className="absolute -top-12 right-8 w-[45%] h-[700px] origin-right"
+            initial={false}
+            animate={{
+              x: showChat ? "0%" : "100%",
+              opacity: showChat ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.6,
+              ease: [0.32, 0.72, 0, 1]
+            }}
+          >
             <div className={cn(
-              "absolute inset-0 overflow-hidden",
-              isDesktop && "rounded-2xl",
-              !isDesktop && "top-14 sm:top-16"
+              "relative h-full rounded-2xl overflow-hidden", 
+              showChat && "pointer-events-auto"
             )}>
               <ChatWindow setShowChat={handleChatToggle} showChat={showChat} />
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
+
+      {renderMobileChat()}
     </motion.section>
   );
 }
