@@ -49,16 +49,15 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState("hero");
   
   const sections = useRef([
-    { id: "hero", name: "Home" },
-    { id: "about", name: "About" },
-    { id: "projects", name: "Projects" },
-    { id: "experience", name: "Experience" },
-    { id: "contact", name: "Contact" }
+    { id: "hero", name: "首页" },
+    { id: "about", name: "关于" },
+    { id: "projects", name: "项目" },
+    { id: "experience", name: "经历" },
+    { id: "contact", name: "联系" }
   ]).current;
   
   const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
-  // 简化滚动到指定区域的函数，使用原生平滑滚动
   const scrollToSection = (sectionId: string) => {
     const section = sectionRefs.current[sectionId];
     if (section) {
@@ -72,12 +71,10 @@ export default function Home() {
     }
   };
 
-  // 简化滚动检测，只更新当前区域
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
       
-      // 找到当前可见的区域
       for (const section of sections) {
         const element = sectionRefs.current[section.id];
         if (element) {
@@ -97,7 +94,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [sections]);
 
-  // 组件卸载时清理
   useEffect(() => {
     return () => {
       document.body.style.overflow = '';
@@ -105,10 +101,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative bg-gradient-to-b from-background via-background to-muted min-h-screen">
-     <Toaster />
+    <main className="relative bg-gradient-to-b from-background via-background to-muted min-h-screen w-[100vw] overflow-x-hidden">
+      <Toaster />
 
-      {/* 导航栏 */}
       <Navigation 
         sections={sections}
         activeSection={activeSection}
@@ -116,43 +111,50 @@ export default function Home() {
         scrollY={scrollY}
       />
 
-      {/* 主要内容区域 */}
-      <div 
-        ref={(el) => (sectionRefs.current.hero = el)}
-      >
-        <Hero 
-          scrollY={scrollY}
-          scrollToSection={scrollToSection}
-          onChatToggle={handleChatToggle}
-        />
-                </div>
+      <div className="w-full">
+        <section 
+          ref={(el) => (sectionRefs.current.hero = el)}
+          className="min-h-screen"
+        >
+          <Hero 
+            scrollY={scrollY}
+            scrollToSection={scrollToSection}
+            onChatToggle={handleChatToggle}
+          />
+        </section>
 
-      <div 
-        ref={(el) => (sectionRefs.current.about = el)}
-      >
-        <About />
-            </div>
+        <section 
+          ref={(el) => (sectionRefs.current.about = el)}
+          className="py-16 md:py-24"
+        >
+          <About />
+        </section>
 
-      <div 
-        ref={(el) => (sectionRefs.current.projects = el)}
-      >
-        <Projects />
-            </div>
+        <section 
+          ref={(el) => (sectionRefs.current.projects = el)}
+          className="py-16 md:py-24"
+        >
+          <Projects />
+        </section>
 
-      <div 
-        ref={(el) => (sectionRefs.current.experience = el)}
-      >
-        <Experience />
-            </div>
+        <section 
+          ref={(el) => (sectionRefs.current.experience = el)}
+          className="py-16 md:py-24"
+        >
+          <Experience />
+        </section>
 
-      <div 
-        ref={(el) => (sectionRefs.current.contact = el)}
-      >
-        <Contact />
-            </div>
+        <section 
+          ref={(el) => (sectionRefs.current.contact = el)}
+          className="py-16 md:py-24"
+        >
+          <Contact />
+        </section>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+
+    </main>
   );
 }
 

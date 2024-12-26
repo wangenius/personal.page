@@ -30,36 +30,16 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
   return (
     <motion.section 
       style={{ opacity }}
-      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-background"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.div
-          className="absolute w-[45vw] aspect-square"
+          className="absolute w-[50vw] sm:w-[32vw] aspect-square opacity-[0.15]"
           animate={{
-            x: ['-10%', '10%', '-10%'],
-            y: ['0%', '15%', '0%'],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            top: '10%',
-            left: '15%',
-            background: 'radial-gradient(circle at center, rgba(236, 72, 153, 0.15), rgba(167, 139, 250, 0.15), transparent 70%)',
-            filter: 'blur(60px)',
-            transform: 'translate3d(0, 0, 0)',
-          }}
-        />
-
-        <motion.div
-          className="absolute w-[40vw] aspect-square"
-          animate={{
-            x: ['10%', '-15%', '10%'],
-            y: ['5%', '-10%', '5%'],
-            scale: [1.1, 0.9, 1.1],
+            x: ['-20%', '20%', '-20%'],
+            y: ['-10%', '20%', '-10%'],
+            rotate: [-10, 10, -10],
+            scale: [0.8, 1.2, 0.8],
           }}
           transition={{
             duration: 25,
@@ -67,20 +47,43 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             ease: "easeInOut",
           }}
           style={{
-            top: '20%',
+            top: '10%',
+            left: '5%',
+            background: 'linear-gradient(135deg, var(--primary) 0%, rgba(147, 51, 234, 1) 50%, rgba(236, 72, 153, 1) 100%)',
+            filter: 'blur(80px)',
+            transform: 'translate3d(0, 0, 0)',
+          }}
+        />
+
+        <motion.div
+          className="absolute w-[45vw] sm:w-[28vw] aspect-square opacity-[0.12]"
+          animate={{
+            x: ['15%', '-25%', '15%'],
+            y: ['5%', '-15%', '5%'],
+            rotate: [5, -15, 5],
+            scale: [1, 0.7, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{
+            top: '15%',
             right: '10%',
-            background: 'radial-gradient(circle at center, rgba(129, 140, 248, 0.12), rgba(147, 51, 234, 0.12), transparent 70%)',
+            background: 'linear-gradient(225deg, rgba(236, 72, 153, 1) 0%, rgba(167, 139, 250, 1) 50%, rgba(99, 102, 241, 1) 100%)',
             filter: 'blur(70px)',
             transform: 'translate3d(0, 0, 0)',
           }}
         />
 
         <motion.div
-          className="absolute w-[35vw] aspect-square"
+          className="absolute w-[48vw] sm:w-[30vw] aspect-square opacity-[0.15]"
           animate={{
-            x: ['-5%', '15%', '-5%'],
-            y: ['10%', '-5%', '10%'],
-            scale: [0.9, 1.1, 0.9],
+            x: ['-15%', '25%', '-15%'],
+            y: ['10%', '-20%', '10%'],
+            rotate: [-5, 15, -5],
+            scale: [0.9, 1.3, 0.9],
           }}
           transition={{
             duration: 22,
@@ -90,18 +93,19 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
           style={{
             bottom: '15%',
             left: '10%',
-            background: 'radial-gradient(circle at center, rgba(45, 212, 191, 0.1), rgba(56, 189, 248, 0.1), transparent 70%)',
-            filter: 'blur(65px)',
+            background: 'linear-gradient(45deg, rgba(45, 212, 191, 1) 0%, rgba(56, 189, 248, 1) 50%, rgba(124, 58, 237, 1) 100%)',
+            filter: 'blur(75px)',
             transform: 'translate3d(0, 0, 0)',
           }}
         />
 
         <motion.div
-          className="absolute w-[30vw] aspect-square"
+          className="absolute w-[42vw] sm:w-[26vw] aspect-square opacity-[0.12]"
           animate={{
-            x: ['5%', '-10%', '5%'],
-            y: ['-10%', '5%', '-10%'],
-            scale: [1, 1.2, 1],
+            x: ['20%', '-20%', '20%'],
+            y: ['-15%', '15%', '-15%'],
+            rotate: [10, -10, 10],
+            scale: [1.1, 0.8, 1.1],
           }}
           transition={{
             duration: 18,
@@ -110,15 +114,15 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
           }}
           style={{
             bottom: '20%',
-            right: '15%',
-            background: 'radial-gradient(circle at center, rgba(139, 92, 246, 0.12), rgba(192, 132, 252, 0.12), transparent 70%)',
-            filter: 'blur(55px)',
+            right: '5%',
+            background: 'linear-gradient(315deg, rgba(139, 92, 246, 1) 0%, rgba(192, 132, 252, 1) 50%, rgba(244, 114, 182, 1) 100%)',
+            filter: 'blur(65px)',
             transform: 'translate3d(0, 0, 0)',
           }}
         />
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 relative -mt-12 md:-mt-32 z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-8 sm:-mt-12 z-10">
         <motion.div 
           className="flex flex-col items-center relative"
           animate={{
@@ -129,21 +133,21 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             ease: [0.32, 0.72, 0, 1]
           }}
         >
-          <div className="relative">
+          <div className="relative mt-10">
             <AnimatePresence>
               {!showChat && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute left-0 -translate-x-1/2 bottom-full mb-4 w-[260px] md:w-[300px] z-10"
+                  className="absolute left-0 -translate-x-1/2 bottom-full mb-2 sm:mb-4 w-[220px] sm:w-[260px] md:w-[300px] z-10"
                 >
-                  <div className="relative w-full px-4 md:px-6 py-3">
+                  <div className="relative w-full px-3 sm:px-4 md:px-6 py-2 sm:py-3">
                     <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-md rounded-2xl border border-primary/20" />
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-background/80 border-b border-r border-primary/20 transform rotate-45" />
-                    <div className="relative w-full flex items-center gap-3">
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 sm:w-4 h-3 sm:h-4 bg-background/80 border-b border-r border-primary/20 transform rotate-45" />
+                    <div className="relative w-full flex items-center gap-2 sm:gap-3">
                       <motion.div
-                        className="w-7 md:w-8 h-7 md:h-8 rounded-full bg-primary/10 flex items-center justify-center"
+                        className="w-6 sm:w-7 md:w-8 h-6 sm:h-7 md:h-8 rounded-full bg-primary/10 flex items-center justify-center"
                         animate={{
                           scale: [1, 1.2, 1],
                         }}
@@ -155,7 +159,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                       >
                         👋
                       </motion.div>
-                      <p className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-foreground/90 to-foreground/70">
+                      <p className="text-xs sm:text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-foreground/90 to-foreground/70">
                         点击我，来和我聊天吧
                       </p>
                     </div>
@@ -165,13 +169,12 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             </AnimatePresence>
 
             <motion.div
-              className="relative cursor-pointer w-32 h-32 md:w-40 md:h-40"
+              className="relative cursor-pointer w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40"
               whileHover="hover"
               onClick={() => handleChatToggle(!showChat)}
             >
-              {/* 外层��晕效果 */}
               <motion.div
-                className="absolute -inset-8 rounded-full opacity-70"
+                className="absolute -inset-6 sm:-inset-8 rounded-full opacity-70"
                 style={{
                   background: `
                     radial-gradient(circle at center, 
@@ -194,33 +197,6 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                 }}
               />
 
-              {/* 旋转光环 */}
-              <motion.div
-                className="absolute -inset-4 rounded-full"
-                style={{
-                  background: `
-                    conic-gradient(
-                      from 0deg at 50% 50%,
-                      rgba(var(--primary), 0.3),
-                      rgba(147, 51, 234, 0.2) 25%,
-                      rgba(236, 72, 153, 0.3) 50%,
-                      rgba(var(--primary), 0.2) 75%,
-                      rgba(var(--primary), 0.3)
-                    )
-                  `,
-                  filter: 'blur(8px)',
-                }}
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-
-              {/* 头像容器 */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 via-purple-500/20 to-pink-500/30 p-[2px]"
                 variants={{
@@ -242,41 +218,19 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                   </Avatar>
                 </motion.div>
               </motion.div>
-
-
             </motion.div>
           </div>
 
-          <div className="mt-8 md:mt-16 space-y-8 md:space-y-12">
+          <div className="mt-6 sm:mt-8 md:mt-16 space-y-6 sm:space-y-8 md:space-y-12">
             <motion.div 
               className="text-center relative"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <motion.div
-                className="absolute -inset-x-32 -inset-y-16"
-                style={{
-                  background: `
-                    radial-gradient(circle at 30% 50%, rgba(var(--primary), 0.08), transparent 50%),
-                    radial-gradient(circle at 70% 50%, rgba(147, 51, 234, 0.08), transparent 50%)
-                  `,
-                  filter: 'blur(40px)',
-                }}
-                animate={{
-                  opacity: [0.6, 1, 0.6],
-                  scale: [0.98, 1.02, 0.98],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              
-              <div className="relative space-y-4">
+              <div className="relative space-y-3 sm:space-y-4">
                 <motion.h1 
-                  className="text-5xl md:text-7xl font-bold tracking-tight"
+                  className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
@@ -303,21 +257,21 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                       type: "spring",
                       stiffness: 150
                     }}
-                    className="bg-clip-text text-primary font-bold text-4xl md:text-5xl duration-500"
+                    className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500 font-bold text-3xl sm:text-4xl md:text-5xl duration-500"
                   >
                     WANGENIUS
                   </motion.span>
                 </motion.h1>
                 
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center justify-center gap-2 sm:gap-3">
                   <motion.div 
-                    className="h-[1px] w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+                    className="h-[1px] w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
                     initial={{ width: 0 }}
                     animate={{ width: 48 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   />
                   <motion.p 
-                    className="text-lg md:text-xl text-muted-foreground/80 font-medium tracking-wide px-4"
+                    className="text-base sm:text-lg md:text-xl text-muted-foreground/80 font-medium tracking-wide px-2 sm:px-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
@@ -325,7 +279,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                     Full Stack Developer & UI/UX Designer
                   </motion.p>
                   <motion.div 
-                    className="h-[1px] w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+                    className="h-[1px] w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
                     initial={{ width: 0 }}
                     animate={{ width: 48 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
@@ -335,15 +289,15 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             </motion.div>
 
             <motion.div 
-              className="flex justify-center gap-10"
+              className="flex justify-center gap-6 sm:gap-8 md:gap-10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               {[
-                { href: "https://github.com/wangenius", icon: <Github className="w-5 h-5" /> },
-                { href: "https://twitter.com/wangenius314", icon: <Twitter className="w-5 h-5" /> },
-                { href: "mailto:wangenius@qq.com", icon: <Mail className="w-5 h-5" /> }
+                { href: "https://github.com/wangenius", icon: <Github className="w-4 h-4 sm:w-5 sm:h-5" /> },
+                { href: "https://twitter.com/wangenius314", icon: <Twitter className="w-4 h-4 sm:w-5 sm:h-5" /> },
+                { href: "mailto:wangenius@qq.com", icon: <Mail className="w-4 h-4 sm:w-5 sm:h-5" /> }
               ].map((social, index) => (
                 <motion.div
                   key={social.href}
@@ -352,21 +306,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                 >
                   <SocialButton
                     href={social.href}
-                    icon={
-                      <motion.div
-                        initial={{ rotate: 0 }}
-                        whileHover={{ 
-                          rotate: [0, -10, 10, 0],
-                          transition: {
-                            duration: 0.4,
-                            ease: "easeInOut"
-                          }
-                        }}
-                        className="text-primary/80 hover:text-primary transition-colors"
-                      >
-                        {social.icon}
-                      </motion.div>
-                    }
+                    icon={social.icon}
                   />
                 </motion.div>
               ))}
@@ -386,7 +326,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
               >
                 <Button
                   variant="ghost"
-                  className="relative px-8 py-6 group hover:bg-primary/5 transition-colors"
+                  className="relative px-6 sm:px-8 py-5 sm:py-6 group hover:bg-primary/5 transition-colors"
                   onClick={() => scrollToSection("about")}
                 >
                   <div className="absolute inset-0 rounded-lg overflow-hidden">
@@ -419,9 +359,9 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                     />
                   </div>
 
-                  <div className="relative flex items-center gap-3">
+                  <div className="relative flex items-center gap-2 sm:gap-3">
                     <motion.span 
-                      className="text-base font-medium text-foreground/80"
+                      className="text-sm sm:text-base font-medium text-foreground/80"
                       variants={{
                         hover: { 
                           x: -2,
@@ -436,12 +376,12 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                     </motion.span>
 
                     <motion.div
-                      className="relative h-4 overflow-hidden"
+                      className="relative h-3 sm:h-4 overflow-hidden"
                       variants={{
-                        initial: { width: 16 },
-                        animate: { width: 16 },
+                        initial: { width: 12 },
+                        animate: { width: 12 },
                         hover: { 
-                          width: 28,
+                          width: 24,
                           transition: {
                             duration: 0.3,
                             ease: [0.32, 0.72, 0, 1]
@@ -452,10 +392,10 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                       <motion.div
                         className="absolute top-1/2 left-0 h-[2px] bg-foreground/80"
                         variants={{
-                          initial: { width: 12 },
-                          animate: { width: 12 },
+                          initial: { width: 8 },
+                          animate: { width: 8 },
                           hover: { 
-                            width: 24,
+                            width: 20,
                             transition: {
                               duration: 0.3,
                               ease: [0.32, 0.72, 0, 1]
@@ -464,7 +404,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                         }}
                       />
                       <motion.div
-                        className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 border-t-2 border-r-2 border-foreground/80 rotate-45"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 sm:w-2 h-1.5 sm:h-2 border-t-2 border-r-2 border-foreground/80 rotate-45"
                         variants={{
                           hover: {
                             x: [0, 2, 0],
@@ -508,7 +448,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             showChat && "pointer-events-auto"
           )}>
             {!isDesktop && showChat && (
-              <div className="sticky top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-md border-b border-primary/10 px-4 flex items-center z-[101]">
+              <div className="sticky top-0 left-0 right-0 h-14 sm:h-16 bg-background/80 backdrop-blur-md border-b border-primary/10 px-3 sm:px-4 flex items-center z-[101]">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -520,19 +460,18 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <Avatar>
-						<AvatarImage src="/avatar.jpg" alt="Wang" />
-						<AvatarFallback>WG</AvatarFallback>
-					</Avatar>
+                    <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
+                      <AvatarImage src="/avatar.jpg" alt="Wang" />
+                      <AvatarFallback>WG</AvatarFallback>
+                    </Avatar>
                   </motion.div>
                 </Button>
-
               </div>
             )}
             <div className={cn(
               "absolute inset-0 overflow-hidden",
               isDesktop && "rounded-2xl",
-              !isDesktop && "top-16"
+              !isDesktop && "top-14 sm:top-16"
             )}>
               <ChatWindow setShowChat={handleChatToggle} showChat={showChat} />
             </div>
