@@ -237,7 +237,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="w-[200px] mx-auto"
+                    className="w-[240px] mx-auto"
                   >
                     <motion.div 
                       className="relative cursor-pointer"
@@ -268,7 +268,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                             </motion.div>
 
                             <p className="text-sm font-medium text-primary/90">
-                              点击头像开始对话
+                              点击头像和我对话哇🤩
                             </p>
                           </div>
                         </div>
