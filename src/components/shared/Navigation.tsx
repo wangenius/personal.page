@@ -90,7 +90,7 @@ export function Navigation({ sections, activeSection, scrollToSection, scrollY }
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="h-14 sm:h-16 md:h-20 flex items-center justify-between">
           <motion.span 
-            className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500"
+            className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500 sm:text-4xl duration-500"
             whileHover={{ scale: 1.05 }}
           >
             WANGENIUS

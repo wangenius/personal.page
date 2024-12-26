@@ -82,7 +82,7 @@ export function Projects() {
                           whileHover={{ x: 8 }}
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                          <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500 inline-flex items-center gap-2">
+                          <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 inline-flex items-center gap-2">
                             {project.title}
                             <motion.div
                               initial={{ scale: 0, rotate: -45 }}

@@ -133,41 +133,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             ease: [0.32, 0.72, 0, 1]
           }}
         >
-          <div className="relative mt-10">
-            <AnimatePresence>
-              {!showChat && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute left-0 -translate-x-1/2 bottom-full mb-2 sm:mb-4 w-[220px] sm:w-[260px] md:w-[300px] z-10"
-                >
-                  <div className="relative w-full px-3 sm:px-4 md:px-6 py-2 sm:py-3">
-                    <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-md rounded-2xl border border-primary/20" />
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 sm:w-4 h-3 sm:h-4 bg-background/80 border-b border-r border-primary/20 transform rotate-45" />
-                    <div className="relative w-full flex items-center gap-2 sm:gap-3">
-                      <motion.div
-                        className="w-6 sm:w-7 md:w-8 h-6 sm:h-7 md:h-8 rounded-full bg-primary/10 flex items-center justify-center"
-                        animate={{
-                          scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          repeatDelay: 1
-                        }}
-                      >
-                        👋
-                      </motion.div>
-                      <p className="text-xs sm:text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-foreground/90 to-foreground/70">
-                        点击我，来和我聊天吧
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
+          <div className="relative mt-10 flex flex-col items-center gap-4">
             <motion.div
               className="relative cursor-pointer w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40"
               whileHover="hover"
@@ -219,9 +185,78 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
                 </motion.div>
               </motion.div>
             </motion.div>
+
+            <div className="h-[72px]">
+              <AnimatePresence mode="popLayout">
+                {!showChat && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="w-[200px] mx-auto"
+                  >
+                    <motion.div 
+                      className="relative cursor-pointer"
+                      whileHover="hover"
+                      initial="initial"
+                      animate="animate"
+                    >
+                      <div className="relative">
+                        <div className="relative bg-background/95 backdrop-blur-sm rounded-2xl border border-primary/20 p-3"             
+                        >
+                          <div className="absolute left-1/2 -top-2 -translate-x-1/2 w-4 h-4">
+                            <div className="absolute w-full h-full rotate-45 bg-background/95 backdrop-blur-sm border-l border-t border-primary/20" />
+                          </div>
+
+                          <div   onClick={() => handleChatToggle(!showChat)} className="flex items-center justify-center gap-3">
+                            <motion.div
+                              className="w-7 h-7 rounded-full bg-primary/5 flex items-center justify-center"
+                              animate={{
+                                rotate: [0, -5, 5, 0],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                              }}
+                            >
+                              <span className="text-base">👋</span>
+                            </motion.div>
+
+                            <p className="text-sm font-medium text-primary/90">
+                              点击头像开始对话
+                            </p>
+                          </div>
+                        </div>
+
+                        <motion.div
+                          className="absolute -inset-2 rounded-3xl opacity-0"
+                          style={{
+                            background: `
+                              radial-gradient(circle at center, 
+                                rgba(var(--primary), 0.15) 0%,
+                                transparent 70%
+                              )
+                            `,
+                            filter: 'blur(8px)',
+                          }}
+                          variants={{
+                            hover: {
+                              opacity: 1,
+                              scale: 1.05,
+                              transition: { duration: 0.3 }
+                            }
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
-          <div className="mt-6 sm:mt-8 md:mt-16 space-y-6 sm:space-y-8 md:space-y-12">
+          <div className="space-y-6 sm:space-y-8 md:space-y-12">
             <motion.div 
               className="text-center relative"
               initial={{ opacity: 0, y: 20 }}
@@ -230,7 +265,7 @@ export function Hero({ scrollY, scrollToSection, onChatToggle }: HeroProps) {
             >
               <div className="relative space-y-3 sm:space-y-4">
                 <motion.h1 
-                  className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight"
+                  className="font-bold tracking-tight"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
