@@ -73,9 +73,9 @@ export function About() {
                 variants={itemVariants}
               >
                 <p className="text-lg leading-relaxed">
-                  一个从柯布西耶到迪杰斯特拉的特解。
+                  设计师出身，转行全栈开发，兴趣做产品。
                   <br />
-                  一条想横渡大海的神仙鱼
+                  一个从柯布西耶到迪杰斯特拉的特解。
                 </p>
               </motion.div>
 
@@ -109,7 +109,7 @@ export function About() {
               whileInView="visible"
               viewport={{ once: true }}
             >
-              {tagDetails.map((tag, index) => (
+              {tagDetails.map((tag) => (
                 <div key={tag.name} className="relative">
                   <motion.div
                     layoutId={`card-container-${tag.name}`}
