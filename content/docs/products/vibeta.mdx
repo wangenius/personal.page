@@ -1,0 +1,68 @@
+---
+title: vibeta
+description: 基于ai-sdk的Agent SDK
+---
+
+# installation
+
+```bash
+npm i vibeta
+```
+
+## start
+
+```ts
+import { Agent, Vendor, Memory } from "vibeta";
+
+const vendor = new Vendor();
+
+const model = vendor.llm();
+
+model.text();
+model.json();
+model.stream();
+
+const agent = new Agent({
+  model,
+});
+
+const memory = new Memory({
+
+});
+
+const tool = new Tool({
+  name: "",
+  description: "",
+  schema: z.object(),
+  (params,envs)=>{
+
+  }
+});
+
+const agent = new Agent({
+  system: "",
+  model,
+  memory,
+  envs,
+  tools: [],
+});
+
+agent.thread.switch();
+agent.thread.create();
+agent.thread.clone();
+
+// 执行
+agent.run("");
+
+agent.thread.agent // 设置
+  .set({});
+
+//监听hook开始执行
+agent.on();
+```
+
+```ts
+class CustomProvider extends BaseProvider {}
+
+class CustomMemory extends BaseProvider {}
+```

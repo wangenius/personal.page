@@ -1,36 +1,23 @@
-import Footer from "@/components/Footer";
-import { ThemeProvider } from "@/providers/theme-provider";
-import type { Metadata } from "next";
-import { Toaster } from "../components/ui/toaster";
-import "./globals.css";
+import '@/app/global.css';
+import { RootProvider } from 'fumadocs-ui/provider';
+import { Inter } from 'next/font/google';
+import type { ReactNode } from 'react';
 
-export const metadata: Metadata = {
-  title: "wangenius",
-  description: "A special solution from Le Corbusier to Dijkstra.",
-  icons: {
-    icon: "/icon_b.png",
-  },
-};
+const inter = Inter({
+  subsets: ['latin'],
+});
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="zh" suppressHydrationWarning>
-      <body className="min-h-screen min-w-screen flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="flex-1">
-            {children}
-          </main>
-          <Toaster />
-        </ThemeProvider>
+    <html lang="en" className={inter.className} suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/icon_b.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon_b.png" />
+        <link rel="shortcut icon" href="/icon_b.png" />
+        <meta name="theme-color" content="#ffffff" />
+      </head>
+      <body className="flex flex-col min-h-screen">
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   );
