@@ -1,0 +1,118 @@
+---
+title: 编译
+---
+
+# 编译
+
+## 本地编译
+
+```bash
+> rustc main.rs
+> .\main.exe
+Hello, world!
+```
+
+`println!` 调用 rust 宏。如果它调用了一个函数，则它将输入为 `println` （不带 `!` ）。我们将在第 19 章中更详细地讨论 rust 宏。现在，您只需要知道使用 `!` 意味着您正在调用宏而不是普通函数，并且宏不始终遵循与函数相同的规则。
+
+
+
+## 交叉编译
+一般编程阶段用的是Windows或者Mac系统，部署平台是Linux，这种情况下就需要使用Cross-Compiler交叉编译，意思是可以在当前平台Host下编译出目标平台target的可执行文件，
+
+尤其是做ARM平台开发的同学对这个更为熟悉。
+
+rust交叉编译在Github上有一个文档rust核心员工Jorge Aparicio提供的一份文档https://github.com/japaric/rust-cross，推荐大家仔细的读一读。
+
+如果要求比较简单，都是X86_64架构，从Mac上编译出unknow-linux/pc-windows-gnu就好。
+
+musl工具链（编译Linux环境程序所需）
+musl实现了Linux libc，质量可靠，适配所有Linux环境，使用静态连接替换动态链接，这样就能打出一个完整的二进制文件，可以丢到任何Linux环境里运行。
+
+当然，关于静态链接与动态链接各有优缺点，这里不细说。
+
+
+```bash title="安装一下"
+rustup target add x86_64-unknown-linux-musl
+```
+```bash title="安装musl-cross"
+brew install filosottile/musl-cross/musl-cross
+```
+windows-gnu相关（编译Windows环境程序所需）
+安装windows-gnu，
+用msvc容易编译失败，msvc其实就是指编译出来的程序直接依赖Windows平台的基础库，而gnu的则是开源的基础库直接内嵌到咱们编译的程序里，所以msvc的程序要更小。
+```
+rustup target add x86_64-pc-windows-gnu
+```
+
+```bash title='安装mingw-w64'
+brew install mingw-w64
+```
+
+rust程序示例:
+
+```rust title="main.rs"
+fn main() {
+  println!("Hello, world!\r\nwww.qttc.net\r\n");
+}
+```
+
+配置和打包编译
+配置config
+（没有新建即可，另外可在项目根目录下创建.cargo/config文件，只对当前项目生效）
+```
+vi ~/.cargo/config
+```
+内容如下：
+
+```toml
+[target.x86_64-unknown-linux-musl]
+linker = "x86_64-linux-musl-gcc"
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-gcc-ar"
+```
+
+编译(Linux环境程序)
+
+```bash
+cargo build --release --target x86_64-unknown-linux-musl
+```
+可把编译命令写到脚本中：
+
+编译命令整理为sh可执行文件脚本（package_linux.sh，放在项目根目录，给与执行权限chmod +x package_linux.sh）如下：
+
+```
+if [[ $(echo $0 | awk '/^\//') == $0 ]]; then
+    ABSPATH=$(dirname $0)
+else
+    ABSPATH=$PWD/$(dirname $0)
+fi
+cd ${ABSPATH}
+```
+```
+cargo build --release --target x86_64-unknown-linux-musl
+```
+编译出来后在target里会有个x86_64-unknown-linux-musl目录，里面又根据--release有debug和release目录，其中名为项目名的文件就是打包出来的Linux环境程序软件。
+
+ 
+
+```bash title="编译Windows环境程序"
+cargo build --release --target x86_64-pc-windows-gnu
+```
+也可把编译命令写到脚本中：
+
+编译命令整理为sh可执行文件脚本（package_win.sh，放在项目根目录，给与执行权限chmod +x package_win.sh）如下：
+```
+if [[ $(echo $0 | awk '/^\//') == $0 ]]; then
+    ABSPATH=$(dirname $0)
+else
+    ABSPATH=$PWD/$(dirname $0)
+fi
+cd ${ABSPATH}
+```
+```
+cargo build --release --target x86_64-pc-windows-gnu
+```
+编译出来后在target里会有个x86_64-pc-windows-gnu目录，里面又根据--release有debug和release目录，其中xxx.exe为打包出来的Windows环境程序软件。
+
+ 

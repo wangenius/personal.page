@@ -1,0 +1,179 @@
+---
+title : 栈和队列
+sidebar_position : 3
+slug : 栈和队列
+---
+# 栈和队列
+
+栈和队列的实现可以用数组(顺序存储)和列表(链式存储)的方式.
+
+浏览器中的后退与前进、软件中的撤销与反撤销。每当我们打开新的网页，浏览器就会对上一个网页执行入栈，这样我们就可以通过后退操作回到上一个网页。后退操作实际上是在执行出栈。如果要同时支持后退和前进，那么需要两个栈来配合实现。
+程序内存管理。每次调用函数时，系统都会在栈顶添加一个栈帧，用于记录函数的上下文信息。在递归函数中，向下递推阶段会不断执行入栈操作，而向上回溯阶段则会不断执行出栈操作。
+
+:::success 栈和队列的存储方式
+栈也有两种存储方法：一是顺序栈；二是链式栈。栈的顺序存储结构是利用一组地址连续的存储单元依次存储自栈底到栈顶的数据元素，同时附设指针 top 指示栈顶元素的位置。由于栈的操作是线性表操作的特例，相对而言，链式栈的操作更易于实现。
+
+栈区：由编辑器自动分配释放，存放函数的参数值，局部变量的值等（基本类型值）。
+
+堆区：由程序员分配释放，若程序员不释放，程序结束时可能有 OS 回收（引用类型值）。
+
+栈（数据结构）：一种先进后出的数据结构。
+
+堆（数据结构）：堆可以被看成是一棵树，如：堆排序。
+
+队列也有两种存储方法：一是顺序队列；二是链式队列，拿链式结构来实现队列，只要将头节点当作队头，尾结点当作队尾，入队时尾节点后移(next)，出队时头节点后移(next)
+:::
+
+11. 共享栈 栈底在两端
+
+12. 双端队列
+## 栈
+
+```rust
+typedef struct SqStack{
+    int data[maxSize];
+    int top;
+} SqStack;
+
+typedef struct Node {
+    int data;
+    struct Node *node;
+} Node;
+```
+
+
+```rust
+//init
+//sqstack
+void init(SqStack &st){
+    st.top = -1;
+};
+
+//Linked Stack
+void init(Node *&st){
+    st = (LNode *)malloc(sizeof(LNode));
+    st -> next = NULL;
+}
+//check stat
+int isEmpty(Stack st){
+   	if(SQSTACK) return st.top == -1;
+    if(LINKED_STACK) return st->next == NULL;
+}
+int isFull(SqStack st){
+  return st.top == maxSize - 1;
+}
+//sqstack
+int push(SqStack &st,int x){
+    if	(isFull(st)) return 0;
+    st.data[++st.top] = x;
+    return 1;
+}
+//listack
+int push(Node *&st,int x){
+    Node *p;
+    p = (Node *)malloc(sizeof(Node));
+    p->next = NULL;
+    p -> data = x;
+    p -> next = st ->next;
+    st ->next  = p;
+}
+// sqstack
+int pop(SqStack &st,int &x){
+    if(isEmpty(st)) return 0;
+    x = st.data[st.top--];
+    return 1;
+}
+//listack
+int pop(Node &st,int &x){
+    Node *p;
+    if (st.next = NULL) return 0;
+    p=st.next;
+    x = p.data;
+    st.next=p->next;
+    free(p);
+    return 1;
+}
+
+//simple expression
+int stack[maxSize]; int top = -1;
+stack[++top] = x;
+x = stack[top--];
+```
+
+
+## 队列
+淘宝订单。购物者下单后，订单将加入队列中，系统随后会根据顺序处理队列中的订单。在双十一期间，短时间内会产生海量订单，高并发成为工程师们需要重点攻克的问题。
+各类待办事项。任何需要实现“先来后到”功能的场景，例如打印机的任务队列、餐厅的出餐队列等，队列在这些场景中可以有效地维护处理顺序。
+```rust
+typedef struct {
+    int data[maxSize];
+    int front;
+    int rear;
+}SqQuene;
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+}Node;
+
+typedef struct Queue {
+    Node *front;
+    Node *rear;
+}Queue;
+```
+
+
+```rust
+void initQueue(SqQueue &Q){
+    Q.front = Q.rear = 0;
+}
+
+
+void isEmpty(SqQueue Q){
+	return  Q.front == Q.rear;
+}
+
+void isFull(SqQueue Q){
+	return(Q.rear + 1) % maxSize = Q.front;
+}
+
+int enqueue(SqQueue &Q, int x){
+	if(isFull(Q)) return 0;
+	Q.rear = (Q.rear + 1) % maxSize;
+	Q.data[Q.rear] = x;
+	return 1;
+}
+
+int dequeue(SqQueue &Q,int &x){
+	if(isEmpty(Q)) return 0;
+	Q.front = (Q.front + 1)% maxSize;
+	x = Q.data[Q.front];
+	return 1;
+}
+```
+
+### 用两个栈实现队列的功能
+
+算法思路：（时间复杂度为 O（1））
+
+设 2 个栈为 A、B，一开始均为空
+
+入队：将新元素 push 入栈 A
+
+出队：
+
+1. 判断栈 B 是否为空
+
+2. 如果不为空，则将栈 A 中所有元素依次 pop 出并 push 给栈 B
+
+3. 将栈 B 的栈顶元素 pop 出
+
+:::success 堆和栈的区别
+Heap 是堆，Stack 是栈
+
+1. Stack 的空间由操作系统自动分配和释放，Heap 上的空间手动分配和释放
+
+2. Stack 空间有限，Heap 是很大的自由存储区
+
+3. C 中的 malloc 函数分配的内存空间即在堆上，C++ 中对应的是 new 操作符
+:::

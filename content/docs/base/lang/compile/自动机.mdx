@@ -1,0 +1,71 @@
+---
+title : 自动机
+sidebar_position : 2
+slug : 自动机
+---
+# 自动机
+
+>[Automata theory](https://www.geeksforgeeks.org/introduction-of-theory-of-computation/?ref=lbp) is a branch of the theory of computation. It deals with the study of abstract machines and their capacities for computation. An abstract machine is called the automata. It includes the design and analysis of automata, which are mathematical models that can perform computations on strings of symbols according to a set of rules.
+<br/>Theory of computation is the branch of computer science that studies the nature and ranges of computation. It includes analysis and design of algorithms computation systems, formal languages, automata theory, compatibility theory, and complexity theory.
+<br/>自动机理论是计算理论的一个分支。它涉及对抽象机器及其计算能力的研究。抽象机器称为自动机。它包括自动机的设计和分析，这些是根据一组规则可以对符号串执行计算的数学模型。
+<br/>计算理论是计算机科学的一个分支，研究计算的性质和范围。它包括算法计算系统的分析和设计、形式语言、自动机理论、兼容性理论和复杂性理论。
+<br/> Automata theory (also known as Theory Of Computation) is a theoretical branch of Computer Science and Mathematics, which mainly deals with the logic of computation with respect to simple machines, referred to as automata. 
+<br/>Automata* enables scientists to understand how machines compute the functions and solve problems. The main motivation behind developing Automata Theory was to develop methods to describe and analyze the dynamic behavior of discrete systems. 
+<br/>自动机理论（也称为计算理论）是计算机科学和数学的一个理论分支，主要涉及与简单机器（称为自动机）相关的计算逻辑。
+<br/>自动机使科学家能够理解机器如何计算函数并解决问题。发展自动机理论的主要动机是开发描述和分析离散系统动态行为的方法。
+
+词法分析的第一阶段即扫描器，通常基于有限状态自动机。自动机一般指有穷状态自动机,拥有有限数量的状态,每个状态可以迁移到零个或多个状态,输入字串决定执行哪个状态的迁移.有穷状态自动机可以表示为一个有向图.分为确定的有穷自动机(DFA)和不确定的有穷自动机(NFA)
+
+有穷自动机(finite state automata)是一个识别器，它对每个输入的字符做识别和判断，以确定其能到达的最终状态或状态集和路径，有穷自动机分为两类，即不确定的有穷自动机NFA和确定的有穷自动机DFA.
+
+例子1：红绿灯系统： G（绿灯亮了的状态）；R（红灯亮的状态）；Y（黄灯亮的状态）
+
+例子2：零售机（vending machine）。它接受五角和一块的硬币，但是要至少积累到3元才能按下选择，并且只有作出选择才会执行。所以从初始state开始，每一个状态之后都有两种选择：要么投5角，要么投1元；每次投完都会到达一个新的状态（目前投入硬币总数）。
+
+
+## 解释
+
+在介绍DFA和NFA之前，先介绍几个名词：
+
+alphabet 字母表：符号的有限集合。 记作： Σ 例如：\{a, b, ... , x, m}
+
+strings 字符串： 通常我们用到建立在 Σ 上的字符串：有穷的符号序列。 例如：对于 Σ=\{a, b, c}, “ababc” 就是 Σ 上的一个字符串。
+
+languages 语言：通常我们也只用建立在Σ上的语言，语言就是多个字符串的集合。例如 \{ababc, ab, bc, ..}
+
+sentences 句子：句子是语言集合中元素（字符串）的另一个称呼。
+
+notation 符号：Σ* 是Σ上所有可能的字符串的集合。例如：Σ=\{a, b}, Σ* = \{ ε, a, b, ab, ba}
+
+## DFA
+
+Deterministic Finite State.“确定”意味着对于一个输入字符，只有唯一的可能状态
+
+$$$
+DFA = (\Sigma,S,s_0,F,\text{Mapping})
+$$$
+
+1. $\Sigma$是输入字母表,输入字符的集合.
+2. $S$非空有穷状态集
+3. $s_0$开始状态,$s_0 \in S$
+4. $F$包含于$S$的非空终止状态集
+5. $\text{Mapping}$映射关系.
+
+
+## NFA
+
+NFA(Non-Deterministic Finite State Automata)不确定的有穷自动机: 对一个输入符号，有两种或两种以上可能对状态，所以是不确定的。
+
+NFA可以转换成DFA，NFA和DFA的主要区别在于：
+1. DFA没有输入空串之上的转换动作；
+2. 对于DFA，一个特定的符号输入，有且只能得到一个状态，而NFA就有可能得到一个状态集；
+3. NFA的定义：（共5部分）
+
+$$$
+A = (\Sigma, S, s_0, F, \text{Mapping}) 
+$$$
+> 具体表示内容与DFA相同
+
+4. 对于输入字符串$w$，如果满足 $\exist s \in F. R*(s_0, w, s)$， 那么$w$是被自动机所接受的。 所有被该自动机接受的字符串就是这个自动机的语言。
+
+5. 定理：如果语言L被一个NFA所接受，那么一定存在一些DFA也接受这一语言L。

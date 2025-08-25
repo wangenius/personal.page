@@ -1,0 +1,218 @@
+---
+title: dict
+sidebar_position: 9
+slug: dict
+---
+
+# dict
+
+Dictionaries are used to store data values in key:value pairs.
+
+A dictionary is a collection which is ordered, changeable and do not allow duplicates.
+
+As of Python version 3.7, dictionaries are ordered. In Python 3.6 and earlier, dictionaries are unordered.
+
+```python
+dictItem = {
+  "name": "wangenius",
+  "gender": "male",
+  "year": 1999,
+  "good_at":["run","eat","sleep"]
+}
+print(dictItem)
+```
+
+Dictionary items are presented in key:value pairs, and can be referred to by using the key name.
+
+```python
+print(dictItem["name"])
+print(type(dictItem))
+```
+
+```text title="output"
+wangenius
+<class 'dict'>
+```
+
+duplicates are not allowed in dictionaries:
+
+```python
+dictItem = {
+  "name": "wangenius",
+  "gender": "male",
+  "year": 1999,
+  "year": 2000 # ❌
+}
+print(dictItem)
+```
+
+To determine how many items a dictionary has, use the len() function:
+
+```python
+print(len(dictItem))
+```
+
+## constructor
+
+```python
+dictItem = dict(name = "wangenius", age = 18)
+print(dictItem)
+```
+
+## function
+
+### access
+
+```python
+name = dictItem["name"]
+gender = dictItem.get("gender")
+```
+
+The keys() method will return a list of all the keys in the dictionary.
+
+```python
+ls = dictItem.keys()
+print(ls)
+```
+
+```text title="output"
+dict_keys(['name', 'gender', 'year'])
+```
+
+The values() method will return a list of all the values in the dictionary.
+
+```python
+ls = dictItem.values()
+print(ls)
+```
+
+```text title="output"
+dict_values(['wangenius', 'male', 1999])
+```
+
+The items() method will return each item in a dictionary, as tuples in a list.
+
+```python
+tup = dictItem.items()
+print(tup)
+```
+
+```text title="output"
+dict_items([('name', 'wangenius'), ('gender', 'male'), ('year', 1999)])
+```
+
+:::success notion
+dictItem 改变后，相应的items(),values(),keys()生成的都会改变
+:::
+
+```python
+x = dict_items.items()
+print(x) #before the change
+x["year"] = 2020
+print(x) #after the change
+if "name" in dictItem:
+  print("Yes, 'name' is one of the keys in the dictItem dictionary")
+```
+
+### change
+
+```python
+dictItem.update({"year": 2020})
+dictItem["year"] = 2021
+```
+
+### update
+
+```python
+dictItem.update({"year": 2020});
+dictItem["year"] = 2021;
+```
+
+### remove
+
+```python
+dictItem.pop("name")
+dictItem.popitem() #removes the last inserted item
+
+del dictItem["name"]
+dictItem.clear()
+print(dictItem)
+del dictItem
+print(dictItem)
+```
+
+```text title="output"
+{}
+NameError: name 'dictItem' is not defined
+```
+
+### loop
+
+You can loop through a dictionary by using a for loop.
+
+When looping through a dictionary, the return value are the keys of the dictionary, but there are methods to return the values as well.
+
+```python
+for x in dictItem:
+  print(dictItem[x])
+
+for x in dictItem.values():
+  print(x)
+
+for x, y in dictItem.items():
+  print(x, y)
+```
+
+### copy
+
+You cannot copy a dictionary simply by typing dict2 = dict1, because: dict2 will only be a reference to dict1, and changes made in dict1 will automatically also be made in dict2.
+
+There are ways to make a copy, one way is to use the built-in Dictionary method copy().
+
+```python
+dictItem_2 = dictItem.copy()
+print(dictItem_2)
+```
+
+Another way to make a copy is to use the built-in function dict().
+
+```python
+mydict = dict(dictItem)
+print(mydict)
+```
+
+### nested
+
+A dictionary can contain dictionaries, this is called nested dictionaries.
+
+```python
+cats = {
+  "cat1" : {
+    "color" : "red",
+    "year" : 2004
+  },
+  "cat2" : {
+    "color" : "blue",
+    "year" : 2007
+  },
+  "cat3" : {
+    "color" : "yellow",
+    "year" : 2011
+  }
+}
+print(cats["cat2"]["year"])
+```
+
+| Method                     | Description                                                 |
+| -------------------------- | ----------------------------------------------------------- |
+| clear()                    | Removes all the elements from the dictionary                |
+| copy()                     | Returns a copy of the dictionary                            |
+| fromkeys()                 | Returns a dictionary with the specified keys and value      |
+| get()                      | Returns the value of the specified key                      |
+| items()                    | Returns a list containing a tuple for each key value pair   |
+| keys()                     | Returns a list containing the dictionary's keys             |
+| pop()                      | Removes the element with the specified key                  |
+| popitem()                  | Removes the last inserted key-value pair                    |
+| setdefault(keyname, value) | 返回该关键字的值，如果该关键字不存在, 则写入第二个参数value |
+| update()                   | Updates the dictionary with the specified key-value pairs   |
+| values()                   | Returns a list of all the values in the dictionary          |

@@ -1,0 +1,297 @@
+---
+title: list
+sidebar_position: 7
+slug: list
+---
+
+# list
+
+Lists are used to store multiple items in a single variable.
+
+Lists are one of 4 built-in data types in Python used to store collections of data, the other 3 are Tuple, Set, and Dictionary, all with different qualities and usage.
+
+Lists are created using square brackets:
+
+```python
+mylist = ["apple", "banana", "cherry"]
+print(mylist)
+```
+
+List items are ordered, changeable, and allow duplicate values(Since lists are indexed, lists can have items with the same value).
+
+List items are indexed, the first item has index [0], the second item has index [1] etc.
+
+When we say that lists are ordered, it means that the items have a defined order, and that order will not change.
+
+If you add new items to a list, the new items will be placed at the end of the list.
+
+```python
+thislist = ["apple", "banana", "cherry", "apple", "cherry"]
+print(thislist)
+print(len(thislist)) # length of list
+```
+
+A list can contain different data types:
+
+```python
+list1 = ["abc", 34, True, 40, "male"]
+```
+
+### type()
+
+```python
+mylist = ["apple", "banana", "cherry"]
+print(type(mylist))
+```
+
+```text title="output"
+<class 'list'>
+```
+
+## constructor
+
+```python
+thislist = list(("apple", "banana", "cherry")) # note the double round-brackets
+print(thislist)
+```
+
+## access
+
+```python
+thislist = ["apple", "banana", "cherry"]
+print(thislist[-1])
+print(thislist[1])
+fruits = ["apple", "banana", "cherry", "orange", "kiwi", "melon", "mango"]
+print(fruits[2:5])
+print(fruits[-4:-1])
+if "apple" in thislist:
+  print("Yes, 'apple' is in the fruits list")
+```
+
+```text title="output"
+cherry
+banana
+['cherry', 'orange', 'kiwi']
+['orange', 'kiwi', 'melon']
+Yes, 'apple' is in the fruits list
+```
+
+## change
+
+```python
+thislist = ["apple", "banana", "cherry", "orange", "kiwi", "mango"]
+thislist[1:3] = ["blackcurrant", "watermelon"]
+print(thislist)
+
+thislist = ["apple", "banana", "cherry"]
+thislist[1:2] = ["blackcurrant", "watermelon"]
+print(thislist)
+
+thislist = ["apple", "banana", "cherry"]
+thislist[1:3] = ["blackcurrant"]
+print(thislist)
+```
+
+```text title="output"
+['apple', 'blackcurrant', 'watermelon', 'orange', 'kiwi','mango']
+['apple', 'blackcurrant', 'watermelon', 'cherry']
+['apple',"blackcurrant"]
+```
+
+## insert & remove
+
+```python
+ls2 = ["mango", "pineapple", "papaya"]
+ls = ["apple", "banana", "cherry"]
+
+ls.append("orange")
+print(ls)
+ls.insert(1,"melon")
+print(ls)
+ls.extend(ls2)
+print(ls)
+ls.append("banana")
+ls.remove("banana")
+print(ls)
+ls.pop(1)
+print(ls)
+ls.pop()
+print(ls)
+ls.clear()
+print(ls)
+del ls
+print(ls)
+```
+
+```text title="output"
+["apple","banana","cherry", "orange"]
+["apple","melon","banana","cherry", "orange"]
+["apple","melon","banana","cherry", "orange","mango","pineapple","papaya"]
+["apple","melon","cherry", "orange","mango","pineapple","papaya","banana"]
+["apple","cherry", "orange","mango","pineapple","papaya","banana"]
+["apple","cherry", "orange","mango","pineapple","papaya"]
+[]
+NameError: name 'thislist' is not defined
+```
+
+If you do not specify the index, the pop() method removes the last item.
+
+If there are more than one item with the specified value, the remove() method removes the first occurance;
+
+The extend() method does not have to append lists, you can add any iterable object (tuples, sets, dictionaries etc.).
+
+```python
+thislist = ["apple", "banana", "cherry"]
+thistuple = ("kiwi", "orange")
+thislist.extend(thistuple)
+print(thislist)
+```
+
+## loop
+
+```python title="for"
+thislist = ["apple", "banana", "cherry"]
+for x in thislist:
+  print(x)
+
+for i in range(len(thislist)):
+  print(thislist[i]) # The iterable created in the example above is [0, 1, 2].
+```
+
+```python
+thislist = ["apple", "banana", "cherry"]
+i = 0
+while i < len(thislist):
+  print(thislist[i])
+  i = i + 1
+```
+
+### list comprehension
+
+```python
+newlist = [expression for item in iterable if condition == True]
+```
+
+list comprehension offers the shortest syntax for looping through lists:
+
+```python
+thislist = ["apple", "banana", "cherry"]
+[print(x) for x in thislist]
+```
+
+```text title="output"
+apple
+banana
+cherry
+```
+
+```python
+fruits = ["apple", "banana", "cherry", "kiwi", "mango"]
+newlist = [x for x in fruits if "a" in x]
+print(newlist)
+newlist = [x for x in range(10)]
+newlist = [x.upper() for x in fruits]
+newlist = ['hello' for x in fruits] # 将所有的fruits的都换成hello
+newlist = [x if x != "banana" else "orange" for x in fruits] # 如果不是banana就是x，将所有的banana换成orange
+```
+
+```text title="output"
+['apple', 'banana', 'mango']
+```
+
+## sort
+
+List objects have a sort() method that will sort the list alphanumerically, ascending, by default:
+
+```python
+foods = ["orange", "mango", "kiwi", "pineapple", "banana"]
+foods.sort()
+print(foods)
+nums = [100, 50, 65, 82, 23]
+nums.sort()
+print(nums)
+
+nums.sort(reverse=true)
+print(nums)
+```
+
+```text title="output"
+["banana","kiwi","mango","orange","pineapple"]
+[23,50,65,82,100]
+[100,82,65,50,23]
+```
+
+By default the sort() method is case sensitive, resulting in all capital letters being sorted before lower case letters:
+大小写敏感，大写在小写前面
+
+```python
+thislist.sort(key = str.lower)
+```
+
+You can also customize your own function by using the keyword argument key = function.
+
+The function will return a number that will be used to sort the list (the lowest number first):
+
+```python
+# Sort the list based on how close the number is to 50:
+def myfunc(n):
+  return abs(n - 50)
+thislist = [100, 50, 65, 82, 23]
+thislist.sort(key = myfunc)
+print(thislist)
+```
+
+```python
+thislist = ["banana", "Orange", "Kiwi", "cherry"]
+thislist.reverse()
+print(thislist)
+```
+
+## copy()
+
+You cannot copy a list simply by typing list2 = list1, because: list2 will only be a reference to list1, and changes made in list1 will automatically also be made in list2.
+
+There are ways to make a copy, one way is to use the built-in List method copy().
+
+```python
+thislist = ["apple", "banana", "cherry"]
+mylist = thislist.copy()
+print(mylist)
+```
+
+Another way to make a copy is to use the built-in method list().
+
+```python
+thislist = ["apple", "banana", "cherry"]
+mylist = list(thislist)
+print(mylist)
+```
+
+## join
+
+```python
+list1 = ["a", "b", "c"]
+list2 = [1, 2, 3]
+list3 = list1 + list2
+print(list3)
+```
+
+```text title="output"
+["a","b","c",1,2,3]
+```
+
+## 成员函数
+
+| name      | description                                                                  |
+| --------- | ---------------------------------------------------------------------------- |
+| append()  | Adds an element at the end of the list                                       |
+| clear()   | Removes all the elements from the list                                       |
+| copy()    | Returns a copy of the list                                                   |
+| count()   | Returns the number of elements with the specified value                      |
+| extend()  | Add the elements of a list (or any iterable), to the end of the current list |
+| index()   | Returns the index of the first element with the specified value              |
+| insert()  | Adds an element at the specified position                                    |
+| pop()     | Removes the element at the specified position                                |
+| remove()  | Removes the item with the specified value                                    |
+| reverse() | Reverses the order of the list                                               |
+| sort()    | Sorts the list                                                               |

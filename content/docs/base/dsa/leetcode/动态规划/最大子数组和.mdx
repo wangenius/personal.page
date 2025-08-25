@@ -1,0 +1,53 @@
+---
+title: 最大子数组和
+sidebar_position: 2
+slug: 最大子数组和
+---
+
+# 最大子数组和
+
+## 题目
+
+一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+子数组是数组中的一个连续部分。
+
+观察不同解法的复杂度，可知动态规划是本题的最优解法。
+
+| 常见解法 | 时间复杂度    | 空间复杂度  |
+| -------- | ------------- | ----------- |
+| 暴力搜索 | $O(N^2)$      | $O(1)$      |
+| 分治思想 | $O(N \log N)$ | $O(\log N)$ |
+| 动态规划 | $O(N)$        | $O(1)$      |
+
+## 题解
+
+这是一道典型的使用「动态规划」解决的问题，需要我们掌握动态规划问题设计状态的技巧（无后效性），并且需要知道如何推导状态转移方程，最后再去优化空间。
+题目要我们找出和最大的连续子数组的值是多少，「连续」是关键字，连续很重要，不是子序列。
+
+题目只要求返回结果，不要求得到最大的连续子数组是哪一个。这样的问题通常可以使用「动态规划」解决。
+
+
+
+[Krahets动态规划](https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/solutions/151339/mian-shi-ti-42-lian-xu-zi-shu-zu-de-zui-da-he-do-2/)
+
+思路: 假设100位的数组. 每一位的数组和前面的关系是: 
+1. 如果前面是正数则需要相加
+2. 如果前面不是则不加
+
+```cpp
+int maxSubArray(vector<int> &nums)
+{
+    //类似寻找最大最小值的题目，初始值一定要定义成理论上的最小最大值
+    int result = INT_MIN;
+    //dp[i]表示nums中以nums[i]结尾的最大子序和
+    vector<int> dp(nums.size());
+    dp[0] = nums[0];
+    result = dp[0];
+    for (int i = 1; i < nums.size(); i++)
+    {
+        dp[i] = max(dp[i - 1] + nums[i], nums[i]);
+        result = max(result, dp[i]);
+    }
+    return result;
+}
+```

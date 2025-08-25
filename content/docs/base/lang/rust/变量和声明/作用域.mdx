@@ -1,0 +1,808 @@
+---
+title : 作用域
+sidebar_position : 3
+slug : 作用域
+---
+# 作用域
+
+## 资源获取即初始化RAII
+范围在所有权、借用和生命周期中发挥着重要作用。也就是说，它们向编译器指示借用何时有效、何时可以释放资源以及何时创建或销毁变量。
+
+rust 中的变量不仅仅是在堆栈中保存数据：它们还拥有资源，例如 `Box<T>` 拥有堆中的内存。 rust 强制执行 RAII（资源获取即初始化），因此每当对象超出范围时，就会调用其析构函数并释放其拥有的资源。
+
+此行为可以防止资源泄漏错误，因此您永远不必手动释放内存或再次担心内存泄漏！这是一个快速展示：
+
+```rust
+// raii.rs
+fn create_box() {
+    // Allocate an integer on the heap
+    let _box1 = Box::new(3i32);
+
+    // `_box1` is destroyed here, and memory gets freed
+}
+
+fn main() {
+    // Allocate an integer on the heap
+    let _box2 = Box::new(5i32);
+
+    // A nested scope:
+    {
+        // Allocate an integer on the heap
+        let _box3 = Box::new(4i32);
+
+        // `_box3` is destroyed here, and memory gets freed
+    }
+
+    // Creating lots of boxes just for fun
+    // There's no need to manually free memory!
+    for _ in 0u32..1_000 {
+        create_box();
+    }
+
+    // `_box2` is destroyed here, and memory gets freed
+}
+```
+当然，我们可以使用 valgrind 仔细检查内存错误：
+
+```bash
+$ rustc raii.rs && valgrind ./raii
+==26873== Memcheck, a memory error detector
+==26873== Copyright (C) 2002-2013, and GNU GPLd, by Julian Seward et al.
+==26873== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==26873== Command: ./raii
+==26873==
+==26873==
+==26873== HEAP SUMMARY:
+==26873==     in use at exit: 0 bytes in 0 blocks
+==26873==   total heap usage: 1,013 allocs, 1,013 frees, 8,696 bytes allocated
+==26873==
+==26873== All heap blocks were freed -- no leaks are possible
+==26873==
+==26873== For counts of detected and suppressed errors, rerun with: -v
+==26873== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
+```
+这里没有泄漏！
+
+```rust
+fn main() {
+    let shadowed_binding = 1;
+
+    {
+        println!("before being shadowed: {}", shadowed_binding);
+
+        // This binding *shadows* the outer one
+        let shadowed_binding = "abc";
+
+        println!("shadowed in inner block: {}", shadowed_binding);
+    }
+    println!("outside inner block: {}", shadowed_binding);
+
+    // This binding *shadows* the previous binding
+    let shadowed_binding = 2;
+    println!("shadowed in outer block: {}", shadowed_binding);
+}
+```
+
+##
+
+当数据被同名不可改变地绑定时，它也会冻结。在不可变绑定超出范围之前，无法修改冻结数据：
+
+
+```rust
+fn main() {
+    let mut _mutable_integer = 7i32;
+
+    {
+        // Shadowing by immutable `_mutable_integer`
+        let _mutable_integer = _mutable_integer;
+
+        // Error! `_mutable_integer` is frozen in this scope
+        _mutable_integer = 50;
+        // FIXME ^ Comment out this line
+
+        // `_mutable_integer` goes out of scope
+    }
+
+    // Ok! `_mutable_integer` is not frozen in this scope
+    _mutable_integer = 3;
+}
+```
+
+## 析构函数
+rust 中析构函数的概念是通过 Drop 特征提供的。当资源超出范围时，将调用析构函数。不需要为每个类型实现此特征，仅当您需要自己的析构函数逻辑时才为您的类型实现它。
+
+运行以下示例以查看 Drop 特征如何工作。当 main 函数中的变量超出范围时，将调用自定义析构函数。
+```rust
+struct ToDrop;
+
+impl Drop for ToDrop {
+    fn drop(&mut self) {
+        println!("ToDrop is being dropped");
+    }
+}
+
+fn main() {
+    let x = ToDrop;
+    println!("Made a ToDrop!");
+}
+```
+
+## 生命周期
+
+生命周期是编译器（或更具体地说，其借用检查器）用来确保所有借用有效的构造。具体来说，变量的生命周期从创建时开始，到销毁时结束。虽然生命周期和作用域经常一起提及，但它们并不相同。
+
+以我们通过 & 借用变量的情况为例。借用的生命周期由声明它的位置决定。因此，只要借贷在贷方被消灭之前结束，借贷就是有效的。但是，借用的范围取决于引用的使用位置。
+
+在下面的示例和本节的其余部分中，我们将了解生命周期与作用域的关系，以及两者有何不同。
+
+```rust
+// Lifetimes are annotated below with lines denoting the creation
+// and destruction of each variable.
+// `i` has the longest lifetime because its scope entirely encloses 
+// both `borrow1` and `borrow2`. The duration of `borrow1` compared 
+// to `borrow2` is irrelevant since they are disjoint.
+fn main() {
+    let i = 3; // Lifetime for `i` starts. ────────────────┐
+    //                                                     │
+    { //                                                   │
+        let borrow1 = &i; // `borrow1` lifetime starts. ──┐│
+        //                                                ││
+        println!("borrow1: {}", borrow1); //              ││
+    } // `borrow1` ends. ─────────────────────────────────┘│
+    //                                                     │
+    //                                                     │
+    { //                                                   │
+        let borrow2 = &i; // `borrow2` lifetime starts. ──┐│
+        //                                                ││
+        println!("borrow2: {}", borrow2); //              ││
+    } // `borrow2` ends. ─────────────────────────────────┘│
+    //                                                     │
+}   // Lifetime ends. ─────────────────────────────────────┘
+```
+
+请注意，没有为标签生命周期分配名称或类型。正如我们将看到的，这限制了生命周期的使用方式。
+
+## 显式注释
+
+借用检查器使用显式的生命周期注释来确定引用的有效时间。在没有省略生命周期 1 的情况下，rust 需要显式注释来确定引用的生命周期应该是什么。显式注释生命周期的语法使用撇号字符，如下所示：
+
+```rust
+foo<'a>
+// `foo` has a lifetime parameter `'a`
+```
+与闭包类似，使用生命周期需要泛型。此外，此生命周期语法指示 foo 的生命周期不得超过 'a 的生命周期。类型的显式注释具有 `&'a T` 形式，其中已经引入了 'a 。
+
+在具有多个生命周期的情况下，语法类似：
+```rust
+foo<'a, 'b>
+// `foo` has lifetime parameters `'a` and `'b`
+```
+在这种情况下， foo 的生命周期不能超过 'a 或 'b 的生命周期。
+
+有关使用中的显式生命周期注释，请参阅以下示例：
+
+```rust
+// `print_refs` takes two references to `i32` which have different
+// lifetimes `'a` and `'b`. These two lifetimes must both be at
+// least as long as the function `print_refs`.
+fn print_refs<'a, 'b>(x: &'a i32, y: &'b i32) {
+    println!("x is {} and y is {}", x, y);
+}
+
+// A function which takes no arguments, but has a lifetime parameter `'a`.
+fn failed_borrow<'a>() {
+    let _x = 12;
+
+    // ERROR: `_x` does not live long enough
+    let _y: &'a i32 = &_x;
+    // Attempting to use the lifetime `'a` as an explicit type annotation 
+    // inside the function will fail because the lifetime of `&_x` is shorter
+    // than that of `_y`. A short lifetime cannot be coerced into a longer one.
+}
+
+fn main() {
+    // Create variables to be borrowed below.
+    let (four, nine) = (4, 9);
+    
+    // Borrows (`&`) of both variables are passed into the function.
+    print_refs(&four, &nine);
+    // Any input which is borrowed must outlive the borrower. 
+    // In other words, the lifetime of `four` and `nine` must 
+    // be longer than that of `print_refs`.
+    
+    failed_borrow();
+    // `failed_borrow` contains no references to force `'a` to be 
+    // longer than the lifetime of the function, but `'a` is longer.
+    // Because the lifetime is never constrained, it defaults to `'static`.
+}
+```
+
+## 功能
+
+忽略省略，具有生命周期的函数签名有一些限制：
+
+任何引用都必须有注释的生命周期。
+返回的任何引用必须与输入具有相同的生命周期或者是 static 。
+此外，请注意，如果返回没有输入的引用会导致返回对无效数据的引用，则禁止返回引用。以下示例展示了具有生命周期的函数的一些有效形式：
+
+```rust
+// One input reference with lifetime `'a` which must live
+// at least as long as the function.
+fn print_one<'a>(x: &'a i32) {
+    println!("`print_one`: x is {}", x);
+}
+
+// Mutable references are possible with lifetimes as well.
+fn add_one<'a>(x: &'a mut i32) {
+    *x += 1;
+}
+
+// Multiple elements with different lifetimes. In this case, it
+// would be fine for both to have the same lifetime `'a`, but
+// in more complex cases, different lifetimes may be required.
+fn print_multi<'a, 'b>(x: &'a i32, y: &'b i32) {
+    println!("`print_multi`: x is {}, y is {}", x, y);
+}
+
+// Returning references that have been passed in is acceptable.
+// However, the correct lifetime must be returned.
+fn pass_x<'a, 'b>(x: &'a i32, _: &'b i32) -> &'a i32 { x }
+
+//fn invalid_output<'a>() -> &'a String { &String::from("foo") }
+// The above is invalid: `'a` must live longer than the function.
+// Here, `&String::from("foo")` would create a `String`, followed by a
+// reference. Then the data is dropped upon exiting the scope, leaving
+// a reference to invalid data to be returned.
+
+fn main() {
+    let x = 7;
+    let y = 9;
+    
+    print_one(&x);
+    print_multi(&x, &y);
+    
+    let z = pass_x(&x, &y);
+    print_one(z);
+
+    let mut t = 3;
+    add_one(&mut t);
+    print_one(&t);
+}
+```
+
+## 方法
+
+方法的注释与函数类似：
+
+```rust
+struct Owner(i32);
+
+impl Owner {
+    // Annotate lifetimes as in a standalone function.
+    fn add_one<'a>(&'a mut self) { self.0 += 1; }
+    fn print<'a>(&'a self) {
+        println!("`print`: {}", self.0);
+    }
+}
+
+fn main() {
+    let mut owner = Owner(18);
+
+    owner.add_one();
+    owner.print();
+}
+```
+
+## 结构体
+
+结构体中生命周期的注释也与函数类似：
+
+```rust
+// A type `Borrowed` which houses a reference to an
+// `i32`. The reference to `i32` must outlive `Borrowed`.
+#[derive(Debug)]
+struct Borrowed<'a>(&'a i32);
+
+// Similarly, both references here must outlive this structure.
+#[derive(Debug)]
+struct NamedBorrowed<'a> {
+    x: &'a i32,
+    y: &'a i32,
+}
+
+// An enum which is either an `i32` or a reference to one.
+#[derive(Debug)]
+enum Either<'a> {
+    Num(i32),
+    Ref(&'a i32),
+}
+
+fn main() {
+    let x = 18;
+    let y = 15;
+
+    let single = Borrowed(&x);
+    let double = NamedBorrowed { x: &x, y: &y };
+    let reference = Either::Ref(&x);
+    let number    = Either::Num(y);
+
+    println!("x is borrowed in {:?}", single);
+    println!("x and y are borrowed in {:?}", double);
+    println!("x is borrowed in {:?}", reference);
+    println!("y is *not* borrowed in {:?}", number);
+}
+```
+
+
+## Traits
+
+Trait 方法中生命周期的注释基本上与函数类似。请注意， impl 也可能有生命周期注释。
+
+```rust
+// A struct with annotation of lifetimes.
+#[derive(Debug)]
+struct Borrowed<'a> {
+    x: &'a i32,
+}
+
+// Annotate lifetimes to impl.
+impl<'a> Default for Borrowed<'a> {
+    fn default() -> Self {
+        Self {
+            x: &10,
+        }
+    }
+}
+
+fn main() {
+    let b: Borrowed = Default::default();
+    println!("b is {:?}", b);
+}
+```
+
+## Bounds
+
+就像泛型类型可以有界一样，生命周期（本身就是泛型）也使用界限。 : 字符在这里的含义略有不同，但 + 是相同的。请注意以下内容：
+
+T: 'a ： T 中的所有引用的生命周期必须超过 'a 。
+T: Trait + 'a ：类型 T 必须实现特征 Trait ，并且 T 中的所有引用都必须比 'a 更长寿。
+下面的示例显示了关键字 where 之后使用的上述语法：
+
+```rust
+use std::fmt::Debug; // Trait to bound with.
+
+#[derive(Debug)]
+struct Ref<'a, T: 'a>(&'a T);
+// `Ref` contains a reference to a generic type `T` that has
+// an unknown lifetime `'a`. `T` is bounded such that any
+// *references* in `T` must outlive `'a`. Additionally, the lifetime
+// of `Ref` may not exceed `'a`.
+
+// A generic function which prints using the `Debug` trait.
+fn print<T>(t: T) where
+    T: Debug {
+    println!("`print`: t is {:?}", t);
+}
+
+// Here a reference to `T` is taken where `T` implements
+// `Debug` and all *references* in `T` outlive `'a`. In
+// addition, `'a` must outlive the function.
+fn print_ref<'a, T>(t: &'a T) where
+    T: Debug + 'a {
+    println!("`print_ref`: t is {:?}", t);
+}
+
+fn main() {
+    let x = 7;
+    let ref_x = Ref(&x);
+
+    print_ref(&ref_x);
+    print(ref_x);
+}
+```
+
+## 强迫
+Coercion
+较长的生命周期可以被强制为较短的生命周期，以便它在通常无法工作的范围内工作。这以 rust 编译器推断强制的形式出现，也以声明生命周期差异的形式出现：
+```rust
+// Here, rust infers a lifetime that is as short as possible.
+// The two references are then coerced to that lifetime.
+fn multiply<'a>(first: &'a i32, second: &'a i32) -> i32 {
+    first * second
+}
+
+// `<'a: 'b, 'b>` reads as lifetime `'a` is at least as long as `'b`.
+// Here, we take in an `&'a i32` and return a `&'b i32` as a result of coercion.
+fn choose_first<'a: 'b, 'b>(first: &'a i32, _: &'b i32) -> &'b i32 {
+    first
+}
+
+fn main() {
+    let first = 2; // Longer lifetime
+    
+    {
+        let second = 3; // Shorter lifetime
+        
+        println!("The product is {}", multiply(&first, &second));
+        println!("{} is the first", choose_first(&first, &second));
+    };
+}
+```
+
+## Static
+
+rust 有一些保留的生命周期名称。其中之一是 'static 。您可能会在两种情况下遇到它：
+
+```rust
+// A reference with 'static lifetime:
+let s: &'static str = "hello world";
+
+// 'static as part of a trait bound:
+fn generic<T>(x: T) where T: 'static {}
+```
+
+两者相关但略有不同，这是学习 rust 时容易混淆的一个常见原因。以下是每种情况的一些示例：
+
+作为引用生命周期 'static 表示引用指向的数据在正在运行的程序的剩余生命周期内有效。它仍然可以被强制缩短寿命。
+
+有两种常见的方法可以使变量具有 'static 生命周期，并且都存储在二进制文件的只读内存中：
+
+使用 static 声明创建一个常量。
+创建一个 string 文字，其类型为： &'static str 。
+请参阅以下示例了解每种方法的显示：
+
+```rust
+// Make a constant with `'static` lifetime.
+static NUM: i32 = 18;
+
+// Returns a reference to `NUM` where its `'static`
+// lifetime is coerced to that of the input argument.
+fn coerce_static<'a>(_: &'a i32) -> &'a i32 {
+    &NUM
+}
+
+fn main() {
+    {
+        // Make a `string` literal and print it:
+        let static_string = "I'm in read-only memory";
+        println!("static_string: {}", static_string);
+
+        // When `static_string` goes out of scope, the reference
+        // can no longer be used, but the data remains in the binary.
+    }
+
+    {
+        // Make an integer to use for `coerce_static`:
+        let lifetime_num = 9;
+
+        // Coerce `NUM` to lifetime of `lifetime_num`:
+        let coerced_static = coerce_static(&lifetime_num);
+
+        println!("coerced_static: {}", coerced_static);
+    }
+
+    println!("NUM: {} stays accessible!", NUM);
+}
+```
+
+由于 'static 引用只需在程序生命周期的剩余时间内有效，因此可以在程序执行时创建它们。只是为了演示，下面的示例使用 Box::leak 动态创建 'static 引用。在这种情况下，它肯定不会在整个持续时间内都存在，而只会在泄漏点之后存在。
+
+```rust
+extern crate rand;
+use rand::Fill;
+
+fn random_vec() -> &'static [usize; 100] {
+    let mut rng = rand::thread_rng();
+    let mut boxed = Box::new([0; 100]);
+    boxed.try_fill(&mut rng).unwrap();
+    Box::leak(boxed)
+}
+
+fn main() {
+    let first: &'static [usize; 100] = random_vec();
+    let second: &'static [usize; 100] = random_vec();
+    assert_ne!(first, second)
+}
+```
+
+作为特征绑定，这意味着该类型不包含任何非静态引用。例如。接收者可以根据需要保留该类型，并且在丢弃该类型之前该类型永远不会变得无效。
+
+重要的是要理解这意味着任何拥有的数据总是通过 'static 生命周期界限，但对该拥有的数据的引用通常不会：
+
+```rust
+use std::fmt::Debug;
+
+fn print_it( input: impl Debug + 'static ) {
+    println!( "'static value passed in is: {:?}", input );
+}
+
+fn main() {
+    // i is owned and contains no references, thus it's 'static:
+    let i = 5;
+    print_it(i);
+
+    // oops, &i only has the lifetime defined by the scope of
+    // main(), so it's not 'static:
+    print_it(&i);
+}
+```
+
+编译器会告诉你：
+
+```text title="output"
+error[E0597]: `i` does not live long enough
+  --> src/lib.rs:15:15
+   |
+15 |     print_it(&i);
+   |     ---------^^--
+   |     |         |
+   |     |         borrowed value does not live long enough
+   |     argument requires that `i` is borrowed for `'static`
+16 | }
+   | - `i` dropped here while still borrowed
+```
+
+## Elision
+
+一些生命周期模式非常常见，因此借用检查器将允许您省略它们以节省打字并提高可读性。这称为省略。 rust 中存在省略只是因为这些模式很常见。
+
+以下代码显示了一些省略的示例。有关省略的更全面的描述，请参阅本书中的生命周期省略。
+
+
+```rust
+// `elided_input` and `annotated_input` essentially have identical signatures
+// because the lifetime of `elided_input` is inferred by the compiler:
+fn elided_input(x: &i32) {
+    println!("`elided_input`: {}", x);
+}
+
+fn annotated_input<'a>(x: &'a i32) {
+    println!("`annotated_input`: {}", x);
+}
+
+// Similarly, `elided_pass` and `annotated_pass` have identical signatures
+// because the lifetime is added implicitly to `elided_pass`:
+fn elided_pass(x: &i32) -> &i32 { x }
+
+fn annotated_pass<'a>(x: &'a i32) -> &'a i32 { x }
+
+fn main() {
+    let x = 3;
+
+    elided_input(&x);
+    annotated_input(&x);
+
+    println!("`elided_pass`: {}", elided_pass(&x));
+    println!("`annotated_pass`: {}", annotated_pass(&x));
+}
+```
+
+生命周期可以定义为一个引用所能持续的范围，是编译器用于预防悬垂引用（在对应的值已经被析构后仍被使用）的方式。这在 rust 中特别重要，因为 rust 放弃了垃圾收集器并选择手动管理内存。
+
+大部分情况下，rust 编译器可以自动识别引用的生命周期，判断悬垂引用，但是还有一些情况需要我们使用生命周期标注来告诉编译器。
+
+生命周期标注语法
+生命周期的基本标记是 'a，其中 a 可以是任何有效的 rust 标识符。此标记用于注解有生命周期的元素。比如引用类型的生命周期，如 &'a T。这表示这个引用的生命周期至少和 'a 一样长。
+
+```rust
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+##### &’static
+
+`&'static` 对于生命周期有着非常强的要求：一个引用必须要活得跟剩下的程序一样久，才能被标注为 `&'static`。
+
+# [&'static 和 T: 'static](https://course.rs/advance/lifetime/static.html#static-%E5%92%8C-t-static)
+
+rust 的难点之一就在于它有不少容易混淆的概念，例如 `&str` 、`str` 与 `String`， 再比如本文标题那两位。不过与字符串也有不同，这两位对于普通用户来说往往是无需进行区分的，但是当大家想要深入学习或使用 rust 时，它们就会成为成功路上的拦路虎了。
+
+与生命周期的其它章节不同，本文短小精悍，阅读过程可谓相当轻松愉快，话不多说，let's go。
+
+`'static` 在 rust 中是相当常见的，例如字符串字面值就具有 `'static` 生命周期:
+
+```rust
+fn main() {
+  let mark_twain: &str = "Samuel Clemens";
+  print_author(mark_twain);
+}
+fn print_author(author: &'static str) {
+  println!("{}", author);
+}
+```
+
+除此之外，特征对象的生命周期也是 `'static`，例如[这里](https://course.rs/compiler/fight-with-compiler/lifetime/closure-with-static.html#%E7%89%B9%E5%BE%81%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F)所提到的。
+
+除了 `&'static` 的用法外，我们在另外一种场景中也可以见到 `'static` 的使用:
+
+```rust
+use std::fmt::Display;
+fn main() {
+    let mark_twain = "Samuel Clemens";
+    print(&mark_twain);
+}
+
+fn print<T: Display + 'static>(message: &T) {
+    println!("{}", message);
+}
+```
+
+在这里，很明显 `'static` 是作为生命周期约束来使用了。 **那么问题来了， `&'static` 和 `T: 'static` 的用法到底有何区别？**
+
+## `[&'static](https://course.rs/advance/lifetime/static.html#static)`
+
+`&'static` 对于生命周期有着非常强的要求：一个引用必须要活得跟剩下的程序一样久，才能被标注为 `&'static`。
+
+对于字符串字面量来说，它直接被打包到二进制文件中，永远不会被 `drop`，因此它能跟程序活得一样久，自然它的生命周期是 `'static`。
+
+但是，**`&'static` 生命周期针对的仅仅是引用，而不是持有该引用的变量，对于变量来说，还是要遵循相应的作用域规则** :
+
+```rust
+use std::{slice::from_raw_parts, str::from_utf8_unchecked};
+
+fn get_memory_location() -> (usize, usize) {
+  // “Hello World” 是字符串字面量，因此它的生命周期是 `'static`.
+  // 但持有它的变量 `string` 的生命周期就不一样了，它完全取决于变量作用域，对于该例子来说，也就是当前的函数范围
+  let string = "Hello World!";
+  let pointer = string.as_ptr() as usize;
+  let length = string.len();
+  (pointer, length)
+  // `string` 在这里被 drop 释放
+  // 虽然变量被释放，无法再被访问，但是数据依然还会继续存活
+}
+
+fn get_str_at_location(pointer: usize, length: usize) -> &'static str {
+  // 使用裸指针需要 `unsafe{}` 语句块
+  unsafe { from_utf8_unchecked(from_raw_parts(pointer as *const u8, length)) }
+}
+
+fn main() {
+  let (pointer, length) = get_memory_location();
+  let message = get_str_at_location(pointer, length);
+  println!(
+    "The {} bytes at 0x{:X} stored: {}",
+    length, pointer, message
+  );
+  // 如果大家想知道为何处理裸指针需要 `unsafe`，可以试着反注释以下代码
+  // let message = get_str_at_location(1000, 10);
+}
+```
+
+上面代码有两点值得注意：
+
+- `&'static` 的引用确实可以和程序活得一样久，因为我们通过 `get_str_at_location` 函数直接取到了对应的字符串
+
+- 持有 `&'static` 引用的变量，它的生命周期受到作用域的限制，大家务必不要搞混了
+
+## `[T: 'static](https://course.rs/advance/lifetime/static.html#t-static)`
+
+相比起来，这种形式的约束就有些复杂了。
+
+首先，在以下两种情况下，`T: 'static` 与 `&'static` 有相同的约束：`T` 必须活得和程序一样久。
+
+```rust
+use std::fmt::Debug;
+
+fn print_it<T: Debug + 'static>( input: T) {
+    println!( "'static value passed in is: {:?}", input );
+}
+
+fn print_it1( input: impl Debug + 'static ) {
+    println!( "'static value passed in is: {:?}", input );
+}
+
+
+
+fn main() {
+    let i = 5;
+
+    print_it(&i);
+    print_it1(&i);
+}
+```
+
+以上代码会报错，原因很简单: `&i` 的生命周期无法满足 `'static` 的约束，如果大家将 `i` 修改为常量，那自然一切 OK。
+
+见证奇迹的时候，请不要眨眼，现在我们来稍微修改下 `print_it` 函数:
+
+```rust
+use std::fmt::Debug;
+
+fn print_it<T: Debug + 'static>( input: &T) {
+    println!( "'static value passed in is: {:?}", input );
+}
+
+fn main() {
+    let i = 5;
+
+    print_it(&i);
+}
+```
+
+这段代码竟然不报错了！原因在于我们约束的是 `T`，但是使用的却是它的引用 `&T`，换而言之，我们根本没有直接使用 `T`，因此编译器就没有去检查 `T` 的生命周期约束！它只要确保 `&T` 的生命周期符合规则即可，在上面代码中，它自然是符合的。
+
+再来看一个例子:
+
+```rust
+use std::fmt::Display;
+
+fn main() {
+  let r1;
+  let r2;
+  {
+    static STATIC_EXAMPLE: i32 = 42;
+    r1 = &STATIC_EXAMPLE;
+    let x = "&'static str";
+    r2 = x;
+    // r1 和 r2 持有的数据都是 'static 的，因此在花括号结束后，并不会被释放
+  }
+
+  println!("&'static i32: {}", r1); // -> 42
+  println!("&'static str: {}", r2); // -> &'static str
+
+  let r3: &str;
+
+  {
+    let s1 = "String".to_string();
+
+    // s1 虽然没有 'static 生命周期，但是它依然可以满足 T: 'static 的约束
+    // 充分说明这个约束是多么的弱。。
+    static_bound(&s1);
+
+    // s1 是 String 类型，没有 'static 的生命周期，因此下面代码会报错
+    r3 = &s1;
+
+    // s1 在这里被 drop
+  }
+  println!("{}", r3);
+}
+
+fn static_bound<T: Display + 'static>(t: &T) {
+  println!("{}", t);
+}
+```
+
+## [static 到底针对谁？](https://course.rs/advance/lifetime/static.html#static-%E5%88%B0%E5%BA%95%E9%92%88%E5%AF%B9%E8%B0%81)
+
+大家有没有想过，到底是 `&'static` 这个引用还是该引用指向的数据活得跟程序一样久呢？
+
+**答案是引用指向的数据**，而引用本身是要遵循其作用域范围的，我们来简单验证下：
+
+```rust
+fn main() {
+    {
+        let static_string = "I'm in read-only memory";
+        println!("static_string: {}", static_string);
+
+        // 当 `static_string` 超出作用域时，该引用不能再被使用，但是数据依然会存在于 binary 所占用的内存中
+    }
+
+    println!("static_string reference remains alive: {}", static_string);
+}
+```
+
+以上代码不出所料会报错，原因在于虽然字符串字面量 "I'm in read-only memory" 的生命周期是 `'static`，但是持有它的引用并不是，它的作用域在内部花括号 `}` 处就结束了。
+
+## [课后练习](https://course.rs/advance/lifetime/static.html#%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0)
+
+> [rust By Practice](https://zh.practice.rs/lifetime/static.html)，支持代码在线编辑和运行，并提供详细的习题解答。（本节暂无习题解答）
+
+## [总结](https://course.rs/advance/lifetime/static.html#%E6%80%BB%E7%BB%93)
+
+总之， `&'static` 和 `T: 'static` 大体上相似，相比起来，后者的使用形式会更加复杂一些。
+
+至此，相信大家对于 `'static` 和 `T: 'static` 也有了清晰的理解，那么我们应该如何使用它们呢？
+
+作为经验之谈，可以这么来:
+
+- 如果你需要添加 `&'static` 来让代码工作，那很可能是设计上出问题了
+
+- 如果你希望满足和取悦编译器，那就使用 `T: 'static`，很多时候它都能解决问题
+
+> 一个小知识，在 rust 标准库中，有 48 处用到了 &'static ，112 处用到了 `T: 'static` ，看来取悦编译器不仅仅是菜鸟需要的，高手也经常用到 :)
+

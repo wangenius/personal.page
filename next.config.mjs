@@ -1,10 +1,26 @@
-import { createMDX } from 'fumadocs-mdx/next';
+import { createMDX } from "fumadocs-mdx/next";
+import path from "path";
 
 const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@components": path.resolve(__dirname, "src/components"),
+      "@theme": path.resolve(__dirname, "src/theme"),
+    };
+    
+    // 添加对.awebp文件的支持
+    config.module.rules.push({
+      test: /\.awebp$/,
+      type: 'asset/resource',
+    });
+    
+    return config;
+  },
 };
 
 export default withMDX(config);

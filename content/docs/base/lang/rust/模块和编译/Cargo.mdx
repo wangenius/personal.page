@@ -1,0 +1,263 @@
+---
+title: Cargo
+sidebar_position: 2
+slug: Cargo
+---
+
+# Cargo
+
+cargo 是官方的 rust 包管理工具。它具有许多非常有用的功能，可以提高代码质量和开发人员速度！这些包括
+
+- 依赖管理以及与 crates.io（官方 rust 包注册表）的集成
+- 对单元测试的认识
+- 对基准的认识
+
+本章将介绍一些快速基础知识，但您可以在 The Cargo Book 中找到全面的文档。
+
+
+## 依赖dependencies
+
+大多数程序都依赖于某些库。如果您曾经手动管理过依赖关系，您就会知道这有多么痛苦。幸运的是，rust 生态系统标配 cargo ！ cargo 可以管理项目的依赖关系。
+
+要创建一个新的 rust 项目，
+
+```bash
+# A binary
+cargo new foo
+
+# A library
+cargo new --lib bar
+```
+对于本章的其余部分，我们假设我们正在制作一个二进制文件，而不是一个库，但所有概念都是相同的。
+
+在执行上述命令之后，您应该看到如下所示的文件层次结构：
+
+```bash
+.
+├── bar
+│   ├── Cargo.toml
+│   └── src
+│       └── lib.rs
+└── foo
+    ├── Cargo.toml
+    └── src
+        └── main.rs
+```
+main.rs 是新 foo 项目的根源文件——没有什么新内容。 Cargo.toml 是该项目的 cargo 的配置文件。如果你看一下它的内部，你应该会看到这样的东西：
+
+```toml
+[package]
+name = "foo"
+version = "0.1.0"
+authors = ["mark"]
+
+[dependencies]
+```
+[package] 下的 name 字段确定项目的名称。如果您发布箱子（稍后会详细介绍）， crates.io 将使用它。它也是编译时输出二进制文件的名称。
+
+version 字段是使用语义版本控制的包版本号。
+
+authors 字段是发布 crate 时使用的作者列表。
+
+[dependencies] 部分允许您为项目添加依赖项。
+
+例如，假设我们希望我们的程序有一个很棒的 CLI。您可以在 crates.io（官方 rust 包注册表）上找到许多很棒的包。一种流行的选择是拍手。截至撰写本文时， clap 的最新发布版本是 2.27.1 。要向我们的程序添加依赖项，我们只需将以下内容添加到 [dependencies] 下的 Cargo.toml 中： clap = "2.27.1" 。就是这样！您可以开始在程序中使用 clap 。
+
+cargo 还支持其他类型的依赖关系。这只是一个小样本：
+
+```toml
+[package]
+name = "foo"
+version = "0.1.0"
+authors = ["mark"]
+
+[dependencies]
+clap = "2.27.1" # from crates.io
+rand = { git = "https://github.com/rust-lang-nursery/rand" } # from online repo
+bar = { path = "../bar" } # from a path in the local filesystem
+```
+cargo 不仅仅是一个依赖管理器。 Cargo.toml 的格式规范中列出了所有可用的配置选项。
+
+为了构建我们的项目，我们可以在项目目录中的任何位置（包括子目录！）执行 cargo build 。我们还可以执行 cargo run 来构建和运行。请注意，这些命令将解决所有依赖项，根据需要下载 crate，并构建所有内容，包括您的 crate。 （请注意，它仅重建尚未构建的内容，类似于 make ）。
+
+瞧！这里的所有都是它的！
+
+## 惯例
+在上一章中，我们看到了以下目录层次结构：
+```bash
+foo
+├── Cargo.toml
+└── src
+    └── main.rs
+```
+
+不过，假设我们想在同一个项目中拥有两个二进制文件。然后怎样呢？
+
+事实证明 cargo 支持这一点。默认的二进制文件名称是 main ，正如我们之前看到的，但是您可以通过将其他二进制文件放置在 bin/ 目录中来添加它们
+
+```bash
+foo
+├── Cargo.toml
+└── src
+    ├── main.rs
+    └── bin
+        └── my_other_bin.rs
+```
+要告诉 cargo 仅编译或运行此二进制文件，我们只需传递 cargo --bin my_other_bin 标志，其中 my_other_bin 是该二进制文件的名称我们想要使用的二进制文件。
+
+除了额外的二进制文件之外， cargo 还支持更多功能，例如基准测试、测试和示例。
+
+## 测试test
+
+众所周知，测试对于任何软件都是不可或缺的！ rust 对单元和集成测试具有一流的支持（请参阅 TRPL 中的本章）。
+
+从上面链接的测试章节中，我们了解了如何编写单元测试和集成测试。在组织上，我们可以将单元测试放在他们测试的模块中，将集成测试放在他们自己的 tests/ 目录中：
+
+```bash
+foo
+├── Cargo.toml
+├── src
+│   └── main.rs
+│   └── lib.rs
+└── tests
+    ├── my_test.rs
+    └── my_other_test.rs
+```
+tests 中的每个文件都是一个单独的集成测试，即旨在测试您的库的测试，就像从依赖包中调用它一样。
+
+测试章节详细介绍了三种不同的测试风格：单元、文档和集成。
+
+cargo 自然地提供了一种运行所有测试的简单方法！
+
+```bash
+$ cargo test
+```
+您应该看到如下输出：
+
+```bash
+$ cargo test
+   Compiling blah v0.1.0 (file:///nobackup/blah)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.89 secs
+     Running target/debug/deps/blah-d3b32b97275ec472
+
+running 4 tests
+test test_bar ... ok
+test test_baz ... ok
+test test_foo_bar ... ok
+test test_foo ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```
+您还可以运行名称与模式匹配的测试：
+
+```bash
+$ cargo test test_foo
+$ cargo test test_foo
+   Compiling blah v0.1.0 (file:///nobackup/blah)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.35 secs
+     Running target/debug/deps/blah-d3b32b97275ec472
+
+running 2 tests
+test test_foo ... ok
+test test_foo_bar ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out
+```
+需要注意的是：Cargo 可能会同时运行多个测试，因此请确保它们不会相互竞争。
+
+这种并发导致问题的一个示例是，如果两个测试输出到一个文件，如下所示：
+
+```rust
+#[cfg(test)]
+mod tests {
+    // Import the necessary modules
+    use std::fs::OpenOptions;
+    use std::io::Write;
+
+    // This test writes to a file
+    #[test]
+    fn test_file() {
+        // Opens the file ferris.txt or creates one if it doesn't exist.
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open("ferris.txt")
+            .expect("Failed to open ferris.txt");
+
+        // Print "Ferris" 5 times.
+        for _ in 0..5 {
+            file.write_all("Ferris\n".as_bytes())
+                .expect("Could not write to ferris.txt");
+        }
+    }
+
+    // This test tries to write to the same file
+    #[test]
+    fn test_file_also() {
+        // Opens the file ferris.txt or creates one if it doesn't exist.
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open("ferris.txt")
+            .expect("Failed to open ferris.txt");
+
+        // Print "Corro" 5 times.
+        for _ in 0..5 {
+            file.write_all("Corro\n".as_bytes())
+                .expect("Could not write to ferris.txt");
+        }
+    }
+}
+```
+尽管目的是获得以下内容：
+
+```bash
+$ cat ferris.txt
+Ferris
+Ferris
+Ferris
+Ferris
+Ferris
+Corro
+Corro
+Corro
+Corro
+Corro
+```
+实际放入 ferris.txt 中的内容是：
+
+```bash
+$ cargo test test_file && cat ferris.txt
+Corro
+Ferris
+Corro
+Ferris
+Corro
+Ferris
+Corro
+Ferris
+Corro
+Ferris
+```
+
+
+### 构建脚本
+有时，从 cargo 进行正常构建是不够的。也许您的板条箱在 cargo 成功编译之前需要一些先决条件，例如代码生成或需要编译的一些本机代码。为了解决这个问题，我们构建了 Cargo 可以运行的脚本。
+
+要将构建脚本添加到包中，可以在 Cargo.toml 中指定它，如下所示：
+
+```toml
+[package]
+...
+build = "build.rs"
+```
+否则 Cargo 默认会在项目目录中查找 build.rs 文件。
+
+#### 如何使用构建脚本
+构建脚本只是另一个 rust 文件，将在编译包中的其他任何内容之前编译和调用。因此，它可以用来满足您的板条箱的先决条件。
+
+Cargo 通过此处指定的可以使用的环境变量为脚本提供输入。
+
+该脚本通过 stdout 提供输出。所有打印的行都写入 `target/debug/build/<pkg>/output` 。此外，以 cargo: 为前缀的行将直接由 Cargo 解释，因此可用于定义包编译的参数。
+
+如需进一步的规范和示例，请阅读 Cargo 规范。

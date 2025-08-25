@@ -1,0 +1,172 @@
+---
+title : 属性
+sidebar_position : 1
+slug : 属性
+---
+# 属性
+
+
+## attributes
+
+属性是应用于某些模块、包或项目的元数据。此元数据可用于/用于：
+
+代码的条件编译
+设置包名称、版本和类型（二进制或库）
+ 禁用 lint（警告）
+启用编译器功能（宏、glob 导入等）
+链接到国外图书馆
+将函数标记为单元测试
+标记将成为基准测试一部分的函数
+  类似宏的属性
+属性看起来像 #[outer_attribute] 或 #![inner_attribute] ，它们之间的区别在于它们应用的位置。
+
+#[outer_attribute] 适用于紧随其后的项目。项目的一些示例是：函数、模块声明、常量、结构、枚举。以下是属性 #[derive(Debug)] 应用于结构 Rectangle 的示例：
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+```
+#![inner_attribute] 适用于封闭项目（通常是模块或板条箱）。换句话说，该属性被解释为适用于它所在的整个范围。以下是 #![allow(unused_variables)] 应用于整个箱子的示例（如果放置在 main.rs 中）：
+
+
+
+```rust
+#![allow(unused_variables)]
+
+fn main() {
+    let x = 3; // This would normally warn about an unused variable.
+}
+```
+属性可以采用不同语法的参数：
+
+```rust
+#[attribute = "value"]
+#[attribute(key = "value")]
+#[attribute(value)]
+```
+属性可以有多个值，也可以分隔在多行中：
+
+
+```rust
+#[attribute(value, value2)]
+
+
+#[attribute(value, value2, value3,
+            value4, value5)]
+```
+
+## dead_code
+
+编译器提供了 dead_code lint，它将警告未使用的函数。可以使用属性来禁用 lint。
+```rust
+fn used_function() {}
+
+// `#[allow(dead_code)]` is an attribute that disables the `dead_code` lint
+#[allow(dead_code)]
+fn unused_function() {}
+
+fn noisy_unused_function() {}
+// FIXME ^ Add an attribute to suppress the warning
+
+fn main() {
+    used_function();
+}
+```
+请注意，在实际程序中，您应该消除死代码。在这些示例中，由于示例的交互性质，我们将在某些地方允许死代码。
+
+## crate
+
+crate_type 属性可用于告诉编译器一个包是二进制文件还是库（甚至是哪种类型的库）， crate_name 属性可用于设置板条箱的名称。
+
+但是，需要注意的是，在使用 rust 包管理器 Cargo 时， crate_type 和 crate_name 属性都没有任何效果。由于 Cargo 用于大多数 rust 项目，这意味着 crate_type 和 crate_name 的实际使用相对有限。
+
+```rust
+// This crate is a library
+#![crate_type = "lib"]
+// The library is named "rary"
+#![crate_name = "rary"]
+
+pub fn public_function() {
+    println!("called rary's `public_function()`");
+}
+
+fn private_function() {
+    println!("called rary's `private_function()`");
+}
+
+pub fn indirect_access() {
+    print!("called rary's `indirect_access()`, that\n> ");
+
+    private_function();
+}
+```
+
+当使用 crate_type 属性时，我们不再需要将 --crate-type 标志传递给 rustc 。
+```bash
+$ rustc lib.rs
+$ ls lib*
+library.rlib
+```
+
+##cfg
+
+参考、 cfg! 和宏。
+
+配置条件检查可以通过两个不同的运算符进行：
+
+cfg 属性：属性位置中的 #[cfg(...)]
+布尔表达式中的 cfg! 宏： cfg!(...)
+前者启用条件编译，而后者有条件地计算为 true 或 false 文字，允许在运行时进行检查。两者都使用相同的参数语法。
+
+cfg! 与 #[cfg] 不同，不会删除任何代码，仅计算 true 或 false。例如，当使用 cfg! 作为条件时，if/else 表达式中的所有块都必须有效，无论 cfg! 正在评估什么。
+
+```rust
+// This function only gets compiled if the target OS is linux
+#[cfg(target_os = "linux")]
+fn are_you_on_linux() {
+    println!("You are running linux!");
+}
+
+// And this function only gets compiled if the target OS is *not* linux
+#[cfg(not(target_os = "linux"))]
+fn are_you_on_linux() {
+    println!("You are *not* running linux!");
+}
+
+fn main() {
+    are_you_on_linux();
+
+    println!("Are you sure?");
+    if cfg!(target_os = "linux") {
+        println!("Yes. It's definitely linux!");
+    } else {
+        println!("Yes. It's definitely *not* linux!");
+    }
+}
+```
+
+#### 自定义
+
+一些条件如 target_os 是由 rustc 隐式提供的，但自定义条件必须使用 --cfg 标志传递给 rustc 。
+
+```rust
+#[cfg(some_condition)]
+fn conditional_function() {
+    println!("condition met!");
+}
+
+fn main() {
+    conditional_function();
+}
+```
+
+尝试运行此命令以查看在没有自定义 cfg 标志的情况下会发生什么。
+
+使用自定义 cfg 标志：
+```bash
+$ rustc --cfg some_condition custom.rs && ./custom
+condition met!
+```

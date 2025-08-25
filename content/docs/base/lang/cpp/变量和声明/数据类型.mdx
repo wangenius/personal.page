@@ -1,0 +1,322 @@
+---
+title : 数据类型
+sidebar_position : 2
+slug : 数据类型
+---
+# 数据类型
+
+C++ 支持各种各样的数据类型。在 C++ 中定义变量时，编译器根据变量声明的数据类型为该变量分配限定量的内存。每种数据类型需要不同量的内存。程序员可以根据应用程序的需要选择适当的数据类型。然而，每种数据类型的存储表示和机器指令在不同的机器上可能不同，尽管 C++ 指令在所有机器上都是相同的。
+
+## 基础类型
+
+import {Tag} from '@components'
+
+1. 无类型`void` : void 类型为无类型，与上面几种类型不同的是，不能将一个变量声明为 void 类型。但是函数的返回值允许为 void 类型，表示该函数无返回值。
+2. 字符类型`char`
+3. 布尔类型`bool`
+4. 整数类型 `int`
+5. 浮点类型`float`, `double`
+6. 空指针类型（C++11） `std::nullptr_t`
+
+### 整数类型
+
+> 由于历史原因，C++ 中布尔类型和字符类型会被视作特殊的整型。
+在几乎所有的情况下都 不应该 将除 signed char 和 unsigned char 之外的字符类型作为整型使用。
+
+整数类型一般按位宽有 5 个梯度：char,short,int,long,long long.
+
+由于历史原因，整数类型的位宽有多种流行模型. 
+C++ 标准保证 `1 == sizeof(char) <= sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`
+
+在 C++ 标准中，规定 int 的位数 至少 为 16 位。
+
+事实上在现在的绝大多数平台，int 的位数均为 32 位。
+
+对于 int 关键字，可以使用如下修饰关键字进行修饰：
+
+符号性：
+
+signed：表示带符号整数（默认）；
+unsigned：表示无符号整数。
+大小：
+
+short：表示 至少 16 位整数；
+long：表示 至少 32 位整数；
+（C++11 起）long long：表示 至少 64 位整数。
+
+在不引发歧义的情况下，允许省略部分修饰关键字，或调整修饰关键字的顺序。这意味着同一类型会存在多种等价表述。
+
+例如 int，signed，int signed，signed int 表示同一类型，而 unsigned long 和 unsigned long int 表示同一类型。
+
+c++中`^`不是幂运算.幂运算是`power(x,y)`;
+
+
+```cpp
+string s = "Hello, world";
+
+isdigit(s[2]);
+isalpha(s[2]);
+cout<<islower('a'); //非零
+cout<<islower('2'); //输出0
+cout<<islower('A'); //输出0
+cout<<isupper('a'); //返回0
+cout<<isupper('2'); //返回0
+cout<<isupper('A'); //返回非零
+
+tolower(s[0]);
+toupper(s[1]);
+
+isalnum(s[2]);
+```
+
+
+### char 和 int 的转换
+
+```cpp
+int x = 5;
+
+char i = x; //越界
+char i = x - '0'; //越界
+char i = x + '0'; //'5'
+
+char y = '0';
+
+int j = y; //48 ascii
+int j = y - '0'; //0
+int j = y + '0'; //96
+```
+
+#### 定宽整数类型
+
+C++11 起提供了定宽整数的支持，具体如下：
+
+`<cstdint>`：提供了若干定宽整数的类型和各定宽整数类型最大值、最小值等的宏常量。
+`<cinttypes>`：为定宽整数类型提供了用于 std::fprintf 系列函数和 std::fscanf 系列函数的格式宏常量。
+定宽整数有如下几种：
+
+intN_t: 宽度 恰为 N 位的有符号整数类型，如 int32_t.
+int_fastN_t: 宽度 至少 有 N 位的 最快的 有符号整数类型，如 int_fast32_t.
+int_leastN_t: 宽度 至少 有 N 位的 最小的 有符号整数类型，如 int_least32_t.
+无符号版本只需在有符号版本前加一个字母 u 即可，如 uint32_t,uint_least8_t.
+
+标准规定必须实现如下 16 种类型：
+```cpp
+int_fast8_t,int_fast16_t,int_fast32_t,int_fast64_t,
+
+int_least8_t,int_least16_t,int_least32_t,int_least64_t,
+
+uint_fast8_t,uint_fast16_t,uint_fast32_t,uint_fast64_t,
+
+uint_least8_t,uint_least16_t,uint_least32_t,uint_least64_t.
+```
+绝大多数编译器在此基础上都实现了如下 8 种类型：
+
+int8_t,int16_t,int32_t,int64_t,
+
+uint8_t,uint16_t,uint32_t,uint64_t.
+
+在实现了对应类型的情况下，C++ 标准规定必须实现表示对应类型的最大值、最小值、位宽的宏常量，格式为将类型名末尾的 _t 去掉后转大写并添加后缀：
+
+_MAX 表示最大值，如 INT32_MAX 即为 int32_t 的最大值。
+_MIN 表示最小值，如 INT32_MIN 即为 int32_t 的最小值。
+
+
+定宽整数类型本质上是普通整数类型的类型别名，所以混用定宽整数类型和普通整数类型可能会影响跨平台编译，例如：
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
+
+int main() {
+  long long a;
+  int64_t b;
+  std::cin >> a >> b;
+  std::cout << std::max(a, b) << std::endl;
+  return 0;
+};
+```
+int64_t 在 64 位 Windows 下一般为 long long int, 而在 64 位 Linux 下一般为 long int, 所以这段代码在使用 64 位 Linux 下的 GCC 时不能通过编译，而使用 64 位 Windows 下的 MSVC 时可以通过编译，因为 std::max 要求输入的两个参数类型必须相同。
+
+### 字符类型
+
+分为「窄字符类型」和「宽字符类型」，由于算法竞赛几乎不会用到宽字符类型，故此处仅介绍窄字符类型。
+
+窄字符型位数一般为 8 位，实际上底层存储方式仍然是整数，一般通过 ASCII 编码 实现字符与整数的一一对应，有如下三种：
+
+signed char：有符号字符表示的类型，表示范围在 -128 \sim 127 之间。
+unsigned char：无符号字符表示的类型，表示范围在 0 \sim 255 之间。
+char 拥有与 signed char 或 unsigned char 之一相同的表示和对齐，但始终是独立的类型。
+
+char 的符号性取决于编译器和目标平台：ARM 和 PowerPC 的默认设置通常没有符号，而 x86 与 x64 的默认设置通常有符号。
+
+GCC 可以在编译参数中添加 -fsigned-char 或 -funsigned-char 指定将 char 视作 signed char 或 unsigned char，其他编译器请参照文档。需要注意指定与架构默认值不同的符号有可能会破坏 ABI，造成程序无法正常工作。
+
+与其他整型不同，char、signed char、unsigned char 是 三种不同的类型。
+
+一般来说 signed char,unsigned char 不应用来存储字符，绝大多数情况下，这两种类型均被视作整数类型。
+
+:::success 补充
+数据类型转换放到`表达式的基本操作`当中先详细说明.
+:::
+
+## 派生类型
+
+1. Function
+2. Array
+3. Pointer
+4. Reference
+
+### 数列
+
+一个数列是使用连续存储空间的对象集合. 数组代表着许多实例在一个变量当中. 使用声明运算符\[\]声明。
+
+:::success 补充
+用于声明语句的运算符\(&,*,\[\])称为声明运算符declarator operator. 
+:::
+
+```cpp
+void increment(){
+    int v[] = { 0, 1, 2, 3, 4, 5};
+    for(auto& x : v)
+    ++x;
+}
+```
+这里`&`符号表示引用
+
+数组的声明形如 a[d]，其中，a 是数组的名字，d 是数组中元素的个数。在编译时，d 应该是已知的，也就是说，d 应该是一个整型的常量表达式。
+```cpp
+unsigned int d1 = 42;
+const int d2 = 42;
+int arr1[d1];  // 错误：d1 不是常量表达式
+int arr2[d2];  // 正确：arr2 是一个长度为 42 的数组
+```
+
+不能将一个数组直接赋值给另一个数组：
+```cpp
+int arr1[3];
+int arr2 = arr1;  // 错误
+arr2 = arr1;      // 错误
+```
+
+应该尽量将较大的数组定义为全局变量。因为局部变量会被创建在栈区中，过大（大于栈的大小）的数组会爆栈，进而导致RE。如果将数组声明在全局作用域中，就会在静态区中创建数组。
+
+
+## 用户定义类型
+
+
+> 用基本类型,const修饰符,声明修饰符构造出来的类型称为内置类型`built-in type`. c++的内置类型及其操作非常丰富. 但是没有为程序员提供便于编写高级应用程序的高层设施. 取而代之在内置类型和操作的基础上增加了一套精致的抽象机制,程序员可用它来构造所需的高层设施.
+> 即类和枚举.
+
+
+1. Class
+2. Structure：可以看做是一系列称为成员元素的组合体。可以看做是自定义的数据类型。
+3. Union: 特殊的类类型，它在一个时刻只能保有其一个非静态数据成员。
+4. Enum
+5. Typedef
+
+
+## 类型修饰符
+
+用于给已存在的数据类型提供额外的意义。
+
+* signed
+* unsigned
+* short
+* long
+
+## Type Conversion
+
+A type cast is basically a conversion from one type to another. There are two types of type conversion:
+
+### Implicit Type Conversion 
+automatic type conversion
+1. Done by the compiler on its own, without any external trigger from the user.
+2. Generally takes place when in an expression more than one data type is present. In such condition type conversion (type promotion) takes place to avoid lose of data.
+3. All the data types of the variables are upgraded to the data type of the variable with largest data type.
+4. It is possible for implicit conversions to lose information, signs can be lost (when signed is implicitly converted to unsigned), and overflow can occur (when long long is implicitly converted to float).
+
+```
+bool -> char -> short int -> int -> 
+unsigned int -> long -> unsigned -> 
+long long -> float -> double -> long double
+```
+
+```cpp
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    int x = 10; // integer x 
+    char y = 'a'; // character c 
+  
+    // y implicitly converted to int. ASCII 
+    // value of 'a' is 97 
+    x = x + y; 
+  
+    // x is implicitly converted to float 
+    float z = x + 1.0; 
+  
+    cout << "x = " << x << endl 
+         << "y = " << y << endl 
+         << "z = " << z << endl; 
+  
+    return 0; 
+} 
+```
+
+```text title="output"
+x = 107
+y = a
+z = 108
+```
+
+### Explicit Type Conversion
+This process is also called type casting and it is user-defined. Here the user can typecast the result to make it of a particular data type. In C++, it can be done by two ways:
+#### Converting by assignment
+This is done by explicitly defining the required type in front of the expression in parenthesis. This can be also considered as forceful casting. Syntax: 
+```cpp
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    double x = 1.2; 
+  
+    // Explicit conversion from double to int 
+    int sum = (int)x + 1; 
+  
+    cout << "Sum = " << sum; 
+  
+    return 0; 
+} 
+```
+
+```text title="output"
+Sum = 2
+```
+#### Conversion using Cast operator
+A Cast operator is an unary operator which forces one data type to be converted into another data type. C++ supports four types of casting:
+1. Static Cast
+2. Dynamic Cast
+3. Const Cast
+4. Reinterpret Cast
+
+```cpp
+#include <iostream> 
+using namespace std; 
+int main() 
+{ 
+    float f = 3.5; 
+  
+    // using cast operator 
+    int b = static_cast<int>(f); 
+  
+    cout << b; 
+} 
+```
+
+
+```text title="output"
+3
+```

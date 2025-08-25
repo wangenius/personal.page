@@ -12,7 +12,13 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <>
-        <Image src="/icon_b.png" alt="Logo" width={32} height={32} />
+        <Image
+          src="/icon.png"
+          alt="Logo"
+          width={32}
+          height={32}
+          className="rounded-full"
+        />
         WANGENIUS
       </>
     ),

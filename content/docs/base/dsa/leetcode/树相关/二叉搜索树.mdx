@@ -1,0 +1,123 @@
+---
+title: 二叉搜索树
+---
+
+# 树相关
+
+二叉搜索树的问题求解思路:暴力解法
+
+1. 中序遍历生成数组, 然后双指针操作
+
+## 平衡二叉树
+给定一个二叉树，判断它是否是 平衡二叉树  
+
+
+```cpp
+class Solution {
+private:
+    //遍历查看分支深度
+    int traverse(TreeNode* node){
+        if(node == nullptr) return 0;
+        //返回一个深度
+        int l = 0,r = 0;
+        l = traverse(node -> left);
+        if(l == -1) return -1;
+        r = traverse(node -> right);
+        if(r == -1) return -1;
+        if(l - r >= 2 || r - l >= 2) return -1;
+        return max(l,r) + 1;
+    }
+public:
+    bool isBalanced(TreeNode* root) {
+        return ! (traverse(root) == -1);
+    }
+};
+```
+
+
+给定一个二叉树，找出其最小深度。
+
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+
+```cpp
+class Solution {
+private:
+    int traverse(TreeNode* node){
+        if(node -> left == nullptr && node -> right == nullptr)
+        return 1;
+        if (node -> left == nullptr)
+            return traverse(node -> right) + 1;
+        else if(node -> right == nullptr)
+            return traverse(node -> left) + 1;
+        return min(traverse(node -> left), traverse(node -> right)) + 1;
+    }
+public:
+    int minDepth(TreeNode* root) {
+        if(root == nullptr) return 0;
+        return traverse(root);
+    }
+};
+```
+
+
+```cpp
+class Solution
+{
+
+private:
+    bool traverse(TreeNode *node, int &sum, int &target)
+    {
+        if (node)
+            sum += node->val;
+        else
+            return false;
+
+        if (!node->left && !node->right)
+        {
+            if (sum == target)
+                return true;
+        }
+        else
+        {
+            if (traverse(node->left, sum, target))
+                return true;
+            if (traverse(node->right, sum, target))
+                return true;
+        }
+        sum -= node->val;
+        return false;
+    }
+
+public:
+    bool hasPathSum(TreeNode *root, int targetSum)
+    {
+        int sum = 0;
+        return traverse(root, sum, targetSum);
+    }
+};
+```
+
+
+## 二叉搜索树的最近公共祖先
+
+```cpp
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        while(root != nullptr) {
+            if(root->val < p->val && root->val < q->val) // p,q 都在 root 的右子树中
+                root = root->right; // 遍历至右子节点
+            else if(root->val > p->val && root->val > q->val) // p,q 都在 root 的左子树中
+                root = root->left; // 遍历至左子节点
+            else break;
+        }
+        return root;
+    }
+};
+```
+
+
+作者：Krahets
+链接：https://leetcode.cn/problems/er-cha-sou-suo-shu-de-zui-jin-gong-gong-zu-xian-lcof/solutions/216894/mian-shi-ti-68-i-er-cha-sou-suo-shu-de-zui-jin-g-7/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

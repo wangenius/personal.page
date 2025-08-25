@@ -1,0 +1,44 @@
+---
+title : 二叉树的递归遍历
+sidebar_position : 1
+slug : 二叉树的递归遍历
+---
+# 二叉树的递归遍历
+
+## 递归得到节点个数
+```cpp title="遍历节点个数"
+int countNodes(TreeNode* root) {
+	if(root == null) return 0;
+	int left = countNodes(root -> left);
+	int right = countNodes(root -> right);
+	return left+right+1;
+}
+```
+
+## 二叉搜索树的创造
+
+import {Tag} from '@components'
+
+给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 平衡 二叉搜索树。
+
+<Tag>分治法</Tag> <Tag>递归</Tag>
+
+```cpp
+class Solution {
+private:
+  TreeNode *generate(vector<int> &nums, int left, int right) {
+    int mid = (left + right) >> 1;
+    TreeNode *res = new TreeNode(nums[mid]);
+    if(mid != left)
+    res->left = generate(nums, left, mid - 1);
+    if(mid != right)
+    res->right = generate(nums, mid + 1, right);
+    return res;
+  }
+
+public:
+  TreeNode *sortedArrayToBST(vector<int> &nums) {
+   return generate(nums, 0, nums.size() - 1);
+  }
+};
+```

@@ -1,0 +1,120 @@
+---
+title: 变量和常量
+sidebar_position: 1
+slug: 变量和常量
+---
+
+# 变量和常量
+
+## 变量variable
+
+还可以通过 const 和 static 关键字创建常量。
+
+在 rust 中，每一个值都属于某一个**数据类型**，这告诉 rust 它被指定为何种数据，以便明确数据处理方式。我们将看到两类数据类型子集：标量（scalar）和复合（compound）。
+
+rust 是 **静态类型**（_statically typed_）语言，也就是说在编译时就必须知道所有变量的类型。根据值及其使用方式，编译器通常可以推断出我们想要用的类型。当多种类型均有可能时，比如使用 `parse` 将 `String` 转换为数字时，必须增加类型注解，像这样：
+
+```rust
+let guess: u32 = "42".parse().expect("Not a number!");//correct
+let guess = "42".parse().expect("Not a number!");//error
+/**
+error[E0282]: type annotations needed
+ --> src/main.rs:2:9
+  |
+2 |     let guess = "42".parse().expect("Not a number!");
+  |         ^^^^^
+  |         |
+  |         cannot infer type for `_`
+  |         consider giving `guess` a type
+*/
+```
+
+> By default, variables are immutable.
+
+```rust
+fn main() {
+  //默认不可变
+    let x = 5;
+  //可变声明
+    let mut y = 0;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}//不可编译
+```
+
+## 常量constant
+
+rust 有两种不同类型的常量，可以在任何范围（包括全局范围）中声明。两者都需要显式类型注释：
+
+- const ：不可更改的值（常见情况）。
+- static ：具有 'static 生命周期的可能可变变量。静态生命周期是推断出来的，不必指定。访问或修改可变静态变量是 unsafe 。
+
+常量和不可变变量的区别：
+
+1. 常量不能使用`mut`，总是不可变
+
+2. `const`关键字
+
+3. 必须注明`type`
+
+4. 常量可以在任何作用域中声明，包括全局作用域。
+
+5. 常量只能被设置为常量表达式，而不可以是其他任何只能在运行时计算出的值。
+
+```rust
+const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
+//编译器能够在编译时计算一组有限的操作，这使我们可以选择以更容易理解和验证的方式写出此值。
+```
+
+在声明它的作用域之中，常量在**整个程序生命周期中**都有效，此属性使得常量可以作为多处代码使用的全局范围的值，例如一个游戏中所有玩家可以获取的最高分或者光速。
+
+将遍布于应用程序中的硬编码值声明为常量，能帮助后来的代码维护人员了解值的意图。如果将来需要修改硬编码值，也只需修改汇聚于一处的硬编码值。
+
+## 隐藏shadowing
+
+定义一个与之前变量同名的新变量称为第一个变量被第二个**隐藏**了。第二个变量“遮蔽”了第一个变量，此时任何使用该变量名的行为中都会视为是在使用第二个变量，直到第二个变量自己也被隐藏或第二个变量的作用域结束。
+
+```rust
+fn main() {
+    let x = 5;
+    let x = x + 1;//shadowing
+    {
+        let x = x * 2;//shadowing
+        println!("The value of x in the inner scope is: {x}");
+    }
+    println!("The value of x is: {x}");
+}
+/**
+$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/variables`
+The value of x in the inner scope is: 12
+The value of x is: 6
+*/
+```
+
+隐藏创建了一个新的变量，可以改变值的类型。`mut`不能改变值的类型。
+
+```rust
+let spaces = "   ";//&str类型
+let spaces = spaces.len();//usize类型 正确
+
+let mut spaces = "   ";
+spaces = spaces.len();
+/**
+$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0308]: mismatched types
+ --> src/main.rs:3:14
+  |
+2 |     let mut spaces = "   ";
+  |                      ----- expected due to this value
+3 |     spaces = spaces.len();
+  |              ^^^^^^^^^^^^ expected `&str`, found `usize`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `variables` due to previous error
+
+```

@@ -1,0 +1,32 @@
+---
+title : 二叉树的直径
+sidebar_position : 1
+slug : 二叉树的直径
+---
+# 二叉树的直径
+
+:::success 备注
+重点在理解递归算法的作用, 向上传递子树的值.
+:::
+
+```cpp
+class Solution {
+  int sum;
+
+  int post(TreeNode *root) {
+    if (!root)
+      return 0;
+    int left = post(root->left);
+    int right = post(root->right);
+    sum = max(sum, left + right);
+    return max(left, right) + 1;
+  }
+
+public:
+  int diameterOfBinaryTree(TreeNode *root) {
+    sum = 0;
+    post(root);
+    return sum;
+  }
+};
+```

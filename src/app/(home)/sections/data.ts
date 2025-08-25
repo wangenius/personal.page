@@ -1,6 +1,4 @@
-import { ActivityItem, Project, TagDetail } from "@/types";
-
-export const workHistory: ActivityItem[] = [
+export const workHistory = [
   {
     type: "work",
     title: "独立开发者",
@@ -13,7 +11,8 @@ export const workHistory: ActivityItem[] = [
     type: "work",
     title: "数据分析 & 产品研究",
     company: "高榕创投",
-    description: "基于产品瓶颈和认知局限的自我判断，2024年选择去高榕创投实习，从投资者的角度认知产品。负责数据分析、数据工程和产品研究工作。期间主要参与AI相关的产品的研究，包括： AI Coding 软件相关、 各供应商大模型的横向评测、 虚拟货币中Agent Coin相关的研究等。广泛涉猎了各种AI产品，学习了研究产品的方法论。",
+    description:
+      "基于产品瓶颈和认知局限的自我判断，2024年选择去高榕创投实习，从投资者的角度认知产品。负责数据分析、数据工程和产品研究工作。期间主要参与AI相关的产品的研究，包括： AI Coding 软件相关、 各供应商大模型的横向评测、 虚拟货币中Agent Coin相关的研究等。广泛涉猎了各种AI产品，学习了研究产品的方法论。",
     period: "2024",
     skills: ["案例研究", "Python", "行业报告", "爬虫"],
   },
@@ -41,11 +40,11 @@ export const workHistory: ActivityItem[] = [
     description:
       "2017年-2022年，我是一名建筑学专业的学生。在天津大学学习建筑和城市设计。建筑学涉猎广泛，除了建筑外，学到了很多设计的思维和方法，开始对做产品有了兴趣。2022年在浙江省建筑设计研究院做建筑设计师，主要是利用参数化和其他数字化方式设计城市地标建筑。期间发现AI，开始学习计算机科学和AI等相关技能，并成为独立开发者。",
     period: "2017 - 2022",
-    skills: ["Rhinoceros", "Grasshopper", "Python","城市设计",  "人因工程",],
+    skills: ["Rhinoceros", "Grasshopper", "Python", "城市设计", "人因工程"],
   },
 ];
 
-export const projects: Project[] = [
+export const projects = [
   {
     title: "Ghostie",
     description:
@@ -71,7 +70,8 @@ export const projects: Project[] = [
   },
   {
     title: "Mdrone",
-    description: "一个具有AI能力的轻量级Markdown写作工具，支持即时渲染，AI能力更加深层次的融合到写作环境当中。",
+    description:
+      "一个具有AI能力的轻量级Markdown写作工具，支持即时渲染，AI能力更加深层次的融合到写作环境当中。",
     image: "/projects/mdrone.png",
     tags: ["tauri", "AI", "文本生成", "轻量级"],
     github: "https://github.com/wangenius/mdrone",
@@ -79,14 +79,15 @@ export const projects: Project[] = [
 
   {
     title: "建筑作品集",
-    description: "我的建筑生涯作品集，希望可以展现我的设计和审美能力。点击链接可下载，下载的内容是低分辨率的PDF版本，如需高清或者更多视频、模型内容，可使用邮箱联系我。",
+    description:
+      "我的建筑生涯作品集，希望可以展现我的设计和审美能力。点击链接可下载，下载的内容是低分辨率的PDF版本，如需高清或者更多视频、模型内容，可使用邮箱联系我。",
     image: "/projects/architect.png",
     tags: ["城市设计", "建筑", "渲染", "设计"],
     link: "/projects/protfolio4.0.pdf",
   },
 ];
 
-export const tagDetails: TagDetail[] = [
+export const tagDetails = [
   {
     name: "设计",
     icon: "🎨",
@@ -108,7 +109,7 @@ export const tagDetails: TagDetail[] = [
     longDesc: "全栈开发工程师，热衷于探索新技术和创新解决方案。",
     items: [
       "前端技术：React、TypeScript",
-      "后端技术：Node.js、Python、Rust",
+      "后端技术：Node.js、Python、rust",
       "数据库：PostgreSQL",
       "开发理念：产品为主，以解决实际问题为导向",
     ],
@@ -122,7 +123,7 @@ export const tagDetails: TagDetail[] = [
       "GenAI + Agent 解决方案",
       "项目经验：AI创意平台开发、AI Agent 开发",
       "MCP + A2A",
-      "ComfyUI"
+      "ComfyUI",
     ],
   },
   {
@@ -157,9 +158,6 @@ export const tagDetails: TagDetail[] = [
     icon: "🌐",
     desc: "创作者",
     longDesc: "具象的和抽象的艺术，故事性",
-    items: [
-      "探索生命的故事",
-      "少即是多"
-    ],
+    items: ["探索生命的故事", "少即是多"],
   },
 ];

@@ -1,0 +1,29 @@
+---
+title: wangenius
+---
+
+我的同名包
+
+```bash
+npm i wangenius
+```
+
+```ts title="index.ts"
+import { Agent, LLM } from "wangenius";
+```
+
+```ts title="index.ts"
+const agent = new Agent();
+const llm = new LLM();
+```
+
+```ts title="index.ts"
+agent.run("Hello, world!");
+```
+
+```ts title="index.ts"
+llm.text("Hello, world!");
+llm.json("Hello, world!");
+llm.image("Hello, world!");
+llm.stream("Hello, world!");
+```

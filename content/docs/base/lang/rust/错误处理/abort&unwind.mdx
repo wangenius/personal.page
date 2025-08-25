@@ -1,0 +1,62 @@
+---
+title : abort&unwind
+sidebar_position : 2
+slug : abort&unwind
+---
+# abort&unwind
+
+上一节说明了错误处理机制 panic 。可以根据恐慌设置有条件地编译不同的代码路径。当前可用的值为 unwind 和 abort 。
+
+在前面的柠檬水示例的基础上，我们明确使用恐慌策略来执行不同的代码行。
+
+```rust
+fn drink(beverage: &str) {
+    // You shouldn't drink too much sugary beverages.
+    if beverage == "lemonade" {
+        if cfg!(panic = "abort") {
+            println!("This is not your party. Run!!!!");
+        } else {
+            println!("Spit it out!!!!");
+        }
+    } else {
+        println!("Some refreshing {} is all I need.", beverage);
+    }
+}
+
+fn main() {
+    drink("water");
+    drink("lemonade");
+}
+```
+这是另一个重点关注重写 drink() 并显式使用 unwind 关键字的示例。
+
+```rust
+#[cfg(panic = "unwind")]
+fn ah() {
+    println!("Spit it out!!!!");
+}
+
+#[cfg(not(panic = "unwind"))]
+fn ah() {
+    println!("This is not your party. Run!!!!");
+}
+
+fn drink(beverage: &str) {
+    if beverage == "lemonade" {
+        ah();
+    } else {
+        println!("Some refreshing {} is all I need.", beverage);
+    }
+}
+
+fn main() {
+    drink("water");
+    drink("lemonade");
+}
+```
+
+可以使用 abort 或 unwind 从命令行设置恐慌策略。
+
+```rust
+rustc  lemonade.rs -C panic=abort
+```
