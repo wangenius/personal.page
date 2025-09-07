@@ -1,0 +1,107 @@
+---
+title: deconstruct projects
+description: 通过解构实际的项目来知道具体一个项目是怎么实现的
+---
+
+> 从几种不同的架构来完成
+
+# 环境
+
+每一种语言，都要有一些环境的，一般指的是编译器。
+
+因为最终要执行， 就要从人类语言转换成机器语言。
+
+js 就需要 node/bun/deno 环境。（有一种， node是最常用的，所以叫nodejs）
+
+
+
+第二种环境叫包管理器，用来快速下载对应语言的第三方包。（因为你不可能从0开始创造项目的）
+
+node - npm python-pip rust-cargo等等。
+
+
+
+
+
+# 从一个node脚本开始
+
+我们使用node来建立一个最简单的cli程序。
+
+```js
+console.log("hello，world");
+```
+
+执行
+
+```bash
+node index.js
+```
+
+你就会看到了。
+
+这是一个cli交互的程序。 最简单。
+
+但是你已经知道了， 从人类的源程序 通过 编译器 node 最终执行了这个程序。
+
+
+
+# 一个node项目
+
+```bash
+npm init
+```
+
+直接生成了一个`package.json` 这是npm node package module 初始化的项目。有这个json文件表示这个目录下是一个node项目。
+
+```bash
+npm install axios
+```
+
+你就可以在项目中使用这个axios了。
+
+
+
+# 一个前端项目
+
+以web端为例。前端本身就是拥有渲染能力的程序而已。 比如chrome已经建立起来一个拥有解析 html\css\javascript代码的渲染程序。 你只要写这些代码，最终转换成chrome能够看得懂的html/css/js代码即可。
+
+一个react项目, 我们跳过html/css/javascript 的阶段。 如果你没有学过， 我也不会需要你去学。直接进项目：
+
+你只要知道：
+
+1. html就是告诉浏览器页面展示什么
+2. css告诉浏览器展示的组件的长什么样子
+3. js管理交互，点击会发生什么，以及发生的时间等等
+
+```text
+- src
+	- app.js
+	- index.js
+package.json
+```
+
+那我们捋一下， 一个前端渲染的项目，用户编辑后， 只需要编译成chrome可以读懂的代码即可，而非机器语言，那这个翻译的过程，同样有一个翻译器。 我们一般使用webpack或者vite。 现代使用vite.
+
+
+
+# 一个前后端分离的项目
+
+1. 前端如上
+2. 后端 可以搭建一个服务器，暴露api 接口给到前端
+3. 前端链接后端即可获取信息
+
+```js
+import { express } from "express"
+```
+
+或者我直接推荐 bun 环境。 
+
+```js
+bun.server({})
+```
+
+
+
+## 客户端
+
+1. 一个客户端应用程序，就是前端加后端放到一起，打包起来，最终编译成一个二进制文件。

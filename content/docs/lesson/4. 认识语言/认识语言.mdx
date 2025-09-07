@@ -1,0 +1,199 @@
+---
+title: JavaScript
+---
+
+# 第四节课：JavaScript 入门
+
+**目标**：快速掌握一门现代、通用的语言，为后续学习框架与全栈开发打下基础。
+
+------
+
+## 一、为什么是 Node.js + JavaScript
+
+1. **JavaScript 是全栈语言**
+   - 唯一能在浏览器跑的语言。
+   - 借助 Node.js，JS 也能写后端。
+   - 一种语言，覆盖前端 + 后端。
+2. **Node.js**
+   - JS 的运行时环境（让 JS 跑在浏览器之外）。
+   - 提供文件操作、网络服务等能力。
+
+👉 小结：**JS 是语言，Node.js 是环境。**
+
+## 二、环境搭建
+
+1. **安装 Node.js**（官网直接下载安装）。
+2. **检查安装是否成功**：
+
+```bash
+node -v
+npm -v
+```
+
+1. **第一个 JS 文件**
+
+```js
+// index.js
+console.log("Hello, JavaScript with Node!");
+```
+
+运行：
+
+```bash
+node index.js
+```
+
+👉 学员第一时间感受到：写一行代码 → 立即执行。
+
+------
+
+## 三、JavaScript 基础语法
+
+### 1. 变量与类型
+
+```js
+let age = 25;          // number
+let name = "Alice";    // string
+let isActive = true;   // boolean
+let hobbies = ["coding", "gaming"]; // array
+```
+
+### 2. 函数
+
+```js
+function greet(name) {
+  return `Hello, ${name}`;
+}
+
+console.log(greet("Bob"));
+```
+
+### 3. 对象
+
+```js
+const user = {
+  name: "Alice",
+  age: 25,
+  sayHi: function () {
+    console.log("Hi, I'm " + this.name);
+  },
+};
+
+user.sayHi();
+```
+
+------
+
+## 四、流程控制
+
+```js
+for (let i = 0; i < 3; i++) {
+  console.log("循环次数:", i);
+}
+
+if (age > 18) {
+  console.log("成年人");
+} else {
+  console.log("未成年人");
+}
+```
+
+------
+
+## 五、Node.js 的核心能力
+
+1. **文件操作**
+
+```js
+const fs = require("fs");
+
+// 写入文件
+fs.writeFileSync("hello.txt", "Hello from Node!");
+
+// 读取文件
+const data = fs.readFileSync("hello.txt", "utf-8");
+console.log(data);
+```
+
+1. **HTTP 服务器**
+
+```js
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+  res.end("Hello from Node server!");
+});
+
+server.listen(3000, () => {
+  console.log("服务器已启动: http://localhost:3000");
+});
+```
+
+👉 学员体验到：**几行代码就能跑一个后端服务**。
+
+------
+
+## 六、面向对象编程（OOP）
+
+```js
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    console.log(`${this.name} 发出声音`);
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log(`${this.name} 汪汪汪`);
+  }
+}
+
+const dog = new Dog("旺财");
+dog.speak(); // 旺财 汪汪汪
+```
+
+------
+
+## 七、练习
+
+1. **写一个函数**
+   - 输入：两个数字
+   - 输出：它们的和
+2. **写一个类**
+   - 类名：`User`
+   - 属性：`name`, `age`
+   - 方法：`introduce()` 打印一句自我介绍
+3. **小项目**
+   - 写一个 HTTP 服务器
+   - 用户访问 `/hello` → 返回 "Hello World"
+   - 用户访问 `/time` → 返回当前时间
+
+------
+
+## 八、总结
+
+1. **JavaScript 是现代全栈开发的基础**。
+2. **Node.js 让 JS 跑在浏览器之外，能写后端和工具脚本**。
+3. 本节课学员掌握：
+   - JS 基础语法（变量/函数/对象/类）
+   - Node.js 基本能力（文件 & 网络）
+   - 能写出一个最小的 API 服务
+
+------
+
+要不要我帮你把这个版本的第四节课，扩展成一个 **“课堂任务链”**（比如：写 `hello.js` → 写函数 → 写类 → 写小服务器 → 做出一个能返回 JSON 的 API）？这样学员会感觉像打关卡一样推进。
+
+
+
+
+
+
+
+
+
+# 课后
+
+可以看看 Typescript。

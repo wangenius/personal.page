@@ -13,7 +13,7 @@ export const baseOptions: BaseLayoutProps = {
     title: (
       <>
         <Image
-          src="/icon.png"
+          src="/avatar.png"
           alt="Logo"
           width={32}
           height={32}
@@ -23,6 +23,5 @@ export const baseOptions: BaseLayoutProps = {
       </>
     ),
   },
-  // see https://fumadocs.dev/docs/ui/navigation/links
   links: [],
 };
