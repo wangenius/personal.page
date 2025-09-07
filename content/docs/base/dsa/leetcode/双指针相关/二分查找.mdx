@@ -1,14 +1,10 @@
 ---
-title : 二分查找
-sidebar_position : 1
-slug : 二分查找
+title: 二分查找
+sidebar_position: 1
+slug: 二分查找
 ---
+
 # 二分查找
-import {Tag} from '@components'
-
-<Tag>二分查找</Tag>
-
-
 
 ## 经典二分查找
 
@@ -38,15 +34,12 @@ int searchInsert(vector<int> &nums, int target)
 
 ### 解析
 
-1. 如果初始下标不是扩展位置？那就需要额外判断数组的大小，我们要依靠`left + 1 != right`判断，所以left和right指针不能指向同一位置或者相邻位置。那扩展位置是否会发生空指针的情况：
-    1. 如果size = 0: `left + 1 == right` 返回位置是0，正确
-    2. 如果size = 1: 如果`array[0] >= target`, right就会移动到0的位置. 正确,如果小于,right继续待在数列的end()位置.
-    3. 如果size > 1: 显然成立.
-所以任何情况下都不会发生指针指空的问题.
+1. 如果初始下标不是扩展位置？那就需要额外判断数组的大小，我们要依靠`left + 1 != right`判断，所以 left 和 right 指针不能指向同一位置或者相邻位置。那扩展位置是否会发生空指针的情况： 1. 如果 size = 0: `left + 1 == right` 返回位置是 0，正确 2. 如果 size = 1: 如果`array[0] >= target`, right 就会移动到 0 的位置. 正确,如果小于,right 继续待在数列的 end()位置. 3. 如果 size > 1: 显然成立.
+   所以任何情况下都不会发生指针指空的问题.
 
-2. 为什么需要`nums[mid]>=target`? 我们在设定right时,需要保证right最后指向的数据就算不是那个值, 也一定是离那个值最近的大值.
+2. 为什么需要`nums[mid]>=target`? 我们在设定 right 时,需要保证 right 最后指向的数据就算不是那个值, 也一定是离那个值最近的大值.
 
-3. left和right逼近的过程中, 一定会遇到left和right相邻的局面, 此时right一定指向的是那个`>=`的值. 因为我们最终是要输出right值.
+3. left 和 right 逼近的过程中, 一定会遇到 left 和 right 相邻的局面, 此时 right 一定指向的是那个`>=`的值. 因为我们最终是要输出 right 值.
 
 ## 平方根
 
@@ -54,7 +47,7 @@ int searchInsert(vector<int> &nums, int target)
 
 由于返回类型是整数，结果只保留整数部分 ，小数部分将被舍去 。
 
-注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 。
+注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x \*\* 0.5 。
 
 ```cpp
 class Solution {

@@ -1,13 +1,9 @@
-import { Contact } from "./sections/Contact";
-import { Experience } from "./sections/Experience";
-import { Footer } from "./sections/Footer";
-import { Projects } from "./sections/Projects";
+import { Contact } from "../../components/sections/Contact";
+import { Footer } from "../../components/sections/Footer";
 
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col justify-center text-center">
-      <Projects />
-      <Experience />
       <Contact />
       <Footer />
     </main>

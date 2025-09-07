@@ -10,15 +10,16 @@ const config = {
     config.resolve.alias = {
       ...config.resolve.alias,
       "@components": path.resolve(__dirname, "src/components"),
+      "@": path.resolve(__dirname, "src"),
       "@theme": path.resolve(__dirname, "src/theme"),
     };
-    
+
     // 添加对.awebp文件的支持
     config.module.rules.push({
       test: /\.awebp$/,
-      type: 'asset/resource',
+      type: "asset/resource",
     });
-    
+
     return config;
   },
 };

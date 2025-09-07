@@ -11,16 +11,13 @@ import Image from "next/image";
 export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
-      <>
-        <Image
-          src="/avatar.png"
-          alt="Logo"
-          width={32}
-          height={32}
-          className="rounded-full"
-        />
-        WANGENIUS
-      </>
+      <Image
+        src="/avatar.png"
+        alt="Logo"
+        width={32}
+        height={32}
+        className="rounded-full"
+      />
     ),
   },
   links: [],

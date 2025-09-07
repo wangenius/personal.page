@@ -4,8 +4,6 @@ title: scoop
 slug: scoop
 ---
 
-import { To } from "@components";
-
 # scoop
 
 :link:[scoop](https://scoop.sh/)是适用于 Windows 的命令行安装程序。
@@ -48,7 +46,7 @@ irm get.scoop.sh -Proxy 'http://127.0.0.1:10808' | iex
 
 #### 新方法
 
-1. 使用invoke-restmethod下载安装程序。
+1. 使用 invoke-restmethod 下载安装程序。
 
 ```bash
 irm get.scoop.sh -outfile 'install.ps1'
@@ -110,23 +108,21 @@ $LASTEXITCODE
 
 ## 使用
 
-### Scoop仓库换为国内仓库
+### Scoop 仓库换为国内仓库
 
-:::info Scoop官方维护的仓库
+:::info Scoop 官方维护的仓库
 
 - 默认仓库 main : https://github.com/ScoopInstaller/Main
-- 默认仓库的补充 extras(超级强大): https://github.com/lukesampson/scoop-extras    
-  
+- 默认仓库的补充 extras(超级强大): https://github.com/lukesampson/scoop-extras
+
 可以直接通过`scoop bucket add <repo_name>`安装
 
 镜像仓库：
 
 - main : https://codechina.csdn.net/mirrors/ScoopInstaller/Main.git
 - extras: https://codechina.csdn.net/mirrors/lukesampson/scoop-extras.git
-- 更多的可以在[CSDN GitHub加速计划上](https://codechina.csdn.net/mirrors)找到
-:::
-
-
+- 更多的可以在[CSDN GitHub 加速计划上](https://codechina.csdn.net/mirrors)找到
+  :::
 
 #### 删除原有仓库
 
@@ -148,7 +144,7 @@ scoop bucket add extras https://codechina.csdn.net/mirrors/lukesampson/scoop-ext
 scoop update
 ```
 
-### 使用Scoop安装常用软件
+### 使用 Scoop 安装常用软件
 
 ```bash
 scoop install 7zip aria2 python vscode typora vlc sumatrapdf
@@ -192,7 +188,7 @@ PS C:\>|
 scoop install git
 ```
 
-最后，愉快的使用scoop吧
+最后，愉快的使用 scoop 吧
 
 #### 安装指定版本的软件
 

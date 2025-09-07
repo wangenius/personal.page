@@ -4,7 +4,6 @@ title: IO
 
 # IO
 
-import {Tag} from '@components'
 
 
 C++ comes with libraries that provide us with many ways for performing input and output. In C++ input and output are performed in the form of a sequence of bytes or more commonly known as streams.
@@ -103,7 +102,7 @@ scanf 和 printf 依然有优化的空间，这就是本章所介绍的内容—
 
 10 进制整数中是不含空格或除 0~9 和正负号外的其他字符的，因此在读入不应存在于整数中的字符（通常为空格）时，就可以判定已经读入结束
 
-<Tag>ascii</Tag>
+ascii
 C 和 C++ 语言分别在 ctype.h 和 cctype 头文件中，提供了函数 isdigit, 这个函数会检查传入的参数是否为十进制数字字符，是则返回 true，否则返回 false。对应的，在下面的代码中，可以使用 isdigit(ch) 代替 `ch >= '0' && ch <= '9'`.
 
 ```cpp

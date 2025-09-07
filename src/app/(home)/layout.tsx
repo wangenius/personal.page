@@ -1,10 +1,6 @@
 import { baseOptions } from "@/app/layout.config";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import {
-  AlbumIcon,
-  Heart,
-  LayoutTemplate
-} from "lucide-react";
+import { AlbumIcon, BoxIcon, Heart, LayoutTemplate } from "lucide-react";
 import type { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -14,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       links={[
         {
           icon: <AlbumIcon />,
-          text: "KnowledgeBase",
+          text: "Docs",
           url: "/docs/products",
           active: "url",
         },
@@ -25,8 +21,14 @@ export default function Layout({ children }: { children: ReactNode }) {
           active: "url",
         },
         {
+          text: "Products",
+          url: "/products",
+          icon: <BoxIcon />,
+          active: "url",
+        },
+        {
           text: "About",
-          url: "/api",
+          url: "/about",
           icon: <Heart />,
         },
         {

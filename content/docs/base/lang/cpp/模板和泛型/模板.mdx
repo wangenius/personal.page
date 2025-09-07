@@ -1,16 +1,16 @@
 ---
-title : 模板
-sidebar_position : 1
-slug : 模板
+title: 模板
+sidebar_position: 1
+slug: 模板
 ---
 
 # 模板
 
-模板是一个类或者一个函数，我们用一组类型或值对其进行参数化。 我们用模板表示那些最好理解为通用事务的概念. 然后通过指定参数(例如vector指定元素类型是double)生成特定的类型.
+模板是一个类或者一个函数，我们用一组类型或值对其进行参数化。 我们用模板表示那些最好理解为通用事务的概念. 然后通过指定参数(例如 vector 指定元素类型是 double)生成特定的类型.
 
 ## 参数化类型
 
-对于之前使用的双精度浮点数向量, 只要将其改成template并且用一个类型参数替换特定类型的double,就能将其泛化.
+对于之前使用的双精度浮点数向量, 只要将其改成 template 并且用一个类型参数替换特定类型的 double,就能将其泛化.
 
 ```cpp
 template <typename T>
@@ -42,7 +42,7 @@ const T& Vector<T>::operator[](int i) const {
 }
 ```
 
-前缀`template<typename T>`指出T是该声明的参数. 它是数学上对所有类型T成立的更精确的C++表达.
+前缀`template<typename T>`指出 T 是该声明的参数. 它是数学上对所有类型 T 成立的更精确的 C++表达.
 
 ```cpp
 Cluster<char> vc(200);
@@ -67,7 +67,7 @@ class Cluster{
 }
 ```
 
-Element是一个谓词, 检查T是否具有Vector要求的所有性质. 这种谓词叫做概念. 概念所说明的模板参数叫做约束参数. 参数约束的的模板叫做约束模板
+Element 是一个谓词, 检查 T 是否具有 Vector 要求的所有性质. 这种谓词叫做概念. 概念所说明的模板参数叫做约束参数. 参数约束的的模板叫做约束模板
 
 ```cpp
 Cluster<int> c;
@@ -85,8 +85,8 @@ struct Buffer{
 };
 ```
 
-其中别名value_type和constexpr函数的目的是令用户可以只读地访问模板参数.
-值参数在很多场景下非常有用. 我们可以用buffer创建任意大小地缓冲区,而不必使用动态内存.
+其中别名 value_type 和 constexpr 函数的目的是令用户可以只读地访问模板参数.
+值参数在很多场景下非常有用. 我们可以用 buffer 创建任意大小地缓冲区,而不必使用动态内存.
 
 ```cpp
 Buffer<char,1024> glob; //全局字符缓冲区(静态分配)
@@ -98,7 +98,7 @@ void fct(){
 
 ### 模板参数推断
 
-标准库模板pair的使用：
+标准库模板 pair 的使用：
 
 ```cpp
 pair<int,double> p {1,5.2};
@@ -116,7 +116,7 @@ auto p = make_pair(1,5.2); //p是一个pair<int,double>
 
 ### 函数模板
 
-对于任何可用范围for遍历的序列(如容器), 可编写如下函数计算和元素值的和:
+对于任何可用范围 for 遍历的序列(如容器), 可编写如下函数计算和元素值的和:
 
 ```cpp
 template<typename Sequence, typename Value>
@@ -126,7 +126,7 @@ Value sum (const Sequence& s, Value v){
 };
 ```
 
-模板参数Value和函数参数v使得调用者可以指定累加器(用于求和的变量)的类型和初始值:
+模板参数 Value 和函数参数 v 使得调用者可以指定累加器(用于求和的变量)的类型和初始值:
 
 ```cpp
 void use(Vector<int>& vi, list<double>& id, vector<complex<double>>& vc){
@@ -137,14 +137,12 @@ void use(Vector<int>& vi, list<double>& id, vector<complex<double>>& vc){
 };
 ```
 
-> 这里的sum()可以看作是标准库accumulate()的简化版本;
+> 这里的 sum()可以看作是标准库 accumulate()的简化版本;
 
 ### 函数对象
 
-import { Tag } from "@components";
-
-<Tag>function object</Tag>
-<Tag>functor函子</Tag>
+function object
+functor 函子
 
 一个可以携带数据并像函数一样调用的对象
 
@@ -158,8 +156,8 @@ public:
 };
 ```
 
-其中operator()的函数实现了函数调用,或应用运算符();
-可以为某些参数类型LessThan类型的命名变量
+其中 operator()的函数实现了函数调用,或应用运算符();
+可以为某些参数类型 LessThan 类型的命名变量
 
 ```cpp
 LessThan it {42};
@@ -172,7 +170,7 @@ void function(int n, const string & s){
 }
 ```
 
-这样的函数对象经常作为算法的参数出现. 例如可以像下面这样统计有多个值令谓词predicate返回true:
+这样的函数对象经常作为算法的参数出现. 例如可以像下面这样统计有多个值令谓词 predicate 返回 true:
 
 ```cpp
 template <typename C ,typename P>
@@ -185,11 +183,11 @@ int count(const C& c,P pred){
 }
 ```
 
-### lambda表达式
+### lambda 表达式
 
 函数对象的简写形式
 
-之前我们将我们将LessThan的定义和使用分离开. 这样做不太方便
+之前我们将我们将 LessThan 的定义和使用分离开. 这样做不太方便
 
 C++提供了一种隐式生成函数对象的表示方法
 
@@ -200,10 +198,10 @@ void f(const vector<int>& vec, const list<string>& lst, int x, const string & s)
 }
 ```
 
-`[&](int a){return a < x;}`这种表示方法被称为lambda表达式. 他声称一个和`LessThan<int>{x}`完全一样的函数对象.
-`[&]`是一个捕获列表. 它指出lambda体使用的所有局部名字将通过引用访问. 如果希望只捕获x, 则写作`[&x]`; 如果希望给生成的函数对象传递一个x的拷贝,则写成`[=x]`. 什么也不捕获写作[]. 捕获所有通过引用访问的局部名字是`[&]`,捕获所有以值访问的局部名字是`[=]`;
+`[&](int a){return a < x;}`这种表示方法被称为 lambda 表达式. 他声称一个和`LessThan<int>{x}`完全一样的函数对象.
+`[&]`是一个捕获列表. 它指出 lambda 体使用的所有局部名字将通过引用访问. 如果希望只捕获 x, 则写作`[&x]`; 如果希望给生成的函数对象传递一个 x 的拷贝,则写成`[=x]`. 什么也不捕获写作[]. 捕获所有通过引用访问的局部名字是`[&]`,捕获所有以值访问的局部名字是`[=]`;
 
-虽然lambda简单便捷,但晦涩难懂. 对于复杂的操作, 我们更愿意给该操作起一个名字.
+虽然 lambda 简单便捷,但晦涩难懂. 对于复杂的操作, 我们更愿意给该操作起一个名字.
 
 ```cpp
 template<typename C,typename Oper>
