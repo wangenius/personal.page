@@ -6,7 +6,7 @@ slug: 二叉树
 
 # 二叉树
 
-:::success 本文为什么不考虑树和森林
+:::success[本文为什么不考虑树和森林]
 因为树和森林可以转化为二叉树, 在B树之前, 所以只研究二叉树. 具体转化过程比较简单, 不在赘述.
 :::
 
@@ -131,7 +131,7 @@ assert(tree.layers.length == floor(log(tree.nodes.length))+1);
 assert(tree.layers.length == ceil(log(tree.nodes.length + 1)));
 ```
 
-:::success 补充
+:::success[补充]
 {/* 满二叉树的高度$h(n) =\dfrac{ C_{ 2n}^n }{n+1}$ */}
 :::
 
@@ -200,7 +200,7 @@ vector<int> levelOrder(TreeNode *root) {
 
 ### 非递归算法
 
-:::success 口诀
+:::success[口诀]
 前序栈辅助, while判非空, 出栈再访问, 入栈右左树.
 中序栈指针, 三步两循环. 所有左入栈, 再指右子树.
 :::

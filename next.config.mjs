@@ -6,6 +6,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev"],
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

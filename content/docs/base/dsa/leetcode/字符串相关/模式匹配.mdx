@@ -29,7 +29,7 @@ Knuth-Morris-Pratt: 一种线性时间复杂度的匹配算法
 
 该算法的核心为next函数或数组的求解。
 
-:::success 备注
+:::success[备注]
 这里我们采用下标为0的next数组.
 :::
 
@@ -46,7 +46,7 @@ next[6] = 2; // aabaaa -> aa
 ```
 我们就可以快速地计算出模式串在主串中的每一次出现。
 
-:::success 为什么要计算前序串的最长前后缀?
+:::success[为什么要计算前序串的最长前后缀?]
 计算最大已经匹配成功的位数.
 
 如果当前匹配失败, 只需将模式串指针指向最长前缀的后一位, 重新匹配失败的位置. 主串指针不需回溯. 
@@ -81,7 +81,7 @@ vector<int> getNext(string substr) {
 }
 ```
 
-:::success 最大前后缀长度为什么是next的下标
+:::success[最大前后缀长度为什么是next的下标]
 ![关于位置](/res/nextget.png)
 
 [一个不错的博客](https://www.cnblogs.com/MAKISE004/p/17066403.html)

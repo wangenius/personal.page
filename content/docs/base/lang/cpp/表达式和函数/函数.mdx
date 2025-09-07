@@ -65,7 +65,7 @@ inline int A::doA() { return 0; }   // 需要显式内联
 
 在类声明中定义的函数，除了虚函数的其他函数都会自动隐式地当成内联函数。
 
-:::success 编译器对inline函数的处理步骤
+:::success[编译器对inline函数的处理步骤]
 将 inline 函数体复制到 inline 函数调用点处；
 
 为所用 inline 函数中的局部变量分配内存空间；
@@ -87,7 +87,7 @@ inline int A::doA() { return 0; }   // 需要显式内联
 2. inline 函数无法随着函数库升级而升级。inline函数的改变需要重新编译，不像 non-inline 可以直接链接。
 3. 是否内联，程序员不可控。内联函数只是对编译器的建议，是否对函数内联，决定权在于编译器。
 
-:::warning 虚函数virtual可以使inline函数吗?
+:::warning[虚函数virtual可以使inline函数吗?]
 
 虚函数可以是内联函数，内联是可以修饰虚函数的，但是当虚函数表现多态性的时候不能内联。
 

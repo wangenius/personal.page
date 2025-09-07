@@ -125,7 +125,7 @@ IdentityFile ~\.ssh\id_rsa # 这里放你的SSH私钥
 ProxyCommand connect -S 127.0.0.1:10808 %h %p
 ```
 
-:::info ProxyCommand
+:::info[ProxyCommand]
 设置代理, `127.0.0.1:10808` 换成你自己代理软件监听的本地地址,HTTPS使用-H，SOCKS使用-S
 配置说明，通过 ProxyCommand 命令设置代理，其中的[connect](https://bitbucket.org/gotoh/connect)是一个工具用于进行代理的转换，通常需要安装(小乌龟已安装`Git\mingw64\bin\connect.exe`)。
 windows系统中，下载connect.exe，把所在路径放入系统环境变量，就可以在命令行使用了。
