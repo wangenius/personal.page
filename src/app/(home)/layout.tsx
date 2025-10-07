@@ -10,8 +10,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       links={[
         {
           icon: <AlbumIcon />,
-          text: "Docs",
-          url: "/docs/products",
+          text: "Base",
+          url: "/docs",
           active: "url",
         },
         {

@@ -1,6 +1,9 @@
 {
   "pages": [
-    "products",
-    "base"
+    "base",
+    "economic",
+    "lesson",
+    "insight",
+    "web3"
   ]
 }

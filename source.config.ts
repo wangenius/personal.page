@@ -34,3 +34,23 @@ export const blog = defineCollections({
     date: z.union([z.string(), z.date()]).optional(),
   }),
 });
+
+export const lesson = defineCollections({
+  type: "doc",
+  dir: "content/lesson",
+  async: true,
+  schema: frontmatterSchema.extend({
+    author: z.string().optional(),
+    date: z.union([z.string(), z.date()]).optional(),
+  }),
+});
+
+export const product = defineCollections({
+  type: "doc",
+  dir: "content/products",
+  async: true,
+  schema: frontmatterSchema.extend({
+    author: z.string().optional(),
+    date: z.union([z.string(), z.date()]).optional(),
+  }),
+});

@@ -1,4 +1,4 @@
-import { docs, blog as blogPosts } from "@/.source";
+import { docs, blog as blogPosts, product } from "@/.source";
 import { loader } from "fumadocs-core/source";
 import { createMDXSource } from "fumadocs-mdx";
 
@@ -12,4 +12,9 @@ export const source = loader({
 export const blog = loader({
   baseUrl: "/blog",
   source: createMDXSource(blogPosts),
+});
+
+export const products = loader({
+  baseUrl: "/products",
+  source: createMDXSource(product),
 });
