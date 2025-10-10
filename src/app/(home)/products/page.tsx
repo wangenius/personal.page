@@ -31,7 +31,7 @@ export default function Page() {
             <div className="mt-2 md:mt-0">
               <span
                 className={cn(
-                  buttonVariants({ variant: "grow", size: "lg" }),
+                  buttonVariants({ variant: "ghost", size: "lg" }),
                   "inline-flex items-center gap-2"
                 )}
               >
