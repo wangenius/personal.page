@@ -6,7 +6,7 @@ import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { SearchDialog } from "fumadocs-ui/components/dialog/search";
+import { useSearchContext } from "fumadocs-ui/provider";
 
 const navLinks = [
   {
@@ -37,10 +37,9 @@ interface GlobalHeaderProps {
 
 export function GlobalHeader({ onToggleChat }: GlobalHeaderProps) {
   const { theme, setTheme } = useTheme();
+  const searchContext = useSearchContext();
 
   return (
-    <>
-    <SearchDialog />
     <header className="sticky top-0 z-40 w-full border-b border-fd-border bg-fd-background/95 backdrop-blur supports-[backdrop-filter]:bg-fd-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         {/* Logo */}
@@ -76,12 +75,7 @@ export function GlobalHeader({ onToggleChat }: GlobalHeaderProps) {
             size="icon"
             className="h-9 w-9"
             title="搜索"
-            onClick={() => {
-              const searchDialog = document.querySelector('[data-search-dialog]') as HTMLElement;
-              if (searchDialog) {
-                searchDialog.click();
-              }
-            }}
+            onClick={() => searchContext.setOpenSearch(true)}
           >
             <Search className="w-4 h-4" />
           </Button>
@@ -113,7 +107,6 @@ export function GlobalHeader({ onToggleChat }: GlobalHeaderProps) {
         </div>
       </div>
     </header>
-    </>
   );
 }
 

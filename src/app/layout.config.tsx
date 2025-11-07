@@ -20,5 +20,16 @@ export const baseOptions: BaseLayoutProps = {
       />
     ),
   },
-  links: [],
+  links: [
+    {
+      text: "文档",
+      url: "/docs",
+      active: "nested-url",
+    },
+    {
+      text: "博客",
+      url: "/blog",
+      active: "nested-url",
+    },
+  ],
 };

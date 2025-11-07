@@ -18,7 +18,14 @@ export default function Layout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className="flex flex-col min-h-screen">
-        <RootProvider>
+        <RootProvider
+          search={{
+            enabled: true,
+            options: {
+              api: "/api/search",
+            },
+          }}
+        >
           <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
         </RootProvider>
       </body>
