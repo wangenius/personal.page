@@ -1,0 +1,296 @@
+# 《勇闯天涯 superX 2025 小程序》埋点事件方案
+
+**版本号：** v1.0
+**编制日期：** 2025年4月
+
+## 1. 总体规范
+
+**命名规则**
+
+- 事件名：`<域>.<动作>[.<对象>]`，动词过去式（如 `auth.login.success`）。
+- 属性：蛇形命名（`snake_case`），业务主键用 `*_id`。
+- 时间：统一 UTC，入库字段 `ts` 对齐。
+- 用户标识：客户端上报 `openid`，服务端在入库侧映射为 `user_id`（UUID）。
+
+**全局上下文字段（所有事件强制携带）**
+
+| 字段        | 类型        | 说明                     |
+| ----------- | ----------- | ------------------------ |
+| user_id     | UUID/null   | 未登录可空               |
+| openid      | string/null | 首次登录前可空           |
+| session_id  | string      | 会话标识（启动至冷启动） |
+| device_id   | string      | 设备指纹                 |
+| os          | string      | iOS/Android/Devtools     |
+| app_version | string      | 小程序版本               |
+| network     | string      | wifi/4g/5g               |
+| region      | string      | 解析自系统或用户资料     |
+| campaign_id | UUID/null   | 所属活动可空             |
+| trace_id    | string      | 端到端链路追踪           |
+| ts          | datetime    | 采样点时间（UTC）        |
+
+**合规要求**
+
+- 不采集精准定位与通讯录等高敏；ID 均经服务端哈希/脱敏；保留期按合同与法规执行（建议：行为明细 180 天、聚合 24 个月）。
+- 反作弊特征（如 IP、UA 摘要）仅用于风控，不对外导出个人维度。
+
+------
+
+## 2. 事件清单与属性字典（核心）
+
+> 下列为**最小可用集**（MVP）。实际可按活动玩法扩展。
+
+### 2.1 认证 / 启动
+
+1. `auth.login.request`
+
+- 触发：调用 `/auth/wx-login` 前
+- 属性：`source`(string: code/iv/encrypted), `retries`(int)
+
+1. `auth.login.success`
+
+- 属性：`user_id`(UUID), `has_unionid`(bool), `first_login`(bool)
+
+1. `app.launch`
+
+- 属性：`entry`(string: scene/qrcode/share), `scene`(int), `cold_start`(bool)
+
+### 2.2 活动曝光与进入
+
+1. `campaign.impression`
+
+- 属性：`campaign_id`(UUID), `position`(string: banner/list/landing), `rank`(int)
+
+1. `campaign.enter`
+
+- 属性：`campaign_id`, `stage_id`(UUID/null), `source`(string: share/deeplink/qr)
+
+### 2.3 任务 & 积分
+
+1. `task.list.view`
+
+- 属性：`campaign_id`, `available_cnt`(int)
+
+1. `task.complete.submit`
+
+- 属性：`task_id`(UUID), `task_type`(enum: daily/oneoff/milestone/store_redeem/share)
+
+1. `task.complete.result`
+
+- 属性：`task_id`, `success`(bool), `points_delta`(int), `ledger_id`(UUID/null), `reason`(string/null)
+
+1. `points.balance.view`
+
+- 属性：`balance`(int)
+
+### 2.4 抽奖 & 奖池
+
+1. `draw.trigger`
+
+- 属性：`campaign_id`, `mechanic_id`(UUID), `pool_id`(UUID)
+
+1. `draw.result`
+
+- 属性：`campaign_id`, `mechanic_id`, `pool_id`, `won`(bool), `reward_id`(UUID/null), `reward_kind`(enum), `issue_id`(UUID/null), `risk_blocked`(bool), `risk_code`(string/null)
+
+1. `reward.inventory.snapshot`（服务端定时）
+
+- 属性：`pool_id`, `reward_id`, `inventory`(int), `remaining`(int)
+
+### 2.5 排行榜
+
+1. `leaderboard.view`
+
+- 属性：`leaderboard_id`(UUID), `scope`(enum: global/region/store), `my_rank`(int/null), `my_score`(float/null)
+
+### 2.6 券 & 核销（门店）
+
+1. `coupon.list.view`
+
+- 属性：`count`(int), `unused`(int), `expired`(int)
+
+1. `coupon.redeem.scan`
+
+- 属性：`code_hash`(string), `store_id`(UUID/null), `mode`(string: online/offline)
+
+1. `coupon.redeem.result`
+
+- 属性：`coupon_id`(UUID/null), `success`(bool), `store_id`, `reason`(string/null)
+
+### 2.7 消息订阅
+
+1. `msg.subscribe.grant`
+
+- 属性：`templates`(string[])
+
+1. `msg.push.deliver`（服务端回执）
+
+- 属性：`template_id`(string), `deliver_status`(enum: success/fail/limited), `reason`(string/null)
+
+### 2.8 性能 & 错误（关键体验）
+
+1. `perf.page_tti`
+
+- 属性：`page`(string), `tti_ms`(int), `fmp_ms`(int/null)
+
+1. `error.app`
+
+- 属性：`code`(string), `message`(string), `stack_hash`(string), `fatal`(bool)
+
+------
+
+## 3. 属性类型规范（选摘）
+
+- `*_id`：UUID；`code_hash`：经 SHA256 的券码摘要（不可逆）；
+- `reason`：短码而非长文本（例如：`DUPLICATE`/`EXPIRED`/`RISK_DENY`/`RATE_LIMIT`）；
+- `task_type`、`reward_kind`、`scope` 与 DDL 枚举保持一致；
+- 金额/积分一律整数，单位见业务字典。
+
+------
+
+## 4. 漏斗与指标口径
+
+### 4.1 新用户激活漏斗（D0）
+
+**路径**：`app.launch` → `auth.login.success` → `campaign.impression` → `campaign.enter` → `task.complete.result(success)`
+
+- **激活（Activation）**：D0 内首次出现 `task.complete.result(success=true)` 的用户数/`auth.login.success` 去重用户数
+- **登录转化率**：`auth.login.success` / `app.launch`
+- **进入率**：`campaign.enter` / `campaign.impression`（按人或按次两种口径，默认按人）
+
+### 4.2 抽奖转化漏斗
+
+`draw.trigger` → `draw.result(won=TRUE)`
+
+- **抽奖参与率**：参与用户数 / `campaign.enter` 用户数
+- **中奖率（展现口径）**：`won=TRUE` 次数 / `draw.trigger` 次数
+- **人均抽奖次数**：`draw.trigger` 次数 / 参与用户数
+
+### 4.3 券核销漏斗
+
+`coupon.list.view` → `coupon.redeem.scan` → `coupon.redeem.result(success)`
+
+- **核销率（券口径）**：成功核销券数 / 发券数
+- **核销转化（人口径）**：成功核销用户数 / 拥券用户数
+
+### 4.4 留存（D1/D7/D30）
+
+- **定义**：在基准日有任一活跃事件（`app.launch | campaign.enter | task.complete.result | draw.trigger | coupon.redeem.result`），并在第 N 天再次出现任一活跃事件。
+- **去重维度**：`user_id`。
+- **沉默用户**：基准日后 N 天内无活跃事件记为流失。
+
+### 4.5 活动 KPI（建议）
+
+- **DAU/WAU/MAU**、**次均时长**（由 `page_view` 扩展事件支撑，若纳入则需新增 `page.view`）、
+- **任务完成率**（任务完成人数 / 可参与任务曝光人数）、
+- **奖励发放准确率**（`reward_issues(status=issued)` / 抽中记录），
+- **库存健康度**（`remaining / inventory`，阈值告警：<10%）。
+
+------
+
+## 5. 反作弊信号与判定（数据侧）
+
+**信号采集（随事件或服务端生成）**
+
+- `risk_fingerprint`（设备/环境摘要）、`ip_cidr`（/24）、`ua_hash`、`velocity_10m`（10 分钟事件频次）、`dup_device_ratio`（同设备多账号占比）、`geo_mismatch`（地区突变）。
+
+**判定建议（可多条命中之一即标记为高风险）**
+
+- `velocity_10m` > 阈值（如 ≥ 50 次交互）；
+- 同设备 / 同 IP 在 5 分钟内触发 `draw.trigger` 的唯一 `user_id` ≥ 阈值（如 ≥ 5）；
+- 中奖后 1 小时内发生 ≥ N 次跨区域核销尝试（疑似外流）。
+
+**处置策略**
+
+- 降权（抽奖权重归零）、验证码/二次校验、黑名单 24h、数据标注 `risk_flag=true`（保留证据但不计 KPI）。
+
+------
+
+## 6. 指标计算与聚合（与 DDL 对齐）
+
+**实时层（T+0，分钟级）**
+
+- 流式写入 `events_raw`（或旁路到 ClickHouse）；
+- 产出实时看板：在线量、QPS、抽奖命中/拒绝、库存余量。
+
+**离线层（T+1，日粒度）**
+
+- 任务：生成 `events_agg_daily(day, event_key, campaign_id, cnt)`；
+- 指标计算（示例 SQL）：
+
+```sql
+-- 中奖率（次口径）
+SELECT day,
+       SUM(CASE WHEN properties->>'won' = 'true' THEN 1 ELSE 0 END)::float /
+       NULLIF(SUM(1),0) AS win_rate
+FROM events_raw
+WHERE event_key = 'draw.result'
+  AND ts >= :start AND ts < :end
+GROUP BY day;
+```
+
+------
+
+## 7. 数据质量（DQ）与监控
+
+- **Completeness**：每日各事件 `cnt` 相比 7 日中位数的波动 > ±40% 告警。
+- **Uniqueness**：`trace_id + event_key` 去重比率监控（异常重复上报 > 5% 告警）。
+- **Timeliness**：T+1 作业延迟 > 30 分钟告警。
+- **合法性校验**：关键字段非空（`campaign_id`、`task_id`、`reward_id` 在对应事件中），非法值丢入死信队列并回补。
+
+------
+
+## 8. 看板与告警建议（Ops/SRE/运营）
+
+**运营看板（日）**：DAU、进入率、任务完成率、抽奖参与/中奖率、库存健康度、核销率、D1/D7 留存。
+ **技术看板（实时）**：接口成功率、P95 时延、库存扣减失败率、风控拒绝率、错误分布。
+ **告警阈值（示例）**
+
+- `draw.result` 失败率 > 3%（5 分钟）→ P1
+- `reward.remaining` < 10% 且活动未结束 → P2
+- `error.app(fatal)` > 200 次/5 分钟 → P1
+
+------
+
+## 9. 上报实现要点（Client/Server）
+
+- **客户端 SDK**：封装 `track(event_key, props)`；失败落本地队列，网络恢复批量补发；严格限频。
+- **服务端校验**：白名单事件集 + JSON Schema 校验（按 `event_key` 版本化）；统一写入 `events_raw`。
+- **隐私**：所有原始 ID 先在服务端做映射/哈希后再入库；分享链路避免带明文用户标识。
+
+------
+
+## 10. 事件到表映射（关键）
+
+| 事件                    | 去向                              | 备注           |
+| ----------------------- | --------------------------------- | -------------- |
+| `auth.*` / `app.launch` | `events_raw` 分区                 | 启动与登录基准 |
+| `campaign.*` / `task.*` | `events_raw` → `events_agg_daily` | 漏斗主干       |
+| `draw.*` / `reward.*`   | `events_raw` → 实时指标           | 库存/中奖      |
+| `leaderboard.*`         | `events_raw`                      | 复盘用         |
+| `coupon.*`              | `events_raw`                      | 核销漏斗       |
+| `perf.*` / `error.*`    | `events_raw`                      | 质量与稳定性   |
+
+------
+
+## 11. 附：示例 JSON（`draw.result`）
+
+```json
+{
+  "event_key": "draw.result",
+  "user_id": "1c1b2d3e-4f5a-678b-9c0d-ef1234567890",
+  "campaign_id": "7f2a1b2c-3d4e-5f60-9a01-b2c3d4e5f6a7",
+  "trace_id": "trc_9e8d…",
+  "properties": {
+    "mechanic_id": "a1b2c3…",
+    "pool_id": "p_001",
+    "won": true,
+    "reward_id": "r_009",
+    "reward_kind": "coupon",
+    "issue_id": "is_77",
+    "risk_blocked": false,
+    "risk_code": null
+  },
+  "device": { "os": "iOS", "app_version": "2.5.0" },
+  "ts": "2025-04-16T08:15:30Z"
+}
+```

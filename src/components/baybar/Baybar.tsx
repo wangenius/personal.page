@@ -1,0 +1,45 @@
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { useViewManager } from "@/hook/app/useViewManager";
+import { ChatPanel } from "./chat/ChatPanel";
+
+export const Baybar = () => {
+  const isBayBarOpen = useViewManager((state) => state.isBayBarOpen);
+
+  const toggleBayBar = () => {
+    toggleBayBar();
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 使用 Ctrl+Shift+B 来切换 Baybar
+      if (e.key.toLowerCase() === "b" && e.ctrlKey && e.shiftKey) {
+        toggleBayBar();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <motion.div
+      initial={false}
+      animate={{
+        width: isBayBarOpen ? "400px" : "0px",
+      }}
+      transition={{
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      }}
+      className={cn(
+        "flex-none h-full overflow-hidden",
+        !isBayBarOpen && "pointer-events-none"
+      )}
+    >
+      <ChatPanel />
+    </motion.div>
+  );
+};
