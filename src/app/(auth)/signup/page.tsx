@@ -19,6 +19,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +42,8 @@ export default function SignUpPage() {
         email,
         password,
         name,
-        callbackURL: "/",
       });
-      router.push("/");
+      setSuccess(true);
     } catch (err: any) {
       setError(err.message || "注册失败，请重试");
     } finally {
@@ -61,6 +61,63 @@ export default function SignUpPage() {
       setError(err.message || "GitHub 登录失败");
     }
   };
+
+  // 显示注册成功提示
+  if (success) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">📧 验证你的邮箱</CardTitle>
+            <CardDescription>
+              注册成功！请检查你的邮箱
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="rounded-lg bg-green-50 p-4 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                <p className="font-medium mb-2">✅ 账户创建成功！</p>
+                <p>我们已经发送了一封验证邮件到：</p>
+                <p className="font-medium mt-1">{email}</p>
+              </div>
+              
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>📨 请按照以下步骤完成验证：</p>
+                <ol className="list-decimal list-inside space-y-1 ml-2">
+                  <li>打开你的邮箱</li>
+                  <li>查找来自我们的验证邮件</li>
+                  <li>点击邮件中的验证链接</li>
+                  <li>验证完成后即可登录</li>
+                </ol>
+              </div>
+
+              <div className="rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                <p className="font-medium mb-1">💡 提示：</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>如果没有收到邮件，请检查垃圾邮件文件夹</li>
+                  <li>验证链接 24 小时内有效</li>
+                  <li>如需帮助，请联系客服</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-2">
+            <Button asChild className="w-full">
+              <Link href="/signin">
+                前往登录
+              </Link>
+            </Button>
+            <div className="text-sm text-fd-muted-foreground text-center">
+              已经验证？{" "}
+              <Link href="/signin" className="text-fd-primary hover:underline">
+                立即登录
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12">

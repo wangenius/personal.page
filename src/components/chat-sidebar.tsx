@@ -1,31 +1,95 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { SimpleChatPanel } from "@/components/simple-chat-panel";
 import { cn } from "@/lib/utils";
+import { useViewManager, toggleBayBar } from "@/lib/viewManager";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-interface ChatSidebarProps {
-  isOpen: boolean;
-}
+export function ChatSidebar() {
+  const { isBayBarOpen } = useViewManager();
+  const [isMobile, setIsMobile] = useState(false);
 
-export function ChatSidebar({ isOpen }: ChatSidebarProps) {
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // 移动端：全屏模式
+  if (isMobile) {
+    return (
+      <AnimatePresence>
+        {isBayBarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-background md:hidden"
+          >
+            {/* 聊天面板内容 */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="h-full relative"
+            >
+              <SimpleChatPanel />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  // 桌面端：侧边栏模式
   return (
     <motion.div
       initial={false}
       animate={{
-        width: isOpen ? "400px" : "0px",
+        width: isBayBarOpen ? "400px" : "0px",
+        opacity: isBayBarOpen ? 1 : 0,
       }}
       transition={{
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
+        width: {
+          duration: 0.3,
+          ease: [0.4, 0, 0.2, 1],
+        },
+        opacity: {
+          duration: 0.2,
+          ease: "easeInOut",
+        },
       }}
       className={cn(
-        "h-full overflow-hidden border-l border-fd-border",
-        !isOpen && "pointer-events-none"
+        "hidden md:block h-full overflow-hidden border-l border-fd-border",
+        !isBayBarOpen && "pointer-events-none"
       )}
     >
-      {isOpen && <SimpleChatPanel />}
+      <AnimatePresence mode="wait">
+        {isBayBarOpen && (
+          <motion.div
+            key="chat-panel"
+            initial={{ x: 20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 20, opacity: 0 }}
+            transition={{
+              duration: 0.2,
+              ease: "easeOut",
+            }}
+            className="h-full"
+          >
+            <SimpleChatPanel />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
-

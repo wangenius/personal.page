@@ -3,35 +3,23 @@
 import { useChat } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
-import { useCallback, useMemo, useRef } from "react";
-import { TbSparkles, TbPlus } from "react-icons/tb";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { TbTrash } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { ChatInput, type ChatInputProps, type ChatInputRef } from "@/components/baybar/chat/ChatInput";
+import {
+  ChatInput,
+  type ChatInputProps,
+  type ChatInputRef,
+} from "@/components/baybar/chat/ChatInput";
 import { MessageRenderer } from "@/components/baybar/chat/MessageRenderer";
-
-const suggestionPresets = [
-  {
-    title: "人物塑造",
-    prompt: "帮我设计一个有反转的主角背景，关键词：未来、背叛、自我救赎。",
-  },
-  {
-    title: "剧情推进",
-    prompt: "延续当前情节，安排一个充满意外的剧情转折，并解释其合理性。",
-  },
-  {
-    title: "世界观拓展",
-    prompt: "为当前世界观补充一条影响深远的历史事件，并说明它对主角的影响。",
-  },
-  {
-    title: "灵感激发",
-    prompt: "请给我 3 个符合科幻悬疑主题的剧情灵感，并说明潜在冲突点。",
-  },
-] as const;
+import { useChatStore } from "@/lib/chatStore";
+import { toggleBayBar } from "@/lib/viewManager";
+import { X } from "lucide-react";
 
 type TextPart = Extract<UIMessage["parts"][number], { type: "text" }>;
 
@@ -48,14 +36,37 @@ const getMessageContent = (message: UIMessage) =>
 export function SimpleChatPanel() {
   const chatInputRef = useRef<ChatInputRef>(null);
 
+  // 从 zustand store 获取持久化的消息
+  const {
+    messages: storedMessages,
+    setMessages: setStoredMessages,
+    clearMessages: clearStoredMessages,
+  } = useChatStore();
+
   const chatTransport = useMemo(
     () => new DefaultChatTransport({ api: "/api/chat" }),
     []
   );
 
-  const { messages, sendMessage, status, error, clearError, stop } = useChat({
+  const {
+    messages,
+    sendMessage,
+    status,
+    error,
+    clearError,
+    stop,
+    setMessages,
+  } = useChat({
     transport: chatTransport,
+    messages: storedMessages,
   });
+
+  // 同步 useChat 的 messages 到 zustand store
+  useEffect(() => {
+    if (messages.length > 0) {
+      setStoredMessages(messages);
+    }
+  }, [messages, setStoredMessages]);
 
   const isStreaming = status === "submitted" || status === "streaming";
 
@@ -72,23 +83,30 @@ export function SimpleChatPanel() {
     async (message: { text?: string }) => {
       const text = message.text?.trim();
       if (!text) return;
-      
+
       if (error) clearError();
-      
+
       await sendMessage({ text });
     },
     [sendMessage, error, clearError]
   );
 
-  const handleSuggestion = async (prompt: string) => {
-    chatInputRef.current?.focus();
+  const handleClearChat = useCallback(() => {
+    clearStoredMessages();
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: "你好，我是神仙鱼 AI 助手。有什么可以帮你的吗？",
+          },
+        ],
+      },
+    ]);
     if (error) clearError();
-    await sendMessage({ text: prompt });
-  };
-
-  const handleNewChat = useCallback(() => {
-    window.location.reload();
-  }, []);
+  }, [clearStoredMessages, setMessages, error, clearError]);
 
   const visibleMessages = messages.filter((msg) => msg.role !== "system");
 
@@ -99,18 +117,27 @@ export function SimpleChatPanel() {
   }, []);
 
   return (
-    <div className="h-full w-[400px] flex flex-col overflow-hidden bg-accent">
+    <div className="h-full w-full md:w-[400px] flex flex-col overflow-hidden bg-accent">
       {/* 顶部固定栏 */}
-      <div className="flex h-10 flex-none items-center justify-end px-2">
+      <div className="flex h-12 md:h-10 flex-none items-center justify-between md:justify-end px-4 md:px-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => toggleBayBar(false)}
+          className="h-8 w-8 md:hidden"
+        >
+          <X className="h-5 w-5" />
+          <span className="sr-only">Close chat</span>
+        </Button>
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6"
-            onClick={handleNewChat}
-            title="新建对话"
+            className="h-8 w-8 md:h-6 md:w-6"
+            onClick={handleClearChat}
+            title="清空对话"
           >
-            <TbPlus className="h-3.5 w-3.5" />
+            <TbTrash className="h-4 w-4 md:h-3.5 md:w-3.5" />
           </Button>
         </div>
       </div>
@@ -118,54 +145,24 @@ export function SimpleChatPanel() {
       {/* 对话内容 */}
       <Conversation className="flex-1 bg-transparent">
         <ConversationContent className="mx-auto flex w-full flex-col gap-1">
-          {visibleMessages.length === 0 ? (
-            <div className="flex flex-col gap-4 rounded-lg border border-dashed border-muted-foreground/40 bg-muted/20 p-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <TbSparkles className="h-4 w-4" />
-                  <span>试试这些灵感提示</span>
-                </div>
-                <p className="text-xs text-muted-foreground/80">
-                  点击提示快速向 AI 发起对话，支持继续追问与上下文记忆。
-                </p>
-              </div>
-              <div className="grid grid-cols-1 gap-2">
-                {suggestionPresets.map((item) => (
-                  <button
-                    key={item.prompt}
-                    onClick={() => void handleSuggestion(item.prompt)}
-                    className="rounded-lg border border-transparent bg-background/60 p-3 text-left text-xs shadow-sm transition hover:border-border hover:bg-background"
-                  >
-                    <div className="text-[13px] font-medium text-foreground">
-                      {item.title}
-                    </div>
-                    <div className="mt-1 line-clamp-2 text-muted-foreground">
-                      {item.prompt}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            visibleMessages.map((message, index) => {
-              const isLastMessage = index === visibleMessages.length - 1;
-              const isStreamingMessage =
-                isStreaming && isLastMessage && message.role === "assistant";
+          {visibleMessages.map((message, index) => {
+            const isLastMessage = index === visibleMessages.length - 1;
+            const isStreamingMessage =
+              isStreaming && isLastMessage && message.role === "assistant";
 
-              return (
-                <MessageRenderer
-                  key={message.id}
-                  message={message}
-                  index={index}
-                  messages={visibleMessages}
-                  isLastMessage={isLastMessage}
-                  isStreaming={isStreamingMessage}
-                  getTextFromMessage={getMessageContent}
-                  onOptionSelect={handleOptionSelect}
-                />
-              );
-            })
-          )}
+            return (
+              <MessageRenderer
+                key={message.id}
+                message={message}
+                index={index}
+                messages={visibleMessages}
+                isLastMessage={isLastMessage}
+                isStreaming={isStreamingMessage}
+                getTextFromMessage={getMessageContent}
+                onOptionSelect={handleOptionSelect}
+              />
+            );
+          })}
           {error ? (
             <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive-foreground">
               <div>生成出错：{error.message || "未知错误"}</div>
@@ -176,11 +173,11 @@ export function SimpleChatPanel() {
       </Conversation>
 
       {/* 输入框 */}
-      <div className="p-2">
+      <div className="p-4 md:p-2">
         <ChatInput
           ref={chatInputRef}
           status={inputStatus}
-          placeholder="输入你的创作思路，Ctrl/⌘ + Enter 快速发送"
+          placeholder="输入消息..."
           onSubmit={handleInputSubmit}
           onStop={stop}
           enableQuote

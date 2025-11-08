@@ -1,15 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { useViewManager } from "@/hook/app/useViewManager";
+import { useViewManager, toggleBayBar } from "@/lib/viewManager";
 import { ChatPanel } from "./chat/ChatPanel";
 
 export const Baybar = () => {
   const isBayBarOpen = useViewManager((state) => state.isBayBarOpen);
-
-  const toggleBayBar = () => {
-    toggleBayBar();
-  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

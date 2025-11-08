@@ -120,3 +120,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Adjust fumadocs sidebar to account for custom header */
+:root {
+  --fd-banner-height: 3rem; /* 48px = h-12 header height */
+}
+mo ra
+#nd-sidebar {
+  top: var(--fd-banner-height) !important;
+  height: calc(100vh - var(--fd-banner-height)) !important;
+}

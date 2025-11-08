@@ -23,14 +23,34 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      await signIn.email({
+      const result = await signIn.email({
         email,
         password,
         callbackURL: "/",
       });
-      router.push("/");
+      
+      // 检查是否需要邮件验证
+      if (result.error) {
+        const errorMessage = result.error.message || "登录失败";
+        
+        // 如果是邮箱未验证错误
+        if (errorMessage.includes("email") && errorMessage.includes("verif")) {
+          setError("⚠️ 请先验证你的邮箱。我们已发送验证邮件到你的邮箱，请查收并点击链接完成验证。");
+        } else {
+          setError(errorMessage);
+        }
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
-      setError(err.message || "登录失败，请检查邮箱和密码");
+      const errorMessage = err.message || "登录失败，请检查邮箱和密码";
+      
+      // 检查是否是邮箱未验证
+      if (errorMessage.includes("email") && (errorMessage.includes("verif") || errorMessage.includes("not verified"))) {
+        setError("⚠️ 请先验证你的邮箱。我们已发送验证邮件到你的邮箱，请查收并点击链接完成验证。");
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

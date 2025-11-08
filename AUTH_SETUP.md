@@ -15,6 +15,12 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 # openssl rand -base64 32
 BETTER_AUTH_SECRET="your-secret-key-here"
 
+# Resend API Key (邮件验证必需)
+RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# 发件人邮箱 (可选，默认使用 onboarding@resend.dev)
+EMAIL_FROM="noreply@yourdomain.com"
+
 # OAuth 提供商 (可选)
 GITHUB_CLIENT_ID=""
 GITHUB_CLIENT_SECRET=""
