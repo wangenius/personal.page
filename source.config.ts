@@ -6,7 +6,11 @@ import {
   metaSchema,
 } from "fumadocs-mdx/config";
 import z from "zod";
-import { remarkAdmonition } from "fumadocs-core/mdx-plugins";
+import {
+  remarkAdmonition,
+  remarkImage,
+  remarkHeading,
+} from "fumadocs-core/mdx-plugins";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
@@ -15,19 +19,19 @@ import rehypeKatex from "rehype-katex";
 const DOC_FOLDERS = ["content/en/docs", "content/zh/docs"] as const;
 
 export const docs = defineDocs({
+  // `defineDocs` currently types `dir` as a single string, but multiple roots work at runtime.
+  dir: DOC_FOLDERS as unknown as string,
   docs: {
-    dir: DOC_FOLDERS,
     schema: frontmatterSchema,
   },
   meta: {
-    dir: DOC_FOLDERS,
     schema: metaSchema,
   },
 });
 
 export default defineConfig({
   mdxOptions: {
-    remarkPlugins: [remarkAdmonition, remarkMath],
+    remarkPlugins: [remarkAdmonition, remarkMath, remarkImage, remarkHeading],
     rehypePlugins: (v) => [rehypeKatex, ...v],
     remarkImageOptions: {
       placeholder: "none",

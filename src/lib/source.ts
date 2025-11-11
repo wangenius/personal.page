@@ -1,5 +1,5 @@
 import { docs, blog as blogPosts, product } from "@/.source";
-import { loader, type VirtualFile } from "fumadocs-core/source";
+import { loader } from "fumadocs-core/source";
 import type { LocaleItem } from "fumadocs-ui/contexts/i18n";
 import { createMDXSource } from "fumadocs-mdx";
 import {
@@ -18,32 +18,10 @@ const docsI18n = {
 
 const docsSource = docs.toFumadocsSource();
 
-const localizedDocsSource = {
-  files(): VirtualFile[] {
-    const files = docsSource.files();
-    return files.map((file) => {
-      if (docLanguages.some((locale) => file.path.startsWith(`${locale}/`))) {
-        return file;
-      }
-
-      const normalized = file.absolutePath.replace(/\\/g, "/");
-      const match = normalized.match(/\/content\/(en|zh)\//);
-      const locale = match?.[1] as DocLanguage | undefined;
-      if (!locale) return file;
-
-      return {
-        ...file,
-        path: `${locale}/${file.path}`,
-      };
-    });
-  },
-};
-
-// See https://fumadocs.vercel.app/docs/headless/source-api for more info
 export const source = loader({
   // it assigns a URL to your pages
-  baseUrl: "/docs",
-  source: localizedDocsSource,
+  baseUrl: "/content",
+  source: docsSource,
   i18n: docsI18n,
 });
 
