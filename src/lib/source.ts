@@ -9,23 +9,21 @@ import {
   type DocLanguage,
 } from "@/lib/i18n/doc-config";
 
-const docsI18n = {
+export const docsI18nConfig = {
   languages: Array.from(docLanguages),
   defaultLanguage: DEFAULT_DOC_LANGUAGE,
   hideLocale: "default-locale" as const,
   parser: "dir" as const,
 };
-
 const docsSource = docs.toFumadocsSource();
 
 export const source = loader({
   // it assigns a URL to your pages
-  baseUrl: "/content",
+  baseUrl: "/docs",
   source: docsSource,
-  i18n: docsI18n,
+  i18n: docsI18nConfig,
 });
 
-export const docsI18nConfig = docsI18n;
 export { docLanguages, DEFAULT_DOC_LANGUAGE };
 export const docLocaleItems: LocaleItem[] = docLanguages.map((locale) => ({
   locale,

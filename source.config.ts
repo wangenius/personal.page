@@ -16,11 +16,10 @@ import rehypeKatex from "rehype-katex";
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
-const DOC_FOLDERS = ["content/en/docs", "content/zh/docs"] as const;
+const DOC_ROOT = "content/docs";
 
 export const docs = defineDocs({
-  // `defineDocs` currently types `dir` as a single string, but multiple roots work at runtime.
-  dir: DOC_FOLDERS as unknown as string,
+  dir: DOC_ROOT,
   docs: {
     schema: frontmatterSchema,
   },
@@ -42,16 +41,6 @@ export default defineConfig({
 export const blog = defineCollections({
   type: "doc",
   dir: "content/blog",
-  async: true,
-  schema: frontmatterSchema.extend({
-    author: z.string().optional(),
-    date: z.union([z.string(), z.date()]).optional(),
-  }),
-});
-
-export const lesson = defineCollections({
-  type: "doc",
-  dir: "content/lesson",
   async: true,
   schema: frontmatterSchema.extend({
     author: z.string().optional(),

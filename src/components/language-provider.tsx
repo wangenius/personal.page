@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { dictionaries, type Dictionary, type Locale } from "@/lib/i18n/dictionaries";
+import { DEFAULT_DOC_LANGUAGE } from "@/lib/i18n/doc-config";
 import { parseDocPath } from "@/lib/i18n/routing";
 
 const LANGUAGE_STORAGE_KEY = "preferred-language";
@@ -16,7 +17,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Locale>("en");
+  const [language, setLanguageState] = useState<Locale>(DEFAULT_DOC_LANGUAGE);
   const pathname = usePathname();
 
   useEffect(() => {
