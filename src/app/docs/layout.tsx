@@ -10,18 +10,16 @@ export default function Layout({ children }: { children: ReactNode }) {
         nav={{
           enabled: false,
         }}
+        searchToggle={{ enabled: false }}
+        themeSwitch={{ enabled: false }}
         sidebar={{
-          tabs: {
-            transform(option, node) {
-              const meta = source.getNodeMeta(node);
-              if (!meta || !node.icon) return option;
-
-              return {
-                ...option,
-                icon: <div>{node.icon}</div>,
-              };
-            },
-          },
+          collapsible: false,
+          tabs: false,
+          footer: null,
+          banner: null,
+        }}
+        containerProps={{
+          className: "bg-canvas-light dark:bg-canvas-dark [&>div:last-child]:py-0",
         }}
       >
         {children}

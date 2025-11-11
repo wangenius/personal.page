@@ -1,19 +1,20 @@
 ---
-title : 微积分
-sidebar_position : 1
-slug : 微积分
+title: 微积分
+sidebar_position: 1
+slug: 微积分
 ---
-# 微积分
 
 ## 函数
 
-单调性：$f'(x)>0$严格单增
+单调性：当函数的导数大于 0 时，函数严格单增
+
+数学表达式：$\frac{df}{dx} > 0$ 时，函数严格单增
 
 ### 极限
 
-{/* $$$
-\lim_{x \to \bullet} f(x) = A \Longleftrightarrow \forall \varepsilon > 0 ,when\;x\to \bullet, |f(x)-A|<\varepsilon. 
-$$$ */}
+```math
+\lim_{x \to a} f(x) = A \Longleftrightarrow \forall \varepsilon > 0, \exists \delta > 0, |x - a| < \delta \Rightarrow |f(x)-A|<\varepsilon
+```
 
 1. $\lim f(x) = A$：极限存在，在某点的极限与该点的函数值的存在性和取值无关，左极限 = 右极限 = 该点函数值，则函数在该点连续
 2. $\lim f_+(x) =\lim f_-(x)$:极限唯一
@@ -22,19 +23,22 @@ $$$ */}
 5. 不等式戴帽：$f(x) \ge 0 \implies A \ge 0$
 
 ### 连续性
+
 连续区间经过有限次复合而成的复合函数在定义域内连续
 连续函数的4则运算连续
 基本初等函数连续
 初等函数定义区间内连续
 连续单调的函数的反函数在对应区间仍然连续单调
 
-:::info[函数极限的计算和存在性]
+<Callout>
+[函数极限的计算和存在性]
+
 1. 运算法则：需要保证在做拆分运算时，拆分后的极限各自存在
 2. 等价无穷小：普通函数型；复合函数型；变上限积分型；推广型；恒等变形；
 3. 洛比达法则
 4. 泰勒公式
 5. 夹逼准则和单调有界准则（数列较多）
-:::
+</Callout>
 
 ### 函数中值定理
 
@@ -43,7 +47,7 @@ $f(x)$在$[a,b]$上连续：
 1. 有界定理：$m\le f(x)\le M$
 2. 最值定理：$\exist a,b \to f(a) = m,  f(b)=M$
 3. 介值定理：$m\le \mu\le M,\exist \xi\in[a,b]\to f(\xi)=\mu$
-4. 平均值定理：$x_i\in[a,b], \exist \xi \in [x_1,x_n]\to f(\xi) = \dfrac{1}{n}\sum f(x_i)$
+4. 平均值定理：$x_i\in[a,b], \exist \xi \in [x_1,x_n]\to f(\xi) = (1/n)\sum f(x_i)$
 5. 零点定理：$f(a)\cdot f(b) < 0 \implies \exist \xi \in (a,b) \to f(\xi) = 0$
 
 ### 多级函数的性态关系
@@ -56,9 +60,8 @@ $f(x)$在$[a,b]$上连续：
 6. 闭区间连续，则变上限积分函数可导
 7. 变限积分：闭区间可积，变限积分连续。（变限积分存在必连续）
 8. 闭区间连续，变限积分可导。
-:::info[导数性态关系]
-![导数性态关系](/res/导数性态关系.png)
-:::
+
+   ![导数性态关系](/res/导数性态关系.png)
 
 ## 数列
 
@@ -73,88 +76,134 @@ $f(x)$在$[a,b]$上连续：
 ## 空间与几何
 
 ### 向量空间
-{/* 
-1.  单位向量：$eX,eY,eZ$：单位向量。 
-2.  向量表示：$v = (v_x,v_y,v_z)\quad u=(u_x,u_y,u_z)$：向量。 
-3.  向量的模：$[v] = \sqrt{v_x^2 + v_y^2 + v_z^2}$：向量的模。 
-4.  数量积：$v \cdot u = (v_x,v_y,v_z)\cdot(u_x,u_y,u_z) = v_xu_x+v_yu_y+v_zu_z$ 
-5.  $v\bot u \Longleftrightarrow \theta = \dfrac{\pi}2 \Longleftrightarrow v\cdot u = 0 \Longleftrightarrow v_xu_x+v_yu_y+v_zu_z = 0$ 
-6.  向量的$v\cdot u = [v][u]\cos \theta \implies \cos \theta = \dfrac{v\cdot u}{[v][u]}$ 
-7.  $v_i =  v\cdot e_I$:等于向量和各个方向上的单位向量的数量积。 
-8.  $a=< v,X > \quad b =< v,Y >\quad c = < v,Z >$ 
-9.  $\cos\alpha=\dfrac{v_x}{[v]};\quad\cos\beta=\dfrac{v_y}{[v]};\quad\cos\gamma=\dfrac{v_z}{[v]}$：方向余弦 
-10.  $a = (\cos \alpha,\cos \beta,\cos\gamma)$向量$v$的单位向量，表示方向 
-11.  投影:$\Pi_uv = \dfrac{v\cdot u}{[u]} = [v]\cos \theta$ 
-12.  $v\times u = \left| \begin{array} {ccc} i & j &k\\v_x&v_y&v_z\\u_x&u_y&u_z \end{array}\right|$ 
-13.  $\left| v \times u \right| = [v][u]\sin \theta$：右手规则确定方向，用于计算法向量和面积 
-14.  混合积：$[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$,混合积=0，三向量共面。  */}
+
+1. 单位向量：$e_X,e_Y,e_Z$：单位向量。
+2. 向量表示：$v = (v_x,v_y,v_z)\quad u=(u_x,u_y,u_z)$：向量。
+3. 向量的模：$|v| = \sqrt{v_x^2 + v_y^2 + v_z^2}$：向量的模。
+4. 数量积：$v \cdot u = (v_x,v_y,v_z)\cdot(u_x,u_y,u_z) = v_xu_x+v_yu_y+v_zu_z$
+5. 向量垂直：$v \bot u \Longleftrightarrow \theta = \pi/2 \Longleftrightarrow v \cdot u = 0 \Longleftrightarrow v_xu_x+v_yu_y+v_zu_z = 0$
+6. 向量的数量积：$v\cdot u = |v||u|\cos \theta \implies \cos \theta = (v\cdot u)/(|v||u|)$
+7. $v_i =  v\cdot e_i$:等于向量和各个方向上的单位向量的数量积。
+8. $a=\langle v,X \rangle \quad b =\langle v,Y \rangle \quad c = \langle v,Z \rangle$
+9. 方向余弦：$\cos\alpha=v_x/|v|;\quad\cos\beta=v_y/|v|;\quad\cos\gamma=v_z/|v|$
+10. $a = (\cos \alpha,\cos \beta,\cos\gamma)$向量$v$的单位向量，表示方向
+11. 投影：$\Pi_uv = (v\cdot u)/|u| = |v|\cos \theta$
+12. $v\times u = \left| \begin{array} {ccc} i & j &k\\v_x&v_y&v_z\\u_x&u_y&u_z \end{array}\right|$
+13. $|v \times u| = |v||u|\sin \theta$：右手规则确定方向，用于计算法向量和面积
+14. 混合积：$[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$，混合积=0，三向量共面。
 
 ### 场论初步
-{/* 
-1.  哈密顿算子：$\nabla = \left(\dfrac{\partial}{\partial x},\dfrac{\partial}{\partial y},\dfrac{\partial}{\partial z}\right)$ 
-2.  方向导数：三元函数$u=u(x,y,z)$在点$P_0=(x_0,y_0,z_0)$处有定义,距离$t= \sqrt{\sum_{i=x}^{x,y,z}(i-i_0)^2}$, 
 
-$\dfrac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\dfrac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\dfrac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}\\=\nabla u(P_0) \cdot l^o = u_x'(P_0)\cos \alpha+u_y'(P_0)\cos \beta + u_z'(P_0)\cos \gamma = |\nabla||l^o|\cos \theta$
+1. 哈密顿算子：
 
-3.  梯度：$grad\,u|_{P_0} =\nabla\cdot u(P_0) = (u_x'(P_0),u_y'(P_0),u_z'(P_0))$ 
-4.  散度：向量场：$A(x,y,z) = (P(x,y,z),Q(x,y,z),R(x,y,z))$
-$div\,A =\nabla \cdot A = \dfrac{\partial P}{\partial x}+\dfrac{\partial Q}{\partial y}+\dfrac{\partial R}{\partial z}$ 
-5.  旋度：$rot\,A = \nabla\times A = \left| \begin{array} {ccc} i & j &k\\\dfrac{\partial}{\partial x}&\dfrac{\partial}{\partial y}&\dfrac{\partial}{\partial z}\\P&Q&R\end{array}\right|$  */}
+```math
+\nabla = \left(\frac{\partial}{\partial x},\frac{\partial}{\partial y},\frac{\partial}{\partial z}\right)
+```
+
+2. 方向导数：三元函数$u=u(x,y,z)$在点$P_0=(x_0,y_0,z_0)$处有定义，距离$t= \sqrt{(x-x_0)^2+(y-y_0)^2+(z-z_0)^2}$
+
+```math
+\frac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\frac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\frac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}\\=\nabla u(P_0) \cdot l^o = u_x^{\prime}(P_0)\cos \alpha+u_y^{\prime}(P_0)\cos \beta + u_z^{\prime}(P_0)\cos \gamma = |\nabla||l^o|\cos \theta
+```
+
+3. 梯度：
+
+```math
+\text{grad}\,u|_{P_0} =\nabla u(P_0) = (u_x^{\prime}(P_0),u_y^{\prime}(P_0),u_z^{\prime}(P_0))
+```
+
+4. 散度：向量场：$A(x,y,z) = (P(x,y,z),Q(x,y,z),R(x,y,z))$
+
+```math
+\text{div}\,A =\nabla \cdot A = \frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}
+```
+
+5. 旋度：
+
+```math
+\text{rot}\,A = \nabla\times A = \begin{vmatrix} i & j &k\\\frac{\partial}{\partial x}&\frac{\partial}{\partial y}&\frac{\partial}{\partial z}\\P&Q&R\end{vmatrix}
+```
 
 ### 平面几何公式
 
-{/* 平面图形面积$S=\begin{cases}\int_{a}^{b}\left|y_1\left(x\right)-y_2\left(x\right)\right|\mathrm{d}x\\ \dfrac12\int_{\alpha}^{\beta}\left|r_1^2\left(\theta\right)-r_2^2\left(\theta\right)\right|d\theta\end{cases}$
+- 平面图形面积：
 
-{/* 旋转体的体积$V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2\left(x\right)-y_2^2\left(x\right)\right|\mathrm{d}x\\ 2\pi\int_{a}^{b}x\left|y_1\left(x\right)-y_2\left(x\right)\right|\mathrm{d}x\end{cases}$ */}
-{/* 
-弧微分$\mathrm{ds}=\sqrt{[x'(t)]^2+[y'(t)]^2+[z'(t)]^2}\mathrm{dt}=\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}d\theta=\sqrt{1+f_{x}^{\prime2}}dx=\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}dt$ */}
+```math
+S=\begin{cases}\int_{a}^{b}\left|y_1(x)-y_2(x)\right|\mathrm{d}x\\ \frac{1}{2}\int_{\alpha}^{\beta}\left|r_1^2(\theta)-r_2^2(\theta)\right|\mathrm{d}\theta\end{cases}
+```
 
-{/* 平面曲线弧长$s=\int ds=\int_{a}^{b}\sqrt{1+f_{x}^{\prime2}}dx=\int_{\alpha}^{\beta}\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}dt=\int_{\alpha}^{\beta}\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}d\theta$ */}
+- 旋转体的体积：
 
-{/* 平面图形形心$\bar{x}=\dfrac{\iint_{D}xd\sigma}{\iint_{D}d\sigma}$ */}
+```math
+V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2(x)-y_2^2(x)\right|\mathrm{d}x\\ 2\pi\int_{a}^{b}x\left|y_1(x)-y_2(x)\right|\mathrm{d}x\end{cases}
+```
 
-{/* 曲率$K=\dfrac{d\theta}{d\rho} = \dfrac{|y''|}{\rho^3}$ */}
+- 弧微分：
 
-{/* 曲率半径$R=\dfrac{1}{K}$ */}
+```math
+\mathrm{d}s=\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2+[z^{\prime}(t)]^2}\mathrm{d}t=\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta=\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t
+```
 
-{/* 旋转曲面表面积$S=2\pi\int_{a}^{b}\left|y\left(x\right)\right|\sqrt{1+\left\lbrack y^{\prime}\left(x\right)\right\rbrack^2}\mathrm{d}x=2\pi\int_{\alpha}^{\beta}\left|y\left(t\right)\right|\sqrt{\left\lbrack x^{\prime}\left(t\right)\right\rbrack^2+\left\lbrack y^{\prime}\left(t\right)\right\rbrack^2}\mathrm{d}t$ */}
+- 平面曲线弧长：
 
-扇形面积
+```math
+s=\int \mathrm{d}s=\int_{a}^{b}\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\int_{\alpha}^{\beta}\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t=\int_{\alpha}^{\beta}\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta
+```
 
-三角形面积
+- 平面图形形心：
 
-椭圆
+```math
+\bar{x}=\frac{\iint_{D}x\mathrm{d}\sigma}{\iint_{D}\mathrm{d}\sigma}
+```
 
-双曲线
+- 曲率：
 
-抛物线
+```math
+K=\frac{\mathrm{d}\theta}{\mathrm{d}\rho} = \frac{|y^{\prime\prime}|}{\rho^3}
+```
 
-圆
+- 曲率半径：$R=1/K$
 
-{/* 物体体积$\iiint_{\Omega}dv=V$ */}
+- 旋转曲面表面积：
 
-区域面积$A=\iint_{D}d\sigma$
+```math
+S=2\pi\int_{a}^{b}\left|y(x)\right|\sqrt{1+[y^{\prime}(x)]^2}\mathrm{d}x=2\pi\int_{\alpha}^{\beta}\left|y(t)\right|\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2}\mathrm{d}t
+```
+
+- 区域面积：
+
+```math
+A=\iint_{D}\mathrm{d}\sigma
+```
+
+- 物体体积：
+
+```math
+V=\iiint_{\Omega}\mathrm{d}v
+```
 
 ### 空间平面和空间直线
-{/* | 空间平面 | 空间直线 |
-| --- | --- |
-| 法线$n=(A,B,C)$ | 方向向量$\tau = (l,m,n)$ |
-| $Ax+By+Cz+D=0$ | 两个空间平面交线确定一条空间直线 |
-| 法向量 * 面向量 = 0$A(x-x_0)+B(y-y_0)+C(z-z_0)=0$ | 分量比相等$\dfrac{x-x_0}{l} = \dfrac{y-y_0}{m} = \dfrac{z-z_0}{n}$ |
-| 三向量共面：$（x,y,z）$与平面上的不共线的三点组成的三阶矩阵的行列式=0| 两点式连等式 |
-| 平面与平面垂直等价于法向量与法向量垂直平面与平面平行等价于法向量与法向量平行 | 参数方程 |
-| 直线与平面垂直等价于法向量和方向向量平行,直线与平面平行等价于法向量和方向向量垂直 | 直线之间垂直等价于方向向量之间垂直,直线之间平行等价于方向向量之间平行|
-| 点到平面的距离：$d=\dfrac{\|Ax_0+By_0+Cz_0+D\|}{\sqrt{A^2+B^2+C^2}}$ | 点$P$到直线的距离：$d= \dfrac{\|\tau\times PM\|}{\|\tau\|}$ |
-| 平面和平面的夹角：$\theta = \arccos \dfrac{\|n_1\cdot n_2\|}{\|n_1\|\|n_2\|} = min\{< n_1,n_2>,\pi-< n_1,n_2>\}\in\left[0,\dfrac{\pi}{2}\right]$ | 直线和直线的夹角：$\theta = \arccos \dfrac{\|\tau_1\cdot \tau_2\|}{\|\tau_1\|\|\tau_2\|} = min\{< \tau_1,\tau_2>,\pi-< \tau_1,\tau_2>\}\in\left[0,\dfrac{\pi}{2}\right]$ |
-| 平面和直线的夹角：$\theta = \arcsin \dfrac{\|\tau\cdot n\|}{\|\tau\|\|n\|} = \left\| \dfrac{\pi}{2}-< \tau,n> \right\|\in\left[0,\dfrac{\pi}{2}\right]$ |  | */}
+
+| 项目                | 空间平面                                                            | 空间直线                                                                     |
+| ------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- | -------------------- | ---------------------- | ------------- | --- | --------------------------------------------------------------------------- | ------------------------------------ | ------------------ | --- | ------ | --- | ------ | --------------------------------------------------------------------------------------- |
+| 法线/方向向量       | 法线$n=(A,B,C)$                                                     | 方向向量$\tau = (l,m,n)$                                                     |
+| 方程                | $Ax+By+Cz+D=0$                                                      | 两个空间平面交线确定一条空间直线                                             |
+| 点法式/点向式       | 法向量 $\cdot$ 面向量 = 0：$A(x-x_0)+B(y-y_0)+C(z-z_0)=0$           | 分量比相等：$(x-x_0)/l = (y-y_0)/m = (z-z_0)/n$                              |
+| 其他形式            | 三向量共面：$(x,y,z)$与平面上的不共线的三点组成的三阶矩阵的行列式=0 | 两点式连等式、参数方程                                                       |
+| 垂直条件            | 平面与平面垂直等价于法向量与法向量垂直                              | 直线与平面垂直等价于法向量和方向向量平行；直线之间垂直等价于方向向量之间垂直 |
+| 平行条件            | 平面与平面平行等价于法向量与法向量平行                              | 直线与平面平行等价于法向量和方向向量垂直；直线之间平行等价于方向向量之间平行 |
+| 点到平面/直线的距离 | 点到平面的距离：$d=                                                 | Ax_0+By_0+Cz_0+D                                                             | /\sqrt{A^2+B^2+C^2}$ | 点$P$到直线的距离：$d= | \tau\times PM | /   | \tau                                                                        | $                                    |
+| 夹角公式            | 平面和平面的夹角：$\theta = \arccos(                                | n_1\cdot n_2                                                                 | /(                   | n_1                    |               | n_2 | )) = \min\{\langle n_1,n_2\rangle,\pi-\langle n_1,n_2\rangle\}\in[0,\pi/2]$ | 直线和直线的夹角：$\theta = \arccos( | \tau_1\cdot \tau_2 | /(  | \tau_1 |     | \tau_2 | )) = \min\{\langle \tau_1,\tau_2\rangle,\pi-\langle \tau_1,\tau_2\rangle\}\in[0,\pi/2]$ |
+| 平面和直线的夹角    | $\theta = \arcsin(                                                  | \tau\cdot n                                                                  | /(                   | \tau                   |               | n   | )) =                                                                        | \pi/2-\langle \tau,n\rangle          | \in[0,\pi/2]$      | -   |
 
 ### 空间曲面和空间曲线
-{/* | 空间曲面$\Sigma$ | 空间曲线$\Gamma$ |
-| --- | --- |
-| $F(x,y,z) = 0$ | $\left\{	\begin{array}{lr}	F(x,y,z) = 0, \\ G(x,y,z) = 0,\end{array}\right.$ |
-| 法向量：$n = (F_x'(P_0),F_y'(P_0),F_z'(P_0))$ | 切向量：$\tau = \left\| \begin{array} {ccc} i & j & k\\F_x&F_y&F_z'\\G_x'&G_y'&G_z' \end{array}\right\| = (A,B,C)$参数方程下：$\tau = (x_t',y_t',z_t')=(A,B,C)$ |
-| 切平面：$F_{x}^{\prime}\left(x-x_0\right)+F_{y}^{\prime}\left(y-y_0\right)+F_{z}^{\prime}\left(z-z_0\right)=0$ | 法平面：$x_{t}^{\prime}\left(x-x_0\right)+ y_{t}^{\prime}\left(y-y_0\right)+z_{t}^{\prime}\left(z-z_0\right)=0$ |
-| 法线：$\dfrac{x-x_0}{F_{x}^{\prime}}=\dfrac{y-y_0}{F_{y}^{\prime}}=\dfrac{z-z_0}{F_{z}^{\prime}}$ | 切线：$\dfrac{x-x_0}{x_{t}^{\prime}}=\dfrac{y-y_0}{y_{t}^{\prime}}=\dfrac{z-z_0}{z_{t}^{\prime}}$ | */}
+
+| 项目          | 空间曲面$\Sigma$                                    | 空间曲线$\Gamma$                                                                          |
+| ------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 方程          | $F(x,y,z) = 0$                                      | $\begin{cases}F(x,y,z) = 0, \\ G(x,y,z) = 0,\end{cases}$                                  |
+| 法向量/切向量 | 法向量：$n = (F_x, F_y, F_z)$ 的偏导数在点 $P_0$ 处 | 切向量：$\tau = (A,B,C)$，由梯度向量叉乘得到。参数方程下：$\tau = (x_t, y_t, z_t)$ 的导数 |
+| 切平面/法平面 | 切平面：$F_x(x-x_0)+F_y(y-y_0)+F_z(z-z_0)=0$        | 法平面：$x_t(x-x_0)+ y_t(y-y_0)+z_t(z-z_0)=0$                                             |
+| 法线/切线     | 法线：$(x-x_0)/F_x=(y-y_0)/F_y=(z-z_0)/F_z$         | 切线：$(x-x_0)/x_t=(y-y_0)/y_t=(z-z_0)/z_t$                                               |
 
 # 变量独立性
 
@@ -170,21 +219,18 @@ $div\,A =\nabla \cdot A = \dfrac{\partial P}{\partial x}+\dfrac{\partial Q}{\par
 
 > 相关变量的偏微分
 
-{/* 有一个函数$f(x,y) = x + y$，现在x的偏导:$\dfrac{\partial f}{\partial x}= 1$
+有一个函数$f(x,y) = x + y$，现在$x$的偏导：$\partial f/\partial x= 1$
 
-{/* 如果令$x = u, y = u + v$：$\dfrac{\partial f}{\partial u} = 2$， */}
+如果令$x = u, y = u + v$：$\partial f/\partial u = 2$
 
-{/* 现在的结果有些令人迷惑了，因为$x = u$，所以$x$和$u$等价,但是得到的结果并不相同：$\dfrac{\partial f}{\partial x}\neq\dfrac{\partial f}{\partial u}$ */}
+现在的结果有些令人迷惑了，因为$x = u$，所以$x$和$u$等价，但是得到的结果并不相同：$\partial f/\partial x \neq \partial f/\partial u$
 
-{/* 这点在《[多变量微积分4——全微分与链式法则](http:_www.cnblogs.com_bigmonkey_p_8350943)》中做过介绍，实际上： */}
+这点在《[多变量微积分4——全微分与链式法则](http://www.cnblogs.com/bigmonkey/p/8350943)》中做过介绍，实际上：
 
-{/* $\dfrac{\partial f}{\partial u}=\dfrac{\partial f}{\partial x}\dfrac{\partial x}{\partial u}+\dfrac{\partial f}{\partial y}\dfrac{\partial fy}{\partial u}=1\times1+1+1=2$ */}
+```math
+\frac{\partial f}{\partial u}=\frac{\partial f}{\partial x}\frac{\partial x}{\partial u}+\frac{\partial f}{\partial y}\frac{\partial y}{\partial u}=1\times1+1\times1=2
+```
 
-‍
+这需要认真审视偏导，当计算$f_x$时，意味着保持$y$不变的同时改变$x$；而计算$f_u$意味着保持$v$不变的同时改变$u$。由于$x = u$，所以改变$u$和改变$x$是一样的，但保持$v$不变和保持$y$不变并不相同。如果保持$y$不变，因为$x = u$，所以改变$x$的同时也意味着改变了$u$，所以为了保持$y$不变，$v$也势必发生改变，从而使$y = u + v$不变。当保持$v$不变时，$v=y-u=y-x$，可以看出，保持$v$不变实际上是保持$y - x$不变，这和保持$y$不变是两回事。这些偏导虽然看似简单，但使用起来其实是有风险的，因为让它们保持恒定并不是显而易见的。
 
-这需要认真审视偏导，当计算$f_x$时，意味着保持$y$不变的同时改变$x$；而$f$~~意味着保持$v$不变的同时改变$u$。由于$x = u$，所以改变$u$和改变$x$是一样的，但保持$v$不变和保持$y$不变并不相同。如果保持$y$不变，因为$x = u$，所以改变$x$的同时也意味着改变了$u$，所以为了保持$y$不变，$v$也势必发生改变，从而使$y = u + v$不变。当保持$v$不变时，$v=y-u=y-x$，可以看出，保持$v$不变实际上是保持$y – x$不变，这和保持$y$不变是两回事。这些偏导虽然看似简单，但使用起来其实是有风险的，因为让它们保持恒定并不是显而易见的。
-
-
-
-
-<To to={"https://zhuanlan.zhihu.com/p/71503766"} name={"多元微积分——环量、旋度与格林、斯托克斯公式，通量、散度与高斯公式"}/>
+[多元微积分——环量、旋度与格林、斯托克斯公式，通量、散度与高斯公式](https://zhuanlan.zhihu.com/p/71503766)

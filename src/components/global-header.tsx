@@ -1,6 +1,17 @@
 "use client";
 
-import { MessageSquare, Search, Moon, Sun, Menu } from "lucide-react";
+import {
+  MessageSquare,
+  Search,
+  Moon,
+  Sun,
+  Menu,
+  BookOpen,
+  LineChart,
+  PenLine,
+  Package,
+  BellRing,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
@@ -19,10 +30,11 @@ import {
 } from "@/components/ui/sheet";
 
 const navLinks = [
-  { text: "Base", url: "/docs" },
-  { text: "Blog", url: "/blog" },
-  { text: "Products", url: "/products" },
-  { text: "About", url: "/about" },
+  { text: "Knowledges", url: "/docs/base", icon: BookOpen },
+  { text: "MarcoEconomy", url: "/docs/economic", icon: LineChart },
+  { text: "Blog", url: "/blog", icon: PenLine },
+  { text: "Products", url: "/products", icon: Package },
+  { text: "Subscribe", url: "/subscription", icon: BellRing },
 ];
 
 export function GlobalHeader() {
@@ -32,44 +44,42 @@ export function GlobalHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (url: string) => {
-    if (url === "/docs") {
-      return pathname?.startsWith("/docs");
+    if (url.startsWith("/docs/")) {
+      if (pathname === "/docs" && url === "/docs/base") {
+        return true;
+      }
+      return pathname === url || pathname?.startsWith(url + "/");
     }
     return pathname === url || pathname?.startsWith(url + "/");
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
+    <header className="sticky top-0 z-50 w-full">
       <div className="container flex h-12 max-w-screen-2xl items-center px-4">
         {/* Logo */}
         <Link href="/" className="mr-4 md:mr-6 flex items-center gap-2">
-          <Image
-            src="/avatar.png"
-            alt="Logo"
-            width={24}
-            height={24}
-            className="rounded-full"
-          />
-          <span className="font-semibold text-sm hidden sm:inline-block">
-            WanGenius
-          </span>
+          <Image src="/icon.png" alt="Logo" width={24} height={24} />
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4 lg:gap-6 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link
-              key={link.url}
-              href={link.url}
-              className={
-                isActive(link.url)
-                  ? "text-foreground transition-colors"
-                  : "text-muted-foreground transition-colors hover:text-foreground"
-              }
-            >
-              {link.text}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.url}
+                href={link.url}
+                className={`flex items-center gap-1 transition-colors ${
+                  isActive(link.url)
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="h-4 w-4" aria-hidden />
+                <span>{link.text}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Spacer */}
@@ -143,11 +153,7 @@ export function GlobalHeader() {
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
@@ -157,27 +163,31 @@ export function GlobalHeader() {
               <SheetDescription className="sr-only">
                 Access navigation links and settings
               </SheetDescription>
-              
+
               <div className="flex flex-col gap-6 mt-6">
                 {/* Navigation Links */}
                 <nav className="flex flex-col gap-3">
                   <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                     Navigation
                   </div>
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.url}
-                      href={link.url}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={
-                        isActive(link.url)
-                          ? "text-foreground font-medium text-base transition-colors py-2"
-                          : "text-muted-foreground font-medium text-base transition-colors hover:text-foreground py-2"
-                      }
-                    >
-                      {link.text}
-                    </Link>
-                  ))}
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    return (
+                      <Link
+                        key={link.url}
+                        href={link.url}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 py-2 text-base font-medium transition-colors ${
+                          isActive(link.url)
+                            ? "text-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" aria-hidden />
+                        <span>{link.text}</span>
+                      </Link>
+                    );
+                  })}
                 </nav>
 
                 {/* Divider */}
@@ -188,7 +198,7 @@ export function GlobalHeader() {
                   <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                     Settings
                   </div>
-                  
+
                   {/* Theme Toggle */}
                   <button
                     onClick={() => {
@@ -214,4 +224,3 @@ export function GlobalHeader() {
     </header>
   );
 }
-

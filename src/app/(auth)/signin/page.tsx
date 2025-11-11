@@ -112,6 +112,15 @@ export default function SignInPage() {
             </Button>
           </form>
 
+          <div className="mt-4 text-right">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-fd-primary hover:underline"
+            >
+              忘记密码？
+            </Link>
+          </div>
+
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -145,4 +154,3 @@ export default function SignInPage() {
     </div>
   );
 }
-

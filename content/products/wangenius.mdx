@@ -5,25 +5,30 @@ title: wangenius
 我的同名包
 
 ```bash
-npm i wangenius
+npm i -g wangenius
 ```
 
-```ts title="index.ts"
-import { Agent, LLM } from "wangenius";
+```ts
+wangenius
+```
+启动了交互式AI, 如果 USERDATA/wangenius.txt 没有配置模型环境变量， 交互式配置
+
+```ts
+1. model:
+2. provider:
+	1. openai
+	2. openai-compatible
+	3. gemini
+	4. grok
+	5. claude
+	6. deepseek
+3. api_key:
+4. base_url:
 ```
 
-```ts title="index.ts"
-const agent = new Agent();
-const llm = new LLM();
-```
 
-```ts title="index.ts"
-agent.run("Hello, world!");
-```
-
-```ts title="index.ts"
-llm.text("Hello, world!");
-llm.json("Hello, world!");
-llm.image("Hello, world!");
-llm.stream("Hello, world!");
+```bash
+wangenius
+user: xxxxxx
+wangenius: xxxxxxx
 ```

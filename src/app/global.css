@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -125,8 +125,19 @@
 :root {
   --fd-banner-height: 3rem; /* 48px = h-12 header height */
 }
-mo ra
 #nd-sidebar {
   top: var(--fd-banner-height) !important;
   height: calc(100vh - var(--fd-banner-height)) !important;
+  background-color: var(--color-fd-background) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Hide default docs sidebar header block on desktop */
+#nd-sidebar > div:first-child {
+  display: none !important;
+}
+
+#nd-sidebar > div:last-child {
+  display: none !important;
+  border: none !important;
 }

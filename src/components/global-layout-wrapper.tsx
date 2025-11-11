@@ -16,7 +16,7 @@ export function GlobalLayoutWrapper({ children }: GlobalLayoutWrapperProps) {
       {/* Main content area */}
       <div className="flex flex-col flex-1 overflow-hidden">
         <GlobalHeader />
-        <div className="flex-1 overflow-auto">{children}</div>
+        <main className="flex-1 w-full overflow-auto">{children}</main>
       </div>
 
       {/* Sidebar - covers full height including header */}
