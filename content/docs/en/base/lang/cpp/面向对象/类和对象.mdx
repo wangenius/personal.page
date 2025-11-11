@@ -1,0 +1,812 @@
+---
+title: 类和对象
+sidebar_position: 1
+slug: 类和对象
+---
+
+## 面向对象的基本概念
+
+对象实现了状态和操作的结合. 使得数据和操作封装在对象的统一体中.
+
+对象的抽象是类. 类实际上是一种数据类型.
+
+类的属性是对象状态的抽象.
+
+类的操作是对象行为的抽象.
+
+<Callout type="warning" title="接口和抽象类的区别">
+[接口和抽象类的区别](https://blog.csdn.net/weixin_44422604/article/details/107184591)
+</Callout>
+
+| abstract | class                                                                  | interface                                                                                     |
+| -------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 实例化   | 不能                                                                   | 不能                                                                                          |
+| 类       | 继承关系，一个类只能使用一次继承关系。可以通过继承多个接口实现多重继承 | 一个类可以实现多个interface                                                                   |
+| 数据成员 | 可以有自己的                                                           | 静态的不能被修改，即必须是public static final类型，一般不在此定义                             |
+| 方法     | 可以私有的，abstract方法，子类必须实现                                 | 不可私有的，默认是public abstract类型                                                         |
+| 变量     | 可有私有的，其值可以在子类中重新定义，也可以重新赋值                   | 不可有私有的，默认是public static final型，且必须给其初值，实现类中不能重新定义，不能改变其值 |
+| 设计理念 | 表示的是“is                                                            | a”关系 表示对的是“like a”关系                                                                 |
+| 实现     | 需要继承，使用extends                                                  | 需要实现， 使用implement                                                                      |
+
+面向对象的三大特性:
+1. 封装
+2. 继承
+3. 多态
+
+(1) 抽象类可以有构造方法，接口中不能有构造方法；
+
+(2) 抽象类中可以有普通成员变量，接口中没有普通成员变量；
+
+(3) 抽象类中可以包含非抽象的普通方法，接口中的所有方法必须都是抽象的，不能有非抽象的普通方法；
+
+(4) 抽象类中可以包含静态方法，接口中不能包含静态方法；
+
+(5) 抽象类和接口中都可以包含静态成员变量，抽象类中的静态成员变量的访问类型可以任意，但接口中定义的变量只能是public static final类型，并且默认即为public static final类型；
+
+(6) 一个类可以实现多个接口，但只能继承一个抽象类。
+
+4.简单说一下两者的相同点
+
+(1) 两者都是抽象类,都不能实例化；
+
+(2) interface实现类及abstrct class的子类都必须要实现已经声明的抽象方法。
+
+> software entities should be open for extension, but closed for modification. --barbara liskov
+
+里氏替换原则: 尽量不要重写方法. 可以扩展
+
+<Callout type="success" title="注意">
+C++ 中保留了C语言的 struct 关键字，并且加以扩充。在C语言中，struct 只能包含成员变量，不能包含成员函数。而在C++中，struct 类似于 class，既可以包含成员变量，又可以包含成员函数。
+
+C++中的struct和class基本是通用的，有几个不同之处：
+
+- 使用 class 时，类中的成员默认都是 private 属性的；而使用 struct 时，结构体中的成员默认都是 public 属性的。
+- class 继承默认是 private 继承，而 struct 继承默认是 public 继承（《C++继承与派生》一章会讲解继承）。
+- class 可以使用模板，而 struct 不能（《模板、字符串和异常》一章会讲解模板）。
+
+C++ 没有抛弃C语言中的 struct 关键字，其意义就在于给C语言程序开发人员有一个归属感，并且能让C++编译器兼容以前用C语言开发出来的项目。
+
+在编写C++代码时，我强烈建议使用 class 来定义类，而使用 struct 来定义结构体，这样做语义更加明确。
+</Callout>
+
+类（class）是结构体的拓展，不仅能够拥有成员元素，还拥有成员函数。
+
+在面向对象编程（OOP）中，对象就是类的实例，也就是变量。
+
+C++ 中 struct 关键字定义的也是类，上文中的 结构体 的定义来自 C。因为某些历史原因，C++ 保留并拓展了 struct。
+
+## 类的声明
+
+C++中的类，可以看做是C语言结构体的升级版，它既可以包含变量，也可以包含函数。C++中的对象，可以理解为通过类定义出来的变量。和结构体一样，类是我们自定义的一种数据类型，而对象就是类这种数据类型的一个变量。一个类可以创建多个对象，每个对象都是类的一个具体实例，拥有类中的变量和函数。
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+using namespace std;
+
+enum class Position { PG, SG, SF, PF, C };
+
+unordered_map<Position, string> pos_cast = {{Position::PG, "控卫"},
+                                            {Position::SG, "分卫"},
+                                            {Position::SF, "小前锋"},
+                                            {Position::PF, "大前锋"},
+                                            {Position::C, "中锋"}};
+
+class Person {
+public:
+  Person() : name{"-1"}, position{Position::SF}, stats{0} {}
+  Person(string name, Position position, int stats)
+      : position{position}, name{name}, stats{stats} {}
+  Person *trade(string n, Position p, int s) {
+    name = n;
+    position = p;
+    stats = s;
+    return this;
+  }
+  int upgrade(int);
+  string get_name() { return name; }
+  int get_stats() { return stats; }
+  Position get_position() { return position; }
+
+private:
+  string name;
+  Position position;
+  int stats;
+};
+
+const int TEAM_MEMBERS = 12;
+
+class Team {
+public:
+  Team(string n) : name{n}, people{new Person[TEAM_MEMBERS]} {}
+  Person &operator[](int i) {
+    return people[i]; // 通过[]运算符访问该队伍的人员
+  }
+
+private:
+  string name;
+  Person *people;
+};
+
+string Team =
+    "GSW"; // 隐藏了 Team
+           // 类,通过声明同一范围内的函数、对象或变量或枚举器，可以隐藏类名称。
+           // 但是，在关键字 class 作为前缀时仍可以访问类名称。
+int main() {
+  class Team team(Team); // 传参是string Team 而不是class Team
+  team[0].trade("Stephen", Position::PG, 96);
+  cout << team[0].get_name() << "的能力值是" << team[0].get_stats() << ", "
+       << "位置是" << pos_cast[team[0].get_position()] << "." << endl;
+}
+```
+
+```text title="output"
+Stephen的能力值是96, 位置是控卫.
+```
+
+### 访问说明符
+
+不同于 struct 中的举例，本例中出现了 public，这属于访问说明符。
+
+- public：该访问说明符之后的各个成员都可以被公开访问，简单来说就是无论 类内 还是 类外 都可以访问。
+- protected：该访问说明符之后的各个成员可以被 类内、派生类或者友元的成员访问，但类外 不能访问。
+- private：该访问说明符之后的各个成员 只能 被 类内 成员或者友元的成员访问，不能 被从类外或者派生类中访问。
+  对于 struct，它的所有成员都是默认 public。对于 class，它的所有成员都是默认 private。
+
+<Callout type="success" title="友元和派生类">
+友元（friend）：使用 friend 关键字修饰某个函数或者类。可以使得在 被修饰者 在不成为成员函数或者成员类的情况下，访问该类的私有（private）或者受保护（protected）成员。简单来说就是只要带有这个类的 friend 标记，就可以访问私有或受保护的成员元素。
+
+派生类（derived class）：C++ 允许使用一个类作为 基类，并通过基类 派生 出 派生类。其中派生类（根据特定规则）继承基类中的成员变量和成员函数。可以提高代码的复用率。
+
+派生类似 "is" 的关系。如猫（派生类）"is" 哺乳动物（基类）。
+
+对于上面 private 和 protected 的区别，可以看做派生类可以访问基类的 protected 的元素（public 同），但不能访问 private 元素。
+</Callout>
+
+### 成员函数
+
+在 Person 类中, `get_name()`就是成员函数.
+
+和函数类似，对于成员函数，也可以先声明，在定义，如第十四行（声明处）以及十七行后（定义处）。
+
+```cpp
+int Person::upgrade(int n){return stats+=n;}
+```
+
+### 重载运算符
+
+重载运算符，可以部分程度上代替函数，简化代码。
+
+```cpp
++       -       *       /       %       ^       &
+|       ~       !       =       <       >       +=
+-=      *=      /=      %=      ^=      &=      |=
+<<      >>      >>=     <<=     ==      !=      <=
+>=      &&      ||      ++      --      ,       ->*
+->      ()      []      new     new []  delete  delete []
+```
+
+下面给出重载运算符的例子。
+
+```cpp
+class Person {
+public:
+  int operator++(){ return stats++;}
+//其余继承上文,省略不写
+};
+```
+
+重载运算符的模板大致可分为下面几部分。
+
+1. 类定义内重载: `返回类型 operator符号(参数){...}`
+2. 类定义内声明，在外部定义: `返回类型 类名称::operator符号(参数){...}`
+   对于自定义的类，如果重载了某些运算符（一般来说只需要重载 < 这个比较运算符），便可以使用相应的 STL 容器或算法，如 sort。
+
+### 在实例化变量时初始值
+
+为完成这种操作，需要定义 默认构造函数(Default constructor)。
+
+```cpp
+// Example:
+class Object {
+ public:
+  int weight;
+  int value;
+
+  Object() {
+    weight = 0;
+    value = 0;
+  }
+};
+```
+
+该例定义了 Object 的默认构造函数，该函数能够在我们实例化 Object 类型变量时，将所有的成员元素初始化为 0。
+
+若无显式的构造函数，则编译器认为该类有隐式的默认构造函数。换言之，若无定义任何构造函数，则编译器会自动生成一个默认构造函数，并会根据成员元素的类型进行初始化（与定义 内置类型 变量相同）。
+
+在这种情况下，成员元素都是未初始化的，访问未初始化的变量的结果是未定义的（也就是说并不知道会返回和值）。
+
+如果需要自定义初始化的值，可以再定义（或重载）构造函数。
+
+<Callout type="success" title="关于定义（或重载）构造函数">
+一般来说，默认构造函数是不带参数的，这区别于构造函数。构造函数和默认构造函数的定义大同小异，只是参数数量上的不同。
+
+构造函数可以被重载（当然首次被叫做定义）。需要注意的是，如果已经定义了构造函数，那么编译器便不会再生成无参数的默认构造函数。这会可能会使试图以默认方法构造变量的行为编译失败（指不填入初始化参数）。
+</Callout>
+
+使用 C++11 或以上时，可以使用 {} 进行变量的初始化。
+
+```cpp
+class Person {
+    public:
+    Person(string n = "-1", Position p = Position::PG, int a = 0){
+        name = n;
+        position = p;
+        stats = a;
+    }
+}
+
+Person p;
+Person p("Stephen",Position::PG,96);
+Person p {"Stephen",Position::PG,96}; //C++11
+```
+
+### 销毁
+
+这是不可避免的问题。每一个变量都将在作用范围结束走向销毁。
+
+但对于已经指向了动态申请的内存的指针来说，该指针在销毁时不会自动释放所指向的内存，需要手动释放动态内存。
+
+如果结构体的成员元素包含指针，同样会遇到这种问题。需要用到析构函数来手动释放动态内存。
+
+析构 函数（Destructor）将会在该变量被销毁时被调用。重载的方法形同构造函数，但需要在前加 ~
+
+默认定义的析构函数通常对于算法竞赛已经足够使用，通常我们只有在成员元素包含指针时才会重载析构函数。
+
+```cpp
+class Team {
+ public:
+
+  ~Team() { delete[] people; }
+};
+```
+
+### 为类变量赋值
+
+默认情况下，赋值时会按照对应成员元素赋值的规则进行。也可以使用 `类名称()` 或 `类名称{}` 作为临时变量来进行赋值。
+
+前者只是调用了复制构造函数（copy constructor），而后者在调用复制构造函数前会调用默认构造函数。
+
+另外默认情况下，进行的赋值都是对应元素间进行 浅拷贝，如果成员元素中有指针，则在赋值完成后，两个变量的成员指针具有相同的地址。
+
+```cpp
+// A,tmp1,tmp2,tmp3类型为Object
+tmp1 = A;
+tmp2 = Object(...);
+tmp3 = {...};
+```
+
+如需解决指针问题或更多操作，需要重载相应的构造函数。
+
+## 具体类
+
+典型特征: 表示是定义的一部分. 如vector其表示只是一个或者几个指针,指向保存在别处的数据. 但这种表示出现在具体类的每一个对象当中. 这令实现可以在时空中达到最优. 特别是它允许我们:
+
+1. 将具体类型的对象置于栈,静态分配的内存或者其他对象当中.
+2. 直接引用对象(而非仅仅通过指针或者引用)
+3. 立即进行完整的对象初始化(比如构造函数)
+4. 拷贝或移动对象
+
+类的表示可以是私有的,从而只能通过成员函数访问, 但他确实存在. 因此如果表示方式发生了任何明显的改动, 使用者就必须重新编译. 这就是我们令具体类型的行为与内置类型完全一样需要付出代价. 对于某些场景,不常改动的类型和局部变量提供了迫切需要的清晰性和效率,此时这种特性是可以接受的, 而且通常很理想. 为了提高灵活性, 具体类型可以将其表示的主要部分防止在动态存储/堆当中,然后通过存储在类对象内部的成员访问他们. vector和string就是这样实现的,我们可以将他们看成带有精心打造的接口的资源管理器.
+
+一种经典的用户自定义算数类型:
+
+```cpp title="Complex"
+class complex{
+    double re,im; // 表示i两个双精度浮点数
+    public:
+    complex(double r,double i):re{r},im{i}{} //用两个标量构造该复数
+    complex(double r):re{r},im{0}{} //用一个标量构造该复数
+    complex()re{0},im{0}{} //默认复数{0,0}
+    double real() const {return re;}
+    void real(double d){re = d;}
+    double imag()const {return im;}
+    void imag(double d){im = d;}
+
+    complex& operator += (complex z){
+        re+= z.re;
+        im+= z.im;
+        return *this;//返回结果
+    }
+
+    complex& operator -= (complex z){
+        re-= z.re;
+        im-= z.im;
+        return *this;
+    }
+
+    // 在类外的某处定义
+    complex& operator *= (complex);
+    complex& operator /= (complex);
+
+};
+```
+
+此时
+
+```cpp title="调用"
+complex z = {1,0};
+const complex cz {1,3};
+z = cz; //right! 向一个const变量赋值
+cz = z; //wrong! complex::operator=() 是一个非const成员函数
+double x = z.real(); //正确! complex::real()是一个const成员函数
+```
+
+很多操作不需要直接访问complex,因此它们的定义可以和类的定义分离开来:
+
+```cpp title="other"
+complex operator+(complex a, complex b){return a+=b;}
+complex operator-(complex a, complex b){return a-=b;}
+complex operator-(complex a){return {-a.real(),-a.imag()}}
+complex operator*(complex a, complex b){return a*=b;}
+complex operator/(complex a, complex b){return a/=b;}
+```
+
+在本例中,我们利用了一个事实: 以传值方式传递实参实际上是进行拷贝, 因此我可以修改实参而不会影响调用者的副本, 并可以将结果作为返回值.
+
+```cpp title="==,!="
+bool operator==(complex a, complex b){
+    return a.real() == b.real() && a.imag() == b.imag();
+}
+
+bool operator!=(complex a, complex b){
+    return !(a!=b);
+}
+```
+
+### explicit(显式)构造函数
+
+explicit 修饰的构造函数可用来防止隐式转换
+
+```cpp
+class Test1{
+public:
+    Test1(int n)            // 普通构造函数
+    {
+        num=n;
+    }
+private:
+    int num;
+};
+
+class Test2{
+public:
+    explicit Test2(int n)   // explicit（显式）构造函数
+    {
+        num=n;
+    }
+private:
+    int num;
+};
+
+int main()
+{
+    Test1 t1=12;            // 隐式调用其构造函数，成功
+    Test2 t2=12;            // 编译错误，不能隐式调用其构造函数
+    Test2 t2(12);           // 显式调用成功
+    return 0;
+}
+```
+
+### this指针
+
+1. this 指针是一个隐含于**每一个非静态成员函数中**的特殊指针。它指向正在被该成员函数操作的那个对象。
+2. 当对一个对象调用成员函数时，编译程序先将对象的地址赋给 this 指针，然后调用成员函数，每次成员函数存取数据成员时，由隐含使用 this 指针。
+3. 当一个成员函数被调用时，自动向它传递一个隐含的参数，该参数是一个指向这个成员函数所在的对象的指针。
+
+this 指针被隐含地声明为: `ClassName const this`，这意味着不能给 `this` 指针赋值；在 `ClassName` 类的 `const` 成员函数中，`this` 指针的类型为：`const ClassName const`，这说明不能对 `this` 指针所指向的这种对象是不可修改的（即不能对这种对象的数据成员进行赋值操作）；
+
+this 并不是一个常规变量，而是个右值，所以不能取得 this 的地址（不能 `&amp;this`）。
+
+在以下场景中，经常需要显式引用 this 指针：
+
+为实现对象的链式引用；
+
+为避免对同一对象进行赋值操作；
+
+在实现一些数据结构时，如 `list`。
+
+### 容器Container
+
+Vector类型的对象都是容器, 所以我们称类Vector是一种容器类型. 如之前提到的Vector使用很不错的double容器. 建立了一个有用的不变式, 提供了带边界检查的访问并且提供了size()令我们可以遍历其元素. 然而他还是存在一个致命缺陷:使用new分配元素,但没有释放元素. 尽管C++定义了一个垃圾回收器的接口,但并不能保证他总是可用的以将为用内存提供给新对象. 在某些情况下, 你不能使用回收器, 而且通常处于逻辑或性能考虑, 你更想使用精确的回收控制. 因此我们需要一种机制来确保构造函数分配的内存一定会被释放, 这种机制就叫做**析构函数**.
+
+```cpp title="destructor"
+class Vector{
+    public:
+    Vector(int s):elem{new double[s]},sz{s}{
+        //初始化元素
+        for(int i = 0; i < s; ++i)
+            elem[i] = 0;
+    }
+
+    // 析构函数 释放资源
+    ~Vector(){delete[]elem;}
+
+    double& operator[](int i);
+    int size() const;
+
+    private:
+    double* elem;//elem指向一个含有sz个的double数组
+    int sz;
+};
+```
+
+析构函数的命名规则是求补运算符~后接类的名字,是构造函数的补充. Vector的构造函数使用new运算符从动态存储分配内存. 析构函数则使用delete[] 运算符释放该内存实现清理. 普通的delete释放单个对象,delete[]释放数组.
+
+这一切无需Vector的使用者干预,使用者只需像内置类型的变量那样创建和使用Vector对象就可以了.
+
+```cpp title="fct.cpp"
+void fct(int n){
+    Vector v(n);
+    //使用v
+    {
+        Vector v2(2*n);
+        //使用v和v2
+    }//v2 在此处销毁
+    //使用v
+}//v在此处销毁
+```
+
+构造函数分配元素并正确初始化Vector的成员, 析构函数释放元素. 这就是所谓的数据句柄模型(handle-to-data model), 常用来管理在对象生命周期中大小会发生变化的数据.在构造函数中请求资源,然后再析构函数中释放它们的技术叫做资源请求即初始化(Resource Acquisition Is Initialization,RAII), 它令我们得以规避裸new的请求,同时也应该避免裸delete的请求.
+
+#### 初始化容器
+
+1. 初始化值列表构造函数initializer-list constructor: 用一个元素列表进行初始化
+2. push_back():在序列末尾添加一个新元素
+
+```cpp title="initializer"
+class Vector{
+    public:
+    Vector(std::initializer_list<double>);//用一个double列表进行初始化
+    void push_back(double); //在末尾添加一个元素,容器的长度加1
+}
+
+Vector::Vector(statusbar_list<double> lst)
+:elem{new double[lst.size()]},sz{static_cast<int>(lst.size())}
+{
+    copy(lst.begin(),lst.end(),elem);
+};
+```
+
+标准库的带下和下表都用unsigned整数,所以我们需要使用丑陋的static_cast来将初始值列表的大小显式转换为一个int.
+
+<Callout type="success">
+1. reinterpret_cast 将对象视为简单的字节序列
+2. const_cast 强制去掉const
+</Callout>
+
+## abstract class
+
+Vector和complex属于具体类型,因为它们的表示属于定义的一部分. 在这一点上,它们与内置类型很相似.
+
+相反,抽象类型将使用者与类的实现细节完全隔离开来, 为此我们将接口和表示分离开来,并且放弃了纯局部变量, 由于我们对抽象类型的表示一无所知(甚至对大小也不了解), 所以必须从自由存储的分配对象,然后通过引用或指针访问对象.
+
+```cpp title="container"
+class Container{
+    public:
+    virtual double& operator[](int) = 0; //纯虚函数
+    virtual int size() const = 0; //常量成员函数
+    virtual ~Container( ){} //析构函数
+};
+```
+
+这个类是一个纯接口,是为稍后定义的特定容器设计的接口. 关键子virtual的意思是可能随后在派生类中被重新定义. 不出所料,我们将这种声明为virtual的函数成为虚函数. Container类的派生类应为Container接口提供具体实现. 语法 `=0` 看起来有点奇怪,它说明函数是纯虚函数. 即Container的派生类必须重新定义这个函数. 因此我们不可能定义一个Container函数
+
+```cpp
+Container c; //错误, 不能定义抽象类对象
+Container* p = new Vector_Container(10); //正确
+```
+
+Container只是作为接口出现, 为具体实现`operator[]()`和`size()`函数的类提供接口. 包含纯虚函数的类称为抽象类(abstract class);
+
+Container 的用法:
+
+```cpp title="use.cpp"
+void use(Container& c){
+    const int sz = c.size();
+    for (int i = 0; i < sz; ++i) {
+        cout << c[i] << endl;
+    }
+}
+```
+
+use()忽略了实现细节的情况下使用Container接口. 根本不知道那个类型实现了它们.
+
+Container没有构造函数,这对抽象类很普遍,因为它没有数据需要初始化. Container有一个析构函数(virtual 的),因为抽象类需要通过引用或者指针来操纵,当我们通过一个指针销毁Container时,并不清楚它的实现部分到底拥有着那些资源.
+
+抽象类Container只定义了接口,未提供实现,为了令Container有用, 我们必须实现一个定义了接口所需函数的容器. 为此我们可以使用具体类:
+
+```cpp title="vector_container.cpp"
+class Vector_container : public Container{
+    public:
+    Vector_container(int s):v(s){}
+    ~Vector_container(){}
+    double& operator[](int i) override {return v[i];}
+    int size() const override {return v.size();}
+    private:
+    Vector v;
+};
+```
+
+:public可读作派生于或者子类型. 我们说类vector_container派生于(derived)类Container,而类Container是类Vector_container的基类(base). 基类和派生类的使用通常叫做继承(inheritance);
+
+我们称成员`operator[]()`和`size()`覆盖(override)了基类Container中的对应成员. 我们使用了显示的override来清楚的说明意图. 这是可选的. 但使用显示说明编译器能捕获错误, 例如错误拼写了函数的名字或是virtual函数及意图覆盖他的版本类型有微小差异. 显式使用override在较大的类层次中尤其有用. 因为如果不使用的话很难知道那个函数应该覆盖哪个.
+
+析构函数覆盖了基类析构函数. 成员的析构函数~Vector()被其所属类的析构函数~Vector_container()隐式调用.
+
+### 虚函数
+
+虚函数表vtbl
+
+## class hierarchy
+
+```cpp title="类的继承"
+class Shape{
+    public:
+    virtual Point center() const = 0; //纯虚函数
+    virtual void move(Point to) = 0;
+
+    virtual void draw() const = 0;
+    virtual void rotate(int angle) = 0;
+
+    virtual ~Shape(){} //destructor
+};
+```
+
+这个接口自然是一个抽象类. 对于每种shape来说,除了vtbl指针的位置外,表示的各不相同.
+
+```cpp title="rotate_all.cpp"
+void rotate_all(vector< Shape* >& v, int angle){
+    for(auto p:v) p -> rotate(angle);
+}
+```
+
+为了定义一种具体的形状,首先必须指明它是一个Shape, 然后在规定其特有的属性:
+
+```cpp title="circle.cpp"
+class Circle: public Shape {
+    public:
+    Circle(Point p, int rad); //constructor
+    Point center()const override {
+        return x;
+    }
+    void move(Point to) const override {
+        x = to;
+    }
+
+    void draw() const override;
+    void rotate(int) const override{}
+    private:
+    Point x;
+    int r;
+};
+```
+
+继续构造:
+
+```cpp title="smiley.cpp"
+class Smiley: public Circle{
+    public:
+    Smiley(Point p, int rad):Circle{p,r},mouth{nullptr}{}
+    ~Smiley(){
+        delete mouth;
+        delete[](eyes);
+    }
+
+    void move(Point to) override;
+    void draw() const override;
+    void rotate(int) override;
+    void add_eye(Shape* s){
+        eyes.push_back(s);
+    };
+    void set_mouth(Shape* s);
+    virtual void wink(int i); //眨眼数i
+
+    private:
+    vector<Shape*> eyes; //通常有两只眼
+    Shape* mouth;
+}
+```
+
+现在可以调用Smiley的基类的draw()及其成员的draw()来定义Smiley::draw():
+
+```cpp title="draw"
+void Smiley::draw()  const {
+    Circle::draw();
+    for(auto p : eyes) p -> draw();
+    mouth -> draw();
+}
+```
+
+<Callout type="success">
+Shape的destructor是一个虚函数, Smiley的destructor覆盖了它.
+</Callout>
+
+<Callout type="success" title="类层次结构的好处">
+1. 接口继承: 派生类对象可以用在任何要求基类对象的地方,即基类担当了派生类接口的角色
+2. 实现继承:积累负责提供可以简化派生类实现的函数或者数据.
+</Callout>
+
+```cpp title="从输入流读入描述形状的数据并构造对应的Shape"
+enum class kind {circle,triangle,smiley};
+Shape* read_shape(istream& is){
+    //...从输入流is中读入形状描述信息,找到形状类别k
+    switch(k) {
+        case kind.circle:
+        return new Circle{p,r};
+        case kind.triangle:
+        return new Triangle{p1,p2,p3};
+        case kind.smiley:
+        Smiley* ps = new Smiley{p,r};
+        ps -> add_eye(e1);
+        ps -> add_eye(e2);
+        ps -> set_mouth(m);
+        return ps;
+    }
+};
+```
+
+程序使用函数的方式如下:
+
+```cpp title="user.cpp"
+void user(){
+    std::vector<Shape*> v;
+    while(cin) v.push_back(read_shape(cin));
+    draw_all(v); //对每个元素调用draw
+    rotate_all(v,45); //对每个元素旋转45度
+    for(auto p:v) delete p; //删除元素
+}
+```
+
+### 层次漫游
+
+read_shape()返回shape\*指针,从而我们可以按相似的方式处理所有的Shape. 但是如果我们想使用只有某个特定派生类才提供的成员函数,比如smiley_wink(),则可以使用dynamic_cast运算符询问"这个Shape是Smiley吗".
+
+```cpp title="dynamic_cast"
+Shape * ps {read_shape(cin)};
+if (Smiley *p = dynamic_cast<Smiley*>(ps)){
+    // ps指向一个Smiley 则是Smiley使用它
+}else{
+    //不是Smiley
+}
+```
+
+如果在运行时dynamic_cast的参数所指向对象的类型不是期望的类型或其派生类,则dynamic_cast返回nullptr.
+
+如果我们认为指向不同派生类对象的指针是合法参数,就可以对指针类型使用dynamic_cast,然后检查结果是否是nullptr.
+
+如果我们不能接收不同类型,可以简单的对引用类型使用dynamic_cast, 如果对象不是与其类型,dynamic_cast会抛出一个bad_cast异常.
+
+```cpp title="refs & dynamic_cast"
+Shape* ps {read_shape(cin)};
+Smiley& r {dynamic_cast<Smiley*>(*ps)}; //要在某处捕捉std::bad_cast
+```
+
+### 避免资源泄露
+
+在自由存储上分配的对象的指针是危险的. 我们不应该用一个普通老式的指针来表示所有权.
+
+```cpp title="user"
+void user(int x){
+    shape* p = new Circle{Point{0,0},10};
+    //...
+    if(x < 0) throw Bad_x{}; //存在潜在危险
+    if(x == 0) return;   //存在潜在危险
+    //...
+    delete p;
+}
+```
+
+除非x是整数,否则这段代码就会发生泄漏. 将new的结果赋予一个裸指针就是自找麻烦. 这种问题的一个简单解决方案是:如果需要释放资源则不要使用裸指针,而是用标准库unique_str;
+
+```cpp title="unique_ptr"
+class Smiley : public Circle{
+    //...
+    private:
+    vector<unique_ptr<Shape>> eyes;
+    unique_ptr<Shape> mouth;
+}
+```
+
+这是一个简单,通用,高效的资源管理技术的例子.
+
+这一改变有一个令人愉快的副作用. 我们不在需要为Smiley定义析构函数. 编译器会隐式生成一个析构函数. 它会对vector中的unique_ptr进行所需要的析构操作. 使用unique_ptr的代码与正确使用裸指针的代码具有完全相同的效率.
+
+现在我们考虑read_shape()的使用者.
+
+```cpp title="read_shape.cpp"
+unique_ptr<Shape> read_shape(istream& is){
+    //... 从is中读取性状描述信息,找到形状的类别k
+    switch(k){
+        case Kind::circle:
+        //读取circle数据point,int到p和r
+        return unique_ptr<Shape>{new Circle{p,r}}
+        //...
+    }
+}
+
+void user(){
+    vector<unique_ptr<Shape>> v;
+    while(cin)
+    v.push_back(read_shape(cin));
+    draw_all(v);
+    rotate_all(v,45);
+};//所有形式被隐式销毁
+```
+
+## struct
+
+```cpp title="结构类型"
+struct Vector{
+    int size;
+    double* elem;
+};
+
+Vector v;
+```
+
+但是, 就v本身而言, 用处不大. 因为v的elem指针并没有指向任何东西. 为了让它变得有用, 我们必须给出一些元素, 另v指向它们.
+
+```cpp title="构造函数"
+void vector_init(Vector& v,int s){
+    v.elem = new double[s];
+    v.size =s;
+}
+```
+
+也就是说，v的elem成员被赋予了一个由new运算符生成的指针。而v的size成员则得到了元素的数目。Vector&中的&指出,我们是通过非const引用方式传递v的。这样vector_init()就能修改传给他的向量了。new运算符从一块名为自由存储(又称为动态内存或堆)的区域中分配内存。在自由存储中分配的对象独立于它创建时所处的作用域，会一直存活到使用delete运算符销毁它为止。
+
+```cpp title="从cin读入s个整数,然后返回这些整数的和,假定s是正的"
+double read_and_sum(int s){
+    Vector v;
+    vector_init(v,s);
+
+    for(int i=0;i!= s;++i)
+        cin >> v.elem[i];
+
+    double sum = 0;
+    for(int i=0;i!= s;++i)
+        sum += v.elem[i];
+    return sum;
+}
+```
+
+> 我们自写的和标准库vector有很大差距.所以不要试图重写vector和string等标准库组件. 直接使用它们更加明智.
+
+我们可以通过名字或引用访问struct成员,此时使用`.`,也可以通过指针访问struct成员,此时使用`->`.C++中 struct 不同于 C 中 struct，在 C++ 中 struct 被扩展为类似 class 的类说明符。
+
+## Union
+
+联合体声明的类说明符与类或 结构体 的声明相似：
+
+```cpp
+union MyUnion {
+  int x;
+  long long y;
+} x;
+```
+
+x联合体的定义与结构体类似。按照上述定义，MyUnion 同样可以当作一种自定义类型使用。名称 MyUnion 可以省略。
+
+与结构体类似，同样可以使用 变量名.成员名 进行访问。
+
+联合体所占用的内存空间大小 不小于 其最大的成员的大小，所有成员 共用内存空间与地址。当一个成员被赋值，由于内存共享，该联合体中的其他成员都会被覆盖。即同一时刻联合体中只能保存一个成员的值。
+
+总的来说，struct 更适合看成是一个数据结构的实现体，class 更适合看成是一个对象的实现体。
+
+区别
+最本质的一个区别就是默认的访问控制
+
+默认的继承访问权限。struct 是 public 的，class 是 private 的。
+
+struct 作为数据结构的实现体，它默认的数据访问控制是 public 的，而 class 作为对象的实现体，它默认的成员变量访问控制是 private 的。

@@ -1,0 +1,119 @@
+---
+title: Git
+---
+
+## Basic Concepts
+
+Git is a distributed version control system used to track changes in source code during software development. It is designed for coordinating work among programmers, but it can be used to track changes in any set of files.
+
+## Key Features
+
+- **Distributed**: Every developer has a complete copy of the repository
+- **Branching and Merging**: Easy to create and merge branches
+- **Speed**: Fast performance for most operations
+- **Data Integrity**: Cryptographic integrity checking
+- **Staging Area**: Selective commit of changes
+
+## Basic Workflow
+
+1. **Working Directory**: Where you modify files
+2. **Staging Area**: Where you prepare changes for commit
+3. **Repository**: Where Git permanently stores the changes
+
+## Common Commands
+
+### Repository Operations
+- `git init` - Initialize a new repository
+- `git clone <url>` - Clone an existing repository
+- `git status` - Check the status of files
+
+### Staging and Committing
+- `git add <file>` - Add file to staging area
+- `git commit -m "message"` - Commit staged changes
+- `git reset <file>` - Unstage a file
+
+### Branching
+- `git branch` - List branches
+- `git branch <name>` - Create new branch
+- `git checkout <branch>` - Switch to branch
+- `git merge <branch>` - Merge branch into current branch
+
+### Remote Operations
+- `git remote -v` - List remote repositories
+- `git fetch` - Download changes from remote
+- `git pull` - Fetch and merge changes
+- `git push` - Upload changes to remote
+
+## Best Practices
+
+1. **Commit Often**: Make small, logical commits
+2. **Write Good Commit Messages**: Clear, descriptive messages
+3. **Use Branches**: Isolate features and experiments
+4. **Keep History Clean**: Use interactive rebase when appropriate
+5. **Collaborate Effectively**: Communicate with your team
+
+## Configuration
+
+### Global Configuration
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+### Repository-specific Configuration
+```bash
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+```
+
+## Ignoring Files
+
+Create a `.gitignore` file to specify intentionally untracked files:
+
+```
+# Compiled files
+*.class
+*.o
+*.pyc
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+```
+
+## Undoing Changes
+
+### Undo Working Directory Changes
+```bash
+git checkout -- <file>
+```
+
+### Undo Staged Changes
+```bash
+git reset HEAD <file>
+```
+
+### Undo Commits
+```bash
+git revert <commit>  # Create new commit that undoes changes
+git reset --hard <commit>  # Move branch pointer (dangerous!)
+```
+
+## Advanced Topics
+
+- **Rebasing**: Rewrite commit history
+- **Cherry-picking**: Apply specific commits
+- **Stashing**: Temporarily store changes
+- **Tags**: Mark specific points in history
+- **Submodules**: Include other repositories
+
+## Resources
+
+- [Official Git Documentation](https://git-scm.com/doc)
+- [Pro Git Book](https://git-scm.com/book)
+- [GitHub Guides](https://guides.github.com/)
+- [Atlassian Git Tutorials](https://www.atlassian.com/git/tutorials)

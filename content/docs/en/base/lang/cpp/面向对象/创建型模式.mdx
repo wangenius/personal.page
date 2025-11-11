@@ -1,0 +1,708 @@
+---
+title : 创建型模式
+sidebar_position : 4
+slug : 创建型模式
+---
+
+## 单例模式
+
+确保一个类只有一个实例，并提供该实例的全局访问点。
+
+实现方式
+1. 使用一个私有构造函数、一个私有静态变量以及一个公有静态函数来实现。
+2. 私有构造函数保证了不能通过构造函数来创建对象实例，只能通过公有静态函数返回唯一的私有静态变量。
+
+应用场景
+1. 某类只要求生成一个对象的时候，如一个班中的班长、每个人的身份证号等。
+2. 当对象需要被共享的场合。由于单例模式只允许创建一个对象，共享该对象可以节省内存，并加快对象访问速度。如 Web 中的配置对象、数据库的连接池等。
+3. 当某类需要频繁实例化，而创建的对象又频繁被销毁的时候，如多线程的线程池、网络连接池等。
+
+单例模式同时解决了两个问题， 所以违反了单一职责原则：
+
+保证一个类只有一个实例。 为什么会有人想要控制一个类所拥有的实例数量？ 最常见的原因是控制某些共享资源 （例如数据库或文件） 的访问权限。
+
+它的运作方式是这样的： 如果你创建了一个对象， 同时过一会儿后你决定再创建一个新对象， 此时你会获得之前已创建的对象， 而不是一个新对象。
+
+注意， 普通构造函数无法实现上述行为， 因为构造函数的设计决定了它必须总是返回一个新对象。
+
+为该实例提供一个全局访问节点。 还记得你 （好吧， 其实是我自己） 用过的那些存储重要对象的全局变量吗？ 它们在使用上十分方便， 但同时也非常不安全， 因为任何代码都有可能覆盖掉那些变量的内容， 从而引发程序崩溃。
+
+和全局变量一样， 单例模式也允许在程序的任何地方访问特定对象。 但是它可以保护该实例不被其他代码覆盖。
+
+还有一点： 你不会希望解决同一个问题的代码分散在程序各处的。 因此更好的方式是将其放在同一个类中， 特别是当其他代码已经依赖这个类时更应该如此。
+
+如今， 单例模式已经变得非常流行， 以至于人们会将只解决上文描述中任意一个问题的东西称为单例。
+
+为该实例提供一个全局访问节点。 还记得你 （好吧， 其实是我自己） 用过的那些存储重要对象的全局变量吗？ 它们在使用上十分方便， 但同时也非常不安全， 因为任何代码都有可能覆盖掉那些变量的内容， 从而引发程序崩溃。
+
+和全局变量一样， 单例模式也允许在程序的任何地方访问特定对象。 但是它可以保护该实例不被其他代码覆盖。
+
+还有一点： 你不会希望解决同一个问题的代码分散在程序各处的。 因此更好的方式是将其放在同一个类中， 特别是当其他代码已经依赖这个类时更应该如此。
+
+如今， 单例模式已经变得非常流行， 以至于人们会将只解决上文描述中任意一个问题的东西称为单例。
+
+```cpp showLineNumbers
+#pragma once
+#include <string>
+#include <mutex>
+
+/// @brief 懒汉式单例. 类加载时没有生成单例, 第一次调用 getInstance 方法时才去创建
+class LazySingleton {
+public:
+    Singleton(LazySingleton &other) = delete;
+    void operator=(const LazySingleton &) = delete;
+    static LazySingleton* getInstance(const std::string& value) { 
+        if (!instance_) {
+            std::unique_lock<std::mutex> lock(mutex_);
+            if (!instance_) instance_ = new LazySingleton(value);    // 可能出现两个线程都执行了第一次 if 语句
+        }
+        return instance_; 
+    }
+    /**
+     * Finally, any singleton should define some business logic, which can be
+     * executed on its instance.
+     */
+    void SomeBusinessLogic()
+    {
+        // ...
+    }
+
+protected:
+    LazySingleton(const std::string value): value_(value){}
+    ~LazySingleton() {}
+    std::string value_;
+
+private:
+   // LazySingleton() {}; 也可以简单将默认的构造函数设为私有
+    static LazySingleton* instance_; //静态成员对象, 整个程序只维护一个
+    static std::mutex mutex_;
+};
+
+void Thread1(){
+    // Following code emulates slow initialization.
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    Singleton* singleton = Singleton::GetInstance("FOO");
+    std::cout << singleton->value() << "\n";
+}
+
+void Thread2(){
+    // Following code emulates slow initialization.
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    Singleton* singleton = Singleton::GetInstance("BAR");
+    std::cout << singleton->value() << "\n";
+}
+
+int main()
+{   
+    std::cout <<"If you see the same value, then singleton was reused (yay!\n" <<
+                "If you see different values, then 2 singletons were created (booo!!)\n\n" <<
+                "RESULT:\n";   
+    std::thread t1(ThreadFoo);
+    std::thread t2(ThreadBar);
+    t1.join();
+    t2.join();
+    
+    return 0;
+}
+```
+
+```text title="output"
+If you see the same value, then singleton was reused (yay!
+If you see different values, then 2 singletons were created (booo!!)
+
+RESULT:
+FOO
+FOO
+```
+
+```cpp
+#pragma once
+
+namespace singleton {
+    
+/// @brief 饿汉式单例. 类一旦加载就创建一个单例
+/// 优点: 线程安全
+/// 缺点: 丢失延迟实例化带来的节约资源的好处
+class HungrySingleton {
+public:
+    HungrySingleton* getInstance() { return instance_; }
+
+private:
+    HungrySingleton() {}
+    static HungrySingleton* instance_;
+};
+
+HungrySingleton* HungrySingleton::instance_ = new HungrySingleton();
+
+} // namespace singleton
+```
+
+## 原型模式
+
+含义
+
+Prototype 将一个对象作为原型，通过对其进行复制而克隆出多个和原型类似的新实例。
+
+复制一个对象分为浅拷贝和深拷贝:
+
+浅拷贝[默认]: 给对象中的每个成员变量进行复制，就是把A1类中的变量直接赋给A2类中变量，属于值传递，但是涉及到有new之类内存分配的地方，他们却是共享内存的。
+深拷贝: 不仅使用值传递，而是要每个变量都有自己一份独立的内存空间，互不干扰。
+应用场景
+
+对象之间相同或相似，即只是个别的几个属性不同的时候。
+对象的创建过程比较麻烦，但复制比较简单的时候。
+
+```cpp
+#pragma once
+#include <stdio.h>
+
+/// @brief 需要从A的实例得到一份与A内容相同，但是又互不干扰的实例
+
+/// @brief 抽象原型类
+class AbstractPrototype {
+public:
+    AbstractPrototype() = default;
+	virtual ~AbstractPrototype() {}
+	virtual AbstractPrototype* clone() = 0;
+};
+
+/// @brief 具体原型类
+class ConcretePrototype : public AbstractPrototype {
+public:
+	ConcretePrototype() = default;
+	~ConcretePrototype() {}
+	AbstractPrototype* clone() {
+        return new ConcretePrototype(*this);
+    }
+
+private:
+	ConcretePrototype(const ConcretePrototype& other) {
+        std::cout <<"ConcretePrototype copy construct!\n";
+    }
+};
+
+void main() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    AbstractPrototype* ptr_a = new ConcretePrototype();
+    AbstractPrototype* ptr_b = ptr_a->clone();
+
+    delete ptr_a;
+    delete ptr_b;
+}
+```
+
+```text title="output"
+-------------------- main --------------------
+ConcretePrototype copy construct!
+```
+
+## 工厂模式
+
+含义
+
+Factory Method 定义一个用于创建产品的接口，由子类决定生产什么产品。
+
+优点:
+用户只需要知道具体工厂的名称就可得到所要的产品，无须知道产品的具体创建过程；
+在系统增加新的产品时只需要添加具体产品类和对应的具体工厂类，无须对原工厂进行任何修改，满足开闭原则；
+缺点:
+每增加一个产品就要增加一个具体产品类和一个对应的具体工厂类，这增加了系统的复杂度。
+应用场景
+
+客户只知道创建产品的工厂名，而不知道具体的产品名。
+创建对象的任务由多个具体子工厂中的某一个完成，而抽象工厂只提供创建产品的接口。
+客户不关心创建产品的细节，只关心产品的品牌。
+扩展
+
+当需要生成的产品不多且不会增加，一个具体工厂类就可以完成任务时，可删除抽象工厂类。这时工厂方法模式将退化到简单工厂模式。
+
+工厂方法模式是一种创建型设计模式， 其在父类中提供一个创建对象的方法， 允许子类决定实例化对象的类型。
+
+工厂方法模式建议使用特殊的工厂方法代替对于对象构造函数的直接调用 （即使用 new运算符）。 不用担心， 对象仍将通过 new运算符创建， 只是该运算符改在工厂方法中调用罢了。 工厂方法返回的对象通常被称作 “产品”。
+
+乍看之下， 这种更改可能毫无意义： 我们只是改变了程序中调用构造函数的位置而已。 但是， 仔细想一下， 现在你可以在子类中重写工厂方法， 从而改变其创建产品的类型。
+
+但有一点需要注意:仅当这些产品具有共同的基类或者接口时， 子类才能返回不同类型的产品， 同时基类中的工厂方法还应将其返回类型声明为这一共有接口。
+
+举例来说，卡车Truck和 轮船Ship类都必须实现 运输Transport接口， 该接口声明了一个名为 deliver交付的方法。 每个类都将以不同的方式实现该方法： 卡车走陆路交付货物， 轮船走海路交付货物。 陆路运输RoadLogistics类中的工厂方法返回卡车对象， 而 海路运输SeaLogistics类则返回轮船对象。
+
+你可以避免创建者和具体产品之间的紧密耦合。
+ 单一职责原则。 你可以将产品创建代码放在程序的单一位置， 从而使得代码更容易维护。
+ 开闭原则。 无需更改现有客户端代码， 你就可以在程序中引入新的产品类型。
+
+#### 实现
+
+让所有产品都遵循同一接口。 该接口必须声明对所有产品都有意义的方法。
+
+在创建类中添加一个空的工厂方法。 该方法的返回类型必须遵循通用的产品接口。
+
+在创建者代码中找到对于产品构造函数的所有引用。 将它们依次替换为对于工厂方法的调用， 同时将创建产品的代码移入工厂方法。
+
+你可能需要在工厂方法中添加临时参数来控制返回的产品类型。
+
+工厂方法的代码看上去可能非常糟糕。 其中可能会有复杂的 switch分支运算符， 用于选择各种需要实例化的产品类。 但是不要担心， 我们很快就会修复这个问题。
+
+现在， 为工厂方法中的每种产品编写一个创建者子类， 然后在子类中重写工厂方法， 并将基本方法中的相关创建代码移动到工厂方法中。
+
+如果应用中的产品类型太多， 那么为每个产品创建子类并无太大必要， 这时你也可以在子类中复用基类中的控制参数。
+
+例如， 设想你有以下一些层次结构的类。 基类 邮件及其子类 航空邮件和 陆路邮件 ；运输及其子类 飞机, 卡车和 火车 。航空邮件仅使用 飞机对象， 而 陆路邮件则会同时使用 卡车和 火车对象。 你可以编写一个新的子类 （例如 火车邮件 ） 来处理这两种情况， 但是还有其他可选的方案。 客户端代码可以给 陆路邮件类传递一个参数， 用于控制其希望获得的产品。
+
+如果代码经过上述移动后， 基础工厂方法中已经没有任何代码， 你可以将其转变为抽象类。 如果基础工厂方法中还有其他语句， 你可以将其设置为该方法的默认行为。
+
+```cpp
+class Product {
+ public:
+  virtual ~Product() {}
+  virtual std::string Operation() const = 0;
+};
+
+/**
+ * Concrete Products provide various implementations of the Product interface.
+ */
+class ConcreteProduct1 : public Product {
+ public:
+  std::string Operation() const override {
+    return "{Result of the ConcreteProduct1}";
+  }
+};
+class ConcreteProduct2 : public Product {
+ public:
+  std::string Operation() const override {
+    return "{Result of the ConcreteProduct2}";
+  }
+};
+
+/**
+ * The Creator class declares the factory method that is supposed to return an
+ * object of a Product class. The Creator's subclasses usually provide the
+ * implementation of this method.
+ */
+
+class Creator {
+  /**
+   * Note that the Creator may also provide some default implementation of the
+   * factory method.
+   */
+ public:
+  virtual ~Creator(){};
+  virtual Product* FactoryMethod() const = 0;
+  /**
+   * Also note that, despite its name, the Creator's primary responsibility is
+   * not creating products. Usually, it contains some core business logic that
+   * relies on Product objects, returned by the factory method. Subclasses can
+   * indirectly change that business logic by overriding the factory method and
+   * returning a different type of product from it.
+   */
+
+  std::string SomeOperation() const {
+    // Call the factory method to create a Product object.
+    Product* product = this->FactoryMethod();
+    // Now, use the product.
+    std::string result = "Creator: The same creator's code has just worked with " + product->Operation();
+    delete product;
+    return result;
+  }
+};
+
+/**
+ * Concrete Creators override the factory method in order to change the
+ * resulting product's type.
+ */
+class ConcreteCreator1 : public Creator {
+  /**
+   * Note that the signature of the method still uses the abstract product type,
+   * even though the concrete product is actually returned from the method. This
+   * way the Creator can stay independent of concrete product classes.
+   */
+ public:
+  Product* FactoryMethod() const override {
+    return new ConcreteProduct1();
+  }
+};
+
+class ConcreteCreator2 : public Creator {
+ public:
+  Product* FactoryMethod() const override {
+    return new ConcreteProduct2();
+  }
+};
+
+/**
+ * The client code works with an instance of a concrete creator, albeit through
+ * its base interface. As long as the client keeps working with the creator via
+ * the base interface, you can pass it any creator's subclass.
+ */
+void ClientCode(const Creator& creator) {
+  // ...
+  std::cout << "Client: I'm not aware of the creator's class, but it still works.\n"
+            << creator.SomeOperation() << std::endl;
+  // ...
+}
+
+/**
+ * The Application picks a creator's type depending on the configuration or
+ * environment.
+ */
+
+int main() {
+  std::cout << "App: Launched with the ConcreteCreator1.\n";
+  Creator* creator = new ConcreteCreator1();
+  ClientCode(*creator);
+  std::cout << std::endl;
+  std::cout << "App: Launched with the ConcreteCreator2.\n";
+  Creator* creator2 = new ConcreteCreator2();
+  ClientCode(*creator2);
+
+  delete creator;
+  delete creator2;
+  return 0;
+}
+```
+```text title="output"
+App: Launched with the ConcreteCreator1.
+Client: I'm not aware of the creator's class, but it still works.
+Creator: The same creator's code has just worked with {Result of the ConcreteProduct1}
+
+App: Launched with the ConcreteCreator2.
+Client: I'm not aware of the creator's class, but it still works.
+Creator: The same creator's code has just worked with {Result of the ConcreteProduct2}
+```
+## 抽象工厂模式
+
+含义
+
+AbstractFactory 为访问类提供一个创建一组相关或相互依赖对象的接口，且访问类无须指定所要产品的具体类就能得到同族的不同等级的产品的模式结构。
+
+抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产一个等级的产品，而抽象工厂模式可生产多个等级的产品。
+
+优点
+可以在类的内部对产品族中相关联的多等级产品共同管理，而不必专门引入多个新的类来进行管理。
+当增加一个新的产品族时不需要修改原代码，满足开闭原则。
+缺点
+当产品族中需要增加一个新的产品时，所有的工厂类都需要进行修改。
+
+抽象工厂模式是一种创建型设计模式， 它能创建一系列相关的对象， 而无需指定其具体类。
+
+抽象工厂模式建议为系列中的每件产品明确声明接口 （例如椅子、 沙发或咖啡桌）。 然后， 确保所有产品变体都继承这些接口。 例如， 所有风格的椅子都实现 椅子接口； 所有风格的咖啡桌都实现 咖啡桌接口， 以此类推。
+
+接下来， 我们需要声明抽象工厂——包含系列中所有产品构造方法的接口。 例如 createChair创建椅子 、​  createSofa创建沙发和 createCoffeeTable创建咖啡桌 。 这些方法必须返回抽象产品类型， 即我们之前抽取的那些接口：椅子 ，沙发和 咖啡桌等等。
+
+```cpp
+#pragma once
+
+#include <stdio.h>
+
+namespace abstract_factory {
+    
+/// @brief 抽象产品 - 定义了产品的规范，描述了产品的主要特性和功能
+class AbstractProductA {
+public:
+    virtual ~AbstractProductA() {}
+    virtual void Show() = 0;
+};
+class AbstractProductB {
+public:
+    virtual ~AbstractProductB() {}
+    virtual void Show() = 0;
+};
+
+/// @brief 具体产品 - 实现了抽象产品角色所定义的接口，由具体工厂来创建，它同具体工厂之间一一对应
+class ConcreteProductA1 : public AbstractProductA {
+public:
+    virtual void Show() {
+        printf("ConcreteProductA1 Show ...\n");
+    }
+};
+class ConcreteProductA2 : public AbstractProductA {
+public:
+    virtual void Show() {
+        printf("ConcreteProductA2 Show ...\n");
+    }
+};
+class ConcreteProductB1 : public AbstractProductB {
+public:
+    virtual void Show() {
+        printf("ConcreteProductB1 Show ...\n");
+    }
+};
+class ConcreteProductB2 : public AbstractProductB {
+public:
+    virtual void Show() {
+        printf("ConcreteProductB2 Show ...\n");
+    }
+};
+
+/// @brief 抽象工厂 - 提供了创建产品的接口
+class AbstractFactory {
+public:
+    virtual ~AbstractFactory() {}
+    virtual AbstractProductA* CreateProductA() = 0;
+    virtual AbstractProductB* CreateProductB() = 0;
+};
+
+/// @brief 具体工厂 - 实现抽象工厂中的抽象方法，完成具体产品的创建
+class ConcreteFactory1 : public AbstractFactory {
+public:
+    virtual AbstractProductA* CreateProductA() {
+        AbstractProductA* ptr = new ConcreteProductA1();
+        return ptr;
+    }
+    virtual AbstractProductB* CreateProductB() {
+        AbstractProductB* ptr = new ConcreteProductB1();
+        return ptr;
+    }
+};
+class ConcreteFactory2 : public AbstractFactory {
+public:
+    virtual AbstractProductA* CreateProductA() {
+        AbstractProductA* ptr = new ConcreteProductA2();
+        return ptr;
+    }
+    virtual AbstractProductB* CreateProductB() {
+        AbstractProductB* ptr = new ConcreteProductB2();
+        return ptr;
+    }
+};
+
+} // namespace abstract_factory
+
+void main() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    abstract_factory::AbstractFactory* ptr_factory_1 = new abstract_factory::ConcreteFactory1();
+    abstract_factory::AbstractProductA* ptr_product_A1 = ptr_factory_1->CreateProductA();
+    ptr_product_A1->Show();
+    delete ptr_factory_1;
+    delete ptr_product_A1;
+}
+```
+
+```text title="output"
+-------------------- main --------------------
+ConcreteProductA1 Show ...
+```
+
+## 建造者模式
+含义
+
+Builder 将一个复杂对象分解成多个相对简单的部分，然后根据不同需要分别创建它们，最后构建成该复杂对象。
+
+优点
+各个具体的建造者相互独立，有利于系统的扩展。
+客户端不必知道产品内部组成的细节，便于控制细节风险。
+缺点
+产品的组成部分必须相同，这限制了其使用范围。
+如果产品的内部变化复杂，该模式会增加很多的建造者类。
+建造者模式注重零部件的组装过程，而工厂方法模式更注重零部件的创建过程。
+
+应用场景
+
+创建的对象较复杂，由多个部件构成，各部件面临着复杂的变化，但构件间的建造顺序是稳定的。
+创建复杂对象的算法独立于该对象的组成部分以及它们的装配方式，即产品的构建过程和最终的表示是独立的。
+
+```cpp
+/**
+ * It makes sense to use the Builder pattern only when your products are quite
+ * complex and require extensive configuration.
+ *
+ * Unlike in other creational patterns, different concrete builders can produce
+ * unrelated products. In other words, results of various builders may not
+ * always follow the same interface.
+ */
+
+class Product1{
+    public:
+    std::vector<std::string> parts_;
+    void ListParts()const{
+        std::cout << "Product parts: ";
+        for (size_t i=0;i<parts_.size();i++){
+            if(parts_[i]== parts_.back()){
+                std::cout << parts_[i];
+            }else{
+                std::cout << parts_[i] << ", ";
+            }
+        }
+        std::cout << "\n\n"; 
+    }
+};
+
+/**
+ * The Builder interface specifies methods for creating the different parts of
+ * the Product objects.
+ */
+class Builder{
+    public:
+    virtual ~Builder(){}
+    virtual void ProducePartA() const =0;
+    virtual void ProducePartB() const =0;
+    virtual void ProducePartC() const =0;
+};
+/**
+ * The Concrete Builder classes follow the Builder interface and provide
+ * specific implementations of the building steps. Your program may have several
+ * variations of Builders, implemented differently.
+ */
+class ConcreteBuilder1 : public Builder{
+    private:
+
+    Product1* product;
+
+    /**
+     * A fresh builder instance should contain a blank product object, which is
+     * used in further assembly.
+     */
+    public:
+
+    ConcreteBuilder1(){
+        this->Reset();
+    }
+
+    ~ConcreteBuilder1(){
+        delete product;
+    }
+
+    void Reset(){
+        this->product= new Product1();
+    }
+    /**
+     * All production steps work with the same product instance.
+     */
+
+    void ProducePartA()const override{
+        this->product->parts_.push_back("PartA1");
+    }
+
+    void ProducePartB()const override{
+        this->product->parts_.push_back("PartB1");
+    }
+
+    void ProducePartC()const override{
+        this->product->parts_.push_back("PartC1");
+    }
+
+    /**
+     * Concrete Builders are supposed to provide their own methods for
+     * retrieving results. That's because various types of builders may create
+     * entirely different products that don't follow the same interface.
+     * Therefore, such methods cannot be declared in the base Builder interface
+     * (at least in a statically typed programming language). Note that PHP is a
+     * dynamically typed language and this method CAN be in the base interface.
+     * However, we won't declare it there for the sake of clarity.
+     *
+     * Usually, after returning the end result to the client, a builder instance
+     * is expected to be ready to start producing another product. That's why
+     * it's a usual practice to call the reset method at the end of the
+     * `getProduct` method body. However, this behavior is not mandatory, and
+     * you can make your builders wait for an explicit reset call from the
+     * client code before disposing of the previous result.
+     */
+
+    /**
+     * Please be careful here with the memory ownership. Once you call
+     * GetProduct the user of this function is responsable to release this
+     * memory. Here could be a better option to use smart pointers to avoid
+     * memory leaks
+     */
+
+    Product1* GetProduct() {
+        Product1* result= this->product;
+        this->Reset();
+        return result;
+    }
+};
+
+/**
+ * The Director is only responsible for executing the building steps in a
+ * particular sequence. It is helpful when producing products according to a
+ * specific order or configuration. Strictly speaking, the Director class is
+ * optional, since the client can control builders directly.
+ */
+class Director{
+    /**
+     * @var Builder
+     */
+    private:
+    Builder* builder;
+    /**
+     * The Director works with any builder instance that the client code passes
+     * to it. This way, the client code may alter the final type of the newly
+     * assembled product.
+     */
+
+    public:
+
+    void set_builder(Builder* builder){
+        this->builder=builder;
+    }
+
+    /**
+     * The Director can construct several product variations using the same
+     * building steps.
+     */
+
+    void BuildMinimalViableProduct(){
+        this->builder->ProducePartA();
+    }
+    
+    void BuildFullFeaturedProduct(){
+        this->builder->ProducePartA();
+        this->builder->ProducePartB();
+        this->builder->ProducePartC();
+    }
+};
+/**
+ * The client code creates a builder object, passes it to the director and then
+ * initiates the construction process. The end result is retrieved from the
+ * builder object.
+ */
+/**
+ * I used raw pointers for simplicity however you may prefer to use smart
+ * pointers here
+ */
+void ClientCode(Director& director)
+{
+    ConcreteBuilder1* builder = new ConcreteBuilder1();
+    director.set_builder(builder);
+    std::cout << "Standard basic product:\n"; 
+    director.BuildMinimalViableProduct();
+    
+    Product1* p= builder->GetProduct();
+    p->ListParts();
+    delete p;
+
+    std::cout << "Standard full featured product:\n"; 
+    director.BuildFullFeaturedProduct();
+
+    p= builder->GetProduct();
+    p->ListParts();
+    delete p;
+
+    // Remember, the Builder pattern can be used without a Director class.
+    std::cout << "Custom product:\n";
+    builder->ProducePartA();
+    builder->ProducePartC();
+    p=builder->GetProduct();
+    p->ListParts();
+    delete p;
+
+    delete builder;
+}
+
+int main(){
+    Director* director= new Director();
+    ClientCode(*director);
+    delete director;
+    return 0;    
+}
+```
+
+```text title="output"
+Standard basic product:
+Product parts: PartA1
+
+Standard full featured product:
+Product parts: PartA1, PartB1, PartC1
+
+Custom product:
+Product parts: PartA1, PartC1
+```

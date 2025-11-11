@@ -1,0 +1,82 @@
+---
+title: 两个链表的交点
+---
+
+## 一般思路
+
+```cpp
+class Solution
+{
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB)
+    {
+        ListNode* p = headA;
+        ListNode* q = headB;
+        while (p)
+        {
+            while (q)
+            {
+                if (p == q)
+                {
+                    return p;
+                }
+                q = q->next;
+            }
+            p = p->next;
+            q = headB;
+        }
+        return nullptr;
+    };
+};
+```
+
+## 
+空间复杂度O(1),T = O(n)
+
+如果两个链表相交，那么相交点之后的长度是相同的
+
+我们需要做的事情是，让两个链表从同距离末尾同等距离的位置开始遍历。这个位置只能是较短链表的头结点位置。
+为此，我们必须消除两个链表的长度差
+
+1. 指针 pA 指向 A 链表，指针 pB 指向 B 链表，依次往后遍历
+2. 如果 pA 到了末尾，则 pA = headB 继续遍历
+3. 如果 pB 到了末尾，则 pB = headA 继续遍历
+4. 比较长的链表指针指向较短链表head时，长度差就消除了
+5. 如此，只需要将最短链表遍历两次即可找到位置
+
+```cpp
+class Solution
+{
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB)
+    {
+        ListNode *p = headA;
+        ListNode *q = headB;
+        bool flag[] = {true, true};
+        while (flag[0] || flag[1])
+        {
+            if (p)
+                p = p->next;
+            else
+            {
+                p = headB;
+                flag[0] = false;
+            };
+            if (q)
+            q = q->next;
+            else{
+                q = headA;
+                flag[1] = false;
+            }
+        }
+        while (p && q)
+        {
+            if (p == q)
+                return p;
+            p = p->next;
+            q = q->next;
+        }
+        return nullptr;
+    };
+};
+```

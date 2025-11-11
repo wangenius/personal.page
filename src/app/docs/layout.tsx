@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           banner: null,
         }}
         containerProps={{
-          className: "bg-canvas-light dark:bg-canvas-dark [&>div:last-child]:py-0",
+          className: "bg-canvas-light dark:bg-canvas-dark [&>div:last-child]:py-0 [&_article]:py-2",
         }}
       >
         {children}

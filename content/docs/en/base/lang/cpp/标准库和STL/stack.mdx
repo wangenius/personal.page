@@ -1,0 +1,61 @@
+---
+title: stack
+sidebar_position: 3
+slug: stack
+---
+
+Stacks are a type of container adaptor, specifically designed to operate in a LIFO context (last-in first-out), where elements are inserted and extracted only from one end of the container.
+
+stacks are implemented as container adaptors, which are classes that use an encapsulated object of a specific container class as its underlying container, providing a specific set of member functions to access its elements. Elements are pushed/popped from the "back" of the specific container, which is known as the top of the stack.
+
+The underlying container may be any of the standard container class templates or some other specifically designed container class. The container shall support the following operations:
+
+1. empty
+2. size
+3. back
+4. push_back
+5. pop_back
+
+stack 是一种先进后出（First In Last Out, FILO）的数据结构，它只有一个出口。
+
+stack 容器允许新增元素、移除元素、取得栈顶元素，但是除了最顶端外，没有任何其他方法可以存取stack的其他元素。
+
+换言之，stack不允许有遍历行为。
+
+<Callout type="success" title="注意">
+stack 没有迭代器 : 不允许遍历行为，自然也就不提供迭代器了。
+</Callout>
+
+| member function | definition                      |
+| --------------- | ------------------------------- |
+| (constructor)   | Construct stack                 |
+| empty           | Test whether container is empty |
+| size            | Return size                     |
+| top             | Access next element             |
+| push            | Insert element                  |
+| emplace         | Construct and insert element    |
+| pop             | Remove top element              |
+| swap            | Swap contents                   |
+
+## 构造函数
+
+### 赋值
+
+```cpp
+stack<T> stkT; // 默认构造函数，stack采用模版类实现
+stack(const stack& stk); // 拷贝构造函数
+
+stack& operator=(const stack& stk); // 重载赋值操作符
+```
+### 数据存取
+```cpp
+void push(T elem); // 向栈顶添加元素
+void pop(); // 从栈顶移除第一个元素
+T& top(); // 返回栈顶元素
+```
+
+### 大小
+```cpp
+bool empty(); // 判断堆栈是否为空
+int size(); // 返回栈的大小
+```
