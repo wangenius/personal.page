@@ -4,8 +4,6 @@ sidebar_position: 1
 slug: crate
 ---
 
-# crate
-
 crate 是 rust 中的一个编译单元。每当调用 rustc some_file.rs 时， some_file.rs 都会被视为 crate 文件。如果 some_file.rs 中有 mod 声明，则在运行之前，模块文件的内容将插入到 crate 文件中找到 mod 声明的位置编译器对其进行处理。换句话说，模块不会单独编译，只有包会被编译。
 
 板条箱可以编译成二进制文件或库。默认情况下， rustc 将从箱子中生成二进制文件。可以通过将 --crate-type 标志传递给 lib 来覆盖此行为。
@@ -38,7 +36,6 @@ $ ls lib*
 library.rlib
 ```
 库以“lib”为前缀，默认情况下它们以板条箱文件命名，但可以通过将 --crate-name 选项传递给 rustc 或使用 < b2> 属性。
-
 
 ## using
 

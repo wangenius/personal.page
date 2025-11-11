@@ -4,10 +4,6 @@ title: 排序
 slug: 排序
 ---
 
-
-# 排序
-
-
 排序算法（英语：Sorting algorithm）是一种将一组特定的数据按某种顺序进行排列的算法。排序算法多种多样，性质也大多不同。
 
 稳定性
@@ -49,11 +45,10 @@ slug: 排序
 | 计数排序 | $O(n+m) $      | $O(n+m) $      | $O(n+m) $    | 稳定                 |
 | 桶排序   | $O(n) $        | $O(n) $        | $O(m) $      | 稳定                 |
 
-:::success[口诀]
+<Callout type="success" title="口诀">
 交插选归基, 只有交插稳.(只有简单交换(冒泡)和简单插入稳定)  
 交插选平方, 对数快并堆.(交插选的平均时间复杂度是$O(n^2)$,快速排序,归并排序,堆排序的平均时间复杂度是$O(n\log_2n)$)
-
-:::
+</Callout>
 
 ## 内部排序
 
@@ -99,8 +94,6 @@ $$
 11. 冒泡交换、快速交换、简单选择，堆选择可以使经过一趟排序能够保证一个关键词到达最终位置。
 
 ![排序比较](/res/compared_sorts.jpeg)
-
-# 外部排序
 
 ![外部排序](/res/外部排序.png)
 
@@ -155,7 +148,6 @@ O(n^2) O(n^2) O(nlog2n) 最差 O(n2) 平均 O(nlog2n)
 
 缺点：并不能解决所有的问题。有的问题适合使用递归而不是循环。如果使用循环并不困难的话，最好使用循环。
 
-
 ## 选择排序
 
 ### 简单
@@ -167,7 +159,6 @@ O(n^2) O(n^2) O(nlog2n) 最差 O(n2) 平均 O(nlog2n)
 选择排序的最优时间复杂度、平均时间复杂度和最坏时间复杂度均为 $O(n^2)$。
 
 ![](/res/selection-sort-animate.svg)
-
 
 ```cpp
 void selection_sort(int* a, int n) {
@@ -350,8 +341,6 @@ void insertion_sort(int arr[], int len) {
 
 折半插入排序与直接插入排序的基本思想是一致的，折半插入排序仅对插入排序时间复杂度中的常数进行了优化，所以优化后的时间复杂度仍然不变。
 
-
-
 ```cpp title="折半插入"
 void insertion_sort(int arr[], int len) {
   if (len < 2) return;
@@ -364,7 +353,6 @@ void insertion_sort(int arr[], int len) {
   }
 }
 ```
-
 
 ## 归并排序
 
@@ -443,7 +431,6 @@ void merge_sort(int *a, int l, int r) {
 }
 ```
 
-
 #### 倍增法实现归并排序
 
 已知当数组长度为 1 时，该数组就已经是有序的。
@@ -485,8 +472,6 @@ void merge_sort(int *a, size_t n) {
 排序后的数组无逆序对，归并排序的合并操作中，每次后段首元素被作为当前最小值取出时，前段剩余元素个数之和即是合并操作减少的逆序对数量；故归并排序计算逆序对数量的额外时间复杂度为 $\Theta (n \log n)$，对于 C/C++ 代码将 merge 过程的 if(b[j] < a[i]) 部分加上 cnt += aLen - i 或 cnt += aEnd - aBegin 即可，对于 Python 代码将 merge 过程的 if(b[j] < a[i]): 部分加上 cnt += len(a) - i 即可。
 
 此外，逆序对计数即是将元素依次加入数组时统计当前大于其的元素数量，将数组离散化后即是区间求和问题，使用树状数组或线段树解决的时间复杂度为 $O(n \log n)$ 且空间复杂度为 $\Theta (n)$。
-
-
 
 ## 桶排序
 
@@ -599,7 +584,6 @@ int compare(const void *p1,
 ```
 这里也可以看出，等价不代表相等，只代表在此比较规则下两元素等价。
 
-
 ### std::sort
 
 用法：
@@ -621,7 +605,6 @@ std::sort 函数是更常用的 C++ 库比较函数。该函数的最后一个�
 
 C++ 标准并未严格要求此函数的实现算法，具体实现取决于编译器。libstdc++ 和 libc++ 中的实现都使用了 内省排序。
 
-
 ### std::nth_element
 
 用法：
@@ -637,7 +620,6 @@ std::nth_element(first, nth, last, cmp);
 对于以上两种用法，C++ 标准要求它的平均时间复杂度为 O(n)，其中 n 为 std::distance(first, last)。
 
 它常用于构建 K-D Tree。
-
 
 ### std::stable_sort
 

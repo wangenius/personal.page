@@ -2,8 +2,6 @@
 title: 文件属性
 ---
 
-# Linux 文件权限概念
-
 文件权限是如何针对使用者与群组来设定的呢？这个部分相当重要，如果不懂这部分，
 那么你将老是听不懂别人在说什么。尤其是当你屏幕上出现了「Permission deny」的时候
 
@@ -52,7 +50,6 @@ drwxr-xr-x.  3 root root   19 Oct  4 22:48 .local
 ### 文件的类型与权限
 
 就是这一串了 `-rw-------` ，有十个字符
-
 
 文件类型
 
@@ -117,11 +114,8 @@ drwxr-xr-x.  3 root root   19 Oct  4 22:48 .local
 ### 文档名
 
 没什么好说的，特殊是 一个点 `.`，表示隐藏文件，
-至于更多的用法，自行查看 ls --help 或则 man ls 或 info ls 等文档了（小提示，当语系为`LANG=zh_CN.UTF-8` 时，文档里面有部分描述是中文的）
-
-::: tip
+至于更多的用法，自行查看 ls --help 或则 man ls 或 info ls 等文档了（小提示，当语系为`LANG=zh_CN.UTF-8` 时，文档里面有部分描述是中文的） tip
 非常重要的是权限，上面的也稍微记录下
-:::
 
 ### 权限识别练习
 
@@ -192,17 +186,11 @@ usbmuxd  users
 [root@study ~]# chgrp root initial-setup-ks.cfg
 [root@study ~]# ls -al initial-setup-ks.cfg
 -rw-r--r--. 1 root root 2206 10月  4 18:42 initial-setup-ks.cfg
-```
-
-::: tip
+``` tip
 在改变群组的时候，这个组名，必须存在 /etc/group 中
-:::
 
-### 改变文件拥有者 chown
-
-::: tip
+### 改变文件拥有者 chown tip
 同样需要改变为存在  /etc/passwd 中有记录的用户名称
-:::
 
 语法如下
 

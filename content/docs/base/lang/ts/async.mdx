@@ -2,11 +2,7 @@
 title: async
 ---
 
-# async
-
 async 函数返回的是一个 Promise 对象。从[文档](https://link.segmentfault.com/?enc=CnEpcEN%2BxKLw3iiuSLWWXA%3D%3D.E7RQFOqdIfiM7U7ldpjgM%2FtkBwj0V4N6l%2Ft8QjiFu6tyBSlJeux93E5%2FxRF%2FpBPATabozUupNpW2fL%2F2xo0TzMhZ9d6LGvvYaxQxq%2FTRLBUKMIKZYuQqXG7cCu18GIaf)中也可以得到这个信息。async 函数（包含函数语句、函数表达式、Lambda表达式）会返回一个 Promise 对象。如果在函数中 `return` 一个直接量，async 会把这个直接量通过 `Promise.resolve()` 封装成 Promise 对象。
 
 `Promise.resolve(x)` 可以看作是 `new Promise(resolve => resolve(x))` 的简写，可以用于快速封装字面量对象或其他对象，将其封装成 Promise 实例。
-
-
 

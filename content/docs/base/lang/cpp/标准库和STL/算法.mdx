@@ -3,7 +3,6 @@ title : 算法
 sidebar_position : 3
 slug : 算法
 ---
-# 算法
 
 在STL中，除了用容器类模板自身提供的成员函数来操作容器元素外，还提供了一系列通用的对容器中元素进行操作的函数模板，称为算法。 
 STL 提供了大约 100 个实现算法的模版函数，基本都包含在 `<algorithm>` 之中，还有一部分包含在 `<numeric>` 和 `<functional>`。完备的函数列表请 [参见参考手册](https://zh.cppreference.com/w/cpp/algorithm)，排序相关的可以参考 排序内容的对应页面。
@@ -72,7 +71,6 @@ OutIt copy(InIt src_first, InIt src_last, OutIt dst_first);
 
 1. Pred：一元“谓词”，需要一个元素作为参数
 2. BinPred：二元“谓词”，需要两个元素作为参数
-
 
 ```cpp
 // 简单查找算法，要求输入迭代器（input iterator）
@@ -283,7 +281,6 @@ int main()
 }
 ```
 
-
 ```cpp title="二元操作"
 T accumulate(InIt first, InIt last, T val); // 按“+”操作
 T accumulate(InIt first, InIt last, T val, BinOp op); // 由op决定累积的含义
@@ -350,7 +347,6 @@ int main
 for_each(iterator beg, iterator end, _callback);
 ```
 
-
 ### transform
 
 ```cpp
@@ -366,11 +362,9 @@ for_each(iterator beg, iterator end, _callback);
 iterator  transform(iterator beg1,  iterator end1,  iterator beg2,  _callback);
 ```
 
-
 > 注意：目标容器一定要提前分配好内存。
 
 ## 常用查找算法
-
 
 ### find
 
@@ -385,7 +379,6 @@ iterator  transform(iterator beg1,  iterator end1,  iterator beg2,  _callback);
 iterator  find(iterator beg,  iterator end,  value);
 ```
 
-
 ### find_if
 
 ```cpp
@@ -398,7 +391,6 @@ iterator  find(iterator beg,  iterator end,  value);
 */ 
 iterator  find_if(iterator beg,  iterator end,  _callback);
 ```
-
 
 > 利用 find_if 实现自定义类的 find 操作的时候，之前的函数适配器可能会派上用场。
 
@@ -415,7 +407,6 @@ iterator  find_if(iterator beg,  iterator end,  _callback);
 iterator  adjacent_find(iterator beg,  iterator end,  _callback);
 ```
 
-
 ### binary_search
 
 ```cpp
@@ -430,7 +421,6 @@ iterator  adjacent_find(iterator beg,  iterator end,  _callback);
 bool  binary_search(iterator beg,  iterator end,  value);
 ```
 
-
 ### count
 
 ```cpp
@@ -444,7 +434,6 @@ bool  binary_search(iterator beg,  iterator end,  value);
 int  count(iterator beg,  iterator end,  value); 
 ```
 
-
 ### count_if
 
 ```cpp
@@ -457,7 +446,6 @@ int  count(iterator beg,  iterator end,  value);
 */ 
 int  count_if(iterator beg,  iterator end,  _callback);
 ```
-
 
 ## 常用排序算法
 
@@ -476,7 +464,6 @@ int  count_if(iterator beg,  iterator end,  _callback);
 merge(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);
 ```
 
-
 ### sort
 
 ```cpp
@@ -489,7 +476,6 @@ merge(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest)
 sort(iterator beg, iterator end, _callback);
 ```
 
-
 ### random_shuffle
 
 ```cpp
@@ -501,7 +487,6 @@ sort(iterator beg, iterator end, _callback);
 random_shuffle(iterator beg, iterator end);
 ```
 
-
 如果想要每次打乱不同，需要自己设置随机数种子：
 
 ```cpp
@@ -511,7 +496,6 @@ int  main() {
     srand((unsigned  int)time(NULL)); ......//random_shuffle 
 }
 ```
-
 
 ### reverse
 
@@ -523,7 +507,6 @@ int  main() {
 */ 
 reverse(iterator beg, iterator end);
 ```
-
 
 ## 常用拷贝和替换算法
 
@@ -547,7 +530,6 @@ for_each(v.begin(),  v.end(), [](int val){cout << val <<  " ";}); // 等价于
 //copy(v.begin(),  v.end(),  ostream_iterator<int>(cout,  " ")); // 需要#include <iterator>
 ```
 
-
 > 其实第一种方法已经够用了，不过为了提升一下逼格，不妨也了解一下第二种。
 
 ### replace
@@ -563,7 +545,6 @@ for_each(v.begin(),  v.end(), [](int val){cout << val <<  " ";}); // 等价于
 replace(inerator beg, iterator end, oldvalue, newvalue);
 ```
 
-
 ### replace_if
 
 ```cpp
@@ -577,7 +558,6 @@ replace(inerator beg, iterator end, oldvalue, newvalue);
 replace_if(inerator beg, inerator end, _callback, newvalue);
 ```
 
-
 ### swap
 
 ```cpp
@@ -588,7 +568,6 @@ replace_if(inerator beg, inerator end, _callback, newvalue);
 */ 
 swap(container c1, container c2);
 ```
-
 
 ## 常用算数生成算法
 
@@ -605,7 +584,6 @@ swap(container c1, container c2);
 accumulate(iterator beg, iterator end, value);
 ```
 
-
 ### fill
 
 ```cpp
@@ -617,7 +595,6 @@ accumulate(iterator beg, iterator end, value);
 */ 
 fill(iterator beg, iterator end, value);
 ```
-
 
 ## 常用集合算法
 
@@ -637,7 +614,6 @@ fill(iterator beg, iterator end, value);
 set_intersection(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);
 ```
 
-
 ### set_union
 
 ```cpp
@@ -653,7 +629,6 @@ set_intersection(iterator beg1, iterator end1, iterator beg2, iterator end2, ite
 */ 
 set_union(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);
 ```
-
 
 ### set_difference
 
@@ -671,14 +646,13 @@ set_union(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator d
 set_difference(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);
 ```
 
-
 find：顺序查找。find(v.begin(), v.end(), value)，其中 value 为需要查找的值。
 
 reverse：翻转数组、字符串。reverse(v.begin(), v.end()) 或 reverse(a + begin, a + end)。
 
 unique：去除容器中相邻的重复元素。unique(ForwardIterator first, ForwardIterator last)，返回值为指向 去重后 容器结尾的迭代器，原容器大小不变。与 sort 结合使用可以实现完整容器去重。
 
-:::success[shuffle]
+<Callout type="success" title="shuffle">
 random_shuffle 自 C++14 起被弃用，C++17 起被移除。
 
 在 C++11 以及更新的标准中，您可以使用 shuffle 函数代替原来的 random_shuffle。使用方法为 shuffle(v.begin(), v.end(), rng)（最后一个参数传入的是使用的随机数生成器，一般情况使用以真随机数生成器 random_device 播种的梅森旋转伪随机数生成器 mt19937）。
@@ -687,8 +661,7 @@ random_shuffle 自 C++14 起被弃用，C++17 起被移除。
 std::mt19937 rng(std::random_device{}());
 std::shuffle(v.begin(), v.end(), rng);
 ```
-:::
-
+</Callout>
 
 sort：排序。sort(v.begin(), v.end(), cmp) 或 sort(a + begin, a + end, cmp)，其中 end 是排序的数组最后一个元素的后一位，cmp 为自定义的比较函数。
 

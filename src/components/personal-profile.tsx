@@ -5,7 +5,7 @@ import { Timeline } from "./Timeline";
 
 export function PersonalProfile() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
+    <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16 mb-20">
       <Hero />
       <Timeline />
     </div>

@@ -4,8 +4,6 @@ sidebar_position: 2
 slug: 函数
 ---
 
-# 函数
-
 函数使用 fn 关键字声明。它的参数带有类型注释，就像变量一样，并且，如果函数返回值，则必须在箭头 -> 之后指定返回类型。
 
 函数中的最终表达式将用作返回值。或者， return 语句可用于从函数内部（甚至从内部循环或 if 语句）返回较早的值。
@@ -276,7 +274,6 @@ fn main() {
     // A move or reborrow is allowed after the final use of `print`
     let _color_moved = color;
 
-
     let mut count = 0;
     // A closure to increment `count` could take either `&mut count` or `count`
     // but `&mut count` is less restrictive so it takes that. Immediately
@@ -479,7 +476,6 @@ fn main() {
 
 除此之外，必须使用 move 关键字，它表示所有捕获均按值进行。这是必需的，因为一旦函数退出，任何通过引用的捕获都会被删除，从而在闭包中留下无效的引用。
 
-
 ```rust
 fn create_fn() -> impl Fn() {
     let text = "Fn".to_owned();
@@ -601,7 +597,6 @@ fn main() {
 ```
 Iterator::find 为您提供对该项目的引用。但如果您想要该项目的索引，请使用 Iterator::position 。
 
-
 ```rust
 fn main() {
     let vec = vec![1, 9, 3, 3, 13, 2];
@@ -684,7 +679,6 @@ fn main() {
 }
 ```
 与此函数相反，它永远不会将控制权返回给调用者。
-
 
 ```rust
 #![feature(never_type)]

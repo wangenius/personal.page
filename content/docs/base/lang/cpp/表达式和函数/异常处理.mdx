@@ -4,8 +4,6 @@ sidebar_position: 12
 slug: 异常处理
 ---
 
-# 异常
-
 在程序设计过程中，我们总是希望自己设计的程序是天衣无缝的，但这几乎又是不可能的。即使程序编译通过，同时也实现了所需要的功能，也并不代表程序就已经完美无缺了，因为运行程序时还可能会遇到异常。
 
 例如，当我们设计一个为用户计算除法的程序时，用户很有可能会将除数输入为零，又例如当我们需要打开一个文件的时候确发现该文件已经被删除了……类似的这种情况很有很多，针对这些特殊的情况，不加以防范是不行的。
@@ -84,7 +82,7 @@ int array_index(int *A, int n, int index)
     return A[index];
 }
 ```
-:::success[assert()]
+<Callout type="success" title="assert()">
 断言，是宏，而非函数。assert 宏的原型定义在 `<assert.h>（C）`、`<cassert>（C++）`中，其作用是如果它的条件返回错误，则终止程序执行。可以通过定义 NDEBUG 来关闭 assert，但是需要在源代码的开头，`include <assert.h> `之前。
 
 使用
@@ -93,4 +91,4 @@ int array_index(int *A, int n, int index)
 #include <assert.h>
 assert( p != NULL );    // assert 不可用
 ```
-:::
+</Callout>

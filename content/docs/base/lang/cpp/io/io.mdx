@@ -2,10 +2,6 @@
 title: IO
 ---
 
-# IO
-
-
-
 C++ comes with libraries that provide us with many ways for performing input and output. In C++ input and output are performed in the form of a sequence of bytes or more commonly known as streams.
 
 Input Stream: If the direction of flow of bytes is from the device(for example, Keyboard) to the main memory then this process is called input.
@@ -36,7 +32,7 @@ graph RL;
     A --> \(123,45);
 ```
 
-:::success[信息]
+<Callout type="success" title="信息">
 图形化io是通过相应的库来处理的, 这些库并不是iso标准库的一部分, 因此本书并未涉及.
 
 标准库流可用于二进制io,不同字符类型,不同区域设置,使用高级缓冲策略等等(不讨论).
@@ -44,16 +40,15 @@ graph RL;
 标准库流可以对std::string进行输入输出, 对string缓冲区进行格式化输入输出以及进行文件io
 
 所有io流类都有析构函数, 用来释放拥有的所有资源(如缓冲区和文件句柄).
-:::
-
+</Callout>
 
 ## 读入输出优化
 
 在默认情况下，std::cin/std::cout 是极为迟缓的读入/输出方式，而 scanf/printf 比 std::cin/std::cout 快得多。
 
-:::warning[备注]
+<Callout type="warning" title="备注">
 cin/cout 与 scanf/printf 的实际速度差会随编译器和操作系统的不同发生一定的改变。如果想要进行详细对比，请以实际测试结果为准。
-:::
+</Callout>
 
 ### 关闭同步/解除绑定
 
@@ -86,11 +81,11 @@ std::cin.tie(0);
 // 如果编译开启了 C++11 或更高版本，建议使用 std::cin.tie(nullptr);
 ```
 
-:::success[备注]
+<Callout type="success" title="备注">
 scanf 和 printf 依然有优化的空间，这就是本章所介绍的内容——读入和输出优化。
 
 注意，本页面中介绍的读入和输出优化均针对整型数据，若要支持其他类型的数据（如浮点数），可自行按照本页面介绍的优化原理来编写代码。
-:::
+</Callout>
 
 ### 优化
 

@@ -3,7 +3,6 @@ title : 模式匹配
 sidebar_position : 1
 slug : 模式匹配
 ---
-# 模式匹配
 
 ## 题目
 给你两个字符串 str 和 substr(又叫模式串) ，请你在 str 字符串中找出 substr 字符串的第一个匹配项的下标（下标从 0 开始）。如果 substr 不是 str 的一部分，则返回 -1 。
@@ -29,9 +28,9 @@ Knuth-Morris-Pratt: 一种线性时间复杂度的匹配算法
 
 该算法的核心为next函数或数组的求解。
 
-:::success[备注]
+<Callout type="success" title="备注">
 这里我们采用下标为0的next数组.
-:::
+</Callout>
 
 我们举个例子说明：字符串`aabaaab`的前缀函数值依次为-1,0,1,0,1,2,2。
 
@@ -46,13 +45,13 @@ next[6] = 2; // aabaaa -> aa
 ```
 我们就可以快速地计算出模式串在主串中的每一次出现。
 
-:::success[为什么要计算前序串的最长前后缀?]
+<Callout type="success" title="为什么要计算前序串的最长前后缀?">
 计算最大已经匹配成功的位数.
 
 如果当前匹配失败, 只需将模式串指针指向最长前缀的后一位, 重新匹配失败的位置. 主串指针不需回溯. 
 
 而我们采用下标为0的next数组, 前序串最大前后缀的长度就是最长前缀的后一位的下标.
-:::
+</Callout>
 
 ### C++求解next数组
 
@@ -81,11 +80,11 @@ vector<int> getNext(string substr) {
 }
 ```
 
-:::success[最大前后缀长度为什么是next的下标]
+<Callout type="success" title="最大前后缀长度为什么是next的下标">
 ![关于位置](/res/nextget.png)
 
 [一个不错的博客](https://www.cnblogs.com/MAKISE004/p/17066403.html)
-:::
+</Callout>
 
 ### 使用和实现
 

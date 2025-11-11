@@ -4,8 +4,6 @@ sidebar_position: 4
 slug: queue
 ---
 
-# queue
-
 queues are a type of container adaptor, specifically designed to operate in a FIFO context (first-in first-out), where elements are inserted into one end of the container and extracted from the other.
 
 queues are implemented as containers adaptors, which are classes that use an encapsulated object of a specific container class as its underlying container, providing a specific set of member functions to access its elements. Elements are pushed into the "back" of the specific container and popped from its "front".
@@ -13,11 +11,9 @@ queues are implemented as containers adaptors, which are classes that use an enc
 The underlying container may be one of the standard container class template or some other specifically designed container class. This underlying container shall support at least the following operations:
 queue 是一种先进先出(First In First Out, FIFO)的数据结构，它有两个出口，queue容器允许从一端新增元素，从另一端移除元素。
 
-:::success[注意]
+<Callout type="success" title="注意">
 只有queue的顶端元素，才有机会被外界去用。queue不提供遍历功能，也不提供迭代器。
-:::
-
-
+</Callout>
 
 1. empty
 2. size
@@ -37,7 +33,6 @@ queue 是一种先进先出(First In First Out, FIFO)的数据结构，它有两
 | emplace         | Construct and insert element    |
 | pop             | Remove next element             |
 | swap            | Swap contents                   |
-
 
 ## 构造函数
 

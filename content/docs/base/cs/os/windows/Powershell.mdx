@@ -2,8 +2,6 @@
 title: PowerShell
 ---
 
-# PowerShell
-
 ## 设置代理
 
 设置**临时**代理（关闭powershell即设置的代理消失）
@@ -44,7 +42,6 @@ echo "Hello World!"
 | 文件改名 | ren          | mv        |
 | 删除文件 | del          | rm        |
 
-
 ## 编译
 
 在命令行下输入 g++ a.cpp 就可以编译 a.cpp 这个文件了（Windows 系统需提前把编译器所在目录加入到 PATH 中）。
@@ -58,8 +55,6 @@ echo "Hello World!"
 -DDEBUG：在编译时定义 DEBUG 符号（符号可以随意更换，例如 -DONLINE_JUDGE 定义了 ONLINE_JUDGE 符号）。
 -UDEBUG：在编译时取消定义 DEBUG 符号。
 -lm，-lgmp: 链接某个库（此处是 math 和 gmp，具体使用的名字需查阅库文档，但一般与库名相同）。
-
-
 
 在 Unix 下，如使用了标准 C 库里的 math 库（math.h），则需在编译时添加 -lm 参数。
 

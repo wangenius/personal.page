@@ -3,7 +3,6 @@ title : 作用域
 sidebar_position : 3
 slug : 作用域
 ---
-# 作用域
 
 ## 资源获取即初始化RAII
 范围在所有权、借用和生命周期中发挥着重要作用。也就是说，它们向编译器指示借用何时有效、何时可以释放资源以及何时创建或销毁变量。
@@ -86,7 +85,6 @@ fn main() {
 ##
 
 当数据被同名不可改变地绑定时，它也会冻结。在不可变绑定超出范围之前，无法修改冻结数据：
-
 
 ```rust
 fn main() {
@@ -333,7 +331,6 @@ fn main() {
 }
 ```
 
-
 ## Traits
 
 Trait 方法中生命周期的注释基本上与函数类似。请注意， impl 也可能有生命周期注释。
@@ -548,7 +545,6 @@ error[E0597]: `i` does not live long enough
 
 以下代码显示了一些省略的示例。有关省略的更全面的描述，请参阅本书中的生命周期省略。
 
-
 ```rust
 // `elided_input` and `annotated_input` essentially have identical signatures
 // because the lifetime of `elided_input` is inferred by the compiler:
@@ -695,8 +691,6 @@ fn print_it<T: Debug + 'static>( input: T) {
 fn print_it1( input: impl Debug + 'static ) {
     println!( "'static value passed in is: {:?}", input );
 }
-
-
 
 fn main() {
     let i = 5;

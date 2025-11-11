@@ -3,8 +3,6 @@ title : 最短路径
 sidebar_position : 4
 slug : 最短路径
 ---
-# 最短路径
-
 
 ### 迪杰斯特拉算法
 Dijkstra
@@ -27,7 +25,7 @@ loop(node_num){
         };
 ```
 
-:::success[Dijkstra算法与Prim算法的区别]
+<Callout type="success" title="Dijkstra算法与Prim算法的区别">
 1. prim算法过程：prim算法是最小生成树算法，它运用的是贪心原理，设置两个点集合，一个集合为要求的生成树的点集合A，另一个集合为未加入生成树的点B。
 
    1. 所有的点都在集合B中，A集合为空。(memset(visited,0,sizeof(visited)))
@@ -43,4 +41,4 @@ loop(node_num){
    4. 重复步骤（2）和（3）直到所有顶点都包含在S中。
 
 3. 小总结1. Prim是计算最小生成树的算法，Dijkstra是计算最短路径的算法2. 都是使用贪婪(一个局部最优解也是全局最优解)和线性规划(主问题包含n个子问题，而且其中有重叠的子问题。)，每一步都是选择权值/花费最小的边。
-:::
+</Callout>

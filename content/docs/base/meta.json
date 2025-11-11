@@ -1,15 +1,4 @@
 {
   "title": "知识库",
-  "description": "wangenius的知识库",
-  "root": true,
-  "icon": "🧠",
-  "pages": [
-    "cs",
-    "ai",
-    "more",
-    "lang",
-    "dsa",
-    "more",
-    "opus"
-  ]
+  "root": true
 }

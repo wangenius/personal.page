@@ -101,8 +101,7 @@ export const Hero = () => {
             software, and narratives.
           </p>
         </div>
-        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white p-6 shadow-[0_30px_60px_-35px_rgba(0,0,0,0.8)]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent)]" />
+        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-background p-6">
           <div className="relative flex flex-col gap-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
@@ -111,7 +110,7 @@ export const Hero = () => {
                   alt={profile.name}
                   width={100}
                   height={100}
-                  className="rounded-2xl border border-white/15"
+                  className="rounded-2xl border"
                 />
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.35em] text-fd-muted-foreground">

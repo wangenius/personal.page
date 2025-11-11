@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type Experience = {
-  type: "work" | "study";
+  type: "work" | "study" | "product";
   title: string;
   company?: string;
   description: string;
@@ -14,104 +14,110 @@ type Experience = {
 
 export const workHistory: Experience[] = [
   {
-    type: "work",
-    title: "CMOCHAT 全球营销资源匹配平台",
-    company: "CMOCHAT",
+    type: "product",
+    title: "Proxy Cosmos",
     description:
-      "2025 年立项 CMOCHAT，定位为“全球营销资源匹配平台”。我负责产品战略、数据模型与 AI 匹配引擎，把散落在全球的 CMO、机构、渠道和工具数据结构化，并搭建对话式增长工作台：输入业务目标即可生成可执行的市场作战图。我亲自打磨线索评分体系、激励机制和结算工具，让创业团队可以在一周内完成从需求表达到资源成交的闭环。",
+      "Proxy Cosmos is my 2025 research agent that crawls, tags, and converses over frontier AI infrastructure briefs. I am building it as a living dossier so founders, PMFs, and investors can query live narratives about modular agents, synthetic data supply chains, and the control planes that stitch them together.",
     period: "2025 - now",
-    skills: ["营销科技", "AI匹配", "增长策略", "产品策略"],
+    skills: ["Agents", "Infra Research", "Next.js", "AI"],
     context:
-      "I now operate like a systems architect for go-to-market teams—mapping指标、资本、人才与叙事的流动，把它们焊成一体化的增长堆栈。",
+      "I treat Proxycosmos like a field lab for agentic research ops, letting me turn raw interviews, forum scrapes, and protocol docs into structured questions a model can reason over in seconds.",
+  },
+  {
+    type: "product",
+    title: "VisibleBase",
+    description:
+      "VisibleBase is my 2025 experiment to make early-stage signals legible and micro-backing practical. It reimagines discovery and financing as an AI-agent flywheel: product pages auto-explain hypotheses, signal layers quantify community conviction, and funding rails tokenize future upside so anyone can back a hunch.",
+    period: "2025 - now",
+    skills: ["AI Agents", "Signal Graphs", "Micro Funding", "On-chain"],
+    context:
+      "Scout, Analyst, Match, and Crowd agents run in tandem to surface frontier teams before pitch decks exist, replacing opaque VC decisions with transparent signal streams and programmable incentives.",
   },
   {
     type: "work",
-    title: "数据分析 & 产品研究",
-    company: "高榕创投",
+    title: "CMOCHAT Global Marketing Resource Platform",
+    company: "CMOCHAT",
     description:
-      "在高榕创投的 AI 投研团队里沉浸一年，从投资人的视角拆解 AI Coding、企业应用与 Agent Coin 等赛道。构建数据仓、整理上下游图谱、撰写行业报告，并联合被投公司搭建指标看板。深度访谈创始人、研究技术路线，用模型评测与案例走查判断产品天花板，再把洞察沉淀成内部投研基线与产品 Due Diligence 清单。",
-    period: "2024",
-    skills: ["案例研究", "Python", "行业报告", "爬虫"],
+      "I launched CMOCHAT in 2025 as a global marketing resource matching platform. I lead product strategy, the data model, and the AI matching engine, structuring the scattered data of CMOs, agencies, channels, and tools worldwide while building a conversational growth cockpit that turns any business goal into an executable go-to-market playbook. I also designed the lead scoring system, incentive mechanics, and settlement tooling so a founding team can move from brief to closed transaction within a week.",
+    period: "2025 - now",
+    skills: ["MarTech", "AI Matching", "Growth Strategy", "Product Strategy"],
     context:
-      "Working shoulder to shoulder with top-tier investors taught me how product intuition,数据与资本节奏互相拉扯，也让我学会用基金视角筛选值得放大的产品信号。",
+      "I now operate like a systems architect for go-to-market teams--mapping the flow of metrics, capital, talent, and narrative into a welded growth stack.",
+  },
+  {
+    type: "work",
+    title: "Data Analytics & Product Research",
+    company: "Gaorong Capital",
+    description:
+      "I spent a year embedded in Gaorong Capital's AI research team, dissecting tracks such as AI coding, enterprise applications, and Agent Coin from an investor's perspective. I built data warehouses, mapped entire ecosystems, wrote industry reports, and partnered with portfolio founders on KPI dashboards. I conducted in-depth founder interviews, evaluated technical roadmaps, and used model benchmarks plus case reviews to estimate product ceilings, then distilled the findings into internal research baselines and due diligence checklists.",
+    period: "2024",
+    skills: ["Case Studies", "Python", "Industry Reports", "Web Scraping"],
+    context:
+      "Working shoulder to shoulder with top-tier investors showed me how product intuition, data, and capital cadence pull against one another, and it trained me to spot the product signals worth amplifying through a fund's lens.",
   },
   {
     type: "work",
     title: "Founder & Developer",
-    company: "创生语宙",
+    company: "Genesis Cosmos",
     description:
-      "与五位伙伴创办创生语宙，推出介子（Jezzlab）这一套 AI 创意平台。我负责编排产品蓝图、交互语言与 Agent 工作流，引入“世界观操作系统”“角色生成轨道”等概念，把创作者的叙事资产抽象成可协作的系统化工具。我们用本地优先架构保护创作者隐私，同时嵌入可视化提示词调试、多人剧情版本管理与订阅商业化验证，用极小团队跑出首批高付费用户。",
+      "I founded Genesis Cosmos with partners and launched Jezzlab, an AI-native creative platform. I orchestrated the product blueprint, interaction language, and agent workflows, introducing concepts such as a worldview operating system and character-generation rails so creators could turn narrative assets into collaborative, systemized tools. We adopted a local-first architecture to protect privacy, layered in visual prompt debugging, multi-writer storyline versioning, and subscription commercialization, and secured the first wave of high-paying users with a tiny team.",
     period: "2024 - now",
-    skills: ["React", "TypeScript", "Node.js", "AI", "Agent", "创作", "内容"],
+    skills: [
+      "React",
+      "TypeScript",
+      "Node.js",
+      "AI",
+      "Agent",
+      "Creative Direction",
+      "Content",
+    ],
     context:
-      "This proved that a six-person squad、倚靠结构化设计与极快迭代，就能重写创作者与 AI 协作的工作流。",
+      "This proved that a six-person squad, leaning on structured design and rapid iteration, can rewrite how creators and AI collaborate.",
+  },
+  {
+    type: "product",
+    title: "Jezzlab",
+    company: "Genesis Cosmos",
+    description:
+      "Jezzlab is our AI-native creative system that lets narrative teams script, version, and deploy characters and worlds like reusable software. I own the product loop, from the worldview operating system to the agent rails that auto-produce moodboards, lore, and monetization hooks for each IP.",
+    period: "2024 - now",
+    skills: [
+      "Product Systems",
+      "AI Agents",
+      "Creative Ops",
+      "Subscription GTM",
+    ],
+    context:
+      "Jezzlab keeps me honest about how fast small teams need to ship—every sprint blends creative direction, infra, billing, and growth into one stack so nothing gets lost between departments.",
   },
   {
     type: "work",
-    title: "独立开发者",
+    title: "Independent Developer",
     description:
-      "2023 年起转为全职独立开发者，自建“研究—打样—验证—运营”一人公司流水线。打造桌面 Agent Ghostie、AI Markdown 工具 Mdrone、金融语境的自动化 Agent 套件等项目，并把自定义 Agent 的信息架构、提示词模板和快速部署能力写成方法论。多次参加黑客松与线上赛题，把产品定位、工程能力和增长打法压缩在 48 小时里完成验证。",
+      "Since 2023 I have worked full time as an independent developer, building a solo pipeline that runs research, prototyping, validation, and operations end to end. I shipped the Ghostie desktop agent, the AI Markdown tool Mdrone, automation agent kits for finance, and documented the information architecture, prompt templates, and rapid deployment methods behind custom agents. I regularly attack hackathons and online challenges, compressing product positioning, engineering, and growth experiments into 48-hour validation loops.",
     period: "2023 - now",
     skills: ["React", "TypeScript", "Node.js", "AWS"],
     context:
-      "I rebuilt my engineering stack end-to-end so I can research、设计、写代码、运营和复盘全部自己搞定，把任何 idea 在一周内做成可演示或可收费的形态。",
+      "I rebuilt my engineering stack end to end so research, design, code, ops, and retros all sit in my own loop, letting me turn any idea into a demoable or billable artifact within a week.",
   },
   {
     type: "study",
-    title: "建筑师 & 设计师",
+    title: "Architect & Designer",
     company: "ZIAD",
     description:
-      "天津大学建筑系六年叠加浙江省建筑设计研究院的实践，让我在城市尺度做系统推演与叙事设计，同时扎实掌握参数化建模、材料实验和用户流线模拟。参与多个地标项目，从竞赛概念到施工图都亲自推进，也在这个阶段开始接触编程，用 Rhinoceros、Grasshopper、Python 做生成式设计，为后续转向 AI 与产品打下审美与系统思维的底层肌肉。",
+      "Six years in the Tianjin University School of Architecture plus hands-on work at the Zhejiang Provincial Institute of Architectural Design taught me to run system simulations and narrative design at the urban scale while mastering parametric modeling, material research, and user flow analysis. I drove multiple landmark projects from competition concept through construction drawings and began coding during this period, using Rhinoceros, Grasshopper, and Python for generative design, which later became the muscle behind my AI and product work.",
     period: "2017 - 2022",
-    skills: ["Rhinoceros", "Grasshopper", "Python", "城市设计", "人因工程"],
-    context:
-      "Architecture trained me to balance constraints, rituals, and aesthetics long before I wrote any production code—it is why我现在设计产品时同样重视节奏、叙事与结构。",
-  },
-];
-
-export const projects = [
-  {
-    title: "Ghostie",
-    description:
-      "革新性的轻量级桌面 Agent 平台，让你完全掌控 AI 助手的一切可能。得益于开放的架构设计，你可以自由定制 Agent 的每个行为：从简单的指令到复杂的工作流，从基础自动化到深度系统集成。独特的快捷唤醒机制让你随时随地与 Agent 对话，现代流畅的界面带来极致体验。无需编程知识即可通过可视化界面创建 Agent，同时提供完整的开发接口满足进阶需求。开放的插件生态和完整的桌面权限让你能将 Ghostie 打造成真正属于你的智能助手。这是一个追求极致自由的平台，你的想象力就是它的边界。",
-    image: "/projects/ghostie.svg",
-    tags: [
-      "开放生态",
-      "自由定制",
-      "智能助手",
-      "桌面集成",
-      "可视化编排",
-      "便捷交互",
+    skills: [
+      "Rhinoceros",
+      "Grasshopper",
+      "Python",
+      "Urban Design",
+      "Human Factors Engineering",
     ],
-    link: "https://ghostie.wangenius.com",
-  },
-  {
-    title: "Jezzlab",
-    description:
-      "创生语宙旗下的革新性 AI 创意平台「介子」，重新定义创作范式。取名自物理学基本粒子，象征着对创作本质的探索与突破。平台通过前沿 AIGC 技术，颠覆传统线性创作模式：将世界观构建从抽象概念转化为可视化系统，把角色塑造变成交互式设计过程，让情节编排化繁为简。创新的 AI 协同机制让创作不再是孤独的旅程，而成为人机共创的探索。采用新一代本地优先的存储架构，在保护创作者隐私的同时，提供无缝的协作体验。配备系统化的创作指南，为所有怀抱创意梦想的人打造一个突破性的创作平台。",
-    image: "/projects/jezzlab.jpg",
-    tags: ["创作革新", "AI协同", "世界观构建", "智能写作", "隐私保护"],
-    link: "https://www.jezzlab.com",
-  },
-  {
-    title: "Mdrone",
-    description:
-      "一个具有AI能力的轻量级Markdown写作工具，支持即时渲染，AI能力更加深层次的融合到写作环境当中。",
-    image: "/projects/mdrone.png",
-    tags: ["tauri", "AI", "文本生成", "轻量级"],
-    github: "https://github.com/wangenius/mdrone",
-  },
-
-  {
-    title: "建筑作品集",
-    description:
-      "我的建筑生涯作品集，希望可以展现我的设计和审美能力。点击链接可下载，下载的内容是低分辨率的PDF版本，如需高清或者更多视频、模型内容，可使用邮箱联系我。",
-    image: "/projects/architect.png",
-    tags: ["城市设计", "建筑", "渲染", "设计"],
-    link: "/projects/protfolio4.0.pdf",
+    context:
+      "Architecture trained me to balance constraints, rituals, and aesthetics long before I wrote production code, which is why I still prioritize cadence, narrative, and structure when I design products.",
   },
 ];
-
 
 const currentYear = new Date().getFullYear();
 const CAREER_START_YEAR = 2022;
@@ -129,12 +135,14 @@ const extractYear = (value?: string | null) => {
 };
 
 const normalizePeriod = (period: string) => {
-  const [rawStart, rawEnd] = period.split("-").map((part) => part?.trim() ?? "");
+  const [rawStart, rawEnd] = period
+    .split("-")
+    .map((part) => part?.trim() ?? "");
   const startYear = extractYear(rawStart) ?? currentYear;
   const hasExplicitEnd = Boolean(rawEnd);
-  const endIsNow = hasExplicitEnd && /now|present|至今/i.test(rawEnd);
+  const endIsNow = hasExplicitEnd && /(now|present)/i.test(rawEnd);
   const parsedEnd = hasExplicitEnd ? extractYear(rawEnd) : null;
-  const endYear = endIsNow ? currentYear : parsedEnd ?? startYear;
+  const endYear = endIsNow ? currentYear : (parsedEnd ?? startYear);
   const normalizedStart = Math.max(startYear, CAREER_START_YEAR);
   const normalizedEnd = Math.max(endYear, normalizedStart);
   return {
@@ -153,9 +161,17 @@ export const Timeline = () => {
   }, []);
 
   const timelineEntries = useMemo(() => {
+    const typePriority = (type: TimelineItem["type"]) =>
+      type === "product" ? 1 : 0;
     return [...timelineItems].sort((a, b) => {
       if (b.startYear === a.startYear) {
-        return b.endYear - a.endYear;
+        const priorityDiff = typePriority(a.type) - typePriority(b.type);
+        if (priorityDiff !== 0) {
+          return priorityDiff;
+        }
+        if (b.endYear !== a.endYear) {
+          return b.endYear - a.endYear;
+        }
       }
       return b.startYear - a.startYear;
     });
@@ -235,11 +251,13 @@ export const Timeline = () => {
     : null;
 
   return (
-    <section className="mb-16 space-y-20">
+    <section className="space-y-20 pb-24">
       <div className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Timeline</p>
+        <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+          Timeline
+        </p>
         <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          成长 · 进化路径
+          Evolution Path
         </h2>
       </div>
 
@@ -284,15 +302,43 @@ export const Timeline = () => {
                   onClick={() => handleCardClick(item)}
                   onMouseEnter={() => setHoveredItem(item)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  className="group box-border flex aspect-square w-64 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)] transition hover:-translate-y-1 hover:border-slate-400 hover:shadow-[0_25px_65px_-45px_rgba(15,23,42,0.55)]"
+                  className={`group box-border flex aspect-square w-64 flex-col justify-between rounded-2xl border p-5 text-left transition hover:-translate-y-1 ${
+                    item.type === "product"
+                      ? "border-slate-800 bg-slate-950 text-white shadow-[0_25px_65px_-45px_rgba(15,23,42,0.85)] hover:border-amber-200/70 hover:shadow-[0_30px_85px_-45px_rgba(15,23,42,0.9)]"
+                      : "border-slate-200 bg-white text-slate-900 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)] hover:border-slate-400 hover:shadow-[0_25px_65px_-45px_rgba(15,23,42,0.55)]"
+                  }`}
                 >
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+                    <h3
+                      className={`text-lg font-semibold ${
+                        item.type === "product"
+                          ? "text-white"
+                          : "text-slate-900"
+                      }`}
+                    >
+                      {item.title}
+                    </h3>
                     {item.company ? (
-                      <p className="text-sm text-slate-500">@ {item.company}</p>
+                      <p
+                        className={`text-sm ${
+                          item.type === "product"
+                            ? "text-slate-300"
+                            : "text-slate-500"
+                        }`}
+                      >
+                        @ {item.company}
+                      </p>
                     ) : null}
                   </div>
-                  <p className="text-sm text-slate-500 line-clamp-4">{item.description}</p>
+                  <p
+                    className={`text-sm line-clamp-4 ${
+                      item.type === "product"
+                        ? "text-slate-300/90"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {item.description}
+                  </p>
                 </button>
               ))}
             </div>
@@ -306,15 +352,39 @@ export const Timeline = () => {
             key={item.nodeLabel}
             type="button"
             onClick={() => handleCardClick(item)}
-            className="flex aspect-square flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)]"
+            className={`flex aspect-square flex-col justify-between rounded-2xl border p-5 text-left ${
+              item.type === "product"
+                ? "border-slate-800 bg-slate-950 text-white shadow-[0_25px_65px_-45px_rgba(15,23,42,0.85)]"
+                : "border-slate-200 bg-white text-slate-900 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)]"
+            }`}
           >
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+              <h3
+                className={`text-lg font-semibold ${
+                  item.type === "product" ? "text-white" : "text-slate-900"
+                }`}
+              >
+                {item.title}
+              </h3>
               {item.company ? (
-                <p className="text-sm text-slate-500">@ {item.company}</p>
+                <p
+                  className={`text-sm ${
+                    item.type === "product"
+                      ? "text-slate-300"
+                      : "text-slate-500"
+                  }`}
+                >
+                  @ {item.company}
+                </p>
               ) : null}
             </div>
-            <p className="text-sm text-slate-500 line-clamp-4">{item.description}</p>
+            <p
+              className={`text-sm line-clamp-4 ${
+                item.type === "product" ? "text-slate-300/90" : "text-slate-500"
+              }`}
+            >
+              {item.description}
+            </p>
           </button>
         ))}
       </div>
@@ -335,9 +405,9 @@ export const Timeline = () => {
               type="button"
               onClick={closeModal}
               className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-700"
-              aria-label="关闭"
+              aria-label="Close"
             >
-              ×
+              &times;
             </button>
             <h3 className="text-2xl font-semibold">{selectedItem.title}</h3>
             {selectedItem.company ? (

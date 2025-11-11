@@ -2,8 +2,6 @@
 title: 编译
 ---
 
-# 编译
-
 ## 本地编译
 
 ```bash
@@ -13,8 +11,6 @@ Hello, world!
 ```
 
 `println!` 调用 rust 宏。如果它调用了一个函数，则它将输入为 `println` （不带 `!` ）。我们将在第 19 章中更详细地讨论 rust 宏。现在，您只需要知道使用 `!` 意味着您正在调用宏而不是普通函数，并且宏不始终遵循与函数相同的规则。
-
-
 
 ## 交叉编译
 一般编程阶段用的是Windows或者Mac系统，部署平台是Linux，这种情况下就需要使用Cross-Compiler交叉编译，意思是可以在当前平台Host下编译出目标平台target的可执行文件，
@@ -29,7 +25,6 @@ musl工具链（编译Linux环境程序所需）
 musl实现了Linux libc，质量可靠，适配所有Linux环境，使用静态连接替换动态链接，这样就能打出一个完整的二进制文件，可以丢到任何Linux环境里运行。
 
 当然，关于静态链接与动态链接各有优缺点，这里不细说。
-
 
 ```bash title="安装一下"
 rustup target add x86_64-unknown-linux-musl

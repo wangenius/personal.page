@@ -3,7 +3,6 @@ title : 仿函数
 sidebar_position : 4
 slug : 仿函数
 ---
-# 仿函数
 
 ## 函数对象
 
@@ -27,7 +26,6 @@ slug : 仿函数
     
 
 ## 谓词
-
 
 返回值为`bool`的普通函数或者函数对象，也就是我们离散数学中学习的predictor，比较常用的是一元谓词和二元谓词。
 
@@ -103,10 +101,9 @@ int main() {
     return  0; 
 };
 ```
-:::success[新需求]
+<Callout type="success" title="新需求">
 我们希望在每个数据输出的时候加上一个基值，并且该基值由用户输入。
-:::
-
+</Callout>
 
 #### 使用函数适配器做的改进
 
@@ -156,11 +153,9 @@ int  main() {
 };
 ```
 
-:::success[新需求]
+<Callout type="success" title="新需求">
 我们希望找第一个不大于5的数，但又不想再写一个LessEqualThanFive。
-:::
-
-
+</Callout>
 
 #### 使用取反适配器做的改进
 

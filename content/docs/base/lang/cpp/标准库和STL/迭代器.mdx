@@ -3,7 +3,6 @@ title : 迭代器
 sidebar_position : 2
 slug : 迭代器
 ---
-# 迭代器
 
 在 STL 中，迭代器（Iterator）用来访问和检查 STL 容器中元素的对象，它的行为模式和指针类似，但是它封装了一些有效性检查，并且提供了统一的访问格式。类似的概念在其他很多高级语言中都存在，如 Python 的 __iter__ 函数，C# 的 IEnumerator。
 
@@ -28,10 +27,9 @@ for (vector<int>::iterator iter = data.begin(); iter != data.end(); iter++)
 // 在C++11后可以使用 auto iter = data.begin() 来简化上述代码
 ```
 
-:::success[auto]
+<Callout type="success" title="auto">
 大部分选手都喜欢使用 auto 来代替繁琐的迭代器声明。根据 2021 年 9 月发布的 关于 NOI 系列活动中编程语言使用限制的补充说明，NOI 系列比赛（包括 CSP J/S）在评测时将使用 C++14，这个版本已经支持了 auto 关键字。
-:::
-
+</Callout>
 
 在 STL 的定义中，迭代器根据其支持的操作依次分为以下几类：
 
@@ -50,10 +48,10 @@ ContiguousIterator 于 C++17 中正式引入。
 
 指针满足随机访问迭代器的所有要求，可以当作随机访问迭代器使用。
 
-:::success[为什么输入迭代器叫输入迭代器？]
+<Callout type="success" title="为什么输入迭代器叫输入迭代器？">
 「输入」指的是「可以从迭代器中获取输入」，而「输出」指的是「可以输出到迭代器」。
 「输入」和「输出」的施动者是程序的其它部分，而不是迭代器自身。
-:::
+</Callout>
 
 很多 STL 函数 都使用迭代器作为参数。
 
@@ -67,18 +65,13 @@ STL 容器 一般支持从一端或两端开始的访问，以及对 const 修�
 
 可在 Iterator library - cppreference.com 查看更多用法。
 
-
-
-
-:::success[支持]
+<Callout type="success" title="支持">
 对于 vector、deque 以及 basic_string 容器类，与它们关联的迭代器类型为随机访问迭代器（RanIt）
 
 对于 list、map/multimap 以及 set/multiset 容器类，与它们关联的迭代器类型为双向迭代器（BidIt）
 
 queue、stack 和 priority_queue 容器类，不支持迭代器！
-:::
-
-
+</Callout>
 
 对象(类)
 
@@ -98,7 +91,6 @@ bool operator<(const Entry& x, const Entry& y){
 
 标准库算法都描述为元素的序列上的操作. 一个序列有一对迭代器表示, 它们分别指向首元素和尾后位置.
 
-
 ![a](/res/迭代器.png)
 
 lst中元素至少应该vec中不重复元素一样多
@@ -116,7 +108,6 @@ list<Entry> function(vector<Entry>& vec){
 调用back_inserter为res创建了一个迭代器, 这种迭代器能将元素追加到容器的末尾, 在追加过程中可扩展容器空间来容纳新元素.
 
 如果你认为`sort(vec.begin(),vec.end())`这种使用迭代器的代码太冗长, 可以定义容器版本的新方法. 代码就能简化成`sort(vec)`;
-
 
 ## 使用迭代器
 
@@ -183,7 +174,6 @@ vector<Iterator<C>> find_all(C& c, V v);
 一个list迭代器把必须是比某种指向元素的简单指针更加复杂的东西. 因为一个list元素通常不知道它的下一个元素在哪里, 因此一个list迭代器可能是指向一个连接的指针.
 
 所有的迭代器类型的语义以及其操作和命名都是相似的。对任何迭代器使用++运算符。都会得到一个指向下一个元素的迭代器。类似的使用称运算符。会得到迭代器所指向的元素。世界上任何符合这些简单规则的对象都是一个迭代期。迭代器是一个概念。而且用户很少需要知道一个特定迭代器的类型。迭代器都是知道自己的迭代器类型是什么而且能够通过规范的名字。 iterator, const_iterator来正确声明自己的迭代器类型。例如。 List\<entry>::Iterator是list\<entry>的迭代器类型。我们很少需要操心这些类型是如何定义的细节。
-
 
 ## 实现
 

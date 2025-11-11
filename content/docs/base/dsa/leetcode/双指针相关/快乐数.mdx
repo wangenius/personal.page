@@ -4,16 +4,14 @@ sidebar_position: 5
 slug: 快乐数
 ---
 
-# 快乐数
-
 编写一个算法来判断一个数 n 是不是快乐数。
 
-:::success[快乐数]
+<Callout type="success" title="快乐数">
 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。  
 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。  
 如果这个过程 结果为 1，那么这个数就是快乐数。  
 如果 n 是 快乐数 就返回 true ；不是，则返回 false 。
-:::
+</Callout>
 
 ```mermaid
 graph LR;
@@ -23,14 +21,13 @@ graph LR;
     F --> C;
 ```
 
-:::success[核心问题]
+<Callout type="success" title="核心问题">
 判断是否在链表中存在循环！
 
 或者其实是一个链表中是否有循环的问题
-:::
+</Callout>
 
 ## 双指针法
-
 
 ```cpp
 class Solution {
@@ -58,7 +55,6 @@ public:
     }
 };
 ```
-
 
 ## hash表检测循环
 
@@ -94,6 +90,6 @@ def isHappy(self, n: int) -> bool:
     return n == 1
 ```
 
-:::success[启发]
+<Callout type="success" title="启发">
 遇到判断中存在无限循环的问题, 需要考虑链表是否带环的问题.
-:::
+</Callout>

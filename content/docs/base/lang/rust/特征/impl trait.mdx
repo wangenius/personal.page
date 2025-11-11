@@ -3,7 +3,6 @@ title : impl trait
 sidebar_position : 3
 slug : impl trait
 ---
-# impl trait
 
 impl Trait 可以在两个位置使用：
 
@@ -32,7 +31,6 @@ fn parse_csv_document<R: std::io::BufRead>(src: R) -> std::io::Result<Vec<Vec<St
 ```
 
 parse_csv_document 是通用的，允许它采用任何实现 BufRead 的类型，例如 `BufReader<File>` 或 [u8] ，但什么类型 R 是，而 R 仅用于声明 src 的类型，因此该函数也可以写为：
-
 
 ```rust
 fn parse_csv_document(src: impl std::io::BufRead) -> std::io::Result<Vec<Vec<String>>> {

@@ -4,11 +4,9 @@ sidebar_position: 1
 slug: 二叉树
 ---
 
-# 二叉树
-
-:::success[本文为什么不考虑树和森林]
+<Callout type="success" title="本文为什么不考虑树和森林">
 因为树和森林可以转化为二叉树, 在B树之前, 所以只研究二叉树. 具体转化过程比较简单, 不在赘述.
-:::
+</Callout>
 
 > 树是简单的图.
 
@@ -101,7 +99,6 @@ for (int v = child[u]; v != EMPTY_NODE; v = sib[v]) {
 }
 ```
 
-
 ```cpp title="简单表示"
 int parent[N];
 int child[N][2];
@@ -131,9 +128,9 @@ assert(tree.layers.length == floor(log(tree.nodes.length))+1);
 assert(tree.layers.length == ceil(log(tree.nodes.length + 1)));
 ```
 
-:::success[补充]
+<Callout type="success" title="补充">
 {/* 满二叉树的高度$h(n) =\dfrac{ C_{ 2n}^n }{n+1}$ */}
-:::
+</Callout>
 
 ```cpp title="二叉树的结构"
 struct TreeNode {
@@ -200,10 +197,10 @@ vector<int> levelOrder(TreeNode *root) {
 
 ### 非递归算法
 
-:::success[口诀]
+<Callout type="success" title="口诀">
 前序栈辅助, while判非空, 出栈再访问, 入栈右左树.
 中序栈指针, 三步两循环. 所有左入栈, 再指右子树.
-:::
+</Callout>
 
 #### 前序遍历
 
@@ -215,8 +212,6 @@ vector<int> levelOrder(TreeNode *root) {
     1. 出栈访问
     2. 右节点入栈
     3. 左节点入栈
-
-
 
 ```cpp title="前序遍历"
 vector<int> preorder(TreeNode *root){
@@ -235,7 +230,6 @@ vector<int> preorder(TreeNode *root){
 }
 ```
 
-
 #### 中序遍历
 
 中序遍历特点:
@@ -249,7 +243,6 @@ while(栈中有节点 || 当前指针指向有效节点){
     3. 指向右节点
 }
 ```
-
 
 ```cpp title="中序遍历"
 void inorder(TreeNode* root) {
@@ -275,7 +268,6 @@ void inorder(TreeNode* root) {
 }
 
 ```
-
 
 ```cpp title="遍历节点个数"
 int countNodes(TreeNode* root) {

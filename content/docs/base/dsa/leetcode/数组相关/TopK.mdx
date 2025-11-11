@@ -3,7 +3,6 @@ title : TopK
 sidebar_position : 1
 slug : TopK
 ---
-# TopK
 设计一个找到数据流中第 k 大元素的类（class）。注意是排序后的第 k 大元素，不是第 k 个不同的元素。
 
 请实现 KthLargest 类：
@@ -39,7 +38,6 @@ public:
 `priority_queue<Type, Container, Functional>`
 Type 为数据类型， Container 为保存数据的容器，Functional 为元素比较方式。
 如果不写后两个参数，那么容器默认用的是 vector，比较方式默认用 `operator<`，也就是优先队列是大顶堆，队头元素最大，本题为小顶堆。
-
 
 ```cpp
 class KthLargest {

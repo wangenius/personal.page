@@ -2,8 +2,6 @@
 title: Shell
 ---
 
-# Shell
-
 文本模式登陆后取得的程序被称为壳（shell），linx 的壳程序就是厉害的 bash 这一支！关于 bash 后续会介绍
 
 ```bash
@@ -61,7 +59,6 @@ LC_ALL=
 # 可以修改 `/etc.local.conf` 来达到持久化改变
 ```
 
-
 # 基础指令操作
 
 ```bash
@@ -106,7 +103,6 @@ Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
 28 29 30               26 27 28 29 30 31      23 24 25 26 27 28 29
 
 ```
-
 
 ```bash
 # 进入 bc，会显示当前版本等信息
@@ -168,11 +164,9 @@ cache_restore        caller               captoinfo
 
 中断指令的，比如输错了指令，或则这个领了 `find /`，会刷屏好一会，这个时候就可以终端它
 
-
 通常代表键盘输入结束（end of file 或 end of Input）。
 
 另外也可以用来取代 exit 的输入，例如在文字界面使用 ctrl + d 就能够直接离开了（相当于 exit）
-
 
 翻页功能，在文本界面执行某些指令时，输出的信息很长，导致前面的部分已不再当前屏幕中了， 就可以使用该按键来前后翻页
 
@@ -185,15 +179,11 @@ Display all 225 possibilities? (y or n)
 
 指令的 --help 求助说明
 
-
-
 ### 进程控制
 
 查看端口占用：`lsof -i:3000`
 
 关闭进程：`kill -9 {进程号}`
-
-
 
 #### nohup
 

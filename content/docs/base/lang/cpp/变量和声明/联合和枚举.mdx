@@ -3,7 +3,6 @@ title : 联合和枚举
 sidebar_position : 4
 slug : 联合和枚举
 ---
-# 联合和枚举
 
 ## union
 
@@ -26,7 +25,6 @@ void f(Entry* pe){
 ```
 
 因为p和i永远不会同时使用,所以浪费了内存空间.通过将两者定义为一个union成员,可以很容易的解决问题
-
 
 ```cpp title="union"
 union Value{
@@ -119,9 +117,9 @@ int main() {
 
 ## enum
 
-:::warning[备注]
+<Callout type="warning" title="备注">
 本文包含 ISO 标准 C++ 语言 enum 类型和 C++11 中引入的范围（或强类型）enum class 类型。 有关 C++/CLI 和 C++/CX 中 public enum class 或 private enum class 类型的详细信息，请参阅 enum class (C++/CLI and C++/CX)。
-:::
+</Callout>
 
 限定作用域的枚举类型
 ```cpp

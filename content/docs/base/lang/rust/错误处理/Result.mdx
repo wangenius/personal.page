@@ -3,7 +3,6 @@ title : Result
 sidebar_position : 4
 slug : Result
 ---
-# Result
 
 Result 是 Option 类型的更丰富版本，它描述可能的错误而不是可能的缺失。
 
@@ -50,7 +49,6 @@ fn main() {
 }
 ```
 但是 main 也可以有 Result 返回类型。如果 main 函数中发生错误，它将返回错误代码并打印错误的调试表示（使用 Debug 特征）。以下示例显示了此类场景，并涉及下一节中涵盖的各个方面。
-
 
 ```rust
 use std::num::ParseIntError;
@@ -335,7 +333,6 @@ fn main() {
 }
 ```
 同样的技术也可以用于 Option 。
-
 
 ## 使用 partition() 收集所有有效值和失败值
 

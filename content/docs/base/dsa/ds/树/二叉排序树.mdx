@@ -3,7 +3,6 @@ title : 二叉排序树
 sidebar_position : 2
 slug : 二叉排序树
 ---
-# 二叉排序树
 
 又叫二叉搜索树BST
 
@@ -51,9 +50,9 @@ TreeNode *search(TreeNode *root, int num) {
 
 用右子树最小的值来替代被删除的值（最左下）
 
-:::success[相似继承算法]
+<Callout type="success" title="相似继承算法">
 被删除节点的直接前驱或直接后继代替被删除节点，然后删除被删除节点的直接前驱或直接后继。
-:::
+</Callout>
 
 ```cpp title="delete the node"
 int delete(int num){
@@ -76,9 +75,9 @@ int delete(int num){
 
 平衡二叉树是平衡因子的绝对值不大于1的二叉排序树。
 
-:::success[旋转]
+<Callout type="success" title="旋转">
 旋转操作是多数平衡树能够维持平衡的关键，它能在不改变一棵合法 BST 中序遍历结果的情况下改变局部节点的深度。
-:::
+</Callout>
 
 ### 插入
 
@@ -133,9 +132,9 @@ class RBTreeMap {
 | key        | `Key`                 | 节点键值，具有唯一性和可排序性 |
 | value      | `Value`               | 节点内储存的值                 |
 
-:::success[注意]
+<Callout type="success" title="注意">
 由于红黑树是由 B 树衍生而来（发明时的最初的名字 symmetric binary B-tree 足以证明这点），并非直接由平衡二叉树外加限制条件推导而来，插入操作的后续维护和删除操作的后续维护中部分对操作的解释作用仅是帮助理解，并不能将其作为该操作的原理推导和证明。
-:::
+</Callout>
 
 ### 插入
 

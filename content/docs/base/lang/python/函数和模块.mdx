@@ -3,7 +3,6 @@ title : 函数和模块
 sidebar_position : 4
 slug : 函数和模块
 ---
-# 函数和模块
 
 ## 函数
 A function is a block of code which only runs when it is called.
@@ -32,7 +31,6 @@ print(fac(m) // fac(n) // fac(m - n))
 ```
 
 > **说明：** Python的`math`模块中其实已经有一个名为`factorial`函数实现了阶乘运算，事实上求阶乘并不用自己定义函数。下面的例子中，我们讲的函数在Python标准库已经实现过了，我们这里是为了讲解函数的定义和使用才把它们又实现了一遍，**实际开发中并不建议做这种低级的重复劳动**。
-
 
 ### 函数的参数
 
@@ -92,10 +90,8 @@ print(add(1, 3, 5, 7, 9))
 def foo():
     print('hello, world!')
 
-
 def foo():
     print('goodbye, world!')
-
 
 # 下面的代码会输出什么呢？
 foo()
@@ -173,10 +169,8 @@ foo()
 def foo():
     pass
 
-
 def bar():
     pass
-
 
 # __name__是Python中一个隐含的变量它代表了模块的名字
 # 只有被Python解释器直接执行的模块的名字才是__main__
@@ -213,7 +207,6 @@ def foo():
     bar()
     # print(c)  # NameError: name 'c' is not defined
 
-
 if __name__ == '__main__':
     a = 100
     # print(b)  # NameError: name 'b' is not defined
@@ -229,7 +222,6 @@ def foo():
     a = 200
     print(a)  # 200
 
-
 if __name__ == '__main__':
     a = 100
     foo()
@@ -243,7 +235,6 @@ def foo():
     global a
     a = 200
     print(a)  # 200
-
 
 if __name__ == '__main__':
     a = 100

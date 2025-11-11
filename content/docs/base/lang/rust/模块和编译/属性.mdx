@@ -3,8 +3,6 @@ title : 属性
 sidebar_position : 1
 slug : 属性
 ---
-# 属性
-
 
 ## attributes
 
@@ -31,8 +29,6 @@ struct Rectangle {
 ```
 #![inner_attribute] 适用于封闭项目（通常是模块或板条箱）。换句话说，该属性被解释为适用于它所在的整个范围。以下是 #![allow(unused_variables)] 应用于整个箱子的示例（如果放置在 main.rs 中）：
 
-
-
 ```rust
 #![allow(unused_variables)]
 
@@ -49,10 +45,8 @@ fn main() {
 ```
 属性可以有多个值，也可以分隔在多行中：
 
-
 ```rust
 #[attribute(value, value2)]
-
 
 #[attribute(value, value2, value3,
             value4, value5)]
