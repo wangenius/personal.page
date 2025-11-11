@@ -1,0 +1,466 @@
+---
+title: 表达式和语句
+sidebar_position: 1
+slug: 表达式和语句
+---
+
+## 表达式
+
+表达式是用于实现以下一个或多个目的而使用的运算符和操作数的序列：
+
+1. 计算来自操作数的值。
+2. 指定对象或函数。
+3. 产生“副作用”。（副作用是除表达式计算之外的任何操作 - 例如，修改对象的值。）
+
+<Callout type="success" title="例子">
+还是上节那个例子:
+表达式相当于炒菜的过程.
+</Callout>
+
+在 C++ 中，可以重载运算符，并且其含义可以是用户定义的。但是，不能修改其优先级以及它们采用的操作数的数目。本节描述了使用语言提供而不是重载的运算符的语法和语义。
+
+### 主表达式
+
+主表达式是更复杂的表达式的构造块。 它们是文本、名称以及范围解析运算符 (::) 限定的名称。 主表达式可以具有以下任一形式：
+
+- 字面量（文本）
+- this
+- name
+- 范围表达式 ::
+
+#### 字面量
+
+是常量主表达式。 其类型取决于其规范的形式。
+
+```cpp
+const int answer = 42;      // integer literal
+double d = sin(108.87);     // floating point literal passed to sin function
+bool b = true;              // boolean literal
+MyClass* mc = nullptr;      // pointer literal
+int i = 157;        // Decimal literal
+int j = 0198;        // 8进制,但数字非法
+int k = 0365;       // 0开头8进制
+int m = 36'000'000  // 增加数字可读性
+
+int i = 0x3fff;   // 十六进制
+int j = 0X3FFF;   // 十六进制  j = i
+
+int i = 18.46e0;      // 18.46
+int j = 18.46e1      // 184.6
+
+int x = true; // bool 文字
+int *y = nullptr; //指针文本
+
+auto x = 0B001101 ; // int
+auto y = 0b000001 ; // int
+```
+
+不建议在表达式和语句中直接使用文本：
+
+```cpp
+if (num < 100)
+    return "Success";
+```
+
+更好的方法是：
+
+```cpp
+#define MAXIMUM_ERROR_THRESHOLD : 100
+```
+
+this 关键字是指向类的实例的指针。 它在非静态成员函数中可用，并指向从其调用函数的类实例。 不能在类成员函数的主体外使用 this 关键字。
+
+#### :: 范围解析运算符
+
+```cpp
+::func // a global function
+::operator + // a global operator function
+::A::B // a global qualified name
+( i + 1 ) // a parenthesized expression
+```
+
+范围解析运算符 (::) 后跟名称构成了主表达式。 此类名称必须是全局范围内的名称，而不是成员名称。 名称的声明确定表达式的类型。 如果声明的名称是左值，则该类型是左值（即，它可以出现在赋值表达式的左侧）。 范围解析运算符允许引用全局名称，即使该名称隐藏在当前范围中也如此。 有关如何使用范围解析运算符的示例，请参阅范围。
+
+括在括号中的表达式是主表达式。 其类型和值与不带括号的表达式的类型和值相同。 如果不带括号的表达式是左值，则用括号括起的表达式也是左值。
+分类
+全局作用域符（::name）：用于类型名称（类、类成员、成员函数、变量等）前，表示作用域为全局命名空间
+
+类作用域符（class::name）：用于表示指定类型的作用域范围是具体某个类的
+
+命名空间作用域符（namespace::name）:用于表示指定类型的作用域范围是具体某个命名空间的
+
+:: 使用
+
+```cpp
+int count = 0;        // 全局（::）的 count
+
+class A {
+public:
+    static int count; // 类 A 的 count（A::count）
+};
+
+int main() {
+    ::count = 1;      // 设置全局的 count 的值为 1
+
+    A::count = 2;     // 设置类 A 的 count 为 2
+
+    int count = 0;    // 局部的 count
+    count = 3;        // 设置局部的 count 的值为 3
+
+    return 0;
+}
+```
+
+#### name
+
+```cpp
+MyClass // an identifier
+MyClass::f // a qualified name
+operator = // an operator function name
+operator char* // a conversion operator function name
+~MyClass // a destructor name
+A::B   // a qualified name
+A<int> // a template id
+```
+
+### 后缀表达式
+
+后缀表达式包含主表达式或者其中的后缀运算符跟在主表达式之后的表达式。 下表列出了后缀运算符。
+
+| 运算符名称         | 运算符表示法   |
+| ------------------ | -------------- |
+| 下标运算符         | `[ ]`          |
+| 函数调用运算符     | `( )`          |
+| 显式类型转换运算符 | `type-name( )` |
+| 成员访问运算符     | `.` or `->`    |
+| 后缀递增运算符     | `++`           |
+| 后缀递减运算符     | `--`           |
+
+### 前缀表达式
+
+| 运算符名称       | 运算符表示法 |
+| ---------------- | ------------ |
+| 间接寻址运算符   | `*`          |
+| 地址运算符       | `&`          |
+| 一元加运算符     | `+`          |
+| 一元求非运算符   | `-`          |
+| 逻辑非运算符     | `!`          |
+| 二进制求补运算符 | `~`          |
+| 前缀增量运算符   | `++`         |
+| 前缀减量运算符   | `--`         |
+| 强制转换运算符   | `()`         |
+| sizeof 运算符    | `sizeof`     |
+| alignof 运算符   | `alignof`    |
+| noexcept 表达式  | `noexcept`   |
+| new 运算符       | `new`        |
+| delete 运算符    | `delete`     |
+
+### 二元运算符
+
+| 运算符名称      | 运算符表示法 |
+| --------------- | ------------ |
+| 乘              | `*`          |
+| 除              | `/`          |
+| 取模            | `%`          |
+| 加              | `+`          |
+| 减法            | `-`          |
+| 右移            | `>>`         |
+| 左移            | `<<`         |
+| 小于号          | `<`          |
+| 大于号          | `>`          |
+| 小于或等于      | `<=`         |
+| 大于或等于      | `>=`         |
+| 等于            | `==`         |
+| 不等于          | `!=`         |
+| 按位“与”        | `&`          |
+| 按位“异或”      | `^`          |
+| 按位“与或”      | `\|`         |
+| 逻辑“与”        | `&&`         |
+| 逻辑“或”        | `\|\|`       |
+| 赋值            | `=`          |
+| 加法赋值        | `+=`         |
+| 减法赋值        | `-=`         |
+| 乘法赋值        | `*=`         |
+| 除法赋值        | `/=`         |
+| 取模赋值        | `%=`         |
+| 左移赋值        | `<<=`        |
+| 右移赋值        | `>>=`        |
+| 按位“与”赋值    | `&=`         |
+| 按位“异或”赋值  | `^=`         |
+| 按位“与或”/赋值 | `\|=`        |
+| 逗号运算符      | `,`          |
+
+<Callout type="success" title="优先级">
+1. `*p++` 先取指针p指向的值（数组第一个元素1），再将指针p自增1；（`*`和`++`两个处于同一优先级,结合方向是自右向左.但是前提是当++在变量前面的时候才处理同一优先级,当++在变量之后时,你可以将++的优先级看成最低级的,比逗号运算符的优先级还低）
+2. `(*p)++` 先取指针p指向的值（数组第一个元素1），再将该值自增1(数组第一个元素变为2)
+3. `++p` 先将指针p自增1（此时指向数组第二个元素），操作再取出该值
+4. `++*p` 先取指针p指向的值（数组第一个元素1），再将该值自增1（数组第一个元素变为2）
+</Callout>
+
+### lambda表达式
+
+> 语法参照 C++11 标准。语义不同的将以 C++11 作为标准，C++14、C++17 的语法视情况提及并会特别标注。
+
+Lambda 表达式因数学中的 λ 演算得名，直接对应于其中的 lambda 抽象。Lambda 表达式能够捕获作用域中的变量的无名函数对象。我们可以将其理解为一个匿名的内联函数，可以用来替换独立函数或者函数对象，从而使代码更可读。但是从本质上来讲，Lambda 表达式只是一种语法糖，因为它能完成的工作也可以用其他复杂的 C++ 语法来实现。
+
+#### capture 捕获子句
+
+Lambda 表达式以 capture 子句开头，它指定哪些变量被捕获，以及捕获是通过值还是引用：有 & 符号前缀的变量通过引用访问，没有该前缀的变量通过值访问。空的 capture 子句 `[]` 指示 Lambda 表达式的主体不访问封闭范围中的变量。
+
+我们也可以使用默认捕获模式：& 表示捕获到的所有变量都通过引用访问，= 表示捕获到的所有变量都通过值访问。之后我们可以为特定的变量 显式 指定相反的模式。
+
+例如 Lambda 体要通过引用访问外部变量 a 并通过值访问外部变量 b，则以下子句等效：
+
+`[&a, b]`
+`[b, &a]`
+`[&, b]`
+`[b, &]`
+`[=, &a]`
+默认捕获时，会捕获 Lambda 中提及的变量。获的变量成为 Lambda 的一部分；与函数参数相比，调用 Lambda 时不必传递它们。
+
+以下是一些常见的例子：
+
+```cpp
+int a = 0;
+auto f = []() { return a * 9; };   // Error, 无法访问 'a'
+auto f = [a]() { return a * 9; };  // OK, 'a' 被值「捕获」
+auto f = [&a]() { return a++; };   // OK, 'a' 被引用「捕获」
+                                  // 注意：请保证 Lambda 被调用时 a 没有被销毁
+auto b = f();  // f 从捕获列表里获得 a 的值，无需通过参数传入 a
+```
+
+#### parameters 参数列表
+
+大多数情况下类似于函数的参数列表，例如：
+
+```cpp
+auto lam = [](int a, int b) { return a + b; };
+std::cout << lam(1, 9) << " " << lam(2, 6) << std::endl;
+```
+
+C++14 中，若参数类型是泛型，则可以使用 auto 声明类型：
+
+```cpp
+auto lam = [](auto a, auto b);
+```
+
+一个例子：
+
+```cpp
+int x[] = {5, 1, 7, 6, 1, 4, 2};
+std::sort(x, x + 7, [](int a, int b) { return (a > b); });
+for (auto i : x) std::cout << i << " ";
+```
+
+这将打印出 x 数组从大到小排序后的结果。
+
+由于 parameters 参数列表 是可选的，如果不将参数传递给 Lambda 表达式，并且其 Lambda 声明器不包含 mutable，且没有后置返回值类型，则可以省略空括号。
+
+Lambda 表达式也可以将另一个 Lambda 表达式作为其参数。
+
+一个例子：
+
+```cpp
+#include <functional>
+#include <iostream>
+
+int main() {
+  using namespace std;
+
+  // 返回另一个计算两数之和 Lambda 表达式
+  auto addtwointegers = [](int x) -> function<int(int)> {
+    return [=](int y) { return x + y; };
+  };
+
+  // 接受另外一个函数 f 作为参数，返回 f(z) 的两倍
+  auto higherorder = [](const function<int(int)>& f, int z) {
+    return f(z) * 2;
+  };
+
+  // 调用绑定到 higherorder 的 Lambda 表达式
+  auto answer = higherorder(addtwointegers(7), 8);
+
+  // 答案为 (7 + 8) * 2 = 15
+  cout << answer << endl;
+}
+```
+
+#### mutable 可变规范
+
+利用可变规范，Lambda 表达式的主体可以修改通过值捕获的变量。若使用此关键字，则 parameters 不可省略（即使为空）。
+
+一个例子，使用 capture 捕获字句 中的例子，来观察 a 的值的变化：
+
+```cpp
+int a = 0;
+auto func = [a]() mutable { ++a; };
+```
+
+此时 lambda 中的 a 的值改变为 1，lambda 外的 a 保持不变。
+
+return-type 返回类型
+用于指定 Lambda 表达式的返回类型。若没有指定返回类型，则返回类型将被自动推断（行为与用 auto 声明返回值的普通函数一致）。具体的，如果函数体中没有 return 语句，返回类型将被推导为 void，否则根据返回值推导。若有多个 return 语句且返回值类型不同，将产生编译错误。
+
+例如，上文的 lam 也可以写作：
+
+```c
+auto lam = [](int a, int b) -> int
+```
+
+再举两个例子:
+
+```c
+auto x1 = [](int i) { return i; };  // OK
+auto x2 = [] { return {1, 2}; };    // Error, 返回类型被推导为 void
+```
+
+#### statement Lambda 主体
+
+Lambda 主体可包含任何函数可包含的部分。普通函数和 Lambda 表达式主体均可访问以下变量类型：
+
+从封闭范围捕获变量
+参数
+本地声明的变量
+在一个 class 中声明时，若捕获 this，则可以访问该对象的成员
+具有静态存储时间的任何变量，如全局变量
+下面是一个例子
+
+```cpp
+#include <iostream>
+
+int main() {
+  int m = 0, n = 0;
+  [&, n](int a) mutable { m = (++n) + a; }(4);
+  std::cout << m << " " << n << std::endl;
+  return 0;
+}
+```
+
+最后我们得到输出 5 0。这是由于 n 是通过值捕获的，在调用 Lambda 表达式后仍保持原来的值 0 不变。mutable 规范允许 n 在 Lambda 主体中被修改，将 mutable 删去则编译不通过。
+
+## 语句
+
+### 分支跳转
+
+C++提供了一套用于`表达`选择和循环结构的常规语句. 如if,switch,while,for等.
+
+#### if
+
+```cpp
+bool _if(){
+    cout << "do you want to preceed (y/n): \n";
+    char answer = 0;
+    cin >> answer;
+    if(answer == 'y') return true;
+    return false;
+};
+```
+
+#### switch
+
+```cpp
+bool _switch(){
+    cout << "do you want to preceed (y/n): \n";
+    char answer = 0;
+    cin >> answer;
+    switch(answer) {
+        case 'y':
+        return true;
+        case 'n':
+        return false;
+        default:
+        cout << "I'll take that for a no.\n";
+        return false;
+    }
+}
+```
+
+只适用于待判断的条件是整型、字符、枚举。
+case后必须是常量，不能是变量或者表达式
+编译时根据case值生成查询表，运行时检索查询表，如果存在，则转移控制流到匹配的case，否则执行default语句（建议总是为switch声明default语句）
+switch语句检验一个值是否存在于一组常量中,这些常量被称为case标签,彼此之间不能重复,如果待检验的值不等于任何case分支,则执行default分支. 如果没有提供default分支,则什么也不做.
+
+在switch语句中如果想退出某个case分支,不必从当前函数返回,通常我们只是希望继续执行switch语句后面的语句,为此只需使用一条break语句.
+
+<Callout type="success" title="if和switch的区别">
+1. 性能: 由于实现机制的差别，switch使用查询表。它在运行时能直接把程序控制流转移到匹配的case/default。这在性能上较采用顺序比较的if好。当然，好坏是相对而言的，要根据具体的使用场景分析。对于只有较少量的条件需要判断的情况下，if-else反而更小更快，一般而言，条件数小于5时是这样。因为这个时候顺序匹配比查询表什么的更快。这跟查找电话本上的电话号码类似，想象一下，当你只有5个联系人时，要查找一个，是不是直接顺序查看要比建立一个索引表，再到索引处更快？当有100个联系人时，就没有人会反对建立一个索引表，再去索引相应的电话了。
+2. 复杂性: 也要看具体情况，但一般而言，if-else-if的复杂性略高，它随判断条件的增多而增加。特别是在嵌套if时，结构较乱。相较而言，switch更易阅读、编码和维护。当然，嵌套使用switch时复杂性也立刻提高了。总之，在最坏的情况下，编译器也能生成与if-else相似的代码，而在最佳情况下，优化器可能会找到更好的方式生成代码。
+
+对于两者都可以使用的场合，应该选择使用哪一种呢？答案是switch。
+</Callout>
+
+### 循环跳转
+
+有时，我们需要做一件事很多遍，为了不写过多重复的代码，我们需要循环。
+
+有时，循环的次数不是一个常量，那么我们无法将代码重复多遍，必须使用循环。
+
+#### for()
+
+```cpp
+for (int i = 1; i <= n; ++i) {
+  cin >> a[i];
+}
+```
+
+for中的三个部分都可以省略, 省略了判断条件相当于永远为真.
+
+#### while()
+
+```cpp
+while (x > 1) {
+  if (x % 2 == 1) {
+    x = 3 * x + 1;
+  } else {
+    x = x / 2;
+  }
+}
+```
+
+有一种变体:
+
+```cpp
+do {
+  循环体;
+} while (判断条件);
+```
+
+这是先执行循环体,再判断条件
+
+<Callout type="success" title="使用场景">
+可以看出，三种语句可以彼此代替，但一般来说，语句的选用遵守以下原则：
+
+循环过程中有个固定的增加步骤（最常见的是枚举）时，使用 for 语句；
+只确定循环的终止条件时，使用 while 语句；
+使用 while 语句时，若要先执行循环体再进行判断，使用 do...while 语句。一般很少用到，常用场景是用户输入。
+</Callout>
+
+#### break
+
+break 语句的作用是退出循环。
+
+#### continue
+
+continue 语句的作用是跳过循环体的余下部分。
+
+### 标签和goto
+
+源程序中 identifier 标签的外观声明了一个标签。 仅 goto 语句可将控制转移到 identifier 标签。 以下代码片段阐释了 goto 语句和 identifier 标签的使用：
+
+标签无法独立出现，必须总是附加到语句。 如果标签需要独立出现，则必须在标签后放置一个 null 语句。
+
+标签具有函数范围，并且不能在函数中重新声明。 但是，相同的名称可用作不同函数中的标签。
+
+```cpp
+#include <iostream>
+int main() {
+   using namespace std;
+   goto Test2;
+
+   cout << "testing" << endl;
+
+   Test2:
+      cerr << "At Test2 label." << endl;
+}
+//Output: At Test2 label.
+```

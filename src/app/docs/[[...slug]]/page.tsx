@@ -1,4 +1,4 @@
-import { source } from '@/lib/source';
+import { source, DEFAULT_DOC_LANGUAGE } from '@/lib/source';
 import {
   DocsPage,
   DocsBody,
@@ -36,7 +36,10 @@ export default async function Page(props: {
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  return source
+    .generateParams('slug', 'lang')
+    .filter((entry) => entry.lang === DEFAULT_DOC_LANGUAGE)
+    .map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata(props: {

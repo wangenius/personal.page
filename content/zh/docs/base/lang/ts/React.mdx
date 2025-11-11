@@ -1,0 +1,195 @@
+---
+title: React
+---
+
+## useState
+
+## useContext
+
+The 这[useContext Hook钩](https://react.dev/reference/react/useContext) is a technique for passing data down the component tree without having to pass props through components. It is used by creating a provider component and often by creating a Hook to consume the value in a child component.是一种在组件树中传递数据而无需通过组件传递 props 的技术。它通过创建提供者组件来使用，并且通常通过创建 Hook 来使用子组件中的值来使用。
+
+The type of the value provided by the context is inferred from the value passed to the上下文提供的值的类型是从传递给的值推断出来的createContext call:称呼：
+
+The
+
+```rust
+import { createContext, useContext, useState } from 'react';
+
+type Theme = "light" | "dark" | "system";
+const ThemeContext = createContext<Theme>("system");
+
+const useGetTheme = () => useContext(ThemeContext);
+
+export default function MyApp() {
+  const [theme, setTheme] = useState<Theme>('light');
+
+  return (
+    <ThemeContext.Provider value={theme}>
+      <MyComponent />
+    </ThemeContext.Provider>
+  )
+}
+
+function MyComponent() {
+  const theme = useGetTheme();
+
+  return (
+    <div>
+      <p>Current theme: {theme}</p>
+    </div>
+  )
+}
+```
+
+## useRef 与 createRef
+
+useRef 和 createRef 的区别：
+
+createRef 它可以用在类组件和函数组件中，声明时不能给初始值
+
+useRef 它只能使用在函数组件中，useRef 它可以在声明时给初始值
+
+```rust
+const usernameCreateRef = createRef()
+const usernameUseRef = useRef(null)
+```
+
+createRef 每次重新渲染时都会创建一个新的 ref 对象，但是类组件中由于生命周期的存在，所以它可以不重新创建（可以将 createRef 写在类组件的构造函数中），但是它在函数组件中就没有这种效果了，它会被重复创建，由此导致性能低下。
+
+useRef 第1次渲染时创建一个对象之后，再新渲染时，如果发现这个对象已经存在过就不会再创建，它的性能更好一些，在函数组件中推荐使用 useRef。
+
+**createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。**
+
+useRef returns a mutable ref object whose .current property is initialized to the passed argument (initialValue). The returned object will persist(坚持) for the full lifetime of the component(组件).
+
+When you want a component to “remember” some information, but you don’t want that information to [trigger(触发) new renders](https://react.dev/learn/render-and-commit), you can use a *ref*.
+
+## useImperativeHandle
+
+使用它可以透传 Ref，因为函数组件没有实例，所以在默认自定义函数组件中不能使用 ref 属性，使用为了解决此问题，react 提供了一个 hook 和一个高阶组件完帮助函数组件能够使用 ref 属性。
+
+useImperativeHandle 集合 useRef 和 forwardRef 来模拟给函数组件绑定ref对象来得到子组件中对外暴露出来的方法或数据。
+
+```rust
+import React, { useRef, forwardRef, useState, useImperativeHandle } from 'react'
+
+const Child = forwardRef((props, _ref) => {
+  // 值
+  let [name, setName] = useState('张三')
+  // 方法
+  const setNameFn = name => setName(name)
+
+  // 对象
+  const userRef = useRef()
+
+  // 参数1：就是父组件传过来的ref对象
+  // 参数2：回调函数，返回一个对象，穿透给父组件的数据
+  useImperativeHandle(_ref, () => {
+    return {
+      // 给父组件传回了
+      // 值
+      name,
+      // 方法
+      setNameFn,
+      // 对象
+      userRef
+    }
+  })
+
+  return (
+    <div>
+      <h3>child组件 -- {name}</h3>
+      {/* 这里的 ref 是子组件自己的 */}
+      <input type="text" ref={userRef} />
+    </div>
+  )
+})
+
+const App = () => {
+  let childRef = useRef()
+  return (
+    <div>
+      <Child ref={childRef} />
+      <button
+        onClick={() => {
+          console.log(childRef.current.name)
+          childRef.current.setNameFn(Date.now() + '')
+          childRef.current.userRef.current.value = 'abc'
+        }}
+      >
+        ++++
+      </button>
+    </div>
+  )
+}
+
+export default App
+```
+
+## forwardRef
+
+## useMemo和useCallback
+
+### useMemo
+
+The 这[useMemo](https://react.dev/reference/react/useMemo) Hooks will create/re-access a memorized value from a function call, re-running the function only when dependencies passed as the 2nd parameter are changed. The result of calling the Hook is inferred from the return value from the function in the first parameter. You can be more explicit(显式) by providing a type argument to the Hook.挂钩将创建/重新访问函数调用中存储的值，仅当作为第二个参数传递的依赖项发生更改时才重新运行该函数。调用 Hook 的结果是根据第一个参数中函数的返回值推断出来的。您可以通过向 Hook 提供类型参数来更加明确。
+
+```rust
+// The type of visibleTodos is inferred from the return value of filterTodos
+
+const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
+```
+
+### useCallBack在什么情况下使用？
+
+**在往子组件传入了一个函数并且子组件被React.momo缓存了的时候使用**
+
+---
+
+像上一节所说的，useCallBack的作用不是阻止函数创建，而是在依赖不变的情况下返回旧函数地址（保持地址不变）。
+
+React.memo()，是一种缓存技术。能看到这里的笔友我想都不需要我详细解释React.memo是干什么的。
+
+简单说，React.memo()是通过校验props中的数据是否改变的来决定组件是否需要重新渲染的一种缓存技术，**具体点说React.memo()其实是通过校验Props中的数据的内存地址是否改变来决定组件是否重新渲染组件的一种技术。**
+
+假设我们往子组件（假设子组件为Child组件）传入一个函数呢？当父组件的**其他State**（**与Child组件无关的state**）改变的时候。那么，因为状态的改变，父组件需要重新渲染，那被React.memo保护的子组件（Child组件）是否会被重新构建？
+
+```rust
+import {useCallBack,memo} from 'react';
+/**父组件**/
+const Parent = () => {
+  const [parentState,setParentState] = useState(0);  //父组件的state
+
+  //需要传入子组件的函数
+  const toChildFun = () => {
+    console.log("需要传入子组件的函数");
+  }
+
+  return <div>
+    <Button onClick={() => setParentState(val => val+1)}>
+      点击我改变父组件中与Child组件无关的state
+    </Button>
+    //将父组件的函数传入子组件
+    <Child fun={toChildFun}></Child>
+    <div>
+
+      }
+
+const Child = memo(() => {
+  consolo.log("我被打印了就说明子组件重新构建了")
+  return <div><div>
+    })
+```
+
+问:当我点击父组件中的Button改变父组件中的state。子组件会不会重新渲染。乍一看，改变的是parentState这个变量，和子组件半毛钱关系没有，子组件还被React.memo保护着，好像是不会被重新渲染。但这里的问题是，你要传个其他变量进去这也就走的通了。**但是传入的是函数，不行，走不通。会重新渲染。**
+
+React.memo检测的是props中数据的栈地址是否改变。而**父组件重新构建的时候，会重新构建父组件中的所有函数**（旧函数销毁，新函数创建，等于更新了函数地址）,新的函数地址传入到子组件中被props检测到栈地址更新。也就引发了子组件的重新渲染。
+
+所以，在上面的代码示例里面，子组件是要被重新渲染的。
+
+使用useCallBack包一下需要传入子组件的那个函数。那样的话，父组件重新渲染，子组件中的函数就会因为被useCallBack保护而返回旧的函数地址，子组件就不会检测成地址变化，也就不会重选渲染。
+
+还是上面的代码示例，我们进行以下优化。
+
+## useLayoutEffect
+

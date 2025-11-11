@@ -1,12 +1,13 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
-import { source } from "@/lib/source";
+import { source, docsI18nConfig } from "@/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex-1 flex flex-col">
       <DocsLayout
-        tree={source.pageTree}
+        tree={source.getPageTree()}
+        i18n={docsI18nConfig}
         nav={{
           enabled: false,
         }}

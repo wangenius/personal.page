@@ -1,0 +1,364 @@
+---
+title : option&unwrap
+sidebar_position : 3
+slug : option&unwrap
+---
+
+在上一个例子中，我们展示了我们可以随意引发程序失败。如果我们喝含糖柠檬水，我们会告诉程序 panic 。但是，如果我们希望喝点饮料但没有收到怎么办？这种情况同样糟糕，所以必须处理！
+
+我们可以像测试柠檬水一样针对空字符串 ( "" ) 进行测试。由于我们使用 rust，所以让编译器指出没有饮料的情况。
+
+当可能缺席时，使用 std 库中名为 `Option<T>` 的 `enum` 。它表现为两个“选项”之一：
+
+* Some(T) ：找到 T 类型的元素
+* None ：未找到元素
+
+这些情况可以通过 match 显式处理，也可以使用 unwrap 隐式处理。隐式处理将返回内部元素或 panic 。
+
+请注意，可以使用expect手动自定义 panic ，但是 unwrap 否则会给我们留下比显式处理更有意义的输出。在以下示例中，显式处理会产生更受控制的结果，同时保留 panic 选项（如果需要）。
+
+```rust
+// The adult has seen it all, and can handle any drink well.
+// All drinks are handled explicitly using `match`.
+fn give_adult(drink: Option<&str>) {
+    // Specify a course of action for each case.
+    match drink {
+        Some("lemonade") => println!("Yuck! Too sugary."),
+        Some(inner)   => println!("{}? How nice.", inner),
+        None          => println!("No drink? Oh well."),
+    }
+}
+
+// Others will `panic` before drinking sugary drinks.
+// All drinks are handled implicitly using `unwrap`.
+fn drink(drink: Option<&str>) {
+    // `unwrap` returns a `panic` when it receives a `None`.
+    let inside = drink.unwrap();
+    if inside == "lemonade" { panic!("AAAaaaaa!!!!"); }
+
+    println!("I love {}s!!!!!", inside);
+}
+
+fn main() {
+    let water  = Some("water");
+    let lemonade = Some("lemonade");
+    let void  = None;
+
+    give_adult(water);
+    give_adult(lemonade);
+    give_adult(void);
+
+    let coffee = Some("coffee");
+    let nothing = None;
+
+    drink(coffee);
+    drink(nothing);
+}
+```
+
+## 使用 ? 解压选项
+
+您可以使用 match 语句来解压 Option ，但使用 ? 运算符通常更容易。如果 x 是 Option ，那么如果 x 是 Some ，则评估 x? 将返回基础值，否则它将终止正在执行的任何函数并返回 None 。
+
+```rust
+fn next_birthday(current_age: Option<u8>) -> Option<String> {
+	// If `current_age` is `None`, this returns `None`.
+	// If `current_age` is `Some`, the inner `u8` value + 1
+    // gets assigned to `next_age`
+    let next_age: u8 = current_age? + 1;
+    Some(format!("Next year I will be {}", next_age))
+}
+```
+
+您可以将多个 ? 链接在一起以使代码更具可读性。
+
+```rust
+struct Person {
+    job: Option<Job>,
+}
+
+#[derive(Clone, Copy)]
+struct Job {
+    phone_number: Option<PhoneNumber>,
+}
+
+#[derive(Clone, Copy)]
+struct PhoneNumber {
+    area_code: Option<u8>,
+    number: u32,
+}
+
+impl Person {
+
+    // Gets the area code of the phone number of the person's job, if it exists.
+    fn work_phone_area_code(&self) -> Option<u8> {
+        // This would need many nested `match` statements without the `?` operator.
+        // It would take a lot more code - try writing it yourself and see which
+        // is easier.
+        self.job?.phone_number?.area_code
+    }
+}
+
+fn main() {
+    let p = Person {
+        job: Some(Job {
+            phone_number: Some(PhoneNumber {
+                area_code: Some(61),
+                number: 439222222,
+            }),
+        }),
+    };
+
+    assert_eq!(p.work_phone_area_code(), Some(61));
+}
+```
+
+##  组合符： map
+
+match 是处理 Option 的有效方法。但是，您最终可能会发现大量使用很乏味，尤其是仅对输入有效的操作。在这些情况下，组合器可用于以模块化方式管理控制流。
+
+Option 有一个名为 map() 的内置方法，它是 Some -> Some 和 None -> None 简单映射的组合器。多个 map() 调用可以链接在一起以获得更大的灵活性。
+
+在以下示例中， process() 替换其之前的所有函数，同时保持紧凑。
+
+```rust
+#![allow(dead_code)]
+
+#[derive(Debug)] enum Food { Apple, Carrot, Potato }
+
+#[derive(Debug)] struct Peeled(Food);
+#[derive(Debug)] struct Chopped(Food);
+#[derive(Debug)] struct Cooked(Food);
+
+// Peeling food. If there isn't any, then return `None`.
+// Otherwise, return the peeled food.
+fn peel(food: Option<Food>) -> Option<Peeled> {
+    match food {
+        Some(food) => Some(Peeled(food)),
+        None       => None,
+    }
+}
+
+// Chopping food. If there isn't any, then return `None`.
+// Otherwise, return the chopped food.
+fn chop(peeled: Option<Peeled>) -> Option<Chopped> {
+    match peeled {
+        Some(Peeled(food)) => Some(Chopped(food)),
+        None               => None,
+    }
+}
+
+// Cooking food. Here, we showcase `map()` instead of `match` for case handling.
+fn cook(chopped: Option<Chopped>) -> Option<Cooked> {
+    chopped.map(|Chopped(food)| Cooked(food))
+}
+
+// A function to peel, chop, and cook food all in sequence.
+// We chain multiple uses of `map()` to simplify the code.
+fn process(food: Option<Food>) -> Option<Cooked> {
+    food.map(|f| Peeled(f))
+        .map(|Peeled(f)| Chopped(f))
+        .map(|Chopped(f)| Cooked(f))
+}
+
+// Check whether there's food or not before trying to eat it!
+fn eat(food: Option<Cooked>) {
+    match food {
+        Some(food) => println!("Mmm. I love {:?}", food),
+        None       => println!("Oh no! It wasn't edible."),
+    }
+}
+
+fn main() {
+    let apple = Some(Food::Apple);
+    let carrot = Some(Food::Carrot);
+    let potato = None;
+
+    let cooked_apple = cook(chop(peel(apple)));
+    let cooked_carrot = cook(chop(peel(carrot)));
+    // Let's try the simpler looking `process()` now.
+    let cooked_potato = process(potato);
+
+    eat(cooked_apple);
+    eat(cooked_carrot);
+    eat(cooked_potato);
+}
+```
+
+##  组合符： and_then
+map() 被描述为简化 match 语句的可链接方式。但是，在返回 `Option<T>` 的函数上使用 map() 会导致嵌套 `Option<Option<T>>` 。将多个调用链接在一起可能会变得混乱。这就是另一个名为 and_then() 的组合器（在某些语言中称为 flatmap）的用武之地。
+
+and_then() 使用包装值调用其函数输入并返回结果。如果 Option 是 None ，则返回 None 。
+
+在以下示例中， cookable_v3() 生成 `Option<Food>` 。使用 map() 而不是 and_then() 会给出 `Option<Option<Food>>` ，这对于 eat() 来说是无效类型。
+
+```rust
+#![allow(dead_code)]
+
+#[derive(Debug)] enum Food { CordonBleu, Steak, Sushi }
+#[derive(Debug)] enum Day { Monday, Tuesday, Wednesday }
+
+// We don't have the ingredients to make Sushi.
+fn have_ingredients(food: Food) -> Option<Food> {
+    match food {
+        Food::Sushi => None,
+        _           => Some(food),
+    }
+}
+
+// We have the recipe for everything except Cordon Bleu.
+fn have_recipe(food: Food) -> Option<Food> {
+    match food {
+        Food::CordonBleu => None,
+        _                => Some(food),
+    }
+}
+
+// To make a dish, we need both the recipe and the ingredients.
+// We can represent the logic with a chain of `match`es:
+fn cookable_v1(food: Food) -> Option<Food> {
+    match have_recipe(food) {
+        None       => None,
+        Some(food) => have_ingredients(food),
+    }
+}
+
+// This can conveniently be rewritten more compactly with `and_then()`:
+fn cookable_v3(food: Food) -> Option<Food> {
+    have_recipe(food).and_then(have_ingredients)
+}
+
+// Otherwise we'd need to `flatten()` an `Option<Option<Food>>`
+// to get an `Option<Food>`:
+fn cookable_v2(food: Food) -> Option<Food> {
+    have_recipe(food).map(have_ingredients).flatten()
+}
+
+fn eat(food: Food, day: Day) {
+    match cookable_v3(food) {
+        Some(food) => println!("Yay! On {:?} we get to eat {:?}.", day, food),
+        None       => println!("Oh no. We don't get to eat on {:?}?", day),
+    }
+}
+
+fn main() {
+    let (cordon_bleu, steak, sushi) = (Food::CordonBleu, Food::Steak, Food::Sushi);
+
+    eat(cordon_bleu, Day::Monday);
+    eat(steak, Day::Tuesday);
+    eat(sushi, Day::Wednesday);
+}
+```
+
+## 解压选项和默认值 Defaults: or, or_else, get_or_insert, get_or_insert_with
+
+有不止一种方法可以解压 Option 并使用默认值（如果它是 None ）。为了选择满足我们需求的一种，我们需要考虑以下因素：
+
+我们需要急切的评估还是惰性的评估？
+我们是否需要保持原来的空值不变，或者修改它？
+
+### or() 可链接，急切求值，保持空值完整
+or() 是可链接的，并急切地评估其参数，如以下示例所示。请注意，由于 or 的参数会立即求值，因此传递给 or 的变量会被移动。
+
+```rust
+#[derive(Debug)] 
+enum Fruit { Apple, Orange, Banana, Kiwi, Lemon }
+
+fn main() {
+    let apple = Some(Fruit::Apple);
+    let orange = Some(Fruit::Orange);
+    let no_fruit: Option<Fruit> = None;
+
+    let first_available_fruit = no_fruit.or(orange).or(apple);
+    println!("first_available_fruit: {:?}", first_available_fruit);
+    // first_available_fruit: Some(Orange)
+
+    // `or` moves its argument.
+    // In the example above, `or(orange)` returned a `Some`, so `or(apple)` was not invoked.
+    // But the variable named `apple` has been moved regardless, and cannot be used anymore.
+    // println!("Variable apple was moved, so this line won't compile: {:?}", apple);
+    // TODO: uncomment the line above to see the compiler error
+ }
+```
+
+### or_else() 可链接，延迟计算，保持空值完整
+
+另一种替代方法是使用 or_else ，它也是可链接的，并且延迟计算，如以下示例所示：
+
+```rust
+#[derive(Debug)] 
+enum Fruit { Apple, Orange, Banana, Kiwi, Lemon }
+
+fn main() {
+    let no_fruit: Option<Fruit> = None;
+    let get_kiwi_as_fallback = || {
+        println!("Providing kiwi as fallback");
+        Some(Fruit::Kiwi)
+    };
+    let get_lemon_as_fallback = || {
+        println!("Providing lemon as fallback");
+        Some(Fruit::Lemon)
+    };
+
+    let first_available_fruit = no_fruit
+        .or_else(get_kiwi_as_fallback)
+        .or_else(get_lemon_as_fallback);
+    println!("first_available_fruit: {:?}", first_available_fruit);
+    // Providing kiwi as fallback
+    // first_available_fruit: Some(Kiwi)
+}
+```
+
+## get_or_insert() 急切地求值，就地修改空值
+
+为了确保 Option 包含一个值，我们可以使用 get_or_insert 使用后备值来修改它，如以下示例所示。请注意， get_or_insert 急切地计算其参数，因此变量 apple 被移动：
+
+```rust
+#[derive(Debug)]
+enum Fruit { Apple, Orange, Banana, Kiwi, Lemon }
+
+fn main() {
+    let mut my_fruit: Option<Fruit> = None;
+    let apple = Fruit::Apple;
+    let first_available_fruit = my_fruit.get_or_insert(apple);
+    println!("first_available_fruit is: {:?}", first_available_fruit);
+    println!("my_fruit is: {:?}", my_fruit);
+    // first_available_fruit is: Apple
+    // my_fruit is: Some(Apple)
+    //println!("Variable named `apple` is moved: {:?}", apple);
+    // TODO: uncomment the line above to see the compiler error
+}
+```
+
+### get_or_insert_with() 延迟计算，就地修改空值
+
+我们可以将一个闭包传递给 get_or_insert_with ，而不是显式地提供一个可依赖的值，如下所示：
+
+```rust
+#[derive(Debug)] 
+enum Fruit { Apple, Orange, Banana, Kiwi, Lemon }
+
+fn main() {
+    let mut my_fruit: Option<Fruit> = None;
+    let get_lemon_as_fallback = || {
+        println!("Providing lemon as fallback");
+        Fruit::Lemon
+    };
+    let first_available_fruit = my_fruit
+        .get_or_insert_with(get_lemon_as_fallback);
+    println!("first_available_fruit is: {:?}", first_available_fruit);
+    println!("my_fruit is: {:?}", my_fruit);
+    // Providing lemon as fallback
+    // first_available_fruit is: Lemon
+    // my_fruit is: Some(Lemon)
+
+    // If the Option has a value, it is left unchanged, and the closure is not invoked
+    let mut my_apple = Some(Fruit::Apple);
+    let should_be_apple = my_apple.get_or_insert_with(get_lemon_as_fallback);
+    println!("should_be_apple is: {:?}", should_be_apple);
+    println!("my_apple is unchanged: {:?}", my_apple);
+    // The output is a follows. Note that the closure `get_lemon_as_fallback` is not invoked
+    // should_be_apple is: Apple
+    // my_apple is unchanged: Some(Apple)
+}
+```

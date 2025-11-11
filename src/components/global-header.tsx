@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  MessageSquare,
-  Search,
-  Moon,
-  Sun,
-  Menu,
-  BookOpen,
-  LineChart,
-  PenLine,
-  Package,
-  BellRing,
-} from "lucide-react";
+import { MessageSquare, Search, Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
@@ -28,13 +17,32 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import {
+  TbBaseline,
+  TbBox,
+  TbBrandBlogger,
+  TbMoneybag,
+  TbSubscript,
+} from "react-icons/tb";
+import type { IconType } from "react-icons";
+import { useLanguage } from "@/components/language-provider";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { getLocalizedDocPath } from "@/lib/i18n/routing";
+import type { DocLanguage } from "@/lib/i18n/doc-config";
 
-const navLinks = [
-  { text: "Knowledges", url: "/docs/base", icon: BookOpen },
-  { text: "MarcoEconomy", url: "/docs/economic", icon: LineChart },
-  { text: "Blog", url: "/blog", icon: PenLine },
-  { text: "Products", url: "/products", icon: Package },
-  { text: "Subscribe", url: "/subscription", icon: BellRing },
+type NavLink = {
+  id: keyof Dictionary["navigation"]["links"];
+  url: string;
+  icon: IconType;
+};
+
+const navLinks: NavLink[] = [
+  { id: "knowledge", url: "/docs/base", icon: TbBaseline },
+  { id: "macroEconomy", url: "/docs/economic", icon: TbMoneybag },
+  { id: "blog", url: "/blog", icon: TbBrandBlogger },
+  { id: "products", url: "/products", icon: TbBox },
+  { id: "subscribe", url: "/subscription", icon: TbSubscript },
 ];
 
 export function GlobalHeader() {
@@ -42,15 +50,20 @@ export function GlobalHeader() {
   const searchContext = useSearchContext();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { dictionary, language } = useLanguage();
+  const { navigation } = dictionary;
 
-  const isActive = (url: string) => {
-    if (url.startsWith("/docs/")) {
-      if (pathname === "/docs" && url === "/docs/base") {
-        return true;
-      }
-      return pathname === url || pathname?.startsWith(url + "/");
-    }
-    return pathname === url || pathname?.startsWith(url + "/");
+  const docLocale = language as DocLanguage;
+  const docsRootPath = getLocalizedDocPath("/docs", docLocale);
+
+  const resolveNavLink = (link: NavLink) => {
+    const isDocsLink = link.url.startsWith("/docs");
+    const href = isDocsLink ? getLocalizedDocPath(link.url, docLocale) ?? link.url : link.url;
+    const active =
+      (isDocsLink && docsRootPath && pathname === docsRootPath && link.url === "/docs/base") ||
+      pathname === href ||
+      pathname?.startsWith(`${href}/`);
+    return { href, active };
   };
 
   return (
@@ -64,19 +77,16 @@ export function GlobalHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4 lg:gap-6 text-sm font-medium">
           {navLinks.map((link) => {
-            const Icon = link.icon;
+            const { href, active } = resolveNavLink(link);
             return (
               <Link
                 key={link.url}
-                href={link.url}
-                className={`flex items-center gap-1 transition-colors ${
-                  isActive(link.url)
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                href={href}
+                className={`flex items-center gap-1 text-xs transition-colors ${
+                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Icon className="h-4 w-4" aria-hidden />
-                <span>{link.text}</span>
+                <span>{navigation.links[link.id]}</span>
               </Link>
             );
           })}
@@ -92,10 +102,10 @@ export function GlobalHeader() {
             size="icon"
             className="h-8 w-8"
             onClick={() => searchContext.setOpenSearch(true)}
-            title="Search"
+            title={navigation.actions.search}
           >
             <Search className="h-4 w-4" />
-            <span className="sr-only">Search</span>
+            <span className="sr-only">{navigation.actions.search}</span>
           </Button>
 
           <Button
@@ -103,11 +113,11 @@ export function GlobalHeader() {
             size="icon"
             className="h-8 w-8"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            title="Toggle theme"
+            title={navigation.actions.toggleTheme}
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
+            <span className="sr-only">{navigation.actions.toggleTheme}</span>
           </Button>
 
           <Button
@@ -115,11 +125,13 @@ export function GlobalHeader() {
             size="icon"
             className="h-8 w-8"
             onClick={() => toggleBayBar()}
-            title="Chat"
+            title={navigation.actions.chat}
           >
             <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">Chat</span>
+            <span className="sr-only">{navigation.actions.chat}</span>
           </Button>
+
+          <LanguageSwitcher className="ml-2" />
 
           <div className="h-4 w-px bg-border mx-1" />
 
@@ -133,10 +145,10 @@ export function GlobalHeader() {
             size="icon"
             className="h-8 w-8"
             onClick={() => searchContext.setOpenSearch(true)}
-            title="Search"
+            title={navigation.actions.search}
           >
             <Search className="h-4 w-4" />
-            <span className="sr-only">Search</span>
+            <span className="sr-only">{navigation.actions.search}</span>
           </Button>
 
           <Button
@@ -144,47 +156,51 @@ export function GlobalHeader() {
             size="icon"
             className="h-8 w-8"
             onClick={() => toggleBayBar()}
-            title="Chat"
+            title={navigation.actions.chat}
           >
             <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">Chat</span>
+            <span className="sr-only">{navigation.actions.chat}</span>
           </Button>
 
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                title={navigation.actions.toggleMenu}
+              >
                 <Menu className="h-4 w-4" />
-                <span className="sr-only">Toggle menu</span>
+                <span className="sr-only">{navigation.actions.toggleMenu}</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <SheetTitle className="sr-only">{navigation.sheet.title}</SheetTitle>
               <SheetDescription className="sr-only">
-                Access navigation links and settings
+                {navigation.sheet.description}
               </SheetDescription>
 
               <div className="flex flex-col gap-6 mt-6">
                 {/* Navigation Links */}
                 <nav className="flex flex-col gap-3">
                   <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
-                    Navigation
+                    {navigation.sections.navigation}
                   </div>
                   {navLinks.map((link) => {
                     const Icon = link.icon;
+                    const { href, active } = resolveNavLink(link);
                     return (
                       <Link
                         key={link.url}
-                        href={link.url}
+                        href={href}
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center gap-3 py-2 text-base font-medium transition-colors ${
-                          isActive(link.url)
-                            ? "text-foreground"
-                            : "text-muted-foreground hover:text-foreground"
+                          active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         <Icon className="h-4 w-4" aria-hidden />
-                        <span>{link.text}</span>
+                        <span>{navigation.links[link.id]}</span>
                       </Link>
                     );
                   })}
@@ -196,7 +212,7 @@ export function GlobalHeader() {
                 {/* Actions */}
                 <div className="flex flex-col gap-3">
                   <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
-                    Settings
+                    {navigation.sections.settings}
                   </div>
 
                   {/* Theme Toggle */}
@@ -208,8 +224,10 @@ export function GlobalHeader() {
                   >
                     <Sun className="h-4 w-4 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
                     <Moon className="absolute h-4 w-4 rotate-90 scale-0 dark:rotate-0 dark:scale-100" />
-                    <span className="ml-6">Toggle Theme</span>
+                    <span className="ml-6">{navigation.actions.toggleTheme}</span>
                   </button>
+
+                  <LanguageSwitcher variant="full" />
 
                   {/* User Menu Content */}
                   <div className="py-2">

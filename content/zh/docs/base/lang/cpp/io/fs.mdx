@@ -1,0 +1,259 @@
+---
+title: 文件系统
+sidebar_position: 2
+slug: 文件系统
+---
+
+## 文件的操作
+
+文件是根据特定的目的而收集在一起的有关数据的集合。C/C++ 把每一个文件都看成是一个有序的字节流，每个文件都是以文件结束标志（EOF）结束，如果要操作某个文件，程序应该首先打开该文件，每当一个文件被打开后（请记得关闭打开的文件），该文件就和一个流关联起来，这里的流实际上是一个字节序列。
+
+<Callout type="success" title="EOF">
+EOF不是特殊字符，而是一个定义在头文件stdio.h的常量，一般等于-1.
+如果EOF是一个特殊字符，那么假定每个文本文件的结尾都有一个EOF（也就是-1），还是可以做到的，因为文本对应的ASCII码都是正值，不可能有负值。但是，二进制文件怎么办呢？怎么处理文件内部包含的-1呢？
+
+EOF不是一个字符，而是当系统读取到文件结尾，所返回的一个信号值（也就是-1）。(它跟字符的-1数值上相等，但是类型不同，可能发生类型转换)至于系统怎么知道文件的结尾，资料上说是通过比较文件的长度。
+</Callout>
+
+C/C++ 将文件分为文本文件和二进制文件。文本文件就是简单的文本文件（重点），另外二进制文件就是特殊格式的文件或者可执行代码文件等。
+
+## 文件打开
+
+1. 打开文件，将文件指针指向文件，决定打开文件类型；
+2. 对文件进行读、写操作（比赛中主要用到的操作，其他一些操作暂时不写）；
+3. 在使用完文件后，关闭文件。
+
+### freopen()
+
+函数用于将指定输入输出流以指定方式重定向到文件，包含于头文件 stdio.h (cstdio) 中，该函数可以在不改变代码原貌的情况下改变输入输出环境，但使用时应当保证流是可靠的。
+
+函数主要有三种方式：读、写和附加。
+
+命令格式
+
+```cpp
+FILE* freopen(const char* filename, const char* mode, FILE* stream);
+```
+
+- filename: 要打开的文件名
+- mode: 文件打开的模式，表示文件访问的权限
+- stream: 文件指针，通常使用标准文件流 (stdin/stdout) 或标准错误输出流 (stderr)
+- 返回值：文件指针，指向被打开文件
+
+| 文件打开格式 |                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------- |
+| r：          | 以只读方式打开文件，文件必须存在，只允许读入数据 （常用）                              |
+| r+           | 以读/写方式打开文件，文件必须存在，允许读/写数据                                       |
+| rb           | 以只读方式打开二进制文件，文件必须存在，只允许读入数据                                 |
+| rb+：        | 以读/写方式打开二进制文件，文件必须存在，允许读/写数据                                 |
+| rt+：        | 以读/写方式打开文本文件，允许读/写数据                                                 |
+| w：          | 以只写方式打开文件，文件不存在会新建文件，否则清空内容，只允许写入数据 （常用）        |
+| w+：         | 以读/写方式打开文件，文件不存在将新建文件，否则清空内容，允许读/写数据                 |
+| wb：         | 以只写方式打开二进制文件，文件不存在将会新建文件，否则清空内容，只允许写入数据         |
+| wb+：        | 以读/写方式打开二进制文件，文件不存在将新建文件，否则清空内容，允许读/写数据           |
+| a：          | 以只写方式打开文件，文件不存在将新建文件，写入数据将被附加在文件末尾（保留 EOF 符）    |
+| a+：         | 以读/写方式打开文件，文件不存在将新建文件，写入数据将被附加在文件末尾（不保留 EOF 符） |
+| at+：        | 以读/写方式打开文本文件，写入数据将被附加在文件末尾                                    |
+| ab+：        | 以读/写方式打开二进制文件，写入数据将被附加在文件末尾                                  |
+
+```cpp
+freopen("data.in", "r", stdin);
+// data.in 就是读取的文件名，要和可执行文件放在同一目录下
+freopen("data.out", "w", stdout);
+// data.out 就是输出文件的文件名，和可执行文件在同一目录下
+```
+
+关闭io流：
+
+```cpp
+fclose(stdin);
+fclose(stdout);
+```
+
+printf/scanf/cin/cout 等函数默认使用 stdin/stdout，将 stdin/stdout 重定向后，这些函数将输入/输出到被定向的文件
+
+### fopen()
+
+函数大致与 freopen 相同，函数将打开指定文件并返回打开文件的指针
+
+```cpp
+FILE* fopen(const char* path, const char* mode)
+```
+
+### 可用读写函数（基本）
+
+- fread/fwrite
+- fgetc/fputc
+- fscanf/fprintf
+- fgets/fputs
+
+## C++ 的 ifstream/ofstream 文件输入输出流
+
+本教程介绍如何从文件读取流和向文件写入流。这就需要用到 C++ 中另一个标准库 fstream，它定义了三个新的数据类型：
+
+| 数据类型 | 描述                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| ofstream | 该数据类型表示输出文件流，用于创建文件并向文件写入信息。                                                                     |
+| ifstream | 该数据类型表示输入文件流，用于从文件读取信息。                                                                               |
+| fstream  | 该数据类型通常表示文件流，且同时具有 ofstream 和 ifstream 两种功能，这意味着它可以创建文件，向文件写入信息，从文件读取信息。 |
+
+要在 C++ 中进行文件处理，必须在 C++ 源代码文件中包含头文件 \<iostream> 和 \<fstream>。
+
+```cpp
+ifstream fin("data.in"); // data.in 就是读取文件的相对位置或绝对位置
+ofstream fout("data.out");// data.out 就是输出文件的相对位置或绝对位置
+
+fin.close();
+fout.close();
+```
+
+```cpp title="template"
+#include <fstream>
+using namespace std;  // 两个类型都在 std 命名空间里
+
+ifstream fin("data.in");
+ofstream fout("data.out");
+
+int main(void) {
+  /*
+  中间的代码改变 cin 为 fin ，cout 为 fout 即可
+  */
+  fin.close();
+  fout.close();
+  return 0;
+};
+```
+
+### 打开文件
+
+在从文件读取信息或者向文件写入信息之前，必须先打开文件。ofstream 和 fstream 对象都可以用来打开文件进行写操作，如果只需要打开文件进行读操作，则使用 ifstream 对象。
+
+下面是 open() 函数的标准语法，open() 函数是 fstream、ifstream 和 ofstream 对象的一个成员。
+```cpp
+void open(const char \*filename, ios::openmode mode);
+```
+在这里，open() 成员函数的第一参数指定要打开的文件的名称和位置，第二个参数定义文件被打开的模式。
+
+| 模式标志   | 描述                                                                   |
+| ---------- | ---------------------------------------------------------------------- |
+| ios::app   | 追加模式。所有写入都追加到文件末尾。                                   |
+| ios::ate   | 文件打开后定位到文件末尾。                                             |
+| ios::in    | 打开文件用于读取。                                                     |
+| ios::out   | 打开文件用于写入。                                                     |
+| ios::trunc | 如果该文件已经存在，其内容将在打开文件之前被截断，即把文件长度设为 0。 |
+
+您可以把以上两种或两种以上的模式结合使用。例如，如果您想要以写入模式打开文件，并希望截断文件，以防文件已存在，那么您可以使用下面的语法：
+```cpp
+ofstream outfile;
+outfile.open("file.dat", ios::out | ios::trunc );
+```
+类似地，您如果想要打开一个文件用于读写，可以使用下面的语法：
+```cpp
+ifstream afile;
+afile.open("file.dat", ios::out | ios::in );
+```
+
+### 关闭文件
+
+当 C++ 程序终止时，它会自动关闭刷新所有流，释放所有分配的内存，并关闭所有打开的文件。但程序员应该养成一个好习惯，在程序终止前关闭所有打开的文件。
+
+下面是 close() 函数的标准语法，close() 函数是 fstream、ifstream 和 ofstream 对象的一个成员。
+
+```cpp
+void close();
+```
+
+### 写入文件
+
+在 C++ 编程中，我们使用流插入运算符（ \<< ）向文件写入信息，就像使用该运算符输出信息到屏幕上一样。唯一不同的是，在这里您使用的是 ofstream 或 fstream 对象，而不是 cout 对象。
+
+### 读取文件
+
+在 C++ 编程中，我们使用流提取运算符（ \>> ）从文件读取信息，就像使用该运算符从键盘输入信息一样。唯一不同的是，在这里您使用的是 ifstream 或 fstream 对象，而不是 cin 对象。
+
+```cpp
+#include <fstream>
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+    
+   char data[100];
+ 
+   // 以写模式打开文件
+   ofstream outfile;
+   outfile.open("afile.dat");
+ 
+   cout << "Writing to the file" << endl;
+   cout << "Enter your name: "; 
+   cin.getline(data, 100);
+ 
+   // 向文件写入用户输入的数据
+   outfile << data << endl;
+ 
+   cout << "Enter your age: "; 
+   cin >> data;
+   cin.ignore();
+   
+   // 再次向文件写入用户输入的数据
+   outfile << data << endl;
+ 
+   // 关闭打开的文件
+   outfile.close();
+ 
+   // 以读模式打开文件
+   ifstream infile; 
+   infile.open("afile.dat"); 
+ 
+   cout << "Reading from the file" << endl; 
+   infile >> data; 
+ 
+   // 在屏幕上写入数据
+   cout << data << endl;
+   
+   // 再次从文件读取数据，并显示它
+   infile >> data; 
+   cout << data << endl; 
+ 
+   // 关闭打开的文件
+   infile.close();
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列输入和输出：
+
+```bash title="output"
+$./a.out
+Writing to the file
+Enter your name: Zara
+Enter your age: 9
+Reading from the file
+Zara
+9
+```
+
+上面的实例中使用了 cin 对象的附加函数，比如 getline()函数从外部读取一行，ignore() 函数会忽略掉之前读语句留下的多余字符。
+
+### 文件位置指针
+istream 和 ostream 都提供了用于重新定位文件位置指针的成员函数。这些成员函数包括关于 istream 的 seekg（"seek get"）和关于 ostream 的 seekp（"seek put"）。
+
+seekg 和 seekp 的参数通常是一个长整型。第二个参数可以用于指定查找方向。查找方向可以是 ios::beg（默认的，从流的开头开始定位），也可以是 ios::cur（从流的当前位置开始定位），也可以是 ios::end（从流的末尾开始定位）。
+
+文件位置指针是一个整数值，指定了从文件的起始位置到指针所在位置的字节数。下面是关于定位 "get" 文件位置指针的实例：
+
+```cpp
+// 定位到 fileObject 的第 n 个字节（假设是 ios::beg）
+fileObject.seekg( n );
+ 
+// 把文件的读指针从 fileObject 当前位置向后移 n 个字节
+fileObject.seekg( n, ios::cur );
+ 
+// 把文件的读指针从 fileObject 末尾往回移 n 个字节
+fileObject.seekg( n, ios::end );
+ 
+// 定位到 fileObject 的末尾
+fileObject.seekg( 0, ios::end );
+```

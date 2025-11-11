@@ -1,0 +1,224 @@
+---
+title: Python Overview
+---
+
+## What is Python?
+
+Python is a high-level, interpreted, general-purpose programming language. Its design philosophy emphasizes code readability with the use of significant indentation. Python is dynamically typed and garbage-collected.
+
+## Key Features
+
+### 1. Simple and Easy to Learn
+Python has a simple syntax similar to English, making it easy to read and understand.
+
+### 2. Interpreted Language
+Python is processed at runtime by the interpreter. You don't need to compile your program before executing it.
+
+### 3. Object-Oriented
+Python supports object-oriented programming with classes and objects.
+
+### 4. Free and Open Source
+Python is freely available and open source, with a large community.
+
+### 5. High-Level Language
+Python handles low-level details like memory management automatically.
+
+### 6. Portable
+Python code can run on different platforms (Windows, Mac, Linux, etc.) without modification.
+
+### 7. Extensible
+Python can be extended with C/C++ code for performance-critical parts.
+
+### 8. Embeddable
+Python can be embedded within C/C++ programs.
+
+### 9. Large Standard Library
+Python comes with a vast collection of built-in modules and packages.
+
+### 10. GUI Programming
+Python supports GUI applications with libraries like Tkinter, PyQt, etc.
+
+## Applications
+
+### Web Development
+- Frameworks: Django, Flask, FastAPI
+- Web scraping: BeautifulSoup, Scrapy
+
+### Data Science
+- Data analysis: pandas, NumPy
+- Machine learning: scikit-learn, TensorFlow, PyTorch
+- Data visualization: matplotlib, seaborn, plotly
+
+### Automation and Scripting
+- System administration
+- Task automation
+- File processing
+
+### Desktop Applications
+- GUI applications
+- Game development (Pygame)
+
+### Network Programming
+- Network servers
+- Client applications
+
+### Scientific Computing
+- Mathematical computations
+- Statistical analysis
+
+## Basic Syntax
+
+### Variables and Data Types
+```python
+# Variables
+name = "Python"
+version = 3.9
+is_awesome = True
+
+# Data types
+integer = 42
+float_num = 3.14
+text = "Hello, World!"
+boolean = True
+list_data = [1, 2, 3, 4, 5]
+dict_data = {"name": "Python", "year": 1991}
+```
+
+### Control Structures
+```python
+# If statement
+if condition:
+    # do something
+elif other_condition:
+    # do something else
+else:
+    # do default
+
+# For loop
+for item in iterable:
+    # do something
+
+# While loop
+while condition:
+    # do something
+```
+
+### Functions
+```python
+def function_name(parameters):
+    """Function documentation"""
+    # function body
+    return result
+```
+
+### Classes
+```python
+class ClassName:
+    """Class documentation"""
+    
+    def __init__(self, parameters):
+        # constructor
+        pass
+    
+    def method(self):
+        # method body
+        pass
+```
+
+## Installation
+
+### Windows
+1. Download from python.org
+2. Run installer and check "Add Python to PATH"
+3. Verify installation: `python --version`
+
+### macOS
+```bash
+# Using Homebrew
+brew install python
+
+# Or download from python.org
+```
+
+### Linux
+```bash
+# Ubuntu/Debian
+sudo apt update
+sudo apt install python3 python3-pip
+
+# CentOS/RHEL
+sudo yum install python3
+```
+
+## Development Environments
+
+### IDEs
+- PyCharm (JetBrains)
+- Visual Studio Code
+- Spyder (for data science)
+
+### Interactive Environments
+- Jupyter Notebook
+- IPython
+- Python REPL
+
+## Package Management
+
+### pip (Python Package Installer)
+```bash
+# Install package
+pip install package_name
+
+# Install specific version
+pip install package_name==1.0.0
+
+# List installed packages
+pip list
+
+# Upgrade package
+pip install --upgrade package_name
+
+# Uninstall package
+pip uninstall package_name
+```
+
+### Virtual Environments
+```bash
+# Create virtual environment
+python -m venv myenv
+
+# Activate (Windows)
+myenv\Scripts\activate
+
+# Activate (macOS/Linux)
+source myenv/bin/activate
+
+# Deactivate
+deactivate
+```
+
+## Best Practices
+
+1. **Follow PEP 8**: Python style guide
+2. **Use meaningful names**: Variables, functions, classes
+3. **Write documentation**: Docstrings and comments
+4. **Handle exceptions**: Use try-except blocks
+5. **Use virtual environments**: Isolate project dependencies
+6. **Write tests**: Unit tests and integration tests
+7. **Version control**: Use Git for code management
+
+## Resources
+
+### Official Documentation
+- [Python.org](https://www.python.org/)
+- [Python Documentation](https://docs.python.org/)
+
+### Learning Resources
+- [Python Tutorial](https://docs.python.org/3/tutorial/)
+- [Real Python](https://realpython.com/)
+- [Python Crash Course](https://nostarch.com/pythoncrashcourse2e)
+
+### Community
+- [Python.org Community](https://www.python.org/community/)
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/python)
+- [Reddit r/Python](https://www.reddit.com/r/Python/)
