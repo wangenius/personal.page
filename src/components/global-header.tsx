@@ -38,8 +38,9 @@ type NavLink = {
 };
 
 const navLinks: NavLink[] = [
-  { id: "codingbase", url: "/docs/base", icon: TbBaseline },
-  { id: "macroEconomy", url: "/docs/economic", icon: TbMoneybag },
+  { id: "techne", url: "/docs/techne", icon: TbBaseline },
+  { id: "venture", url: "/docs/venture", icon: TbMoneybag },
+  { id: "anthropocene", url: "/docs/anthropocene", icon: TbMoneybag },
   { id: "blog", url: "/blog", icon: TbBrandBlogger },
   { id: "products", url: "/products", icon: TbBox },
   { id: "subscribe", url: "/subscription", icon: TbSubscript },
@@ -65,7 +66,7 @@ export function GlobalHeader() {
       (isDocsLink &&
         docsRootPath &&
         pathname === docsRootPath &&
-        link.url === "/docs/base") ||
+        link.url === "/docs/techne") ||
       pathname === href ||
       pathname?.startsWith(`${href}/`);
     return { href, active };

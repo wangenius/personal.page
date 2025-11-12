@@ -1,7 +1,8 @@
 {
   "links": {
-    "codingbase": "CodingBase",
-    "macroEconomy": "MacroEconomy",
+    "techne": "Techne",
+    "venture": "Venture",
+    "anthropocene": "Anthropocene",
     "blog": "Blog",
     "products": "Products",
     "subscribe": "Subscribe"
