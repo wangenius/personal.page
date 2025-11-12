@@ -1,0 +1,152 @@
+---
+title: Overview
+sidebar_position: 0
+slug: overview
+---
+
+In a broad sense, machine learning is a method that can give machines the ability to learn, enabling them to perform functions that cannot be achieved through direct programming. But in a practical sense, machine learning is a method that uses data to train models and then uses models for prediction.
+
+![](/img/ml-vs-history.png)
+
+Machine learning has deep connections with pattern recognition, statistical learning, data mining, computer vision, speech recognition, natural language processing, and other fields.
+
+In terms of scope, machine learning is similar to pattern recognition, statistical learning, and data mining. At the same time, the combination of machine learning with processing techniques from other fields has formed interdisciplinary subjects such as computer vision, speech recognition, and natural language processing. Therefore, when we generally talk about data mining, it can be equated with machine learning. At the same time, the machine learning applications we usually refer to should be universal, not limited to structured data, but also including applications for images, audio, etc.
+
+1. **Pattern Recognition**: This is machine learning. The main difference between the two is that the former is a concept developed from industry, while the latter mainly originates from computer science.
+2. **Data Mining**: This is machine learning + databases. Data mining is just a way of thinking that tells us we should try to mine knowledge from data, but not every data can mine gold, so don't mythologize it. A system will definitely not become omnipotent just by adding a data mining module. On the contrary, a person with data mining thinking is the key, and he must have a deep understanding of the data, so that he can derive patterns from the data to guide business improvement. Most algorithms in data mining are optimizations of machine learning algorithms in databases.
+3. **Computer Vision**: Image processing + machine learning. Image processing technology is used to process images into input suitable for entering machine learning models, and machine learning is responsible for identifying relevant patterns from images. There are many applications related to computer vision, such as Baidu image recognition, handwritten character recognition, license plate recognition, etc. This field has very hot application prospects and is also a popular research direction. With the development of deep learning, a new field of machine learning, it has greatly promoted the effect of computer image recognition, so the development prospects of the computer vision field are immeasurable in the future.
+4. **Natural Language Processing**: Text processing + machine learning. Natural language processing technology is mainly a field that enables machines to understand human language: in natural language processing technology, a large number of technologies related to compilation principles are used, such as lexical analysis, syntactic analysis, etc. At the understanding level, technologies such as semantic understanding and machine learning are used. As the only symbol created by humans themselves, natural language processing has always been a direction continuously researched in the machine learning field. According to Baidu machine learning expert Yu Kai, "listening and seeing are basically what cats and dogs can do, but only language is unique to humans." How to use machine learning technology for deep understanding of natural language has always been the focus of industry and academia.
+
+## Basic Workflow
+
+The machine learning workflow contains several steps: data preprocessing (Processing), model learning (Learning), model evaluation (Evaluation), and new sample prediction (Prediction).
+
+1. **Data Preprocessing**: Input (unprocessed data + labels) → Processing process (feature processing + scaling, feature selection, dimensionality reduction, sampling) → Output (test set + training set).
+2. **Model Learning**: Model selection, cross-validation, result evaluation, hyperparameter selection.
+3. **Model Evaluation**: Understand the model's score on the dataset test.
+4. **New Sample Prediction**: Predict the test set.
+
+## Key Components
+
+First, let's introduce some core components. No matter what type of machine learning problem you encounter, you will encounter these components:
+
+1. Data that can be used for learning;
+2. A model that transforms data;
+3. An objective function that quantifies the effectiveness of the model;
+4. An algorithm that adjusts model parameters to optimize the objective function.
+
+## Core Technologies
+
+1. **Classification**: Apply model training with classification data, and perform accurate classification and prediction for new samples according to the model.
+2. **Clustering**: Identify similarities and differences in data from massive data, and aggregate them into multiple categories according to the greatest common points.
+3. **Anomaly Detection**: Analyze the distribution pattern of data points, and identify outliers that are significantly different from normal data.
+4. **Regression**: Based on training with known attribute value data, find the best fitting parameters for the model, and predict the output value of new samples based on the model.
+
+## Supervised Learning and Unsupervised Learning
+
+Supervised learning requires training data with label labels. For example, when doing classification, you need to mark the training data first, and then you can train the model to divide the data into the label classes you need.
+
+Unsupervised learning does not need labels. It explores data connections without guidance.
+
+* **Supervised Learning (Supervised Learning)**: The training set has label information, and the learning methods are classification and regression.
+* **Unsupervised Learning (Unsupervised Learning)**: The training set has no label information, and the learning methods are clustering and dimensionality reduction.
+* **Reinforcement Learning (Reinforcement Learning)**: A learning method with delayed and sparse feedback labels.
+
+Supervised learning: Learn a function from a given training dataset, and when new data arrives, you can predict results based on this function. The supervised learning training set requires both input and output, which can also be said to be features and targets. The targets in the training set are labeled by humans. Common supervised learning algorithms include regression analysis and statistical classification.
+
+For more supervised learning algorithm model summaries, you can check ShowMeAI's article AI Knowledge Skills Quick Reference | Machine Learning - Supervised Learning.
+
+Unsupervised learning: Compared with supervised learning, the training set has no artificially labeled results. Common unsupervised learning algorithms include generative adversarial networks (GAN), clustering.
+
+For more unsupervised learning algorithm model summaries, you can check ShowMeAI's article AI Knowledge Skills Quick Reference | Machine Learning - Unsupervised Learning.
+
+Reinforcement learning: Learn how to make actions through observation. Each action will have an impact on the environment. The learning object makes judgments based on the feedback of the surrounding environment observed. This is similar to human learning, so reinforcement learning is currently one of the important research directions.
+
+## The Relationship Between Artificial Intelligence and Machine Learning
+
+Machine learning (Machine learning) is a subset of artificial intelligence and a way to achieve artificial intelligence, but not the only way. It is a discipline that specializes in studying how computers can simulate or realize human learning behavior, acquire new knowledge or skills, and reorganize existing knowledge structures to continuously improve their performance. It began to flourish around the 1980s, and a large number of mathematical statistics-related machine learning models were born.
+
+Deep learning (Deep learning) is a subset of machine learning, inspired by the human brain, composed of artificial neural networks (ANN), which imitates similar structures existing in the human brain. In deep learning, learning is carried out through a deep, multi-layer "network" of interconnected "neurons". The term "deep" usually refers to the number of hidden layers in the neural network. Around 2012, it exploded and was widely applied in many scenarios.
+
+![](/img/1524561966156_NffbP53TjU.jpg)
+
+The research field of artificial intelligence is also constantly expanding, including expert systems, machine learning, evolutionary computing, fuzzy logic, computer vision, natural language processing, recommendation systems, etc.
+
+Machine learning is a method to achieve artificial intelligence, and deep learning is a technology to achieve machine learning. We use the simplest method - concentric circles to visually show the relationship between the three.
+
+![](/img/ai.png)
+
+There are mainly five layers in artificial intelligence research:
+
+1. The bottom layer is infrastructure construction, including two parts: data and computing power. The larger the data, the stronger the artificial intelligence capability.
+
+2. The next layer up is algorithms, such as convolutional neural networks, LSTM sequence learning, Q-Learning, deep learning and other algorithms, all of which are machine learning algorithms.
+
+3. The third layer is important technical directions and issues, such as computer vision, speech engineering, natural language processing, etc. There are also some other similar decision systems, like reinforcement learning, or some statistical systems for big data analysis, which can be generated on machine learning algorithms.
+
+4. The fourth layer is specific technologies, such as image recognition, speech recognition, machine translation, etc.
+
+5. The top layer is industry solutions, such as applications of artificial intelligence in finance, medical care, Internet, transportation and games, which is the value we care about it.
+
+### Machine Learning: A Method to Achieve Artificial Intelligence
+
+The most basic practice of machine learning is to use algorithms to parse data, learn from it, and then make decisions and predictions about events in the real world. Unlike traditional hard-coded software programs designed to solve specific tasks, machine learning is "trained" with a large amount of data and learns how to complete tasks through various algorithms from the data.
+
+For a simple example, when we browse online shopping malls, we often see product recommendation information. This is because the mall identifies which products you are really interested in and willing to buy based on your past shopping records and lengthy collection lists. Such a decision model can help the mall provide suggestions to customers and encourage product consumption.
+
+Machine learning directly comes from the early field of artificial intelligence. Traditional algorithms include decision trees, clustering, Bayesian classification, support vector machines, EM, Adaboost, etc. From the perspective of learning methods, machine learning algorithms can be divided into supervised learning (such as classification problems), unsupervised learning (such as clustering problems), semi-supervised learning, ensemble learning, deep learning and reinforcement learning.
+
+Traditional machine learning algorithms have basically reached commercial requirements or specific scenario commercialization levels in applications such as fingerprint recognition, Haar-based face detection, and HoG feature-based object detection, but every step forward is extremely difficult until the emergence of deep learning algorithms.
+
+Machine learning (Machine Learning, ML) is an interdisciplinary subject involving multiple disciplines such as probability theory, statistics, approximation theory, convex analysis, and algorithm complexity theory.
+
+Machine learning is the core of artificial intelligence and the fundamental way to make computers intelligent. Its applications are throughout all fields of artificial intelligence. It mainly uses induction and synthesis rather than deduction.
+
+The most basic practice of machine learning is to use algorithms to parse data, learn from it, and then make decisions and predictions about events in the real world.
+
+Unlike traditional hard-coded software programs designed to solve specific tasks, machine learning is "trained" with a large amount of data and learns how to complete tasks through various algorithms from the data.
+
+The most successful application field of machine learning is computer vision, although it still requires a lot of manual coding to complete the work. People need to manually write classifiers, edge detection filters, so that the program can identify where the object starts and ends; write shape detection programs to determine whether the detection object has eight edges; write classifiers to identify the letter "STOP". Using these manually written classifiers, people can finally develop algorithms to perceive images and determine whether the image is a stop sign.
+
+Machine learning has three categories:
+
+The first category is unsupervised learning, which refers to automatically finding patterns from information and dividing them into various categories, sometimes also called "clustering problems".
+
+The second category is supervised learning, which refers to giving a label to history and using the model to predict results. For example, if there is a fruit, we judge whether it is a banana or an apple based on the shape and color of the fruit. This is an example of supervised learning.
+
+The last category is reinforcement learning, which refers to a learning method that can support people to make decisions and plans. It is a feedback mechanism that rewards some of people's actions and behaviors, and promotes learning through this feedback mechanism. This is similar to human learning, so reinforcement learning is currently one of the important research directions.
+
+### Deep Learning: A Technology to Achieve Machine Learning
+
+Deep learning was not originally an independent learning method. It itself also uses supervised and unsupervised learning methods to train deep neural networks. However, due to the rapid development of this field in recent years, some unique learning methods have been proposed one after another (such as residual networks), so more and more people regard it as a separate learning method.
+
+The initial deep learning was to use deep neural networks to solve the learning process of feature expression. Deep neural network itself is not a brand new concept. It can be roughly understood as a neural network structure containing multiple hidden layers. In order to improve the training effect of deep neural networks, people make corresponding adjustments to the connection methods of neurons and activation functions. In fact, many ideas have existed in previous years, but due to the insufficient training data volume and backward computing power at that time, the final results were not satisfactory.
+
+Deep learning has achieved various tasks in a devastating manner, making it seem that all machine-assisted functions are possible. Driverless cars, preventive medical care, and even better movie recommendations are all within reach or about to be realized.
+
+Deep learning: a technology to achieve machine learning
+There is a difference between machine learning and deep learning. Machine learning refers to the computer's ability to find information from data and learn some laws like humans. Although deep learning is a kind of machine learning, it uses deep neural networks to make the model more complex, so that the model has a deeper understanding of the data.
+
+Deep learning is a method of machine learning based on data representation learning. Deep learning is a new field in machine learning research. Its motivation is to establish and simulate neural networks for analysis and learning of the human brain. It imitates the mechanism of the human brain to explain data, such as images, sounds and texts.
+
+Like machine learning methods, deep machine learning methods are also divided into supervised learning and unsupervised learning. The learning models established under different learning frameworks are very different. For example, Convolutional Neural Networks (CNNs) are a kind of machine learning model under deep supervised learning, while Deep Belief Nets (DBNs) are a kind of machine learning model under unsupervised learning.
+
+### Neural Networks: A Machine Learning Algorithm
+
+Neural networks are designed to imitate the processing method of the human brain, hoping that they can operate according to the logic of the human brain (although the research on the human brain is still not thorough enough). Neural networks have a long history, but are now rarely heard of. Researchers at Yinlu Network (innov100) believe that neural networks can be simply divided into single-layer, double-layer, and multi-layer networks. Neural networks had many problems before, such as the inability to go deep into too many layers, too many parameters to adjust, and too small sample data volume. In short, it was a technology that was not optimistic before. Until 2006, Hinton published papers in "Science" and related journals, first proposing the concept of "deep belief networks".
+
+Artificial Neural Networks (ANN) is an important algorithm in early machine learning, which has gone through decades of ups and downs. The principle of neural networks is inspired by the physiological structure of our brain - interconnected neurons. However, unlike a neuron in the brain that can connect any neuron within a certain distance, artificial neural networks have discrete layers, connections, and data propagation directions.
+
+For example, we can divide an image into image blocks and input them into the first layer of the neural network. Each neuron in the first layer transmits data to the second layer. The neurons in the second layer also do similar work, transmitting data to the third layer, and so on, until the last layer, and then generate results.
+
+Each neuron assigns weights to its inputs, and the correctness of these weights is directly related to the tasks it performs. The final output is determined by the sum of these weights.
+
+Let's take the "Stop" sign as an example. Break all the elements of a stop sign image into pieces, and then use neurons to "check": the octagonal shape, the fire truck-like red color, the distinctive letters, the typical size of traffic signs, and the static motion characteristics, etc. The task of the neural network is to give a conclusion, whether it is a stop sign or not. The neural network will give a well-considered guess based on all the weights - a "probability vector".
+
+Looking back at this stop sign recognition example. Neural networks are tuned and trained, and they are still easy to make mistakes from time to time. What it needs most is training. It needs hundreds of thousands or even millions of images to train, until the weights of the neuron's inputs are tuned to be very precise, and the correct results can be obtained every time, whether it is foggy, sunny or rainy.
+
+Only at this time can we say that the neural network has successfully learned the appearance of a stop sign; or in Facebook's application, the neural network has learned your mother's face; or in 2012, Professor Andrew Ng at Google realized that the neural network learned the appearance of a cat, and so on.
+
+Professor Wu's breakthrough was to significantly increase these neural networks from the foundation. There are many layers and many neurons, and then input massive data to train the network. In Professor Wu's case, the data is images from ten million YouTube videos. Professor Wu added "depth" to deep learning. The "depth" here refers to the many layers in the neural network.
+
+Now, image recognition trained by deep learning can even be better than humans in some scenarios: from recognizing cats, to identifying early components of cancer in blood, to identifying tumors in magnetic resonance imaging. Google's AlphaGo first learned how to play Go, and then trained with itself. The way it trains its neural network is to continuously play Go with itself, repeatedly, never stopping.

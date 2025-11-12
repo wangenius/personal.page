@@ -1,0 +1,380 @@
+---
+title: Git
+---
+
+## Installation
+
+I recommend using [scoop](../tools/scoop) to install Git. You can also download it from the [official website](https://git-scm.com/downloads).
+
+## Basic Concepts
+
+Git is a distributed version control system used to track changes in source code during software development. It is designed for coordinating work among programmers, but it can be used to track changes in any set of files.
+
+## Key Features
+
+- **Distributed**: Every developer has a complete copy of the repository
+- **Branching and Merging**: Easy to create and merge branches
+- **Speed**: Fast performance for most operations
+- **Data Integrity**: Cryptographic integrity checking
+- **Staging Area**: Selective commit of changes
+
+All version control systems, including Git, can only track changes to text files, like `.txt` files, web pages, and source code. They can show you every change, such as adding a word on one line and deleting a word on another. While binary files like images and videos can also be managed, the system cannot track what changed inside the file; it only knows that the file size changed.
+
+## Basic Workflow
+
+1. **Working Directory**: Where you modify files
+2. **Staging Area**: Where you prepare changes for commit
+3. **Repository**: Where Git permanently stores the changes
+
+## Common Commands
+
+### Repository Operations
+- `git init` - Initialize a new repository
+- `git clone <url>` - Clone an existing repository
+- `git status` - Check the status of files
+
+### Staging and Committing
+- `git add <file>` - Add file to staging area
+- `git commit -m "message"` - Commit staged changes
+- `git reset <file>` - Unstage a file
+
+### Branch Management
+
+In Git, a branch is a lightweight movable pointer to a commit. The default branch name in Git is `master`. As you start making commits, you’re given a `master` branch that points to the last commit you made. Every time you commit, it moves forward automatically.
+
+`HEAD` is a pointer to the local branch you’re currently on.
+
+![git](/img/gitHead.png)
+
+When you create a new branch, say `dev`, Git creates a new pointer that points to the same commit as `master`. It then moves `HEAD` to point to `dev`, indicating that `dev` is now your current branch.
+
+![git](/img/gitdev.png)
+
+Creating a branch in Git is fast because it only involves writing a 41-byte file that contains the SHA-1 hash of the commit it points to. All modifications and commits from this point forward will be on the `dev` branch. The `dev` pointer will move forward, but the `master` pointer will stay put.
+
+![git](/img/gitdevnew.png)
+
+#### Basic Branching Commands
+- `git branch`: List all branches in your repository.
+- `git branch <name>`: Create a new branch named `<name>`.
+- `git checkout <branch>`: Switch to the specified branch.
+- `git checkout -b <name>`: Create a new branch and switch to it.
+- `git merge <branch>`: Merge the specified branch into the current branch.
+- `git branch -d <name>`: Delete a branch.
+
+#### Use Cases for Branching
+Why are branches useful in practice? Imagine you're developing a new feature that will take two weeks to complete. After the first week, you've written half the code. If you commit immediately, the incomplete codebase will break things for your collaborators. If you wait until all the code is finished, you risk losing your daily progress.
+
+With branches, you can create your own isolated environment. You create a feature branch, and others can continue their work on the `master` branch. You can commit freely on your branch until the feature is complete. Then, you can merge it back into `master` in one go. This approach is both safe and doesn't disrupt anyone else's work.
+
+While other version control systems (like SVN) have branching, it is often a slow and cumbersome process. In Git, creating, switching, and deleting branches is incredibly fast—often taking less than a second, regardless of the repository's size.
+
+#### Merging
+Once the work on your feature branch (`dev`) is complete, you can merge it into `master`. The simplest type of merge is a "fast-forward" merge. If the `master` branch hasn't diverged, Git simply moves the `master` pointer forward to the same commit as `dev`.
+
+After merging, you can safely delete the `dev` branch. This just removes the `dev` pointer, leaving you with a single, updated `master` branch.
+
+
+
+### Viewing Changes
+To see the difference between the working directory and the latest version in the repository:
+```bash
+$ git diff readme.txt
+# or
+$ git diff HEAD -- readme.txt
+diff --git a/readme.txt b/readme.txt
+index 46d49bf..9247db6 100644
+--- a/readme.txt
++++ b
+
+## Remote Repositories and Collaboration
+
+### SSH Connection Configuration
+
+1.  **Create an SSH Key**: In your user's home directory, check if there is a `.ssh` directory. If so, see if `id_rsa` and `id_rsa.pub` files exist. If they do, you can skip to the next step. If not, open a Shell (or Git Bash on Windows) and create an SSH Key:
+    ```bash
+    $ ssh-keygen -t rsa -C "your_email@example.com"
+    ```
+    You need to replace the email address with your own. Then, press Enter all the way through to accept the defaults. Since this key is not for military purposes, there's no need to set a password.
+    > In your home directory, you will find the `.ssh` directory containing `id_rsa` (private key) and `id_rsa.pub` (public key). The private key should never be disclosed, but you can safely share the public key.
+
+2.  **Add SSH Key to GitHub**: Log in to GitHub, go to "Account settings," then the "SSH and GPG keys" page. Click "New SSH key," give it any title, and paste the contents of the `id_rsa.pub` file into the "Key" text box.
+
+Why does GitHub need an SSH Key? Because GitHub needs to verify that the commits you push are actually from you and not from someone impersonating you. Git supports the SSH protocol, so once GitHub knows your public key, it can confirm that only you can push.
+
+Of course, GitHub allows you to add multiple keys. If you have several computers (e.g., one at work and one at home), you can add each computer's key to GitHub and push from any of them.
+
+A friendly reminder: Git repositories hosted for free on GitHub are visible to everyone (though only you can modify them). So, don't put sensitive information in them.
+
+If you don't want others to see your Git repository, you have two options. One is to pay a fee to make the public repository private, so others can't see it. The other is to set up your own Git server. Since it's your own server, others won't be able to see it. This is a fairly simple method and essential for internal company development.
+
+### Linking a Local Repository to a Remote One
+
+1.  Create a remote repository on GitHub.
+2.  Link your local repository to this remote repository:
+    ```bash
+    $ git remote add origin git@github.com:your-username/your-repo.git
+    ```
+    > `origin` is the default name for the remote repository on GitHub.
+    > If the linking is successful but the push fails, it may be due to a failed SSH key configuration.
+3.  Push your local content to the remote:
+    ```bash
+    $ git push -u origin master
+    ```
+    Pushing to a remote repository with `git push` actually pushes the current branch (e.g., `master`) to the remote.
+    Since the remote repository is empty, the first time we push the `master` branch, we use the `-u` flag. Git will not only push the local `master` branch content to the new remote `master` branch but also link the local `master` branch with the remote `master` branch, simplifying future push and pull commands.
+
+### Collaboration Workflow
+
+When you clone a remote repository, Git automatically links the local `master` branch with the remote `master` branch, and the default name for the remote repository is `origin`.
+
+To view information about the remote repository, use `git remote`:
+```bash
+$ git remote
+origin
+```
+Or, use `git remote -v` to display more detailed information:
+```bash
+$ git remote -v
+origin  git@github.com:your-username/your-repo.git (fetch)
+origin  git@github.com:your-username/your-repo.git (push)
+```
+This shows the fetch and push URLs for `origin`. If you don't have push permissions, you won't see the push URL.
+
+#### Pushing Branches
+
+Pushing a branch means sending all local commits on that branch to the remote repository. When pushing, you must specify the local branch, and Git will push it to the corresponding remote branch:
+```bash
+$ git push origin master
+```
+To push another branch, like `dev`, change the command:
+```bash
+$ git push origin dev
+```
+However, it is not necessary to push every local branch to the remote. So, which branches should be pushed and which should not?
+1.  The `master` branch is the main branch and should always be in sync with the remote.
+2.  The `dev` branch is the development branch where all team members work, so it also needs to be synced with the remote.
+3.  A `bug` branch is only used for local bug fixes and doesn't need to be pushed to the remote, unless your boss wants to see how many bugs you fix each week.
+4.  Whether to push a `feature` branch to the remote depends on whether you are collaborating with others on it.
+
+In short, in Git, you can keep branches entirely local. Whether to push them is up to you.
+
+#### Fetching and Pulling Branches
+
+When collaborating, everyone will push their changes to the `master` and `dev` branches.
+
+Now, let's simulate a collaborator. You can clone the repository on another computer or in another directory on the same computer:
+```bash
+$ git clone git@github.com:your-username/your-repo.git
+```
+When your collaborator clones the remote repository, by default, they will only see the local `master` branch. You can verify this with `git branch`:
+```bash
+$ git branch
+* master
+```
+Now, if your collaborator wants to develop on the `dev` branch, they must create a local `dev` branch from the remote `origin/dev` branch:
+```bash
+$ git checkout -b dev origin/dev
+```
+Now they can continue making changes on `dev` and periodically push the `dev` branch to the remote:
+```bash
+$ git push origin dev
+```
+
+If your collaborator has pushed their commits to `origin/dev`, and you happen to have made changes to the same file and try to push:
+```bash
+$ git push origin dev
+To github.com:your-username/your-repo.git
+ ! [rejected]        dev -> dev (non-fast-forward)
+error: failed to push some refs to 'git@github.com:your-username/your-repo.git'
+...
+```
+The push will fail because your collaborator's latest commit conflicts with the commit you are trying to push. The solution is simple: Git has already prompted us to first use `git pull` to fetch the latest commits from `origin/dev`, merge them locally, resolve any conflicts, and then push again.
+
+If `git pull` fails with a "no tracking information" error, it means the link between the local `dev` branch and the remote `origin/dev` branch has not been established. Use the following command to set it up:
+```bash
+$ git branch --set-upstream-to=origin/dev dev
+```
+Then `pull` again. If there are merge conflicts, you need to resolve them manually, just as you would with branch conflicts. After resolving, commit, and then push.
+
+The collaboration workflow is usually as follows:
+
+1.  Try to push your changes with `git push origin <branch-name>`.
+2.  If the push fails because the remote branch is ahead of your local one, use `git pull` to merge the changes.
+3.  If there are conflicts, resolve them and commit locally.
+4.  After resolving conflicts (or if there were none), you can successfully push with `git push origin <branch-name>`.
+
+## Best Practices
+
+1. **Commit Often**: Make small, logical commits
+2. **Write Good Commit Messages**: Clear, descriptive messages
+3. **Use Branches**: Isolate features and experiments
+4. **Keep History Clean**: Use interactive rebase when appropriate
+5. **Collaborate Effectively**: Communicate with your team
+
+## Configuration
+
+### Basic Setup
+
+Before you start using Git, you need to complete some basic setup, such as your username and email address.
+
+```bash
+$ git config --global user.name "wangenius"
+$ git config --global user.email "wangenius@qq.com"
+```
+> Since Git is a distributed version control system, each machine must identify itself with your name and email address. You might worry about someone impersonating another person. Don't worry about this. First, we believe that everyone is well-intentioned. Second, if impersonation does occur, there are ways to track it.
+
+When configuring Git, using the `--global` flag applies the settings to the current user. Without it, the settings apply only to the current repository.
+
+### Configuration Files
+
+Each repository's Git configuration is stored in the `.git/config` file:
+
+```toml title=".git/config"
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+    ignorecase = true
+    precomposeunicode = true
+[remote "origin"]
+    url = git@github.com:michaelliao/learngit.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+    remote = origin
+    merge = refs/heads/master
+[alias]
+    last = log -1
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+```
+
+The current user's Git configuration file is located in a hidden `.gitconfig` file in the user's home directory:
+```toml title="{user}/.gitconfig"
+[alias]
+    co = checkout
+    ci = commit
+    br = branch
+    st = status
+[user]
+    name = Your Name
+    email = your@email.com
+```
+
+### Aliases
+Aliases are defined under `[alias]`. To remove an alias, simply delete the corresponding line from the config file. You can also configure aliases by directly modifying this file, or with commands. If you make a mistake, you can delete the file and reconfigure using commands.
+
+```bash title="Configure Alias"
+$ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+```
+
+### Customization
+
+For example, to make Git display colors, which makes command output more eye-catching:
+```bash
+$ git config --global color.ui true
+```
+
+### Remote Connections
+<Callout type="warning">
+Git does not use the system proxy. If the `remote` is `github.com`, you need to set up a proxy.
+</Callout>
+Execute the following command to check the connection method. The proxy configuration differs for different remote connection methods:
+
+```bash title="Check Remote Connection"
+$ git remote -v # Starts with (https|http):// for HTTP; starts with git@ for SSH.
+```
+
+#### Setting a Proxy for http/https Connections
+Check the current proxy:
+```bash
+$ git config --global http.proxy
+```
+Remove the proxy configuration:
+```bash
+$ git config --global --unset http.proxy
+$ git config --global --unset http.https://github.com.proxy
+```
+Configure in command-line mode (supports both http and socks5 proxies):
+```bash
+$ git config --global https.proxy https://proxyuser:proxypassword@ip/domain:port
+$ git config --global http.proxy http://proxyuser:proxypassword@ip/domain:port
+$ git config --global http.proxy socks5://127.0.0.1:10808 # 'socks5' here is just the protocol used by the proxy; it's still set for http, so it only works for http protocol repositories.
+```
+Only for github.com:
+```bash
+$ git config --global http.https://github.com.proxy socks5://127.0.0.1:10808
+$ git config --global https.https://github.com.proxy https://127.0.0.1:10808
+```
+<Callout type="info">
+Special characters need to be encoded.
+</Callout>
+
+#### Setting a Proxy for ssh Connections
+The SSH configuration file is located at `~/.ssh/config`. In Windows, it's `C:\Users\YourUsername\.ssh\config` (create it if it doesn't exist).
+```bash
+Host github.com *.github.com gitee.com	# You can configure different proxies for different domains, or not configure one at all.
+User git
+Port 22 # Default SSH port is 22, default HTTPS is 443
+Hostname %h
+IdentityFile ~/.ssh/id_rsa # Your SSH private key goes here
+ProxyCommand connect -S 127.0.0.1:10808 %h %p
+```
+<Callout type="info" title="ProxyCommand">
+Set the proxy. Replace `127.0.0.1:10808` with the local address your proxy software is listening on. Use `-H` for HTTPS, `-S` for SOCKS.
+The proxy is set via the `ProxyCommand`. `connect` is a tool for proxy conversion, which usually needs to be installed (TortoiseGit has it at `Git\mingw64\bin\connect.exe`).
+In Windows, download `connect.exe`, add its path to the system environment variables, and you can use it in the command line.
+Here, `%h` represents the target machine, i.e., the IP or hostname specified by `Hostname`, and `%p` is the port on the target machine. You could hardcode these values, but using `%h` and `%p` ensures that `ProxyCommand` doesn't need to be changed if `Hostname` or `Port` changes.
+</Callout>
+
+## Ignoring Files
+
+Create a `.gitignore` file to specify intentionally untracked files:
+
+```
+# Compiled files
+*.class
+*.o
+*.pyc
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+```
+
+## Undoing Changes
+
+### Undo Working Directory Changes
+```bash
+git checkout -- <file>
+```
+
+### Undo Staged Changes
+```bash
+git reset HEAD <file>
+```
+
+### Undo Commits
+```bash
+git revert <commit>  # Create new commit that undoes changes
+git reset --hard <commit>  # Move branch pointer (dangerous!)
+```
+
+## Advanced Topics
+
+- **Rebasing**: Rewrite commit history
+- **Cherry-picking**: Apply specific commits
+- **Stashing**: Temporarily store changes
+- **Tags**: Mark specific points in history
+- **Submodules**: Include other repositories
+
+## Resources
+
+- [Official Git Documentation](https://git-scm.com/doc)
+- [Pro Git Book](https://git-scm.com/book)
+- [GitHub Guides](https://guides.github.com/)
+- [Atlassian Git Tutorials](https://www.atlassian.com/git/tutorials)
