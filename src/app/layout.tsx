@@ -19,6 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="shortcut icon" href="/icon.png" />
         <meta name="theme-color" content="#ffffff" />
+        <title>WANGENIUS</title>
       </head>
       <body className="flex flex-col min-h-screen">
         <RootProvider
