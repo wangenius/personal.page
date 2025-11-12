@@ -30,7 +30,7 @@ slug: 排序
 
 以下是几种排序算法的比较。
 
-![](/res/sort-intro-1.apng)
+![](/img/sort-intro-1.apng)
 
 | 排序算法 | 平均时间复杂度 | 最差时间复杂度 | 空间复杂度   | 数据对象稳定性       |
 | -------- | -------------- | -------------- | ------------ | -------------------- |
@@ -93,9 +93,9 @@ $$
 
 11. 冒泡交换、快速交换、简单选择，堆选择可以使经过一趟排序能够保证一个关键词到达最终位置。
 
-![排序比较](/res/compared_sorts.jpeg)
+![排序比较](/img/compared_sorts.jpeg)
 
-![外部排序](/res/外部排序.png)
+![外部排序](/img/外部排序.png)
 
 12. **置换选择排序**：用于*生成初始归并段*。根据buffer大小初始化归并段。每所有记录都要进行两次`I/O`操作。
 
@@ -158,7 +158,7 @@ O(n^2) O(n^2) O(nlog2n) 最差 O(n2) 平均 O(nlog2n)
 
 选择排序的最优时间复杂度、平均时间复杂度和最坏时间复杂度均为 $O(n^2)$。
 
-![](/res/selection-sort-animate.svg)
+![](/img/selection-sort-animate.svg)
 
 ```cpp
 void selection_sort(int* a, int n) {
@@ -322,7 +322,7 @@ void quick_sort(T arr[], const int len) {
 
 一个与插入排序相同的操作是打扑克牌时，从牌桌上抓一张牌，按牌面大小插到手牌后，再抓下一张牌。
 
-![](/res/insertion-sort-animate.svg)
+![](/img/insertion-sort-animate.svg)
 
 ```cpp
 void insertion_sort(int arr[], int len) {

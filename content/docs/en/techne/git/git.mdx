@@ -44,15 +44,15 @@ In Git, a branch is a lightweight movable pointer to a commit. The default branc
 
 `HEAD` is a pointer to the local branch you’re currently on.
 
-![git](/res/gitHead.png)
+![git](/img/gitHead.png)
 
 When you create a new branch, say `dev`, Git creates a new pointer that points to the same commit as `master`. It then moves `HEAD` to point to `dev`, indicating that `dev` is now your current branch.
 
-![git](/res/gitdev.png)
+![git](/img/gitdev.png)
 
 Creating a branch in Git is fast because it only involves writing a 41-byte file that contains the SHA-1 hash of the commit it points to. All modifications and commits from this point forward will be on the `dev` branch. The `dev` pointer will move forward, but the `master` pointer will stay put.
 
-![git](/res/gitdevnew.png)
+![git](/img/gitdevnew.png)
 
 #### Basic Branching Commands
 - `git branch`: List all branches in your repository.
