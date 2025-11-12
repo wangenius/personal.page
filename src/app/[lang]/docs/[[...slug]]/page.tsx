@@ -1,12 +1,19 @@
 import { source, DEFAULT_DOC_LANGUAGE, docLanguages } from "@/lib/source";
-import { DocsPage, DocsBody, DocsDescription, DocsTitle } from "fumadocs-ui/page";
+import { getDocPreviewSegments, requiresSubscription } from "@/lib/docs-access";
+import {
+  DocsPage,
+  DocsBody,
+  DocsDescription,
+  DocsTitle,
+} from "fumadocs-ui/page";
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { getMDXComponents } from "@/mdx-components";
+import { PaywallPreview } from "@/components/docs/paywall-preview";
 
 interface PageParams {
-  lang: string;
+  lang: "en" | "zh-cn";
   slug?: string[];
 }
 
@@ -19,25 +26,31 @@ export default async function LangDocsPage(props: {
     notFound();
   }
 
-  if (lang === DEFAULT_DOC_LANGUAGE) {
-    redirect(`/docs${slug && slug.length > 0 ? `/${slug.join("/" )}` : ""}`);
-  }
-
   const page = source.getPage(slug, lang);
   if (!page) notFound();
+  const locked = requiresSubscription(page);
+  const previewSegments = locked ? await getDocPreviewSegments(page, 2) : [];
 
   const MDXContent = page.data.body;
+  const baseComponents = getMDXComponents({
+    a: createRelativeLink(source, page),
+  });
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent
-          components={getMDXComponents({
-            a: createRelativeLink(source, page),
-          })}
-        />
+        {locked ? (
+          <div className="space-y-8">
+            <PaywallPreview
+              segments={previewSegments}
+              components={baseComponents}
+            />
+          </div>
+        ) : (
+          <MDXContent components={baseComponents} />
+        )}
       </DocsBody>
     </DocsPage>
   );

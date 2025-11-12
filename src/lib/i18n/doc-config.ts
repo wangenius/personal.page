@@ -1,4 +1,4 @@
-const DOC_LANGUAGES = ["zh-cn", "en"] as const;
+const DOC_LANGUAGES = ["en", "zh-cn"] as const;
 
 export type DocLanguage = (typeof DOC_LANGUAGES)[number];
 

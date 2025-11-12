@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { ExternalLink, Github, Twitter } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 
 export const Hero = () => {
@@ -26,34 +27,54 @@ export const Hero = () => {
             <span className="h-px w-10 bg-fd-muted-foreground/40" />
             <span>{introLabel}</span>
           </div>
-          <div className="space-y-4">
-            <p className="text-sm text-fd-muted-foreground">
-              {profile.subtitle}
-            </p>
-            <h1
-              id="profile-hero-heading"
-              className="text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl"
-            >
-              {profile.name}
-            </h1>
-            <p className="text-2xl font-medium text-fd-foreground/90 md:text-[2.1rem]">
-              {profile.tagline}
-            </p>
-            <p className="text-base text-fd-muted-foreground md:text-lg">
-              {profile.description}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button size="sm" className="px-5" asChild>
-              <Link href="/docs">{cta.primary}</Link>
-            </Button>
-            <Button size="sm" variant="ghost" className="px-5" asChild>
-              <Link href="/subscription">{cta.secondary}</Link>
-            </Button>
-          </div>
-          <p className="text-xs text-fd-muted-foreground/80">
-            {mission}
+        <div className="space-y-4">
+          <p className="text-sm text-fd-muted-foreground">
+            {profile.subtitle}
           </p>
+          <h1
+            id="profile-hero-heading"
+            className="text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl"
+          >
+            {profile.name}
+          </h1>
+          <p className="text-2xl font-medium text-fd-foreground/90 md:text-[2.1rem]">
+            {profile.tagline}
+          </p>
+          <p className="text-base text-fd-muted-foreground md:text-lg">
+            {profile.description}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Button size="sm" className="px-5" asChild>
+            <Link href="/docs">{cta.primary}</Link>
+          </Button>
+          <Button size="sm" variant="ghost" className="px-5" asChild>
+            <Link href="/subscription">{cta.secondary}</Link>
+          </Button>
+        </div>
+        <p className="text-xs text-fd-muted-foreground/80">
+          {mission}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" className="h-8" asChild>
+            <Link href="https://bento.me/wangenius" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              <ExternalLink className="h-3 w-3" />
+              <span>Bento</span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" className="h-8" asChild>
+            <Link href="https://x.com/iamwangenius" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              <Twitter className="h-3 w-3" />
+              <span>X</span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" className="h-8" asChild>
+            <Link href="https://github.com/wangenius" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+              <Github className="h-3 w-3" />
+              <span>GitHub</span>
+            </Link>
+          </Button>
+        </div>
         </div>
         <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-background p-6">
           <div className="relative flex flex-col gap-6">

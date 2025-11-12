@@ -1,8 +1,6 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
-import {
-  docsI18nConfig, source
-} from "@/lib/source";
+import { docsI18nConfig, source } from "@/lib/source";
 
 interface LangLayoutProps {
   children: ReactNode;

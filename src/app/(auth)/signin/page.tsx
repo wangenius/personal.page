@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Github } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -26,7 +28,7 @@ export default function SignInPage() {
       const result = await signIn.email({
         email,
         password,
-        callbackURL: "/",
+        callbackURL: next,
       });
       
       // 检查是否需要邮件验证
@@ -40,7 +42,7 @@ export default function SignInPage() {
           setError(errorMessage);
         }
       } else {
-        router.push("/");
+        router.push(next);
       }
     } catch (err: any) {
       const errorMessage = err.message || "登录失败，请检查邮箱和密码";
@@ -60,7 +62,7 @@ export default function SignInPage() {
     try {
       await signIn.social({
         provider: "github",
-        callbackURL: "/",
+        callbackURL: next,
       });
     } catch (err: any) {
       setError(err.message || "GitHub 登录失败");

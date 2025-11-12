@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#ffffff" />
         <title>WANGENIUS</title>
       </head>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen max-h-screen overflow-hidden">
         <RootProvider
           search={{
             enabled: true,

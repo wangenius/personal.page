@@ -18,10 +18,14 @@ import rehypeKatex from "rehype-katex";
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 const DOC_ROOT = "content/docs";
 
+const accessControlledFrontmatter = frontmatterSchema.extend({
+  free: z.enum(["yes", "no"]).default("no"),
+});
+
 export const docs = defineDocs({
   dir: DOC_ROOT,
   docs: {
-    schema: frontmatterSchema,
+    schema: accessControlledFrontmatter,
   },
   meta: {
     schema: metaSchema,
