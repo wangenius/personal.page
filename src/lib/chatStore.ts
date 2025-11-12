@@ -18,7 +18,7 @@ const welcomeMessage: UIMessage = {
   parts: [
     {
       type: "text",
-      text: "你好，我是神仙鱼 AI 助手。有什么可以帮你的吗？",
+      text: "Hello, I'm wangenius. How can I assist you today?",
     },
   ],
 };

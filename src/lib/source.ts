@@ -12,7 +12,7 @@ import {
 export const docsI18nConfig = {
   languages: Array.from(docLanguages),
   defaultLanguage: DEFAULT_DOC_LANGUAGE,
-  hideLocale: "default-locale" as const,
+  hideLocale: "never" as const,
   parser: "dir" as const,
 };
 const docsSource = docs.toFumadocsSource();
