@@ -11,8 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogIn, LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { TbLogin, TbLogout, TbUser } from "react-icons/tb";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
@@ -20,7 +20,7 @@ export function UserMenu() {
   if (isPending) {
     return (
       <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-        <User className="h-4 w-4" />
+        <TbUser className="h-4 w-4" />
       </Button>
     );
   }
@@ -28,9 +28,7 @@ export function UserMenu() {
   if (!session) {
     return (
       <Button variant="ghost" size="sm" className="h-8 gap-2" asChild>
-        <Link href="/signin">
-          <LogIn className="h-4 w-4" />
-        </Link>
+        <Link href="/signin">login</Link>
       </Button>
     );
   }
@@ -67,8 +65,8 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          退出登录
+          <TbLogout className="mr-2 h-4 w-4" />
+          logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

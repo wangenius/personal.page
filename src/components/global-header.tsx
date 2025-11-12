@@ -138,7 +138,7 @@ export function GlobalHeader() {
             <span className="sr-only">{navigation.actions.chat}</span>
           </Button>
 
-          <LanguageSwitcher className="ml-2" />
+          <LanguageSwitcher />
 
           <div className="h-4 w-px bg-border mx-1" />
 
@@ -179,7 +179,6 @@ export function GlobalHeader() {
                 title={navigation.actions.toggleMenu}
               >
                 <Menu className="h-4 w-4" />
-                <span className="sr-only">{navigation.actions.toggleMenu}</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[320px]">
