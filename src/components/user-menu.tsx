@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "@/lib/auth-client";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +17,22 @@ import { TbLogout, TbUser } from "react-icons/tb";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    setImageUrl(session?.user.image || undefined);
+  }, [session?.user.image]);
+
+  useEffect(() => {
+    if (session && !session.user.image) {
+      fetch("/api/auth/user-image")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d?.imageUrl) setImageUrl(d.imageUrl as string);
+        })
+        .catch(() => {});
+    }
+  }, [session]);
 
   if (isPending) {
     return (
@@ -42,10 +59,7 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
           <Avatar className="h-7 w-7">
-            <AvatarImage
-              src={session.user.image || undefined}
-              alt={session.user.name}
-            />
+            <AvatarImage src={imageUrl} alt={session.user.name} />
             <AvatarFallback className="text-xs">
               {session.user.name?.[0]?.toUpperCase() || "U"}
             </AvatarFallback>
