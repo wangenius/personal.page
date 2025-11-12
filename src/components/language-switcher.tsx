@@ -11,7 +11,7 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-const toggleLanguage = (current: Locale): Locale => (current === "en" ? "zh" : "en");
+const toggleLanguage = (current: Locale): Locale => (current === "en" ? "zh-cn" : "en");
 
 export function LanguageSwitcher({ variant = "compact", className }: LanguageSwitcherProps) {
   const { language, setLanguage, dictionary } = useLanguage();

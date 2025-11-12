@@ -1,4 +1,4 @@
-const DOC_LANGUAGES = ["zh", "en"] as const;
+const DOC_LANGUAGES = ["zh-cn", "en"] as const;
 
 export type DocLanguage = (typeof DOC_LANGUAGES)[number];
 
@@ -8,5 +8,5 @@ export const DEFAULT_DOC_LANGUAGE: DocLanguage = DOC_LANGUAGES[0];
 
 export const docLocaleLabels: Record<DocLanguage, string> = {
   en: "English",
-  zh: "中文",
+  "zh-cn": "中文",
 };

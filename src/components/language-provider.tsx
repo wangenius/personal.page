@@ -29,7 +29,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
 
     const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored === "en" || stored === "zh") {
+    if (stored === "en" || stored === "zh-cn") {
       setLanguageState(stored);
     }
   }, [pathname]);

@@ -29,20 +29,20 @@ Regular Expression is case sensitive. So `The` does not match `the`.
 Regular Expression mainly depends on meta characters.
 Meta characters do not represent themselves literally. They have special meanings. Some meta characters have special meanings when they are written inside square brackets. Here are some meta characters:
 
-| Meta Character | Description |
-| :------------: | :--------- |
-|   .    | Matches any single character except newline.        |
-|  [ ]   | Character class. Matches any single character in the brackets. |
-|  [^ ]  | Negated character class. Matches any single character not in the brackets. |
-|   \*   | Matches >= 0 occurrences of the character before the \*. |
-|   +    | Matches >= 1 occurrences of the character before the +. |
-|   ?    | Matches 0 or 1 occurrences of the character before the?. |
-| \{n,m} | Matches between n and m occurrences of the character before the braces. |
-| (xyz)  | Character set, matches the exact string xyz. |
-|   \|   | OR operator, matches either the expression before or after the \|. |
-|   \\   | Escaping character, used to match some reserved characters. |
-|   ^    | Matches the beginning of the line. |
-|   $    | Matches the end of the line. |
+| Meta Character | Description                                                                |
+| :------------: | :------------------------------------------------------------------------- |
+|       .        | Matches any single character except newline.                               |
+|      [ ]       | Character class. Matches any single character in the brackets.             |
+|      [^ ]      | Negated character class. Matches any single character not in the brackets. |
+|       \*       | Matches >= 0 occurrences of the character before the \*.                   |
+|       +        | Matches >= 1 occurrences of the character before the +.                    |
+|       ?        | Matches 0 or 1 occurrences of the character before the?.                   |
+|     \{n,m}     | Matches between n and m occurrences of the character before the braces.    |
+|     (xyz)      | Character set, matches the exact string xyz.                               |
+|       \|       | OR operator, matches either the expression before or after the \|.         |
+|       \\       | Escaping character, used to match some reserved characters.                |
+|       ^        | Matches the beginning of the line.                                         |
+|       $        | Matches the end of the line.                                               |
 
 ## Dot Operator
 
@@ -106,7 +106,9 @@ The car parked in the garage #21.
 res = [he,car,parked,in,the,garage]
 ```
 
-<Callout type="success">`*` character and `.` character can match all characters `.*`. </Callout>
+<Callout type="success">
+  `*` character and `.` character can match all characters `.*`.{" "}
+</Callout>
 
 `*` and `\s` character can match 0 or more spaces.
 For example, the expression `\s*cat\s*` matches 0 or more spaces before and after `cat`.
@@ -185,6 +187,7 @@ res : 999
 ```
 
 ## `(...)` Character Group
+
 A character group is a sub-pattern written inside `(...)`. The content inside `(...)` will be treated as a whole, similar to parentheses in mathematics. For example, the expression `(ab)*` matches 0 or more consecutive occurrences of `ab`. Without `(...)`, the expression `ab*` would match 0 or more consecutive occurrences of `b`. As mentioned earlier, `{}` is used to specify the number of occurrences of the preceding character. But if you add a character group `(...)` before `{}`, it means the entire group of characters is repeated N times.
 We can also use the OR character `|` inside `()` to represent OR. For example, `(c|g|p)ar` matches `car`, `gar`, or `par`.
 
@@ -195,6 +198,7 @@ res : [car,par,gar];
 ```
 
 ## `|` OR Operator
+
 The OR operator represents OR and is used as a condition.
 
 For example `(T|t)he|car` matches `(T|t)he` or `car`.
@@ -215,6 +219,7 @@ For example `(T|t)he|car` matches `(T|t)he` or `car`.
 </pre>
 
 ## Escaping Special Characters
+
 The backslash `\` is used in expressions to escape the character immediately following it. It is used to specify special characters like `{ } [ ] / \ + * . $ ^ | ?`. If you want to match these special characters, you need to add a backslash `\` before them.
 
 For example, `.` is used to match any character except a newline. If you want to match a `.` in a sentence, you need to write it as `\.`. In the example below, `\.?` optionally matches a `.`.
@@ -236,9 +241,11 @@ For example, `.` is used to match any character except a newline. If you want to
 [Online Practice](https://regex101.com/r/DOc5Nu/1)
 
 ## Anchors
+
 In regular expressions, to match a string at a specific beginning or end, you use anchors. `^` specifies the beginning, and `$` specifies the end.
 
 ### `^` Character
+
 `^` is used to check if the matched string is at the beginning of the string to be matched.
 
 For example, using the expression `^a` in `abc` will result in `a`. But using `^b` will not match anything because the string `abc` does not start with `b`.
@@ -270,6 +277,7 @@ For example, `^(T|t)he` matches strings that start with `The` or `the`.
 [Online Practice](https://regex101.com/r/jXrKne/1)
 
 ### `$` Character
+
 Similar to `^`, `$` is used to match if a character is the last one.
 
 For example, `(at\.)$` matches a string that ends with `at.`.
@@ -301,39 +309,42 @@ For example, `(at\.)$` matches a string that ends with `at.`.
 [Online Practice](https://regex101.com/r/t0AkOd/1)
 
 ## Shorthand Character Sets
+
 Regular expressions provide some common shorthand character sets. As follows:
 
-| Shorthand | Description |
-| :--: | -------------------------------------------------- |
-|  .   | Any character except newline |
-|  \w  | Matches all alphanumeric characters, equivalent to `[a-zA-Z0-9_]`            |
-|  \W  | Matches all non-alphanumeric characters, i.e., symbols, equivalent to： `[^\w]`       |
-|  \d  | Matches digits: `[0-9]`                                 |
-|  \D  | Matches non-digits: `[^\d]`                               |
-|  \s  | Matches all whitespace characters, equivalent to: `[\t\n\f\r\p{Z}]`       |
-|  \S  | Matches all non-whitespace characters: `[^\s]`                       |
-|  \f  | Matches a form feed                                     |
-|  \n  | Matches a newline                                     |
-|  \r  | Matches a carriage return                                     |
-|  \t  | Matches a tab                                     |
-|  \v  | Matches a vertical tab                                 |
-|  \p  | Matches CR/LF (equivalent to `\r\n`), used to match DOS line endings |
+| Shorthand | Description                                                                     |
+| :-------: | ------------------------------------------------------------------------------- |
+|     .     | Any character except newline                                                    |
+|    \w     | Matches all alphanumeric characters, equivalent to `[a-zA-Z0-9_]`               |
+|    \W     | Matches all non-alphanumeric characters, i.e., symbols, equivalent to： `[^\w]` |
+|    \d     | Matches digits: `[0-9]`                                                         |
+|    \D     | Matches non-digits: `[^\d]`                                                     |
+|    \s     | Matches all whitespace characters, equivalent to: `[\t\n\f\r\p{Z}]`             |
+|    \S     | Matches all non-whitespace characters: `[^\s]`                                  |
+|    \f     | Matches a form feed                                                             |
+|    \n     | Matches a newline                                                               |
+|    \r     | Matches a carriage return                                                       |
+|    \t     | Matches a tab                                                                   |
+|    \v     | Matches a vertical tab                                                          |
+|    \p     | Matches CR/LF (equivalent to `\r\n`), used to match DOS line endings            |
 
 ## Zero-Width Assertions (Lookaround)
+
 Lookahead and lookbehind assertions (collectively lookaround) are **non-capturing groups** (used to match a pattern, but not included in the match list). We can use them when we need a specific pattern to be preceded or followed by another specific pattern.
 
 For example, if we want to get all the numbers that start with a `$` character from the input strings `$4.44` and `$10.88`, we would use the regular expression `(?<=\$)[0-9\.]*`. This means: get all numbers that contain a `.` and are preceded by a `$`.
 
 Zero-width assertions are as follows:
 
-| Symbol | Description            |
-| :--: | --------------- |
-|  ?=  | Positive Lookahead - Exists |
-|  ?!  | Negative Lookahead - Excludes |
-| ?\<= | Positive Lookbehind - Exists |
-| ?\<! | Negative Lookbehind - Excludes |
+| Symbol | Description                    |
+| :----: | ------------------------------ |
+|   ?=   | Positive Lookahead - Exists    |
+|   ?!   | Negative Lookahead - Excludes  |
+|  ?\<=  | Positive Lookbehind - Exists   |
+|  ?\<!  | Negative Lookbehind - Excludes |
 
 ### `?=...` Positive Lookahead
+
 `?=...` Positive lookahead asserts that the first part of the expression must be followed by the expression defined in `?=...`.
 
 The result only contains the first part of the expression that satisfies the match condition.
@@ -353,6 +364,7 @@ For example, the expression `(T|t)he(?=\sfat)` matches `The` and `the`, and in t
 [Online Practice](https://regex101.com/r/IDDARt/1)
 
 ### `?!...` Negative Lookahead
+
 Negative lookahead `?!` is used to filter all match results, with the condition that they are not followed by the format defined in the assertion.
 The definition of `Positive Lookahead` and `Negative Lookahead` is the same, the only difference is that `=` is replaced with `!`, i.e., `(?!...)`.
 
@@ -369,6 +381,7 @@ The expression `(T|t)he(?!\sfat)` matches `The` and `the`, and is not followed b
 [Online Practice](https://regex101.com/r/V32Npg/1)
 
 ### `?<= ...` Positive Lookbehind
+
 Positive lookbehind, written as `(?<=...)`, is used to filter all match results, with the condition that they are preceded by the format defined in the assertion.
 For example, the expression `(?<=(T|t)he\s)(fat|mat)` matches `fat` and `mat`, and is preceded by `The` or `the`.
 
@@ -378,119 +391,4 @@ The fat cat sat on the mat.
 res : [fat,mat]
 ```
 
-### `?<!...` Negative Lookbehind
-Negative lookbehind, written as `(?<!...)`, is used to filter all match results, with the condition that they are not preceded by the format defined in the assertion.
-For example, the expression `(?<!(T|t)he\s)(cat)` matches `cat`, and is not preceded by `The` or `the`.
-
-<pre>
-  "(?<!(T|t)he\s)(cat)" => The cat sat on{" "}
-  <a href="#learn-regex">
-    <strong>cat</strong>
-  </a>
-  .
-</pre>
-
-[Online Practice](https://regex101.com/r/8Efx5G/1)
-
-## Flags
-Flags are also called pattern modifiers because they can be used to modify the search results of an expression.
-These flags can be used in any combination and are part of the entire regular expression.
-
-| Flag | Description |
-| :--: | ----------------------------------------------------- |
-|  i   | Case-insensitive.                                          |
-|  g   | Global search.                                            |
-|  m   | Multiline modifier: Anchor metacharacters `^` `$` work at the beginning and end of each line. |
-
-### Case Insensitive
-The `i` modifier is used for case-insensitive matching.
-For example, the expression `/The/gi` means a global search for `The`. The `i` modifier changes the condition to be case-insensitive, so it searches for `the` and `The`. `g` means global search.
-
-<pre>
-  "The" =>{" "}
-  <a href="#learn-regex">
-    <strong>The</strong>
-  </a>{" "}
-  fat cat sat on the mat.
-</pre>
-
-[Online Practice](https://regex101.com/r/dpQyf9/1)
-
-<pre>
-  "/The/gi" =>{" "}
-  <a href="#learn-regex">
-    <strong>The</strong>
-  </a>{" "}
-  fat cat sat on{" "}
-  <a href="#learn-regex">
-    <strong>the</strong>
-  </a>{" "}
-  mat.
-</pre>
-
-[Online Practice](https://regex101.com/r/ahfiuh/1)
-
-### Global search
-The `g` modifier is often used to perform a global search match, which means it returns all matches, not just the first one.
-For example, the expression `/.(at)/g` means search for any character (except newline) + `at` and return all results.
-
-<pre>
-  "/.(at)/" => The{" "}
-  <a href="#learn-regex">
-    <strong>fat</strong>
-  </a>{" "}
-  cat sat on the mat.
-</pre>
-
-[Online Practice](https://regex101.com/r/jnk6gM/1)
-
-<pre>
-  "/.(at)/g" => The{" "}
-  <a href="#learn-regex">
-    <strong>fat</strong>
-  </a>{" "}
-  <a href="#learn-regex">
-    <strong>cat</strong>
-  </a>{" "}
-  <a href="#learn-regex">
-    <strong>sat</strong>
-  </a>{" "}
-  on the{" "}
-  <a href="#learn-regex">
-    <strong>mat</strong>
-  </a>
-  .
-</pre>
-
-[Online Practice](https://regex101.com/r/dO1nef/1)
-
-### Multiline
-The `m` modifier is often used to perform a multiline match.
-
-As mentioned before, `(^, $)` are used to check if a pattern is at the beginning or end of the string. But if we want it to work at the beginning and end of each line, we need to use the `m` modifier.
-
-For example, the expression `/at(.)?$/gm` means a lowercase `a` followed by a lowercase `t`, with an optional character at the end (except newline). With the `m` modifier, the expression now matches the end of each line.
-
-<pre>
-  "/.at(.)?$/" => The fat cat sat on the{" "}
-  <a href="#learn-regex">
-    <strong>mat.</strong>
-  </a>
-</pre>
-
-```cpp
-/.at(.)?$/gm ==>
-The fat cat sat on the mat.
-res = [fat, sat, mat.]
-```
-
-## Greedy vs lazy matching
-By default, regular expressions use a greedy matching mode, which means they will match the longest possible substring. We can use `?` to convert the greedy matching mode to a lazy matching mode.
-
-```cpp
-"/(.*at)/" => The fat cat sat on the mat.
-```
-
-```cpp
-"/(.*?at)/" => The fat cat sat on the mat.
-```
+### Negative Lookbehind
