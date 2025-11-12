@@ -1,0 +1,16 @@
+---
+title: Transactions
+---
+
+A **transaction** is an atomic unit of work that must execute completely or not at all (ACID properties):
+
+- **Atomicity** – All operations succeed or none do.
+- **Consistency** – Transforms the database from one valid state to another.
+- **Isolation** – Concurrent transactions should not interfere with each other (implement via locks, timestamps, MVCC, etc.).
+- **Durability** – Once committed, changes survive crashes (logs, checkpoints).
+
+Concurrency control techniques:
+
+1. **Locking** – Exclusive/shared locks on data items; lock overhead grows with number of objects.
+2. **Timestamp ordering** – Each object tracks the latest read/write timestamps to enforce serializability.
+3. **Optimistic control** – Transactions execute without locks and validate upon commit using private copies.

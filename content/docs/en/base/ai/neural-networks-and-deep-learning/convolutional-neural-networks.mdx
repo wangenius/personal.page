@@ -1,0 +1,29 @@
+---
+title: Convolutional Neural Networks
+sidebar_position: 8
+slug: convolutional-nn
+---
+
+Convolutional Neural Networks (CNNs) specialize in grid-like data such as images, audio spectrograms, and videos. Convolutions capture local spatial features with shared weights, drastically reducing the number of parameters compared with fully connected layers.
+
+## Variants
+
+### Standard Convolution
+
+Applies a learnable kernel across the input with stride and padding. Multiple filters form feature maps.
+
+### Dilated (Atrous) Convolution
+
+Inserts gaps between kernel elements to enlarge the receptive field without increasing parameters—useful for segmentation and audio models.
+
+### Transposed Convolution
+
+Also called deconvolution or fractionally strided convolution, it upsamples feature maps, commonly used in decoders and generative models.
+
+### Depthwise-Separable Convolution
+
+Factorizes a convolution into depthwise and pointwise steps to cut computation (e.g., MobileNet).
+
+<Callout type="success" title="Dropout Works Well">
+Dropout randomly disables activations during training, preventing co-adaptation and improving generalization. It can be seen as an inexpensive form of ensembling.
+</Callout>

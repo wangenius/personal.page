@@ -1,0 +1,34 @@
+---
+title: HTTP / HTTPS
+sidebar_position: 1
+slug: http
+---
+
+HTTP is an application-layer protocol for transferring hypermedia documents such as HTML. It follows the classic client–server model: the client opens a TCP connection (default port 80), sends a request, waits for a response, and then closes or reuses the connection. HTTP itself is stateless; servers do not retain session data between requests unless higher-level mechanisms (cookies, sessions) are used.
+
+### Request/Response Flow
+
+1. Browser (user agent) resolves the domain via DNS.
+2. It opens a TCP connection to the origin server (possibly through proxies, gateways, or tunnels).
+3. Client sends an HTTP request (request line + headers + optional body).
+4. Server processes the request and returns an HTTP response (status line + headers + body).
+5. Connection closes (nonpersistent) or stays open for reuse (persistent with optional pipelining).
+6. Browser parses the response, downloads subresources, and renders the page.
+
+### DNS
+
+Domain Name System listens on UDP/TCP port 53 and maps hostnames to IP addresses via a hierarchy of root, TLD, authoritative, and local name servers. Labels are ≤63 characters; a full domain is ≤255 characters.
+
+### FTP
+
+The File Transfer Protocol (FTP) uses TCP port 21 for control and port 20 for data. It offers interactive access, supports heterogeneous systems, and enforces user permissions or anonymous access. Control connections remain open for the entire session; data connections are opened and closed per transfer. One master process accepts new clients while worker processes handle individual sessions.
+
+### Email Protocols
+
+Email is an asynchronous client/server system composed of user agents (mail clients) and mail servers that send/receive on behalf of users.
+
+- **SMTP** (port 25, TCP) handles outbound mail. The client issues commands such as `HELO`, `MAIL FROM`, `RCPT TO`, `DATA`, and `QUIT`. MIME extends SMTP so messages can contain non-ASCII text, attachments, and multipart bodies.
+- **POP3** (port 110, TCP) allows clients to download mail from a server, either leaving a copy or deleting it after retrieval.
+- **IMAP** enables server-side folders, selective sync, and partial downloads—ideal for low-bandwidth or multi-device access.
+
+Many webmail services (e.g., Gmail, Outlook.com) expose mail via HTTPS while using SMTP/IMAP under the hood.

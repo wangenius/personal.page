@@ -1,0 +1,13 @@
+---
+title: Logistic Regression
+sidebar_position: 8
+slug: logistic-regression
+---
+
+Logistic regression models the log-odds of a binary outcome as a linear function of the input features:
+
+```math
+\log \frac{p(y=1|x)}{1 - p(y=1|x)} = w^T x + b.
+```
+
+Training minimizes the negative log-likelihood (binary cross-entropy). Regularization (L1/L2) controls overfitting, especially when features are numerous or correlated. Multiclass extensions include one-vs-rest and softmax (multinomial logistic regression).

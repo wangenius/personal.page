@@ -1,0 +1,44 @@
+---
+title: IP Addressing and Datagrams
+sidebar_position: 2
+---
+
+Network-layer responsibilities include **packet forwarding** and **routing**. MAC addresses uniquely identify interfaces on a LAN, but broadcast delivery cannot scale across multiple subnets. The Internet solves this by assigning each interface a second logical address—the IP address—so routers can decide whether to deliver frames locally or forward them to other networks.
+
+## Heterogeneous Interconnection
+
+IP hides differences in link-layer technologies, addressing schemes, error handling, and hardware types. Hosts ranging from phones to servers can communicate as long as they speak IP.
+
+## IPv4 Packets and Fragmentation
+
+The link-layer Maximum Transmission Unit (MTU) limits the size of IP datagrams on each hop; Ethernet’s MTU is 1500 bytes, while many WAN links accept only 576 bytes. If a datagram exceeds the outgoing MTU, routers fragment it. Each fragment carries the same Identification field plus offset/flags so the destination can reassemble the original packet.
+
+## IPv4 Address Format
+
+An IPv4 address (`A.B.C.D`) is a 32-bit identifier assigned by IANA/ICANN. Every interface on a host or router has its own IP address. Historically the address had a classful structure `{network, host}`; modern networks use subnetting and CIDR.
+
+### Subnets
+
+Borrow bits from the host portion to form a **subnet ID**: `{network, subnet, host}`. Routers first forward based on the network prefix and then use the subnet ID to reach the local segment. Subnet masks mark the bits that belong to the prefix (`1`) versus host (`0`).
+
+### CIDR (Classless Inter-Domain Routing)
+
+CIDR replaces classful addressing with arbitrary-length prefixes, written as `IP/prefix`, e.g., `128.14.35.7/20`. Routers perform **longest-prefix match** when looking up prefixes. CIDR enables route aggregation (supernets), shrinking routing tables and improving lookup speed.
+
+## NAT and Private Addressing
+
+To conserve public IPv4 space and add a security boundary, many organizations deploy Network Address Translation (NAT). Private address ranges (RFC 1918) can be reused internally. A NAT router maintains mappings `{internal IP:port ↔ public IP:port}` and rewrites packets as they cross the boundary. VPNs ride over the public Internet to provide secure connectivity between distant private networks.
+
+## Special Addresses
+
+| Pattern | Meaning |
+| --- | --- |
+| Host bits all `0` | Network address (e.g., `202.98.174.0`). |
+| Host bits all `1` | Directed broadcast for that network (`202.98.174.255`). |
+| `255.255.255.255` | Limited broadcast (local network only). |
+| `0.0.0.0` | “This host on this network”; used during bootstrapping. |
+| `127.0.0.0/8` | Loopback range for self-tests. |
+
+## Congestion Control
+
+Open-loop schemes attempt to prevent congestion by design; closed-loop schemes monitor the network and react dynamically (e.g., TCP congestion control). Routers can forward packets either directly within the same subnet or indirectly via other routers.

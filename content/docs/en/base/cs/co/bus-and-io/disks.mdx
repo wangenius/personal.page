@@ -1,0 +1,28 @@
+---
+title: Disks
+sidebar_position: 5
+slug: disks
+---
+
+Each I/O device connects to the system bus through a controller (onboard chipset) or an adapter (plug-in card). Disk subsystems comprise:
+
+1. **Drive** – Platters with magnetic surfaces, spindle motor, and a head per surface.
+2. **Controller/Interface** – IDE, SATA, NVMe, etc., translating host commands to physical operations.
+3. **Geometry** – Surfaces (heads), tracks/cylinders, and sectors (blocks).
+4. **Addressing** – `drive : track/cylinder : surface : sector` (modern drives abstract this into LBA addressing).
+
+Key metrics:
+
+- **Recording density** – Track density, bit density, areal density.
+- **Capacity** – Raw vs. formatted.
+- **Average access time** ≈ seek time + rotational latency + transfer time + controller overhead.
+- **Transfer rate** = rotations per second × bytes per track (approx.).
+
+RAID (Redundant Array of Independent Disks) stripes data across multiple disks to increase throughput and adds redundancy (mirroring, parity) for reliability. Levels include RAID 0 (striping), RAID 1 (mirroring), RAID 5 (block-level distributed parity), etc.
+
+### Scheduling Algorithms
+
+1. **FCFS** – Service requests in arrival order.
+2. **SSTF** – Select the request closest to the current head position (may starve distant tracks).
+3. **SCAN (Elevator)** – Sweep in one direction servicing requests, then reverse.
+4. **C-SCAN** – Move in a single direction; after reaching the end, jump back to the beginning to avoid bias toward inner/outer tracks.

@@ -1,0 +1,25 @@
+---
+title: Physical Channels and Multiplexing
+---
+
+**Bandwidth** refers both to frequency range (Hz) and to the maximum data rate (bit/s) a channel can carry. Wider bandwidth and higher signal-to-noise ratios (SNR) enable higher data rates.
+
+- **Nyquist Limit** (noise-free, low-pass channel): `C = 2W log₂ V`, where `W` is bandwidth in Hz and `V` is the number of signal levels per symbol.
+- **Shannon Limit** (with noise): `C = W log₂(1 + S/N)`, where `S/N` is the SNR.
+
+A **symbol** (code element) occupies a fixed time window. If symbols change too quickly, inter-symbol interference occurs. Ethernet’s Manchester encoding uses two voltage levels per bit to maintain synchronization.
+
+## Encoding & Modulation
+
+- **Digital → Digital** (baseband): NRZ, NRZI, Manchester, Differential Manchester, 4B/5B.
+- **Digital → Analog** (bandpass modulation): ASK (amplitude shift), FSK (frequency shift), PSK (phase shift), QAM (combination). Modems perform modulation/demodulation.
+- **Analog → Digital**: PCM (sample → quantize → encode); sampling frequency must be ≥ twice the highest signal frequency.
+
+Media options include twisted pair (baseband or broadband), coaxial cable (50 Ω baseband or 75 Ω broadband), single-mode and multimode fiber, and wireless (radio, microwave, infrared, laser).
+
+## Multiplexing
+
+- **FDM/FDMA** – Each flow gets its own frequency band.
+- **WDM/DWDM** – Optical equivalent using different wavelengths over the same fiber.
+- **TDM/TDMA** – Divide time into slots; synchronous TDM assigns fixed slots, while statistical TDM (STDM) allocates slots on demand.
+- **CDM/CDMA** – Users share time and frequency but use orthogonal spreading codes (chips). Each bit is expanded into an `m`-chip sequence; receivers correlate with the assigned code to recover the data. CDMA offers strong interference resistance and high capacity.

@@ -1,0 +1,23 @@
+---
+title: Regression and Curve Fitting
+sidebar_position: 6
+slug: regression
+---
+
+Regression models map inputs to continuous outputs. They can be linear or nonlinear, shallow or deep.
+
+## Linear Regression
+
+Fits a linear function `y = w^T x + b` by minimizing squared error. Closed-form normal equations or gradient descent can be used.
+
+## Line Fitting
+
+When the relationship is approximately linear, least squares finds the best-fitting line. Polynomial features or splines capture mild curvature at the cost of higher variance.
+
+## Logistic Regression
+
+A probabilistic classifier that models `p(y=1|x) = σ(w^T x + b)` using the logistic (sigmoid) function `σ(z) = 1/(1+e^{-z})`. Trained via maximum likelihood (cross-entropy loss), it outputs calibrated probabilities.
+
+## Logistic Curve Fitting
+
+Beyond classification, the logistic function can fit S-shaped growth curves (population dynamics, diffusion of innovations). Nonlinear least squares or gradient-based methods estimate the parameters controlling slope and midpoint.

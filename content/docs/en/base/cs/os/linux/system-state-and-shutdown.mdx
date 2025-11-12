@@ -1,0 +1,18 @@
+---
+title: System State and Shutdown
+sidebar_position: 1
+slug: system-state
+---
+
+Before shutting down a multi-user Linux system, check who is logged in (`who`), active sockets (`netstat -a`), and running processes (`ps -aux`). Notify users via `shutdown` so they can save work.
+
+## Key Commands
+
+- `sync` – Flush buffered data to disk (normally called automatically by reboot/halt/poweroff).
+- `shutdown [-h|-r|-k] <time> [message]`
+  - `-h` halt/power off; `-r` reboot; `-k` send warning only.
+  - Time options: `now`, `+10`, `20:25`, etc. Use `shutdown -c` to cancel.
+- `reboot`, `poweroff`, `halt` – Convenience wrappers (invoke `systemctl`).
+- `systemctl halt|poweroff|reboot|suspend` – Direct systemd interface.
+
+Always use these commands instead of cutting power to avoid data loss and filesystem corruption.

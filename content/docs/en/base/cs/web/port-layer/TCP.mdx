@@ -1,0 +1,48 @@
+---
+title: TCP
+---
+
+The transport layer provides logical communication between processes. It multiplexes many application streams over a single network path, checks for errors, and demultiplexes data to the correct sockets.
+
+## UDP Snapshot
+
+UDP is connectionless, message-oriented, best-effort delivery. Its 8‑byte header contains source/destination ports, length, and checksum. The checksum covers a pseudo-header (source/destination IP, protocol number 17, UDP length) plus the UDP header and payload. If the destination port is closed, the receiver discards the datagram and returns an ICMP “port unreachable.”
+
+## TCP Characteristics
+
+- Connection-oriented and point-to-point; each connection has exactly two endpoints.
+- Reliable, in-order, duplicate-free delivery via sequence numbers, acknowledgments, and retransmissions.
+- Full-duplex with send/receive buffers and byte-stream semantics (segment boundaries are not preserved for the application).
+- Uses flow control (receiver window) and congestion control (congestion window). The effective window is `min{rwnd, cwnd}`.
+
+### Header Fields
+
+- **Sequence Number** – Index of the first byte in the segment.
+- **Acknowledgment Number** – Next byte the receiver expects (cumulative ACK).
+- **Flags** – URG, ACK, PSH, RST, SYN, FIN.
+- **Window Size** – Current receive window advertised to the peer.
+- **Checksum** – Covers pseudo-header + TCP header + payload.
+
+### Reliable Delivery
+
+- **Timeout Retransmission** – Timer slightly larger than the measured RTT.
+- **Fast Retransmit** – Triggered by three duplicate ACKs without waiting for timeout.
+- **Go-Back-N vs. Selective Repeat** – TCP uses cumulative ACKs plus selective acknowledgments (SACK option) to avoid unnecessary retransmissions.
+
+### Sliding Windows and Flow Control
+
+The receiver advertises `rwnd` to prevent overflow. If it drops to zero, the sender stops and relies on “persist” probes to avoid deadlock. TCP sends segments when (1) enough data accumulate to fill an MSS, (2) the application requests a push (PSH), or (3) a timer fires.
+
+### Congestion Control
+
+- **Slow Start** – Begin with `cwnd = 1 MSS` and double each RTT until it reaches the slow-start threshold (`ssthresh`).
+- **Congestion Avoidance** – When `cwnd >= ssthresh`, increase linearly (additive increase) and halve `ssthresh` when loss occurs.
+- **Fast Recovery** – After fast retransmit, set `cwnd = ssthresh` (instead of 1) to avoid re-entering slow start.
+
+### Connection Lifecycle
+
+1. **Three-Way Handshake** – `SYN` → `SYN+ACK` → `ACK` to establish sequence numbers.
+2. **Data Transfer** – Full-duplex byte streams.
+3. **Four-Way Termination** – Each side sends `FIN`/`ACK`; TIME_WAIT ensures delayed packets expire.
+
+TCP does not support broadcast/multicast, but it remains the dominant transport for reliable applications (web, email, SSH, etc.).

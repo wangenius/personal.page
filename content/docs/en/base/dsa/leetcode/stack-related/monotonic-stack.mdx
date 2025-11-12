@@ -1,0 +1,27 @@
+---
+title: Monotonic Stack
+sidebar_position: 2
+slug: monotonic-stack
+---
+
+Monotonic stacks maintain elements in increasing/decreasing order to solve “next greater/smaller element” problems in O(n).
+
+Template (next greater to right):
+
+```cpp
+vector<int> nextGreater(vector<int>& nums) {
+    int n = nums.size();
+    vector<int> ans(n, -1);
+    stack<int> st; // stores indices, nums[st.top()] strictly decreasing
+    for (int i = 0; i < n; ++i) {
+        while (!st.empty() && nums[i] > nums[st.top()]) {
+            ans[st.top()] = nums[i];
+            st.pop();
+        }
+        st.push(i);
+    }
+    return ans;
+}
+```
+
+Variants handle circular arrays (iterate twice) or decreasing stacks for previous greater elements.

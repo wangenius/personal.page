@@ -1,0 +1,24 @@
+---
+title: CRC (Cyclic Redundancy Check)
+sidebar_position: 5
+slug: crc
+---
+
+A CRC is a *detection* code: it can reliably detect corruption but cannot correct it. Data-link layers append CRC fields so receivers can reject corrupted frames with probability approaching 1.
+
+Workflow:
+
+1. Sender and receiver agree on a generator polynomial `G(x)`.
+2. The sender appends `k` zero bits (where `k` is the degree of `G`) to the data, divides by `G(x)` using modulo-2 arithmetic, and obtains the remainder (FCS).
+3. The remainder is XORed with the appended zeros to form the transmitted codeword `DATA || FCS`.
+4. The receiver divides the received bits by `G(x)`; a zero remainder indicates no detectable error.
+
+Example:
+
+- Data: `101001`
+- Generator: `G(x) = 1101`
+- Append three zeros → `101001000`
+- Divide by `1101`; remainder `001`
+- Transmitted frame: `101001001`
+
+At the receiver, dividing `101001001` by `1101` yields remainder `000`, so the frame is accepted. In practice, networking standards choose longer polynomials (CRC-16, CRC-32, etc.) to minimize undetected error probability.

@@ -1,0 +1,36 @@
+---
+title: Cache Hierarchy
+sidebar_position: 3
+slug: cache
+---
+
+Caches bridge the CPU–memory speed gap by exploiting temporal and spatial locality. Data moves between memory and cache in **blocks** (cache lines), while the CPU accesses cache one word at a time.
+
+## Organization
+
+- **Split caches** – Separate instruction and data caches (typically at L1) avoid structural hazards and let each be tuned for its workload.
+- **Multi-level caches** – L1 is smallest/fastest, backed by larger L2/L3 caches. Common policy: L1 writes go through to L2 (write-through), while lower levels use write-back to main memory.
+
+## Mapping Policies
+
+1. **Fully associative** – Any block can occupy any line. Highest hit rate but requires associative lookups (expensive).
+2. **Direct mapped** – Each memory block maps to exactly one cache line; conflicts are common but hardware is simple.
+3. **Set associative** – Memory blocks map to a set; within the set, placement is fully associative (e.g., 4-way). Address fields: `tag | set index | block offset`.
+
+Cache entries store valid bits, dirty bits (for write-back), replacement counters, tags, and the data block.
+
+## Replacement Algorithms
+
+- **Random** – Simple hardware.
+- **FIFO** – Can exhibit Belady’s anomaly.
+- **LRU** – Evict the least recently used line (requires per-line counters or stacks).
+- **LFU** – Evict the least frequently used line.
+
+## Write Policies
+
+- **Write-through** – Update both cache and memory on every write (often with a write buffer). Non-write-allocate: on a miss, write memory only.
+- **Write-back** – Update cache, mark line dirty, and write to memory only upon eviction. Usually paired with write-allocate (fetch block into cache on a miss before writing).
+
+## TLB Note
+
+A TLB hit guarantees the page table entry exists in memory (since the TLB is a subset of the page table), but it does not guarantee the corresponding cache line is present—page translation and caching are independent mechanisms.

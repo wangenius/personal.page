@@ -1,0 +1,16 @@
+---
+title: Binary Search Patterns
+sidebar_position: 1
+slug: binary-search
+---
+
+Template (search insert position): maintain `left=-1`, `right=n`; loop while `left+1!=right` and shrink via mid.
+
+Applications:
+
+- **`searchInsert`** – After loop, `right` is insertion index.
+- **Integer sqrt** – Binary search over `[1, min(x,46341)]` comparing `mid*mid` with `x`.
+- **First bad version** – Maintain range of candidates, shrink using API `isBadVersion` until `right` equals first bad.
+- **Next greatest letter** – Find smallest letter > target; if none, wrap to first element.
+
+Binary search variations: left-closed/right-open ranges, condition `>=` vs `>` depending on goal. Always guard overflow when computing mid.

@@ -1,0 +1,79 @@
+---
+title: Model Evaluation
+sidebar_position: 0.1
+slug: model-evaluation
+---
+
+Machine learning is often described as “learning from experience.” To decide whether a model is truly improving we need a quantitative objective, typically a **loss function**. Losses usually measure how far predictions deviate from ground truth, and we train by minimizing them. (Maximizing a reward is mathematically equivalent after flipping the sign.)
+
+For regression, the most common loss is the **squared error** between predicted and actual values. For classification, we often minimize the **error rate**, i.e., the fraction of misclassified samples. Some metrics such as squared error are smooth and easy to optimize, whereas others (e.g., 0–1 error) are non-differentiable, so we optimize a differentiable surrogate instead.
+
+Losses are defined with respect to the data. We minimize the total loss on a **training set**, but good performance on training data does not guarantee success on unseen data. The held-out **test set** simulates future data and is only used for evaluation. The gap between training and test scores reveals whether a model has **overfit**.
+
+### Common Metrics
+
+1. **Classification** – Accuracy, precision, recall, F1 score, ROC-AUC, confusion matrix, and Precision-Recall curves.
+2. **Regression** – RMSE (root mean squared error), MSE (mean squared error), MAE (mean absolute error).
+3. **Clustering** – Rand index, mutual information, silhouette score, etc.
+
+## Batch Size Effects
+
+Batch size changes the noise level of gradient estimates. Small batches introduce stochastic noise that can help escape local minima but slow down convergence; large batches yield more stable gradients but may demand more memory and sometimes generalize worse. Choose a size that fits your hardware while preserving enough noise for good generalization.
+
+## Generative vs. Discriminative Models
+
+- **Generative models** learn the joint distribution `p(x, y)` (or at least `p(x)`), allowing them to sample new data. Examples: GANs, VAEs, diffusion models.
+- **Discriminative models** focus on `p(y|x)` or direct decision boundaries. Examples: logistic regression, SVMs, most supervised neural networks.
+
+## Diffusion Models
+
+Diffusion probabilistic models gradually corrupt data with noise and then learn to reverse that process. Trained with a denoising objective, they now dominate high-fidelity image, audio, and video generation and serve as powerful priors for downstream tasks.
+
+## Multimodal Models
+
+“Multimodal” systems consume and/or generate multiple data modalities (text, audio, video, code, sensor readings, etc.). Recent large models align representations across modalities so that a single encoder-decoder can caption images, answer video questions, and control robots.
+
+## Large Models
+
+Large Language Models (LLMs) such as GPT rely on Transformer architectures and self-attention. Scaling the parameter count, dataset size, and context length generally improves performance and allows impressive zero-shot and few-shot generalization.
+
+## Training, Testing, and Empirical Error
+
+- **Training set** – Used to fit model parameters.
+- **Test set** – Used only for evaluation after training.
+
+The loss computed on the training set is the **empirical error**. Driving it to zero is not the goal; instead we want low error on unseen data. Techniques such as cross-validation provide more reliable estimates when data are scarce.
+
+## Overfitting and Regularization
+
+A model overfits when it performs well on the training set but poorly on validation/test sets. Countermeasures include:
+
+- Early stopping
+- Data augmentation
+- L1/L2 regularization
+- Dropout and stochastic depth
+- Parameter sharing or pruning
+- Ensembling and bagging
+
+### L1 vs. L2 Regularization
+
+- **L1** (lasso) adds the sum of absolute parameter values, encouraging sparsity.
+- **L2** (ridge) adds the sum of squared parameter values, discouraging large weights and smoothing the solution.
+
+### Parameter Sharing and Model Compression
+
+Sharing parameters across layers (e.g., recurrence, convolutions) reduces the risk of overfitting by tying related weights together. Pruning removes redundant parameters after training to create lighter models without sacrificing accuracy.
+
+## Bias–Variance Trade-off
+
+Bias measures how far the average model prediction is from the true function; variance measures how much the prediction fluctuates across different training sets. Simple models tend to have high bias and low variance, whereas highly flexible models exhibit low bias but high variance. Good generalization requires balancing both.
+
+## Gradient Descent Essentials
+
+Given a differentiable loss `L(θ)`, gradient descent updates parameters via
+
+```math
+\theta \leftarrow \theta - \eta \nabla_\theta L(\theta)
+```
+
+where `η` is the learning rate. Popular variants include SGD with momentum, Adam, RMSProp, and adaptive schedules such as cosine decay.

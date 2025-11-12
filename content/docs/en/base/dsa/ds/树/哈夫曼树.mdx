@@ -1,27 +1,14 @@
 ---
-title : 哈夫曼树
-sidebar_position : 5
-slug : 哈夫曼树
+title: Huffman Tree
+sidebar_position: 5
+slug: huffman
 ---
 
-## 赫夫曼树
+A Huffman tree is a weighted binary tree used for optimal prefix coding. Properties:
 
-6. 结点带权，权值越大离根越近
+- Nodes carry weights (frequencies); larger weights are closer to the root.
+- The tree minimizes the weighted path length (WPL) among all binary trees with the same leaves.
+- Construction: repeatedly pick two smallest-weight trees, merge them into a new node whose weight is the sum, and insert back until one tree remains.
+- For `n` symbols, the Huffman tree has `2n-1` nodes and no degree-1 nodes.
 
-7. 正则二叉树
-
-8. 带权路径`WPL`最短
-
-9. 构造：最小权结点做兄弟，父结点权值=权值之和。
-
-```cpp
-loop{选择最小的两个结点构造棵树,根节点的权值和等于两结点的权值和}
-```
-
-10. 结点总数2n-1
-
-11. 哈夫曼树中没有度=1的结点
-
-## 赫夫曼编码
-
-不可做前缀
+**Huffman coding** assigns binary codes by labeling left edges `0`, right edges `1`. Codes are prefix-free (no code is a prefix of another), enabling instantaneous decoding. Shorter codes are given to frequent symbols.

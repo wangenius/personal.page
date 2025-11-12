@@ -1,0 +1,49 @@
+---
+title: Process Control and Scheduling
+sidebar_position: 3
+slug: scheduling
+---
+
+## Process Primitives
+
+| Primitive | Actions |
+| --- | --- |
+| `fork` / create | Allocate PCB, resources, initialize context, enqueue on ready queue. |
+| `exit` | Release resources, terminate children, remove PCB. |
+| `block` (`P`) | Save context, change state to blocked, enqueue on wait queue. |
+| `wakeup` (`V`) | Move PCB from wait queue to ready queue. |
+| `switch` | Save current context, select next ready process, restore its context. |
+
+Primitives are atomic (implemented via disabling interrupts or hardware support).
+
+## Scheduler Types
+
+- **Job scheduling** – Selects which jobs from secondary storage enter memory and become processes (low frequency).
+- **Swap scheduling** – Moves suspended processes between memory and disk to improve utilization.
+- **CPU scheduling** – Chooses which ready process gets the CPU next (high frequency).
+
+### Scheduling Points
+
+- Process creation/termination
+- Block/unblock events (I/O, sleep)
+- Timer interrupts / quantum expiration
+- System call return (optional)
+
+Avoid rescheduling while handling interrupts, executing in kernel critical sections, or during atomic primitives.
+
+### Algorithms
+
+- **FCFS (First-Come First-Served)** – Non-preemptive, simple, poor response for short tasks.
+- **SJF/SRTF** – Shortest job/remaining time first; optimal average waiting time but requires burst estimates.
+- **Round Robin (RR)** – Time-sliced; good interactive response, quantum trade-offs.
+- **Priority scheduling** – Processes have priorities; may be preemptive or not. Requires aging to avoid starvation.
+- **Multilevel queue / feedback** – Multiple queues with different priorities/time quanta; processes migrate between queues based on behavior.
+
+| Metric | Description |
+| --- | --- |
+| Throughput | Jobs per unit time |
+| Turnaround time | Completion time − arrival time |
+| Waiting time | Total time spent ready but not running |
+| Response time | Time from request submission to first response |
+
+Schedulers balance CPU-bound vs. I/O-bound workloads, minimize context-switch overhead, and may be tailored for batch, interactive, or real-time systems.

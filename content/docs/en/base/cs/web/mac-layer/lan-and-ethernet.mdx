@@ -1,0 +1,33 @@
+---
+title: LANs and Ethernet
+---
+
+Ethernet (IEEE 802.3) operates at the data-link layer. Early implementations used bus topologies over coax; modern deployments use twisted-pair star topologies with switches but remain logically a broadcast medium.
+
+## MAC Addresses
+
+Each interface has a globally unique 48-bit MAC address stored in ROM. The first 24 bits are the Organizationally Unique Identifier (OUI) assigned by IEEE; the remaining bits are vendor-defined. If a host has multiple NICs it therefore has multiple MAC addresses.
+
+## Frame Format
+
+```
+| Preamble+SFD (8 B) | Dest (6) | Source (6) | Type (2) | Payload (46–1500) | FCS (4) |
+```
+
+- Type values: `0x0800` (IPv4), `0x0806` (ARP), `0x86DD` (IPv6).
+- CSMA/CD (Carrier Sense Multiple Access with Collision Detection) governed half-duplex Ethernet; switched full-duplex Ethernet no longer uses CSMA/CD.
+
+## Extending Ethernet
+
+- **Physical layer** – Repeaters/hubs extend distance but share one collision domain.
+- **Data-link layer** – Bridges/switches isolate collision domains; VLANs tag frames (802.1Q) so a single switch can host multiple broadcast domains.
+
+## Fast / Gigabit / 10G Ethernet
+
+- **10BASE5/10BASE2** – Thick/thin coax buses (500 m / 185 m segments).
+- **100BASE-TX** – 100 Mb/s over twisted pair, star topology, supports half/full duplex.
+- **1000BASE-X/T**, **10GBASE** – Gigabit and 10 Gigabit Ethernet; full-duplex fiber or copper, no CSMA/CD.
+
+## WLAN (IEEE 802.11)
+
+Wi-Fi uses CSMA/CA and typically relies on access points (APs). A Basic Service Set (BSS) contains one AP plus wireless stations. Multiple BSSs are connected through a Distribution System (DS) to form an Extended Service Set (ESS). 802.11 frames include up to four address fields to indicate source, destination, transmitter, and receiver roles.

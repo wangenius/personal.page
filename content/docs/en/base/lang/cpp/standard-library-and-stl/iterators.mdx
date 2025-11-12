@@ -1,0 +1,205 @@
+---
+title : 迭代器
+sidebar_position : 2
+slug : 迭代器
+---
+
+在 STL 中，迭代器（Iterator）用来访问和检查 STL 容器中元素的对象，它的行为模式和指针类似，但是它封装了一些有效性检查，并且提供了统一的访问格式。类似的概念在其他很多高级语言中都存在，如 Python 的 __iter__ 函数，C# 的 IEnumerator。
+
+迭代器实现了抽象的指针（智能指针）功能，它们用于指向容器中的元素，对容器中的元素进行访问和遍历。 
+
+一个孤零零的数据结构，如一个链表或是一个向量。是没有太大用处的。为了使用一个数据结构，我们还需要一些能对其进行基本访问的操作，如添加或删除元素的操作。就像为list或vector提供的那些操作。而且我们很少仅将对象保存在容器中了事，而是需要对它们进行排序打印抽取子集删除元素搜索对象等更复杂的操作。因此，标准库除了提供最常用的容器类型外。还为这些容器提供了最常用的算法。例如，我们可以简单而高效的排序一个entry的vector。后世将所有不重复的vector元素。拷贝到另一个list中。
+
+迭代器听起来比较晦涩，其实迭代器本身可以看作一个数据指针。迭代器主要支持两个运算符：自增 (++) 和解引用（单目 * 运算符），其中自增用来移动迭代器，解引用可以获取或修改它指向的元素。
+
+指向某个 STL 容器 container 中元素的迭代器的类型一般为 container::iterator。
+
+迭代器可以用来遍历容器，例如，下面两个 for 循环的效果是一样的：
+
+```cpp
+vector<int> data(10);
+
+for (int i = 0; i < data.size(); i++)
+  cout << data[i] << endl;  // 使用下标访问元素
+
+for (vector<int>::iterator iter = data.begin(); iter != data.end(); iter++)
+  cout << *iter << endl;  // 使用迭代器访问元素
+// 在C++11后可以使用 auto iter = data.begin() 来简化上述代码
+```
+
+<Callout type="success" title="auto">
+大部分选手都喜欢使用 auto 来代替繁琐的迭代器声明。根据 2021 年 9 月发布的 关于 NOI 系列活动中编程语言使用限制的补充说明，NOI 系列比赛（包括 CSP J/S）在评测时将使用 C++14，这个版本已经支持了 auto 关键字。
+</Callout>
+
+在 STL 的定义中，迭代器根据其支持的操作依次分为以下几类：
+
+InputIterator（输入迭代器）：只要求支持拷贝、自增和解引访问。
+OutputIterator（输出迭代器）：只要求支持拷贝、自增和解引赋值。
+ForwardIterator（向前迭代器）：同时满足 InputIterator 和 OutputIterator 的要求。
+BidirectionalIterator（双向迭代器）：在 ForwardIterator 的基础上支持自减（即反向访问）。
+RandomAccessIterator（随机访问迭代器）：在 BidirectionalIterator 的基础上支持加减运算和比较运算（即随机访问）。
+ContiguousIterator（连续迭代器）：在 RandomAccessIterator 的基础上要求对可解引用的迭代器 `a + n` 满足 `*(a + n) 与 *(std::address_of(*a) + n)` 等价（即连续存储，其中 a 为连续迭代器、n 为整型值）。
+
+ContiguousIterator 于 C++17 中正式引入。
+
+其实这个「分类」并不互斥——一个「类别」是可以包含另一个「类别」的。例如，在要求使用向前迭代器的地方，同样可以使用双向迭代器。
+
+不同的 STL 容器 支持的迭代器类型不同，在使用时需要留意。
+
+指针满足随机访问迭代器的所有要求，可以当作随机访问迭代器使用。
+
+<Callout type="success" title="为什么输入迭代器叫输入迭代器？">
+「输入」指的是「可以从迭代器中获取输入」，而「输出」指的是「可以输出到迭代器」。
+「输入」和「输出」的施动者是程序的其它部分，而不是迭代器自身。
+</Callout>
+
+很多 STL 函数 都使用迭代器作为参数。
+
+可以使用 std::advance(it, n) 将迭代器 it 向后移动 n 步；若 n 为负数，则对应向前移动。迭代器必须满足双向迭代器，否则行为未定义。
+
+在 C++11 以后可以使用 std::next(it) 获得向前迭代器 it 的后继（此时迭代器 it 不变），std::next(it, n) 获得向前迭代器 it 的第 n 个后继。
+
+在 C++11 以后可以使用 std::prev(it) 获得双向迭代器 it 的前驱（此时迭代器 it 不变），std::prev(it, n) 获得双向迭代器 it 的第 n 个前驱。
+
+STL 容器 一般支持从一端或两端开始的访问，以及对 const 修饰符 的支持。例如容器的 begin() 函数可以获得指向容器第一个元素的迭代器，rbegin() 函数可以获得指向容器最后一个元素的反向迭代器，cbegin() 函数可以获得指向容器第一个元素的 const 迭代器，end() 函数可以获得指向容器尾端（「尾端」并不是最后一个元素，可以看作是最后一个元素的后继；「尾端」的前驱是容器里的最后一个元素，其本身不指向任何一个元素）的迭代器。
+
+可在 Iterator library - cppreference.com 查看更多用法。
+
+<Callout type="success" title="支持">
+对于 vector、deque 以及 basic_string 容器类，与它们关联的迭代器类型为随机访问迭代器（RanIt）
+
+对于 list、map/multimap 以及 set/multiset 容器类，与它们关联的迭代器类型为双向迭代器（BidIt）
+
+queue、stack 和 priority_queue 容器类，不支持迭代器！
+</Callout>
+
+对象(类)
+
+```cpp
+void function(vector<Entry>& vec,list<Entry>& lst){
+    sort(vec.begin(),vec.end()); //用 < 确定元素的序
+    unique_copy(vec.begin(),vec.end(),lst.begin());
+};
+```
+这段代码能够正确执行有一个前提: Entry必须定义了小于运算符`<`和相等判定运算符`==`:
+
+```cpp
+bool operator<(const Entry& x, const Entry& y){
+    return x.name < y.name;
+};
+```
+
+标准库算法都描述为元素的序列上的操作. 一个序列有一对迭代器表示, 它们分别指向首元素和尾后位置.
+
+![a](/res/迭代器.png)
+
+lst中元素至少应该vec中不重复元素一样多
+
+如果我们希望将不重复元素存入一个新容器中, 而不是覆盖一个容器中的旧元素:
+
+```cpp
+list<Entry> function(vector<Entry>& vec){
+    list<Entry> res;
+    sort(vec.begin(), vec.end());
+    unique_copy(vec.begin(), vec.end(),back_inserter(res));
+    return res;
+};
+```
+调用back_inserter为res创建了一个迭代器, 这种迭代器能将元素追加到容器的末尾, 在追加过程中可扩展容器空间来容纳新元素.
+
+如果你认为`sort(vec.begin(),vec.end())`这种使用迭代器的代码太冗长, 可以定义容器版本的新方法. 代码就能简化成`sort(vec)`;
+
+## 使用迭代器
+
+对于一个容器, 可获得一些指向有用元素的迭代器, begin()和end()就是最好的例子. 
+
+标准库算法 find() 在一个序列中 查找一个值,返回指向找到元素的迭代器:
+```cpp
+bool has_c(const string& s, char c){
+    return find(s.begin(),s.end(),c) != s.end(); 
+}
+```
+一个更有意思的练习是在字符串中查找一个字符出现的所有位置: 我们可以返回一个string的迭代器vector, 其中保存出现位置的集合. 返回一个vector是很高效的. 因为vector提供了移动语义, 假定希望修改找到的位置, 就应该提供一个非const字符串:
+
+```cpp
+vector<string::iterator> find_all(string& s, char c){
+    vector<string::iterator> res;
+    for(auto p = s.begin(); p != s.end();++p){
+        if(*p == c){
+            res.push_back(p);
+        };
+    };
+    return res;
+}
+```
+
+```cpp title="调用find_all()"
+void use(){
+    string m {"wangenius.com"};
+    for(auto p : find_all(m,'n'))
+        if(*p != 'n')
+            cerr << "a bug!\n";
+};
+```
+迭代器和标准库算法在所有标准库容器上的工作方式都是相同的, 前提是它们适用于该容器. 因此我们可以泛化find_all()
+
+```cpp
+template<typename C, typename V>
+vector<typename C::iterator> find_all(C& c,V v){
+    vector<typename C::iterator> res;
+    for(auto p = c.begin(); p != c.end(); ++p)
+        if(*p == v) res.push_back(p);
+    return res;
+};
+```
+
+\<typename C::iterator> 的typename是有必要的, 它通知编译器C的iterator是一个类型, 而不是某种类型的值. 可以通过Iterator引入一个类型别名来隐藏这些细节.
+
+```cpp
+template<typename T>
+using Iterator = typename T::iterator;
+
+template<typename C, typename V>
+vector<Iterator<C>> find_all(C& c, V v);
+```
+
+## 迭代器
+
+迭代器的本质是什么: 当然任何一种特定的迭代器都是某种类型的对象. 不过,迭代器的类型非常多, 因为每个迭代器都是和某个特定容器类型相关联的, 他需要保存一些必要的信息, 以便完成对容器的某些任务. 因此有多少种容器就有多少种迭代器. 有多少种特殊要求就有多少种迭代器. 例如一个vector迭代器可能就是一个普通指针, 因为指针是一种引用vector元素的非常合理的方式.
+
+或者, 一个vector迭代器也可以实现为一个指向vector(存储空间起始地址)的指针再加上一个offset索引.
+
+采用这种迭代器就能进行范围检查.
+
+一个list迭代器把必须是比某种指向元素的简单指针更加复杂的东西. 因为一个list元素通常不知道它的下一个元素在哪里, 因此一个list迭代器可能是指向一个连接的指针.
+
+所有的迭代器类型的语义以及其操作和命名都是相似的。对任何迭代器使用++运算符。都会得到一个指向下一个元素的迭代器。类似的使用称运算符。会得到迭代器所指向的元素。世界上任何符合这些简单规则的对象都是一个迭代期。迭代器是一个概念。而且用户很少需要知道一个特定迭代器的类型。迭代器都是知道自己的迭代器类型是什么而且能够通过规范的名字。 iterator, const_iterator来正确声明自己的迭代器类型。例如。 List\<entry>::Iterator是list\<entry>的迭代器类型。我们很少需要操心这些类型是如何定义的细节。
+
+## 实现
+
+在STL中，迭代器是作为类模板来实现的（在头文件iterator中定义）
+
+1. 输出迭代器（output iterator，记为：OutIt）
+     1. 可以修改它所指向的容器元素
+     2. 间接访问操作（*）
+     3. ++操作
+
+2. 输入迭代器（input iterator，记为：InIt）
+     1. 只能读取它所指向的容器元素
+     2. 间接访问操作（*）和元素成员间接访问（->）
+     3. ++、==、!=操作。
+
+迭代方式:
+
+1. 前向迭代器（forward iterator，记为：FwdIt）
+     1. 可以读取/修改它所指向的容器元素
+     2. 元素间接访问操作（*）和元素成员间接访问操作（->）
+     3. ++、==、!=操作
+2. 双向迭代器（bidirectional iterator，记为：BidIt）
+     1. 可以读取/修改它所指向的容器元素
+     2. 元素间接访问操作（*）和元素成员间接访问操作（->）
+     3. ++、--、==、!=操作
+3. 随机访问迭代器（random-access iterator，记为：RanIt）
+     1. 可以读取/修改它所指向的容器元素
+     2. 元素间接访问操作（*）、元素成员间接访问操作（->）和下标访问元素操作（\[\]）
+     3. ++、--、+、-、+=、-=、==、!=、\<、>、\<=、>=操作

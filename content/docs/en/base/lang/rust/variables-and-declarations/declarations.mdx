@@ -1,0 +1,100 @@
+---
+title: 声明
+sidebar_position: 1
+slug: 声明
+---
+
+Use the let keyword to declare a variable.
+
+```rust
+fn main() {
+    let name = "wangenius";  // string type
+    let rating_float = 4.5;                 // float type
+    let ismale = true;          // boolean type
+    let icon_char = '♥';                    //unicode character type
+
+    println!("name is:{}",name);
+    println!("rating on 5 is:{}",rating_float);
+    println!("is growing :{}",ismale);
+    println!("icon is:{}",icon_char);
+ }
+```
+
+| size    | signed | unsigned |
+| ------- | ------ | -------- |
+| 8 bit   | i8     | u8       |
+| 16 bit  | i16    | u16      |
+| 32 bit  | i32(default)    | u32      |
+| 64 bit  | i64    | u64      |
+| 128 bit | i128   | u128     |
+| Arch    | isize  | usize    |
+
+大小为 arch 的整数在 x86 计算机上为 32 位，在 x64 计算机上为 64 位。
+
+### 浮点数
+
+```rust
+fn main() {
+   let result = 10.00;        //f64 by default
+   let interest:f32 = 8.35;
+   let cost:f64 = 15000.600;  //double precision
+
+   println!("result value is {}",result);
+   println!("interest is {}",interest);
+   println!("cost is {}",cost);
+}
+```
+
+## 自动类型转换
+Automatic Type Casting
+
+rust 中不允许自动类型转换。考虑以下代码片段。整数值被分配给浮点变量利息。
+
+```rust
+fn main() {
+   let interest:f32 = 8;   // integer assigned to float variable
+   println!("interest is {}",interest);
+}
+```
+```text title="output"
+error[E0308]: mismatched types
+   --> main.rs:2:22
+   |
+ 2 | let interest:f32=8;
+   |    ^ expected f32, found integral variable
+   |
+   = note: expected type `f32`
+      found type `{integer}`
+error: aborting due to previous error(s)
+```
+ 
+## Number Separator
+
+为了方便大数字的可读性，我们可以使用视觉分隔符 _ 下划线来分隔数字。即 50,000 可以写成 50_000 。下面的示例显示了这一点。rust 还支持科学 E 符号，例如 1e6 ， 7.6e-4 。关联的类型是 f64 。
+
+```rust
+fn main() {
+    // Integer addition
+    println!("1 + 2 = {}", 1u32 + 2);
+
+    // Integer subtraction
+    println!("1 - 2 = {}", 1i32 - 2);
+    // Scientific notation
+    println!("1e4 is {}, -2.5e-3 is {}", 1e4, -2.5e-3);
+
+    // Short-circuiting boolean logic
+    println!("true AND false is {}", true && false);
+    println!("true OR false is {}", true || false);
+    println!("NOT true is {}", !true);
+
+    // Bitwise operations
+    println!("0011 AND 0101 is {:04b}", 0b0011u32 & 0b0101);
+    println!("0011 OR 0101 is {:04b}", 0b0011u32 | 0b0101);
+    println!("0011 XOR 0101 is {:04b}", 0b0011u32 ^ 0b0101);
+    println!("1 << 5 is {}", 1u32 << 5);
+    println!("0x80 >> 2 is 0x{:x}", 0x80u32 >> 2);
+
+    // Use underscores to improve readability!
+    println!("One million is written as {}", 1_000_000u32);
+}
+```

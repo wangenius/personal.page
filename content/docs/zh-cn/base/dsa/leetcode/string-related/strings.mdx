@@ -1,0 +1,160 @@
+---
+title : search
+sidebar_position : 2
+slug : search
+---
+
+## 58-最后一个单词的长度
+
+```cpp title="字符串中最后一个字符的长度"
+int lengthOfLastWord(string s) {
+    int pos = s.size() - 1;
+    while (s[pos] == ' ') --pos;
+    int len = 0;
+    while (pos >= 0 && s[pos] != ' ')
+    {
+        ++len;
+        --pos;
+    }
+    return len;
+}
+```
+## 二进制求和
+
+给你两个二进制字符串 a 和 b ，以二进制字符串的形式返回它们的和。
+
+ 
+
+```
+示例 1：
+输入:a = "11", b = "1"
+输出："100"
+
+示例 2：
+输入：a = "1010", b = "1011"
+输出："10101"
+```
+
+```cpp title="二进制求和"
+string addBinary(string a, string b)
+{
+    int pa = a.size() - 1;
+    int pb = b.size() - 1;
+    int size = pb > pa ? b.size() + 1 : a.size() + 1;
+    int pout = size - 1;
+    string out(size,'0');
+    int c = 0;
+    while (pa >= 0 && pb >= 0)
+    {
+        if (a[pa] - '0' + b[pb] - '0' + c == 2)
+        {
+            out[pout] = '0';
+            c = 1;
+        }
+        else if(a[pa] - '0' + b[pb] - '0' + c == 3){
+            out[pout] = '1';
+            c = 1;
+        }
+        else
+        {
+            out[pout] = a[pa] - '0' + b[pb] - '0' + c + '0';
+            c = 0;
+        }
+        --pa, --pb, --pout;
+    }
+
+    while (pa >= 0)
+    {
+        if (a[pa] - '0' + c == 2)
+        {
+            out[pout] = '0';
+            c = 1;
+        }
+        else
+        {
+            out[pout] = a[pa] - '0' + c + '0';
+            c = 0;
+        }
+        --pa, --pout;
+    }
+    while (pb >= 0)
+    {
+        if (b[pb] - '0' + c == 2)
+        {
+            out[pout] = '0';
+            c = 1;
+        }
+        else
+        {
+            out[pout] = b[pb] - '0' + c + '0';
+            c = 0;
+        }
+        --pb, --pout;
+    }
+
+    if(c == 1)
+    {
+        out[0] = '1';
+        return out;
+    }
+    else {
+        return out.substr(1, size - 1);
+    }
+}
+```
+
+## RomanToNumber
+
+```cpp title="Roman to number"
+class Solution {
+public:
+    int romanToInt(string s) {
+        /* 映射关系 */
+        unordered_map<char, int> map = {
+            {'I', 1},
+            {'V', 5},
+            {'X', 10},
+            {'L', 50},
+            {'C', 100},
+            {'D', 500},
+            {'M', 1000}
+        };
+        /* 返回结果值 */
+        int res = 0;
+        /* 遍历字符串 */
+        for (int i = 0; i < s.size(); i++) {
+            /* 如果该位小于下一位 */
+            if (i + 1 < s.size() && map[s[i]] < map[s[i + 1]]) {
+                res -= map[s[i]];
+            } else { 
+                /* 否则+ */
+                res += map[s[i]];
+            }
+        }
+        return res;
+    }
+};
+```
+
+## 找到第一个只出现一次的字符
+
+```cpp
+class Solution {
+public:
+    int firstUniqChar(string s) {
+        //建立索引库
+        //建立一个表,表中遍历s中所有字符->出现个数
+        unordered_map<char, int> m;
+        for (char c : s) {
+            m[c]++;
+        }
+        //遍历字符并查询是否是第一个分开
+        for (int i = 0; i < s.size(); i++) {
+            if (m[s[i]] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+```

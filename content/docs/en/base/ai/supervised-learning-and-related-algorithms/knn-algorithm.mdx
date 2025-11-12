@@ -1,0 +1,13 @@
+---
+title: KNN Algorithm
+sidebar_position: 6
+slug: knn
+---
+
+The k-Nearest Neighbors (kNN) algorithm is a non-parametric method for classification and regression. To classify a query point, kNN:
+
+1. Computes the distance between the query and every labeled point (Euclidean, cosine, etc.).
+2. Finds the `k` closest neighbors.
+3. Predicts the majority label (classification) or the average value (regression).
+
+Because kNN stores the entire dataset, it has zero training cost but high inference cost and is sensitive to the choice of `k`, distance metric, and feature scaling.

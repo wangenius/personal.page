@@ -1,0 +1,23 @@
+---
+title: Disk Partitioning
+---
+
+Linux exposes disks as device files (e.g., `/dev/sda`, `/dev/vda`). Names are assigned in detection order; partitions append numbers (`/dev/sda1`, `/dev/sda2`).
+
+## Partition Tables
+
+### MBR (DOS)
+
+- First sector (512 B) contains the bootloader (446 B) plus a 64 B partition table supporting up to four entries (primary/extended).
+- Extended partitions house logical partitions by chaining additional partition tables.
+- Uses CHS/LBA addressing; limited to 2 TB per disk.
+
+### GPT
+
+- Uses Logical Block Addressing (LBA). LBA 0 holds a protective MBR; LBA 1 stores the GPT header; LBA 2–33 contain partition entries (128 entries by default, each 128 B). A backup header/table resides at the end of the disk.
+- Each entry stores 64-bit start/end LBAs, enabling enormous partitions (up to 8 ZB).
+- No primary/extended distinction; every partition is independent. Requires UEFI or BIOS with GPT support.
+
+## Boot Flow
+
+BIOS/UEFI firmware selects a boot device, loads the MBR/GPT bootloader, which then loads the OS kernel. GPT systems may require a small “BIOS boot” partition for GRUB legacy compatibility.

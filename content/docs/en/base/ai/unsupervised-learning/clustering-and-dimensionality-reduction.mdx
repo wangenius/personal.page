@@ -1,0 +1,26 @@
+---
+title: Clustering and Dimensionality Reduction
+sidebar_position: 7
+slug: clustering-and-dim-reduction
+---
+
+## Clustering Algorithms
+
+### K-means
+
+K-means partitions data into `K` clusters by alternating two steps:
+
+1. Assign each sample to the closest centroid (typically measured with Euclidean distance).
+2. Update each centroid to be the mean of the points assigned to it.
+
+This process repeats until assignments stabilize. K-means is simple and efficient for spherical clusters but struggles with highly non-convex shapes or varying densities.
+
+Other clustering approaches include hierarchical clustering, DBSCAN (density-based), spectral clustering, and Gaussian Mixture Models.
+
+## Dimensionality Reduction
+
+### Principal Component Analysis (PCA)
+
+PCA projects data onto orthogonal axes (principal components) that capture the maximum variance. By keeping only the top components, we preserve most of the information while reducing dimensionality, which helps visualization, noise reduction, and downstream learning efficiency.
+
+Additional techniques: t-SNE and UMAP for nonlinear visualization, autoencoders for learned embeddings, and random projections for fast approximations.

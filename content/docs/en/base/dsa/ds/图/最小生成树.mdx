@@ -1,43 +1,29 @@
 ---
-title : 最小生成树
-sidebar_position : 3
-slug : 最小生成树
+title: Minimum Spanning Tree
+sidebar_position: 3
+slug: mst
 ---
 
-一个带权连通无向图的生成树中边的权值之和最小的那个叫做图的最小生成树`MST`
+Given a connected weighted undirected graph, an MST is a spanning tree with minimum total edge weight.
 
-## 普里姆算法
+## Prim’s Algorithm
 
-`Prim`
-无向图稠密图
+Grow the tree from an arbitrary start vertex:
 
-扩张
+1. Initialize a min-heap keyed by edge weight (or use arrays).
+2. Add the cheapest edge that connects the current tree to an outside vertex.
+3. Repeat until all vertices are included.
 
-```cpp
-vset[node_num];//顶点已经并入生成树
-lowcost[node_num];//当前生成树到剩余各顶点最短边的权值
-```
+Works well on dense graphs (O(n²) with adjacency matrix, O(m log n) with heaps).
 
-## 克鲁斯卡尔算法
-`Kruskal`
-稀疏图并查集
+## Kruskal’s Algorithm
 
-聚集
+Sort edges by weight and process from smallest to largest:
 
-每次查找并查集找出候选边中权值最小的边，并入生成树
+1. Initialize a Disjoint Set Union (DSU) for vertices.
+2. For each edge `(u, v)` in sorted order, add it if `u` and `v` are in different components (no cycle).
+3. Stop when `n-1` edges accepted.
 
-<Callout type="success" title="最小生成树算法的比较">
-最小生成树： 最小生成树来自于无向网。 无向图在边上加上权值就成了无向网。 一个无向图可以有多种不同姿态连接的生成树。 最小生成树就是–各边上权值之和最小的生成树。
+Efficient for sparse graphs (O(m log m)).
 
-普里姆算法(Prim)和克鲁斯卡尔(Kruskal)算法
-
-普里姆算法的基本思想:（简单的说就是一直加点） 取图中任意一个顶点 v 作为生成树的根，之后往生成树上添加新的顶点 w。添加顶点w的条件为：w 和已在生成树上的顶点v 之间必定存在一条边，并且该边的权值在所有连通顶点 v 和 w 之间的边中取值最小。之后继续往生成树上添加顶点，直至生成树上含有 `n-1` 个顶点为止。
-
-克鲁斯卡尔算法的基本思想：（简单的说就是找不围成圈的最小的边）
-
-考虑问题的出发点: 为使生成树上边的权值之和达到最小，则应使生成树中每一条边的权值尽可能地小。
-
-具体做法: 先构造一个只含 n 个顶点的子图 SG，然后从权值最小的边开始，若它的添加不使SG 中产生回路，则在 SG 上加上这条边，如此重复，直至加上 `n-1` 条边为止。
-</Callout>
-
-当带权连通图的任意一个环中所包含的权值均不相同时最小生成树唯一
+If all edge weights in every cycle are distinct, the MST is unique.

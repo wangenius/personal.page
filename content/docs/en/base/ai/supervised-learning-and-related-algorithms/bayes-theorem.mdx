@@ -1,0 +1,19 @@
+---
+title: Bayes' Theorem
+sidebar_position: 2
+slug: bayes-theorem
+---
+
+Bayes’ theorem relates conditional probabilities of two events `A` and `B`:
+
+```math
+P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)}
+```
+
+- `P(A)` and `P(B)` are the prior probabilities of events `A` and `B`.
+- `P(A|B)` is the posterior probability of `A` after observing `B`.
+- `P(B|A)` is sometimes called the likelihood of observing `B` if `A` is true.
+
+## Naïve Bayes
+
+Naïve Bayes classifiers assume feature independence given the label. Despite the simplifying assumption, they are fast, robust to irrelevant features, and perform well on text classification, spam filtering, and sentiment analysis.

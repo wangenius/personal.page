@@ -1,0 +1,58 @@
+---
+title: Overview
+sidebar_position: 1
+slug: overview
+---
+
+[Software engineering](https://www.w3cschool.cn/software_engineering/software_engineering-koq53l04.html) applies scientific knowledge and engineering principles to the definition, development, and maintenance of software. Core goals include low development cost, complete functionality, good performance, portability, manageable maintenance costs, on-time delivery, and high reliability.
+
+The term *software crisis* was coined at the 1968 NATO conference to describe the difficulty of delivering high-quality software efficiently. Dijkstra famously remarked in his 1972 Turing Award lecture that “programming is straightforward if there are no machines”—highlighting how rapidly improving hardware exposed weaknesses in software practices. Software engineering emerged to close this gap: applying systematic, disciplined, and measurable methods to software projects (IEEE definition).
+
+Key activities:
+
+1. Feasibility study
+2. Requirements analysis
+3. High-level design
+4. Detailed design
+5. Implementation
+6. Maintenance
+
+<Callout type="success" title="Three Pillars">
+1. **Methods** – Technical techniques for accomplishing development tasks.
+2. **Tools** – Automated or semi-automated environments that support the methods.
+3. **Processes** – The task framework required to deliver high-quality software.
+</Callout>
+
+## Software Crisis
+
+Symptoms include underestimated schedules, budget overruns, poor quality, limited reliability, deficient documentation, and low productivity compared with hardware advances. Causes include the intangible nature of software, misconceptions about development, and inadequate methods for building and maintaining systems.
+
+## Software Development Process
+
+A software process (SDLC) is the roadmap for turning requirements into running systems: requirements analysis, design, coding, testing, delivery, and maintenance. Specific development models (waterfall, iterative, agile, DevOps) refine this general flow and provide guidance at each stage.
+
+## High Cohesion and Low Coupling
+
+- **Coupling** measures how strongly modules depend on each other. Lower coupling means modules can change independently.
+- **Cohesion** measures how focused a module is on a single task. Higher cohesion implies clearer responsibilities.
+
+Types of coupling: data, stamp, control, external, content. Types of cohesion: coincidental, logical, temporal, procedural, communicational, sequential, functional.
+
+### Reducing Coupling
+
+- Favor interfaces/abstractions over inheritance.
+- Keep modules focused on single responsibilities.
+- Avoid duplicating definitions; minimize global state.
+- Restrict `public` APIs; encapsulate with `private` members.
+- Leverage design patterns (e.g., MVC) to separate concerns.
+- Avoid hard-coded dependencies and direct SQL when possible.
+
+### Increasing Cohesion
+
+- Expose only minimal interfaces.
+- Ensure internal changes do not leak outside the module.
+- Removing a module should only affect components that explicitly depend on it.
+
+## Structured Design
+
+Structured design decomposes a system top-down from overall architecture to detailed components. Emphasis on modularization, stepwise refinement, and separating concerns from abstract to concrete levels.

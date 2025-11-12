@@ -1,0 +1,19 @@
+---
+title: Pivot Index
+sidebar_position: 4
+slug: pivot-index
+---
+
+Find an index where the sum to its left equals the sum to its right. Compute total sum, iterate maintaining prefix sum, and check `prefix == total - prefix - nums[i]`.
+
+```cpp
+int pivotIndex(vector<int>& nums) {
+    int total = accumulate(nums.begin(), nums.end(), 0);
+    int prefix = 0;
+    for (int i = 0; i < nums.size(); ++i) {
+        if (prefix == total - prefix - nums[i]) return i;
+        prefix += nums[i];
+    }
+    return -1;
+}
+```

@@ -1,0 +1,56 @@
+---
+title: Physical Memory Organization
+sidebar_position: 1
+slug: memory-physical
+---
+
+## Endianness and Alignment
+
+- **Little endian** – Least significant byte stored at the lowest address.
+- **Big endian** – Most significant byte stored at the lowest address.
+
+Many architectures require words/halfwords to be aligned (addresses multiple of 4 or 2). Structures are padded so that each field starts at an address that’s a multiple of its alignment requirement, and the overall struct size is a multiple of the largest member’s alignment.
+
+## Memory Technologies
+
+| Category | Type | Notes |
+| --- | --- | --- |
+| Random access | DRAM | Main memory (needs refresh, high density). |
+|  | SRAM | Used for caches (fast, no refresh, expensive). |
+|  | SDRAM/DDR | Synchronous DRAM variants. |
+| Read-only | MROM, PROM, EPROM, EEPROM, Flash | Non-volatile storage ranging from factory-programmed to electrically erasable. |
+| Sequential | SSD (flash-based), HDD/optical (CD/DVD), tape | Accessed in large blocks or sequential streams. |
+
+**RAM** allows uniform access time regardless of address. **ROM** retains data without power and offers higher density and simpler circuits.
+
+### Associative (Content-Addressable) Memory
+
+Combines content-based lookup with address-based lookup; used in TLBs and cache tag arrays.
+
+## DRAM Organization
+
+A DRAM chip contains a matrix of cells (one transistor + capacitor per bit). Cells sharing the same row/column form a **storage array**. Key signals:
+
+- `RAS` (row address strobe) and `CAS` (column address strobe) – enable row/column decoders.
+- `CS` – chip select; `WE` – read/write control.
+
+To reduce pin count, DRAM multiplexes address pins: row address is presented first with `RAS`, then column address with `CAS`.
+
+### Refresh
+
+Cell charge decays and must be refreshed (commonly every 2 ms). Strategies:
+
+1. **Burst refresh** – Pause normal accesses and refresh all rows (“dead time”).
+2. **Distributed refresh** – Refresh one row during each access cycle.
+3. **CAS-before-RAS / asynchronous refresh** – Refresh one row every ~15.6 µs (for 128 rows) while interleaving with normal operations.
+
+### Read/Write Cycle
+
+1. Present `WE`/command.
+2. Load row address, assert `RAS`.
+3. Load column address, assert `CAS`.
+4. Transfer data via the I/O circuitry.
+
+## SRAM
+
+Static RAM cells use six transistors (bistable latch). No refresh is needed, so SRAM is faster and ideal for caches, but density is lower compared with DRAM.

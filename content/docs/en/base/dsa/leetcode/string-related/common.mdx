@@ -1,0 +1,21 @@
+---
+title: Longest Common Prefix
+sidebar_position: 1
+slug: longest-common-prefix
+---
+
+Horizontal scanning: assume answer is first string, shrink while others don’t have it as prefix.
+
+```cpp
+string longestCommonPrefix(vector<string>& strs) {
+    string prefix = strs[0];
+    for (int i = 1; i < strs.size(); ++i) {
+        while (strs[i].find(prefix) != 0)
+            prefix.pop_back();
+        if (prefix.empty()) break;
+    }
+    return prefix;
+}
+```
+
+Other approaches: vertical scanning, divide and conquer, trie.

@@ -1,0 +1,23 @@
+---
+title: Reverse Linked List
+sidebar_position: 1
+slug: reverse-list
+---
+
+Iterative two-pointer reversal:
+
+```cpp
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev = nullptr;
+    ListNode* cur = head;
+    while (cur) {
+        ListNode* nxt = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = nxt;
+    }
+    return prev;
+}
+```
+
+Maintain `prev` (already reversed) and `cur` (current node); flip pointers while advancing. This runs in O(n) time and O(1) space.

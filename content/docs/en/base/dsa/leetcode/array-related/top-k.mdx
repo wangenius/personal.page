@@ -1,0 +1,31 @@
+---
+title: Top K in Data Stream
+sidebar_position: 1
+slug: top-k
+---
+
+Design `KthLargest` to track the k-th largest value in a stream.
+
+Approach:
+
+- Maintain a min-heap (priority queue) of size k.
+- Push every incoming value; if heap size exceeds k, pop the smallest.
+- The heap top is the current k-th largest.
+
+```cpp
+class KthLargest {
+    int k;
+    priority_queue<int, vector<int>, greater<int>> pq;
+public:
+    KthLargest(int k_, vector<int>& nums) : k(k_) {
+        for (int x : nums) add(x);
+    }
+    int add(int val) {
+        pq.push(val);
+        if ((int)pq.size() > k) pq.pop();
+        return pq.top();
+    }
+};
+```
+
+`multiset` of size k offers identical complexity but uses balanced BST instead of heap.

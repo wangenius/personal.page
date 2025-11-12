@@ -1,0 +1,31 @@
+---
+title: Memory Address Space
+sidebar_position: 1
+slug: address-space
+---
+
+Physical memory is finite (e.g., a 16 GB DIMM), but programs can address much larger virtual spaces thanks to OS memory virtualization. Most pointers in user programs refer to **virtual addresses** that are translated to physical memory on demand.
+
+## Virtual Memory Basics
+
+- **Physical address space** – Range `[0, N-1]` corresponding to actual DRAM. 
+- **Virtual address space** – Range `[0, M-1]` presented to each process (e.g., 4 GB for 32-bit systems).
+- Virtual memory relies on paging, page tables, and hardware support (MMU). When a page is not present, the CPU raises a page fault; the OS loads the page from disk and resumes execution.
+
+Virtual memory extends capacity using disk as backing store. Effective capacity is limited by either the CPU’s address width or the available secondary storage, whichever is smaller.
+
+## Process Address Layout (Linux example)
+
+| Segment | Contents | Allocation | Growth | Access |
+| --- | --- | --- | --- | --- |
+| Code (text) | Instructions, read-only data | Static | Low → high | Read-only |
+| Data | Initialized globals/static vars | Static | Low → high | R/W |
+| BSS | Zero-initialized globals/statics | Static | Low → high | R/W |
+| Heap | `malloc`/`new` allocations | Dynamic | Low → high | R/W |
+| Mmap region | Shared libraries, mapped files | Dynamic | Low → high | R/W |
+| Stack | Locals, return addresses | Dynamic | High → low | R/W |
+| Kernel space | Kernel code/data | Mixed | -- | Kernel-only |
+
+## Address Translation
+
+The Memory Management Unit (MMU) converts virtual addresses to physical addresses (and potentially cache locations). Logical addresses (compiler-generated) are mapped to physical addresses via paging/segmentation. With caches, the physical address is then checked in the cache; on a hit the cache supplies data, otherwise DRAM is accessed.

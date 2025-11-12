@@ -1,0 +1,36 @@
+---
+title: Buses
+---
+
+A bus is a time-shared communication path. A 64-bit system can transfer one 64-bit word per bus cycle.
+
+## Topologies
+
+1. **Single bus** – CPU, memory, and I/O share one set of address/data/control lines. Simple and cheap, but limited bandwidth and no concurrent transfers.
+2. **Dual bus** – Separates the memory bus from the I/O bus; low-speed devices connect through an I/O channel. Memory and I/O traffic are isolated but data still flows through the CPU/channels.
+3. **Triple bus** – Adds a dedicated DMA/high-speed bus so I/O devices can access memory directly. Improves throughput but requires arbitration so that only one master accesses memory at a time.
+
+Local buses (VESA, PCI, AGP) offload high-speed peripherals to save main-bus bandwidth.
+
+## Categories
+
+- **On-chip bus** – Internal CPU interconnect.
+- **System bus** – Connects CPU, memory, and I/O (data, address, control lines).
+- **I/O buses** – USB, SATA (serial), PCI/PCIe (parallel/serial), etc.
+- **Communication buses** – Link multiple computers.
+
+## Bus Transaction
+
+1. **Request** – Master (CPU/DMA) asks for control.
+2. **Arbitration** – Bus arbiter grants control.
+3. **Address/Command** – Master specifies target slave and operation.
+4. **Data Transfer** – Usually one word per beat, or burst transfer for contiguous blocks.
+5. **Release** – Master relinquishes the bus.
+
+## Timing
+
+- **Synchronous** – Fixed-length bus cycles driven by a common clock (fast but requires uniform device speeds).
+- **Asynchronous** – Handshake signals coordinate transfers; works with diverse devices but adds latency.
+  - *Non-interlocked*, *semi-interlocked*, *fully interlocked* handshakes describe how request/acknowledge signals are cleared.
+
+Burst transfers send the start address once and then stream consecutive data words without releasing the bus until the burst completes.

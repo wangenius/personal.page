@@ -1,0 +1,282 @@
+---
+title: 二叉树
+sidebar_position: 1
+slug: 二叉树
+---
+
+<Callout type="success" title="本文为什么不考虑树和森林">
+因为树和森林可以转化为二叉树, 在B树之前, 所以只研究二叉树. 具体转化过程比较简单, 不在赘述.
+</Callout>
+
+> 树是简单的图.
+
+一个没有固定根结点的树称为无根树。等价的形式化定义：
+1. 有 n 个结点，n-1 条边的连通无向图
+2. 无向无环的连通图
+3. 任意两个结点之间有且仅有一条简单路径的无向图
+4. 任何边均为桥的连通图
+5. 没有圈，且在任意不同两点间添加一条边之后所得图含唯一的一个圈的图
+
+在无根树的基础上，指定一个结点称为根，则形成一棵有根树。有根树在很多时候仍以无向图表示，只是规定了结点之间的上下级关系，详见下文。
+
+#### 适用于无根树和有根树
+
+* 森林（forest）：每个连通分量（连通块）都是树的图。按照定义，一棵树也是森林。
+* 生成树（spanning tree）：一个连通无向图的生成子图，同时要求是树。也即在图的边集中选择 n - 1 条，将所有顶点连通。
+* 无根树的叶结点（leaf node）：度数不超过 1 的结点。
+
+树的存储结构
+1. 顺序存储结构: 双亲表示法
+2. 链式存储结构: 常规表示方法
+
+#### 只适用于有根树
+
+- 父亲（parent node）：对于除根以外的每个结点，定义为从该结点到根路径上的第二个结点。根结点没有父结点。
+- 祖先（ancestor）：一个结点到根结点的路径上，除了它本身外的结点。根结点的祖先集合为空。
+- 子结点（child node）：如果 u 是 v 的父亲，那么 v 是 u 的子结点。子结点的顺序一般不加以区分，二叉树是一个例外。
+- 结点的深度（depth）：到根结点的路径上的边数。
+- 树的高度（height）：所有结点的深度的最大值。
+- 兄弟（sibling）：同一个父亲的多个子结点互为兄弟。
+- 后代（descendant）：子结点和子结点的后代。或者理解成：如果 u 是 v 的祖先，那么 v 是 u 的后代。
+- 子树（subtree）：删掉与父亲相连的边后，该结点所在的子图。
+
+## 存储方式
+
+### 只记录父结点
+
+用一个数组 parent[N] 记录每个结点的父亲结点。
+
+这种方式可以获得的信息较少，不便于进行自顶向下的遍历。常用于自底向上的递推问题中。
+
+### 邻接表
+
+对于无根树：为每个结点开辟一个线性列表，记录所有与之相连的结点。
+
+```cpp
+std::vector<int> adj[N];
+```
+
+对于有根树：
+方法一：若给定的是无向图，则仍可以上述形式存储。下文将介绍如何区分结点的上下关系。
+方法二：若输入数据能够确保结点的上下关系，则可以利用这个信息。为每个结点开辟一个线性列表，记录其所有子结点；若有需要，还可在另一个数组中记录其父结点。
+
+```cpp
+std::vector<int> children[N];
+int parent[N];
+```
+
+当然也可以用其他方式（如链表）替代 std::vector。
+
+### 左孩子右兄弟法
+
+过程
+对于有根树，存在一种简单的表示方法。
+
+首先，给每个结点的所有子结点任意确定一个顺序。
+
+此后为每个结点记录两个值：其 第一个子结点 child[u] 和其 下一个兄弟结点 sib[u]。若没有子结点，则 child[u] 为空；若该结点是其父结点的最后一个子结点，则 sib[u] 为空。
+
+实现
+遍历一个结点的所有子结点可由如下方式实现。
+
+```cpp
+int v = child[u];  // 从第一个子结点开始
+while (v != EMPTY_NODE) {
+  // ...
+  // 处理子结点 v
+  // ...
+  v = sib[v];  // 转至下一个子结点，即 v 的一个兄弟
+}
+```
+
+也可简写为以下形式。
+
+```cpp
+for (int v = child[u]; v != EMPTY_NODE; v = sib[v]) {
+  // ...
+  // 处理子结点 v
+  // ...
+}
+```
+
+```cpp title="简单表示"
+int parent[N];
+int child[N][2];
+```
+
+```cpp
+class TreeNode {
+    private:
+    int key;
+    TreeNode* lchild = nullptr;
+    TreeNode* rchild = nullptr;
+    public:
+    TreeNode(int k):key{k}{}
+};
+
+typedef TreeNode* Tree;
+```
+
+几个基本的关系:
+
+```cpp
+Tree& tree = new Tree();
+assert(tree.branches.length == tree.nodes.length - 1);
+assert(tree.layers(i).nodes.length == 2 ** (i - 1));
+assert(tree.layers(0,n).nodes.length == 2 ** n - 1);
+assert(tree.layers.length == floor(log(tree.nodes.length))+1);
+assert(tree.layers.length == ceil(log(tree.nodes.length + 1)));
+```
+
+<Callout type="success" title="补充">
+{/* 满二叉树的高度$h(n) =\dfrac{ C_{ 2n}^n }{n+1}$ */}
+</Callout>
+
+```cpp title="二叉树的结构"
+struct TreeNode {
+    int val;          // 节点值
+    TreeNode *left;   // 左子节点指针
+    TreeNode *right;  // 右子节点指针
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+```
+
+## 遍历
+
+### 递归算法
+
+```cpp title="先序遍历"
+void preorder(TreeNode *root){
+    if (root == nullptr)
+        return;
+    vec.push_back(root->val);
+    preOrder(root->left);
+    preOrder(root->right);
+}
+```
+
+```cpp title="中序遍历"
+void inOrder(TreeNode *root) {
+    if (root == nullptr)
+        return;
+    inOrder(root->left);
+    vec.push_back(root->val);
+    inOrder(root->right);
+}
+```
+
+```cpp title="后序遍历"
+void postOrder(TreeNode *root) {
+    if (root == nullptr)
+        return;
+    postOrder(root->left);
+    postOrder(root->right);
+    vec.push_back(root->val);
+}
+```
+
+```cpp title="层次遍历: 辅助队列,出队时访问,分别将左右子树入队."
+vector<int> levelOrder(TreeNode *root) {
+    // 初始化队列，加入根节点
+    queue<TreeNode *> queue;
+    queue.push(root);
+    // 初始化一个列表，用于保存遍历序列
+    vector<int> vec;
+    while (!queue.empty()) {
+        TreeNode *node = queue.front();
+        queue.pop();              // 队列出队
+        vec.push_back(node->val); // 保存节点值
+        if (node->left != nullptr)
+            queue.push(node->left); // 左子节点入队
+        if (node->right != nullptr)
+            queue.push(node->right); // 右子节点入队
+    }
+    return vec;
+}
+```
+
+### 非递归算法
+
+<Callout type="success" title="口诀">
+前序栈辅助, while判非空, 出栈再访问, 入栈右左树.
+中序栈指针, 三步两循环. 所有左入栈, 再指右子树.
+</Callout>
+
+#### 前序遍历
+
+前序遍历方法:
+1. 初始化结果容器: 这里使用`vector`
+2. 参数安全性校验: 防止非法参数进入. 这里主要是防止传入空指针
+3. 初始化辅助容器: 这里使用前序栈. 并将其初始化
+4. 条件判断和执行: 条件是栈不空
+    1. 出栈访问
+    2. 右节点入栈
+    3. 左节点入栈
+
+```cpp title="前序遍历"
+vector<int> preorder(TreeNode *root){
+  vector<int> res; //结果容器
+  if(!root) return res; //安全性判断
+  stack<TreeNode *> stack; //前序栈
+  stack.push(root); // 初始化根节点入栈
+  while(!stack.empty()){
+    TreeNode *temp = stack.top();
+    res.push_back(temp->val);
+    stack.pop();
+    if(temp -> right) stack.push(temp -> right);
+    if(temp -> left) stack.push(temp -> left);
+  };
+  return res;
+}
+```
+
+#### 中序遍历
+
+中序遍历特点:
+1. 辅助结构: 一栈一指针
+2. 左节点入栈,右节点不入栈
+
+```cpp
+while(栈中有节点 || 当前指针指向有效节点){
+    1. 当前节点和它的所有左节点入栈
+    2. 访问栈顶节点
+    3. 指向右节点
+}
+```
+
+```cpp title="中序遍历"
+void inorder(TreeNode* root) {
+    vector<int> res;
+    if(!root) return res;
+    // 辅助结构： 一栈一指针
+    stack<TreeNode*> st; 
+    TreeNode* current = root;
+    while (current || !st.empty()) {
+        // 将当前节点的左子树全部入栈
+        while (current) {
+            st.push(current);
+            current = current->left;
+        }
+        // 访问当前节点
+        current = st.top();
+        st.pop();
+        res.push_back(current->val);
+        // 访问结束
+        // 指针指向刚刚访问过节点的右节点
+        current = current->right;
+    }
+}
+
+```
+
+```cpp title="遍历节点个数"
+int countNodes(TreeNode* root) {
+	if(root == null) return 0;
+	int left = countNodes(root -> left);
+	int right = countNodes(root -> right);
+	return left+right+1;
+}
+```
+
+## 线索化
+线索二叉树的 `node` 结构体中多了一个 `tag` 位. `tag = 1`,指向前驱后继，`tag = 0`,指向左右子树

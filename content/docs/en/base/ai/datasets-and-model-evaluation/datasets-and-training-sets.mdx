@@ -1,0 +1,29 @@
+---
+title: Datasets and Training Sets
+sidebar_position: 3
+slug: datasets-and-training
+---
+
+A dataset is a collection of feature values paired with target values. Classic examples include MNIST (handwritten digits), ImageNet (general-purpose vision), PASCAL VOC, and COCO (recognition/segmentation).
+
+## Data Basics
+
+Each dataset consists of samples (examples). We usually assume samples are independently and identically distributed (i.i.d.). Every sample is described by a list of attributes known as **features** (or covariates). The model reads those features to predict a special attribute called the **label** (or target).
+
+In image tasks, every picture is a sample whose features are the ordered pixel values. A color image uses three numbers per spatial location (red, green, blue). In a medical dataset, features might include age, vital signs, and diagnoses, and the label could be whether the patient survives.
+
+When all samples share the same number of feature types, we can represent them as fixed-length vectors. The length is the **dimensionality** of the dataset, which makes it easy to reason about large collections.
+
+Not all data fit nicely into fixed-length vectors. Images from the open web come in diverse resolutions; forcing them into a fixed size may shrink or stretch important details. Text data vary even more: an e-commerce review could be as short as “Great!” or several paragraphs long. One of deep learning’s strengths is its ability to handle variable-length inputs.
+
+In general, more (and better) data make the problem easier. Large datasets enable powerful models that rely less on strong prior assumptions. The availability of big data is a major reason deep learning took off. Without large datasets, many deep architectures perform no better than traditional methods.
+
+Quantity alone is not enough—we also need **reliable** data. If the data are noisy or if the features fail to relate to the prediction target, the model will not perform well. “Garbage in, garbage out” still applies. Worse, poor predictions can amplify harm in sensitive applications such as risk modeling, hiring, or credit scoring. A common issue is imbalance: if a medical dataset contains no examples from certain groups, a classifier can fail catastrophically when encountering those demographics. Similarly, training a résumé screener on historical hiring decisions might encode past bias and automate discrimination. Always audit datasets for coverage and fairness.
+
+## GANs and Data Augmentation
+
+Generative Adversarial Networks (GANs) can create synthetic samples that resemble real data, which helps augment training sets or explore rare scenarios. A generator produces candidates while a discriminator judges whether they look authentic, driving both models to improve.
+
+## Transformer-Era Vision Models
+
+Transformer-style architectures, once exclusive to NLP, now compete with or surpass CNNs in many vision benchmarks. Vision Transformers (ViT), hybrid CNN/Transformer backbones, and large multimodal models rely on massive datasets plus self-supervised pretraining to deliver state-of-the-art results.

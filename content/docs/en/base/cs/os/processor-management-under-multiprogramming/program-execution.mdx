@@ -1,0 +1,26 @@
+---
+title: Program Execution
+sidebar_position: 1
+slug: program-execution
+---
+
+Compilation pipeline:
+
+1. **Preprocessing** – Macro expansion, header inclusion, comment removal.
+2. **Compilation** – Translate to assembly.
+3. **Assembly** – Produce object files (`.o`/`.obj`).
+4. **Linking** – Combine objects and libraries into an executable (static linking pre-combines everything; dynamic linking resolves symbols at load or run time).
+
+Loading places the executable into memory and performs address relocation (absolute, static, or dynamic). Dynamic relocation relies on hardware (MMU) to map logical to physical addresses at runtime.
+
+## Processes and Threads
+
+- A **process** is an executing program with its own resources (address space, open files, PCB). The PCB stores IDs, register state, scheduling info, and resource bookkeeping.
+- A **thread** is the smallest schedulable unit (PC, registers, stack). Threads within the same process share the address space/resources and reduce context-switch overhead.
+
+Thread implementations:
+
+- **Kernel-level threads (KLT)** – Managed by the OS; each can be scheduled on a different CPU/core. Blocking one thread does not block the process but incurs kernel overhead.
+- **User-level threads (ULT)** – Managed in user space; fast to switch but if one thread blocks in a system call, the entire process blocks.
+- **Hybrid (M:N)** – Maps multiple user threads onto a smaller number of kernel threads.
+- **Hardware threads (SMT/Hyper-Threading)** – Architectural support exposing multiple logical CPUs per core.

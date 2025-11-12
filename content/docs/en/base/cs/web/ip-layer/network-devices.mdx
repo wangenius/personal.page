@@ -1,0 +1,38 @@
+---
+title: Network Devices
+---
+
+Network equipment amplifies and forwards signals or interconnects hosts. Some devices merely handle electrical signals, while others make forwarding decisions.
+
+## Adapters / NICs
+
+Network Interface Cards (NICs) connect a computer to the LAN, implement CSMA/CD, and operate at the data-link layer. They include a CPU plus RAM (for buffering) and ROM (for the MAC address and firmware). Responsibilities:
+
+1. Convert between parallel data on the system bus and serial data on the wire.
+2. Buffer frames to reconcile bus speed and line speed.
+3. Fetch data from memory when the driver requests transmission and raise interrupts upon frame reception.
+
+Because a shared bus delivers every frame to every NIC, Ethernet behaves like a broadcast medium.
+
+## Hubs
+
+Early twisted-pair Ethernet adopted a star topology with a hub at the center. Logically it was still a bus network—only one station could transmit at a time using CSMA/CD.
+
+Characteristics:
+
+- Operates at the physical layer and simply regenerates bits.
+- Implements adaptive echo cancellation so transmitted signals do not interfere with received ones.
+- Amplifies and retimes each bit before forwarding.
+
+## Switches
+
+Ethernet switches are essentially multiport bridges. A bridge forwards/filters frames based on destination MAC addresses, connecting multiple LAN segments into a larger network while isolating collision domains.
+
+Switch properties:
+
+1. Each port connects to a single host or another switch, typically operating in full-duplex mode.
+2. Multiple port pairs can communicate simultaneously, giving each host dedicated bandwidth.
+3. Every port forms its own collision domain, so an `N`-port switch provides `N` collision domains.
+4. Buffers frames and forwards them via specialized hardware for low latency.
+5. Plug-and-play: builds its forwarding (CAM) table automatically through MAC learning.
+6. Supports mixed port speeds and eliminates the need for CSMA/CD.
