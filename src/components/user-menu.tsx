@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { TbLogin, TbLogout, TbUser } from "react-icons/tb";
+import { TbLogout, TbUser } from "react-icons/tb";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
