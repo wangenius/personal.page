@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -199,7 +199,7 @@ const computeFallbackExpiration = (
   return formatExpirationDate(fallback.toISOString(), locale);
 };
 
-export default function SubscriptionPage() {
+function SubscriptionPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const statusParam = searchParams.get("status");
@@ -442,5 +442,13 @@ export default function SubscriptionPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function SubscriptionPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center px-4 py-12" />}>
+      <SubscriptionPageContent />
+    </Suspense>
   );
 }
