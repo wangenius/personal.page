@@ -1,19 +1,14 @@
 import "@/app/global.css";
 import "katex/dist/katex.css";
 import { RootProvider } from "fumadocs-ui/provider";
-import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 import { GlobalLayoutWrapper } from "@/components/global-layout-wrapper";
 import { LanguageProvider } from "@/components/language-provider";
 import { DEFAULT_DOC_LANGUAGE, docLocaleItems } from "@/lib/source";
 
-const inter = Inter({
-  subsets: ["latin"],
-});
-
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={inter.className} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icon.png" />

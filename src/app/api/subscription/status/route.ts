@@ -3,11 +3,11 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import {
   getLatestSubscription,
-  isSubscriptionStatusActive,
+  isSubscriptionStatusActive
 } from "@/lib/subscription";
 
 export async function GET() {
-  const sessionHeaders = headers();
+  const sessionHeaders = await headers();
   const userSession = await auth.api.getSession({ headers: sessionHeaders });
 
   if (!userSession) {

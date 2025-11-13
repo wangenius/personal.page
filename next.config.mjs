@@ -3,7 +3,6 @@ import path from "path";
 
 const withMDX = createMDX();
 
-/** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   allowedDevOrigins: ["127.0.0.1", "local-origin.dev", "*.local-origin.dev"],

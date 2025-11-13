@@ -15,12 +15,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { TbLogout, TbUser } from "react-icons/tb";
 import { Badge } from "@/components/ui/badge";
-import { SubscriptionStatusResponse } from "@/lib/subscription";
+import {
+  SubscriptionStatusDto,
+  SubscriptionStatusResponse,
+} from "@/lib/subscription";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] =
+    useState<SubscriptionStatusDto | null>(null);
 
   useEffect(() => {
     setImageUrl(session?.user.image || undefined);
@@ -41,7 +45,7 @@ export function UserMenu() {
     let isMounted = true;
 
     if (!session) {
-      setIsSubscribed(false);
+      setSubscriptionStatus(null);
       return () => {
         isMounted = false;
       };
@@ -56,11 +60,11 @@ export function UserMenu() {
       })
       .then((payload) => {
         if (!isMounted) return;
-        setIsSubscribed(Boolean(payload?.subscription?.isActive));
+        setSubscriptionStatus(payload?.subscription ?? null);
       })
       .catch(() => {
         if (!isMounted) return;
-        setIsSubscribed(false);
+        setSubscriptionStatus(null);
       });
 
     return () => {
@@ -101,7 +105,7 @@ export function UserMenu() {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        {isSubscribed && (
+        {subscriptionStatus?.isActive && (
           <Badge
             variant="outline"
             className="text-[10px] uppercase tracking-widest"

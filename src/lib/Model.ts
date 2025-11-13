@@ -6,4 +6,4 @@ export const openai = createXai({
 });
 
 export const BASE_MODEL = openai("grok-4-fast-reasoning");
-export const MAIN_MODEL = openai("grok-4-fast-non-reasoning");
+export const MAIN_MODEL = openai("kimi-k2-0905-preview");

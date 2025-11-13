@@ -75,6 +75,9 @@ export type SubscriptionRecord = {
   status: string;
   expiresAt: Date | null;
   createdAt: Date;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  stripeCheckoutSessionId: string;
 };
 
 export async function getLatestSubscription(
@@ -86,6 +89,9 @@ export async function getLatestSubscription(
       status: subscriptionTable.status,
       expiresAt: subscriptionTable.expiresAt,
       createdAt: subscriptionTable.createdAt,
+      stripeCustomerId: subscriptionTable.stripeCustomerId,
+      stripeSubscriptionId: subscriptionTable.stripeSubscriptionId,
+      stripeCheckoutSessionId: subscriptionTable.stripeCheckoutSessionId,
     })
     .from(subscriptionTable)
     .where(eq(subscriptionTable.userId, userId))
@@ -107,6 +113,9 @@ export async function getLatestSubscription(
     status: record.status,
     expiresAt: record.expiresAt,
     createdAt: record.createdAt,
+    stripeCustomerId: record.stripeCustomerId,
+    stripeSubscriptionId: record.stripeSubscriptionId,
+    stripeCheckoutSessionId: record.stripeCheckoutSessionId,
   };
 }
 

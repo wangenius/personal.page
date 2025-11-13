@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, Zap, Minus } from "lucide-react";
 import Link from "next/link";
@@ -69,6 +76,31 @@ const formatExpirationDate = (value?: string | null) => {
   } catch {
     return null;
   }
+};
+
+const computeFallbackExpiration = (
+  plan?: PlanKey,
+  createdAt?: string | null
+) => {
+  if (!plan || plan === "lifetime" || !createdAt) {
+    return null;
+  }
+
+  const parsed = new Date(createdAt);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  const fallback = new Date(parsed);
+  if (plan === "monthly") {
+    fallback.setMonth(fallback.getMonth() + 1);
+  } else if (plan === "yearly") {
+    fallback.setFullYear(fallback.getFullYear() + 1);
+  } else {
+    return null;
+  }
+
+  return zhDateFormatter.format(fallback);
 };
 
 const plans: SubscriptionPlan[] = [
@@ -175,7 +207,9 @@ export default function SubscriptionPage() {
   const sessionIdParam = searchParams.get("session_id");
   const { data: session, isPending } = useSession();
   const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
-  const [processedSessionId, setProcessedSessionId] = useState<string | null>(null);
+  const [processedSessionId, setProcessedSessionId] = useState<string | null>(
+    null
+  );
   const [subscriptionStatus, setSubscriptionStatus] =
     useState<SubscriptionStatusDto | null>(null);
 
@@ -262,14 +296,25 @@ export default function SubscriptionPage() {
   }, [session, isPending]);
 
   const isSubscribed = Boolean(subscriptionStatus?.isActive);
-  const activePlan = subscriptionStatus
-    ? plans.find((plan) => plan.key === subscriptionStatus.plan)
-    : null;
-  const activeStatusLabel = subscriptionStatus
-    ? STATUS_LABELS[subscriptionStatus.status.toLowerCase()] ??
-      subscriptionStatus.status
+  const currentStatusLabel = subscriptionStatus
+    ? (STATUS_LABELS[subscriptionStatus.status.toLowerCase()] ??
+      subscriptionStatus.status)
     : null;
   const expirationLabel = formatExpirationDate(subscriptionStatus?.expiresAt);
+  const currentPlan = subscriptionStatus
+    ? plans.find((plan) => plan.key === subscriptionStatus.plan)
+    : null;
+  const currentPlanName =
+    currentPlan?.name ?? subscriptionStatus?.plan ?? "会员";
+  const fallbackExpirationLabel = computeFallbackExpiration(
+    subscriptionStatus?.plan,
+    subscriptionStatus?.createdAt,
+  );
+  const isLifetimePlan = subscriptionStatus?.plan === "lifetime";
+  const expirationDisplay =
+    expirationLabel ??
+    fallbackExpirationLabel ??
+    (isLifetimePlan ? "永久有效" : "待确认");
 
   const handleCheckout = (href: string) => {
     if (!session) {
@@ -289,6 +334,32 @@ export default function SubscriptionPage() {
           </p>
         </div>
 
+        {subscriptionStatus && (
+          <Card className="mb-8 mx-auto max-w-3xl border border-slate-100 bg-slate-50/70 p-0 dark:border-slate-800 dark:bg-slate-900/60">
+            <CardContent className="flex flex-col gap-3 px-6 py-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                  当前订阅
+                </p>
+                <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+                  {currentPlanName}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {currentStatusLabel ?? "状态未知"}
+                </p>
+              </div>
+              <div className="text-left md:text-right">
+                <p className="text-sm font-medium text-muted-foreground">
+                  到期时间
+                </p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+                  {expirationDisplay}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {feedback && (
           <Alert
             variant={feedback.variant === "error" ? "destructive" : "default"}
@@ -299,77 +370,56 @@ export default function SubscriptionPage() {
           </Alert>
         )}
 
-        {isSubscribed && (
-          <Card className="mb-8 border border-primary/30 bg-primary/5 shadow-sm">
-            <CardHeader className="text-center space-y-2">
-              <Badge variant="secondary" className="mx-auto w-fit uppercase tracking-widest">
-                当前订阅
-              </Badge>
-              <CardTitle className="text-3xl">
-                {activePlan?.name ?? "付费会员"}
-              </CardTitle>
-              <CardDescription>
-                {activePlan?.tagline ??
-                  "感谢你已激活会员，继续探索全站内容与社群支持。"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-10 py-4 text-sm text-muted-foreground">
-              <div className="flex flex-wrap justify-center gap-6">
-                <div>
-                  状态：{activeStatusLabel ?? subscriptionStatus?.status}
-                </div>
-                {expirationLabel && <div>有效期至 {expirationLabel}</div>}
-              </div>
-              <p className="mt-2 text-center">
-                {activePlan?.highlight ?? "你的订阅正在确认中，权益已逐步解锁。"}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => (
-            <Card
-              key={plan.name}
-              className="relative h-full border bg-white/95 dark:bg-slate-950"
-            >
-              <CardHeader className="text-center pb-8 space-y-2">
-                <Badge variant="secondary" className="mx-auto w-fit">{plan.badge}</Badge>
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.tagline}</CardDescription>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">/{plan.period}</span>
-                </div>
-                <p className="text-sm text-primary font-medium">{plan.highlight}</p>
-              </CardHeader>
-
-              <CardContent>
-                <Button
-                  className="w-full"
-                  variant={plan.buttonVariant}
-                  size="lg"
-                  onClick={() => {
-                    if (isSubscribed) return;
-                    handleCheckout(plan.href);
-                  }}
-                  disabled={isPending || isSubscribed}
-                  aria-label={
-                    isSubscribed
-                      ? "已是付费会员"
-                      : plan.cta
-                  }
-                >
-                  {isSubscribed
-                    ? plan.key === subscriptionStatus?.plan
-                      ? "当前订阅"
-                      : "已订阅"
-                    : plan.cta}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+          {plans.map((plan) => {
+            const isCurrentPlan = plan.key === subscriptionStatus?.plan;
+            const cardClasses = cn(
+              "relative h-full transition duration-150 ease-in-out border bg-white/95 text-slate-900 dark:bg-slate-950 dark:text-slate-50",
+              isCurrentPlan
+                ? "border-primary/80 bg-slate-900 text-white dark:border-primary/80 dark:bg-white/95 dark:text-slate-900"
+                : "border-border/70 hover:border-primary/40 dark:border-slate-800"
+            );
+            return (
+              <Card key={plan.name} className={cardClasses}>
+                <CardHeader className="text-center pb-8 space-y-2">
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <Badge variant="secondary" className="mx-auto w-fit">
+                      {plan.badge}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription>{plan.tagline}</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground">
+                      /{plan.period}
+                    </span>
+                  </div>
+                  <p className="text-sm font-medium">{plan.highlight}</p>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    className="w-full"
+                    variant={plan.buttonVariant}
+                    size="lg"
+                    onClick={() => {
+                      if (isSubscribed) return;
+                      handleCheckout(plan.href);
+                    }}
+                    disabled={isPending || isSubscribed}
+                    aria-label={isSubscribed ? "已是付费会员" : plan.cta}
+                  >
+                    {isSubscribed
+                      ? plan.key === subscriptionStatus?.plan
+                        ? "当前订阅"
+                        : "已订阅"
+                      : plan.cta}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="mt-20 max-w-6xl mx-auto">
@@ -387,28 +437,137 @@ export default function SubscriptionPage() {
                 <div className="text-center">永久</div>
               </div>
               {[
-                { label: "公开内容访问", free: true, monthly: true, yearly: true, lifetime: true },
-                { label: "全站深度内容访问", free: false, monthly: true, yearly: true, lifetime: true },
-                { label: "案例拆解与实操模板", monthly: true, yearly: true, lifetime: true },
-                { label: "知识库持续更新", monthly: true, yearly: true, lifetime: true },
-                { label: "所有产品内测资格", free: false, monthly: true, yearly: true, lifetime: true },
-                { label: "会员社群与每日答疑", free: false, monthly: true, yearly: true, lifetime: true },
-                { label: "邮件简报与主题洞察", free: true, monthly: true, yearly: true, lifetime: true },
-                { label: "私有资源库下载权限", free: false, monthly: true, yearly: true, lifetime: true },
-                { label: "路线图抢先与资料库更新", free: false, monthly: true, yearly: true, lifetime: true },
-                { label: "资源位推荐与曝光支持", monthly: false, yearly: true, lifetime: true },
-                { label: "季度主题工作坊", monthly: false, yearly: true, lifetime: true },
-                { label: "1v1 深度辅导", monthly: false, yearly: true, lifetime: true },
-                { label: "优先客服与 SLA", monthly: false, yearly: true, lifetime: true },
-                { label: "发票与企业采购支持", monthly: false, yearly: true, lifetime: true },
-                { label: "终身权益与未来新品授权", monthly: false, yearly: false, lifetime: true },
+                {
+                  label: "公开内容访问",
+                  free: true,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "全站深度内容访问",
+                  free: false,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "案例拆解与实操模板",
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "知识库持续更新",
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "所有产品内测资格",
+                  free: false,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "会员社群与每日答疑",
+                  free: false,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "邮件简报与主题洞察",
+                  free: true,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "私有资源库下载权限",
+                  free: false,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "路线图抢先与资料库更新",
+                  free: false,
+                  monthly: true,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "资源位推荐与曝光支持",
+                  monthly: false,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "季度主题工作坊",
+                  monthly: false,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "1v1 深度辅导",
+                  monthly: false,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "优先客服与 SLA",
+                  monthly: false,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "发票与企业采购支持",
+                  monthly: false,
+                  yearly: true,
+                  lifetime: true,
+                },
+                {
+                  label: "终身权益与未来新品授权",
+                  monthly: false,
+                  yearly: false,
+                  lifetime: true,
+                },
               ].map((f) => (
-                <div key={f.label} className="grid grid-cols-5 gap-4 items-center py-3 border-t">
+                <div
+                  key={f.label}
+                  className="grid grid-cols-5 gap-4 items-center py-3 border-t"
+                >
                   <div className="text-sm">{f.label}</div>
-                  <div className="flex justify-center">{f.free ? <CheckCircle className="h-4 w-4 text-primary" /> : <Minus className="h-4 w-4 text-muted-foreground" />}</div>
-                  <div className="flex justify-center">{f.monthly ? <CheckCircle className="h-4 w-4 text-primary" /> : <Minus className="h-4 w-4 text-muted-foreground" />}</div>
-                  <div className="flex justify-center">{f.yearly ? <CheckCircle className="h-4 w-4 text-primary" /> : <Minus className="h-4 w-4 text-muted-foreground" />}</div>
-                  <div className="flex justify-center">{f.lifetime ? <CheckCircle className="h-4 w-4 text-primary" /> : <Minus className="h-4 w-4 text-muted-foreground" />}</div>
+                  <div className="flex justify-center">
+                    {f.free ? (
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    ) : (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex justify-center">
+                    {f.monthly ? (
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    ) : (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex justify-center">
+                    {f.yearly ? (
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    ) : (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex justify-center">
+                    {f.lifetime ? (
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    ) : (
+                      <Minus className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
                 </div>
               ))}
             </CardContent>
@@ -422,12 +581,13 @@ export default function SubscriptionPage() {
             <span>所有订阅均通过 Stripe 安全扣款，支持国际卡与银联</span>
           </div>
           <p className="text-muted-foreground">
-            支付成功后立即开通会员权限，可登录仪表盘管理发票和续订。需要协助？欢迎通过
-            {" "}
-            <Link href="/about" className="text-primary underline decoration-dotted underline-offset-4">
+            支付成功后立即开通会员权限，可登录仪表盘管理发票和续订。需要协助？欢迎通过{" "}
+            <Link
+              href="/about"
+              className="text-primary underline decoration-dotted underline-offset-4"
+            >
               联系方式
-            </Link>
-            {" "}
+            </Link>{" "}
             与我们沟通。
           </p>
         </div>
