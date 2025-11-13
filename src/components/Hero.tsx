@@ -105,7 +105,7 @@ export const Hero = () => {
                   alt={profile.name}
                   width={100}
                   height={100}
-                  className="rounded-2xl border"
+                  className="rounded-2xl"
                 />
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.35em] text-fd-muted-foreground">
