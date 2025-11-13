@@ -1,22 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
-
-const PLAN_CONFIG = {
-  monthly: {
-    priceEnv: "STRIPE_PRICE_MONTHLY",
-    mode: "subscription",
-  },
-  yearly: {
-    priceEnv: "STRIPE_PRICE_YEARLY",
-    mode: "subscription",
-  },
-  lifetime: {
-    priceEnv: "STRIPE_PRICE_LIFETIME",
-    mode: "payment",
-  },
-} as const;
-
-type PlanKey = keyof typeof PLAN_CONFIG;
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { stripePlanConfig, isPlanKey } from "@/lib/plans";
 
 const FALLBACK_SUCCESS_PATH = "/subscription?status=success&session_id={CHECKOUT_SESSION_ID}";
 const FALLBACK_CANCEL_PATH = "/subscription?status=cancelled";
@@ -33,8 +19,6 @@ const resolveSuccessUrl = () =>
 const resolveCancelUrl = () =>
   process.env.STRIPE_CHECKOUT_CANCEL_URL || `${resolveBaseUrl()}${FALLBACK_CANCEL_PATH}`;
 
-const isPlanKey = (plan: string): plan is PlanKey => plan in PLAN_CONFIG;
-
 export async function GET(request: NextRequest) {
   const plan = request.nextUrl.searchParams.get("plan");
 
@@ -42,7 +26,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unknown plan." }, { status: 400 });
   }
 
-  const config = PLAN_CONFIG[plan];
+  const config = stripePlanConfig[plan];
+
+  const sessionHeaders = headers();
+  const session = await auth.api.getSession({ headers: sessionHeaders });
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+
   const priceId = process.env[config.priceEnv];
 
   if (!priceId) {
@@ -59,7 +50,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const sessionUrl = await stripe.checkout.sessions.create({
       mode: config.mode,
       line_items: [
         {
@@ -71,15 +62,17 @@ export async function GET(request: NextRequest) {
       cancel_url: resolveCancelUrl(),
       metadata: {
         plan,
+        userId: session.user.id,
       },
+      customer_email: session.user.email ?? undefined,
       allow_promotion_codes: true,
     });
 
-    if (!session.url) {
+    if (!sessionUrl.url) {
       throw new Error("Stripe Checkout did not return a URL.");
     }
 
-    return NextResponse.redirect(session.url, 303);
+    return NextResponse.redirect(sessionUrl.url, 303);
   } catch (error) {
     console.error("Stripe checkout session error.", error);
     return NextResponse.json({ error: "Unable to start checkout." }, { status: 500 });

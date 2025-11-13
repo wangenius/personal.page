@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { createCompiler } from "@fumadocs/mdx-remote";
 import type { MdxContent } from "@fumadocs/mdx-remote/client";
 import { source } from "@/lib/source";
+import { hasActiveSubscription } from "@/lib/subscription";
 
 type DocPage = ReturnType<typeof source.getPage>;
 
@@ -11,8 +12,16 @@ export function isDocFree(page?: DocPage): boolean {
   return Boolean(page && page.data?.free === FREE_FLAG);
 }
 
-export function requiresSubscription(page?: DocPage): boolean {
-  return Boolean(page) && !isDocFree(page);
+export async function requiresSubscription(
+  page?: DocPage,
+  userId?: string,
+): Promise<boolean> {
+  if (!page) return false;
+  if (isDocFree(page)) return false;
+  if (userId && (await hasActiveSubscription(userId))) {
+    return false;
+  }
+  return true;
 }
 
 const FRONTMATTER_REGEX = /^---[\r\n]+[\s\S]*?[\r\n]+---/;

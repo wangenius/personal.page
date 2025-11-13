@@ -11,6 +11,8 @@ import { notFound } from "next/navigation";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { getMDXComponents } from "@/mdx-components";
 import { PaywallPreview } from "@/components/docs/paywall-preview";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 interface PageParams {
   lang: "en" | "zh-cn";
@@ -28,7 +30,9 @@ export default async function LangDocsPage(props: {
 
   const page = source.getPage(slug, lang);
   if (!page) notFound();
-  const locked = requiresSubscription(page);
+  const requestHeaders = await headers();
+  const userSession = await auth.api.getSession({ headers: requestHeaders });
+  const locked = await requiresSubscription(page, userSession?.user.id);
   const previewSegments = locked ? await getDocPreviewSegments(page, 2) : [];
 
   const MDXContent = page.data.body;

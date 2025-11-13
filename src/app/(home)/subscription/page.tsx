@@ -1,14 +1,77 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, Zap, Minus } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import {
+  SubscriptionStatusDto,
+  SubscriptionStatusResponse,
+} from "@/lib/subscription";
+import { PlanKey } from "@/lib/plans";
 
-const plans = [
+type SellingPoint = {
+  title: string;
+  description: string;
+  emphasis?: boolean;
+};
+
+type SubscriptionPlan = {
+  key: PlanKey;
+  name: string;
+  tagline: string;
+  price: string;
+  period: string;
+  highlight: string;
+  badge: string;
+  sellingPoints: SellingPoint[];
+  limitNote: string;
+  cta: string;
+  href: string;
+  buttonVariant: "default" | "outline";
+  popular: boolean;
+};
+
+type CheckoutFeedback = {
+  title: string;
+  description: string;
+  variant: "info" | "success" | "error";
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  active: "已激活",
+  trialing: "试用中",
+  paid: "已支付",
+  incomplete: "待处理",
+  incomplete_expired: "付款失效",
+  cancelled: "已取消",
+  canceled: "已取消",
+  unpaid: "待付款",
+  past_due: "已逾期",
+  expired: "已过期",
+  unknown: "未知状态",
+};
+
+const zhDateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "medium",
+});
+
+const formatExpirationDate = (value?: string | null) => {
+  if (!value) return null;
+  try {
+    return zhDateFormatter.format(new Date(value));
+  } catch {
+    return null;
+  }
+};
+
+const plans: SubscriptionPlan[] = [
   {
     key: "monthly",
     name: "月度订阅",
@@ -34,7 +97,7 @@ const plans = [
     limitNote: "首批 100 名付费会员可锁定全年 1v1 配额",
     cta: "立即开通 · ¥79/月",
     href: "/api/checkout?plan=monthly",
-    buttonVariant: "outline" as const,
+    buttonVariant: "outline",
     popular: false,
   },
   {
@@ -67,7 +130,7 @@ const plans = [
     limitNote: "年度会员享受 1v1 额度优先与季度复盘",
     cta: "立即开通 · ¥799/年",
     href: "/api/checkout?plan=yearly",
-    buttonVariant: "default" as const,
+    buttonVariant: "default",
     popular: true,
   },
   {
@@ -100,14 +163,113 @@ const plans = [
     limitNote: "一次付费，权益永久生效",
     cta: "立即开通 · ¥2499",
     href: "/api/checkout?plan=lifetime",
-    buttonVariant: "default" as const,
+    buttonVariant: "default",
     popular: false,
   },
 ];
 
 export default function SubscriptionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const statusParam = searchParams.get("status");
+  const sessionIdParam = searchParams.get("session_id");
   const { data: session, isPending } = useSession();
+  const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
+  const [processedSessionId, setProcessedSessionId] = useState<string | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] =
+    useState<SubscriptionStatusDto | null>(null);
+
+  useEffect(() => {
+    if (statusParam === "cancelled") {
+      setFeedback({
+        variant: "error",
+        title: "订阅未完成",
+        description: "你已取消支付，欢迎随时重新加入。",
+      });
+      return;
+    }
+
+    if (
+      statusParam !== "success" ||
+      !sessionIdParam ||
+      processedSessionId === sessionIdParam
+    ) {
+      return;
+    }
+
+    setProcessedSessionId(sessionIdParam);
+    setFeedback({
+      variant: "info",
+      title: "正在确认订阅",
+      description: "支付完成后正在同步会员权限，请稍后刷新即可解锁内容。",
+    });
+
+    fetch("/api/subscription/complete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sessionId: sessionIdParam }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || "无法确认订阅身份");
+        }
+        setFeedback({
+          variant: "success",
+          title: "订阅已激活",
+          description: "你已经解锁全站内容，欢迎继续探索。",
+        });
+      })
+      .catch((error) => {
+        setFeedback({
+          variant: "error",
+          title: "同步失败",
+          description: error?.message || "确认失败，请稍后再试。",
+        });
+      });
+  }, [processedSessionId, sessionIdParam, statusParam]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isPending || !session) {
+      setSubscriptionStatus(null);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    fetch("/api/subscription/status", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) {
+          return null;
+        }
+        return (await res.json()) as SubscriptionStatusResponse | null;
+      })
+      .then((payload) => {
+        if (!isMounted) return;
+        setSubscriptionStatus(payload?.subscription ?? null);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setSubscriptionStatus(null);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [session, isPending]);
+
+  const isSubscribed = Boolean(subscriptionStatus?.isActive);
+  const activePlan = subscriptionStatus
+    ? plans.find((plan) => plan.key === subscriptionStatus.plan)
+    : null;
+  const activeStatusLabel = subscriptionStatus
+    ? STATUS_LABELS[subscriptionStatus.status.toLowerCase()] ??
+      subscriptionStatus.status
+    : null;
+  const expirationLabel = formatExpirationDate(subscriptionStatus?.expiresAt);
 
   const handleCheckout = (href: string) => {
     if (!session) {
@@ -126,6 +288,44 @@ export default function SubscriptionPage() {
             包含全站内容、所有产品内测资格、1v1辅导与社群支持
           </p>
         </div>
+
+        {feedback && (
+          <Alert
+            variant={feedback.variant === "error" ? "destructive" : "default"}
+            className="mb-8"
+          >
+            <AlertTitle>{feedback.title}</AlertTitle>
+            <AlertDescription>{feedback.description}</AlertDescription>
+          </Alert>
+        )}
+
+        {isSubscribed && (
+          <Card className="mb-8 border border-primary/30 bg-primary/5 shadow-sm">
+            <CardHeader className="text-center space-y-2">
+              <Badge variant="secondary" className="mx-auto w-fit uppercase tracking-widest">
+                当前订阅
+              </Badge>
+              <CardTitle className="text-3xl">
+                {activePlan?.name ?? "付费会员"}
+              </CardTitle>
+              <CardDescription>
+                {activePlan?.tagline ??
+                  "感谢你已激活会员，继续探索全站内容与社群支持。"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-10 py-4 text-sm text-muted-foreground">
+              <div className="flex flex-wrap justify-center gap-6">
+                <div>
+                  状态：{activeStatusLabel ?? subscriptionStatus?.status}
+                </div>
+                {expirationLabel && <div>有效期至 {expirationLabel}</div>}
+              </div>
+              <p className="mt-2 text-center">
+                {activePlan?.highlight ?? "你的订阅正在确认中，权益已逐步解锁。"}
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -150,10 +350,22 @@ export default function SubscriptionPage() {
                   className="w-full"
                   variant={plan.buttonVariant}
                   size="lg"
-                  onClick={() => handleCheckout(plan.href)}
-                  disabled={isPending}
+                  onClick={() => {
+                    if (isSubscribed) return;
+                    handleCheckout(plan.href);
+                  }}
+                  disabled={isPending || isSubscribed}
+                  aria-label={
+                    isSubscribed
+                      ? "已是付费会员"
+                      : plan.cta
+                  }
                 >
-                  {plan.cta}
+                  {isSubscribed
+                    ? plan.key === subscriptionStatus?.plan
+                      ? "当前订阅"
+                      : "已订阅"
+                    : plan.cta}
                 </Button>
               </CardContent>
             </Card>

@@ -14,10 +14,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { TbLogout, TbUser } from "react-icons/tb";
+import { Badge } from "@/components/ui/badge";
+import { SubscriptionStatusResponse } from "@/lib/subscription";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     setImageUrl(session?.user.image || undefined);
@@ -32,6 +35,37 @@ export function UserMenu() {
         })
         .catch(() => {});
     }
+  }, [session]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!session) {
+      setIsSubscribed(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    fetch("/api/subscription/status", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) {
+          return null;
+        }
+        return (await res.json()) as SubscriptionStatusResponse | null;
+      })
+      .then((payload) => {
+        if (!isMounted) return;
+        setIsSubscribed(Boolean(payload?.subscription?.isActive));
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setIsSubscribed(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [session]);
 
   if (isPending) {
@@ -56,16 +90,26 @@ export function UserMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-          <Avatar className="h-7 w-7">
-            <AvatarImage src={imageUrl} alt={session.user.name} />
-            <AvatarFallback className="text-xs">
-              {session.user.name?.[0]?.toUpperCase() || "U"}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
+      <div className="flex items-center gap-2">
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+            <Avatar className="h-7 w-7">
+              <AvatarImage src={imageUrl} alt={session.user.name} />
+              <AvatarFallback className="text-xs">
+                {session.user.name?.[0]?.toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        {isSubscribed && (
+          <Badge
+            variant="outline"
+            className="text-[10px] uppercase tracking-widest"
+          >
+            订阅用户
+          </Badge>
+        )}
+      </div>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">

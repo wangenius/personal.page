@@ -50,3 +50,18 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updatedAt").defaultNow(),
 });
 
+export const subscription = pgTable("subscription", {
+  id: text("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  plan: text("plan").notNull(),
+  status: text("status").notNull(),
+  gateway: text("gateway").notNull().default("stripe"),
+  stripeCustomerId: text("stripeCustomerId"),
+  stripeSubscriptionId: text("stripeSubscriptionId"),
+  stripeCheckoutSessionId: text("stripeCheckoutSessionId").notNull().unique(),
+  expiresAt: timestamp("expiresAt"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
