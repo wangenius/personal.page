@@ -6,8 +6,13 @@ import { isPlanKey } from "@/lib/plans";
 import { saveSubscriptionRecord } from "@/lib/subscription";
 
 export async function POST(request: Request) {
-  const sessionHeaders = headers();
-  const userSession = await auth.api.getSession({ headers: sessionHeaders });
+  // read the request headers and convert to a Headers instance expected by auth.api.getSession
+  const sessionHeaders = await headers();
+  const headerEntries = Array.from(sessionHeaders.entries());
+  const headerInit = Object.fromEntries(headerEntries);
+  const userSession = await auth.api.getSession({
+    headers: new Headers(headerInit),
+  });
 
   if (!userSession) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,8 +21,11 @@ export async function POST(request: Request) {
   let payload: { sessionId?: string };
   try {
     payload = await request.json();
-  } catch (error) {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid request body." },
+      { status: 400 }
+    );
   }
 
   const sessionId = payload?.sessionId;
@@ -31,7 +39,10 @@ export async function POST(request: Request) {
     stripe = getStripeClient();
   } catch (error) {
     console.error("Stripe client not configured:", error);
-    return NextResponse.json({ error: "Stripe is not configured." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Stripe is not configured." },
+      { status: 500 }
+    );
   }
 
   try {
@@ -43,26 +54,38 @@ export async function POST(request: Request) {
     const metadataUserId = checkoutSession.metadata?.userId;
 
     if (!metadataPlan || !isPlanKey(metadataPlan)) {
-      return NextResponse.json({ error: "Invalid plan metadata." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid plan metadata." },
+        { status: 400 }
+      );
     }
 
     if (metadataUserId !== userSession.user.id) {
-      return NextResponse.json({ error: "Plan does not belong to current user." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Plan does not belong to current user." },
+        { status: 403 }
+      );
     }
 
     const stripeSubscription =
-      typeof checkoutSession.subscription === "object" ? checkoutSession.subscription : null;
+      typeof checkoutSession.subscription === "object"
+        ? checkoutSession.subscription
+        : null;
 
     const stripeCustomerId =
       typeof checkoutSession.customer === "string"
         ? checkoutSession.customer
-        : checkoutSession.customer?.id ?? null;
+        : (checkoutSession.customer?.id ?? null);
 
-    const status = stripeSubscription?.status ?? checkoutSession.payment_status ?? "unknown";
+    const status =
+      stripeSubscription?.status ?? checkoutSession.payment_status ?? "unknown";
+    const subscriptionItems = stripeSubscription?.items?.data ?? [];
+    const latestPeriodEnd = subscriptionItems.reduce(
+      (latest, item) => Math.max(latest, item?.current_period_end ?? 0),
+      0
+    );
     const expiresAt =
-      stripeSubscription?.current_period_end != null
-        ? new Date(stripeSubscription.current_period_end * 1000)
-        : null;
+      latestPeriodEnd > 0 ? new Date(latestPeriodEnd * 1000) : null;
 
     await saveSubscriptionRecord({
       checkoutSessionId: checkoutSession.id,
@@ -77,6 +100,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to sync subscription:", error);
-    return NextResponse.json({ error: "Unable to complete subscription." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Unable to complete subscription." },
+      { status: 500 }
+    );
   }
 }

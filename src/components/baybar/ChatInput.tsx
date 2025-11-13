@@ -16,11 +16,8 @@ import {
   PromptInputTools,
   PromptInputProvider,
 } from "@/components/ai-elements/prompt-input";
-import {
-  UploadedFile
-} from "@/components/custom/FileUploadButton";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, FileTextIcon, Square, XIcon } from "lucide-react";
+import { ArrowUp, Square, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ATTACHMENT_ACCEPT =
@@ -58,7 +55,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       status,
       onStop,
       placeholder = "描述您的营销需求，我会帮您梳理成专业的 Brief",
-      showFileUpload = true,
       className,
       inputClassName,
       toolbarChildren,
@@ -70,7 +66,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     },
     ref
   ) => {
-    const [files, setFiles] = useState<UploadedFile[]>([]);
     const [quote, setQuoteState] = useState<string>("");
 
     // 对外暴露方法
@@ -130,16 +125,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       };
     }, [enableQuote]);
 
-    const handleFilesUploaded = useCallback((files: UploadedFile[]) => {
-      console.log(files);
-
-      setFiles((prev) => [...prev, ...files]);
-    }, []);
-
-    const onRemoveFile = useCallback((index: number) => {
-      setFiles((prev) => prev.filter((_, i) => i !== index));
-    }, []);
-
     const handleClearQuote = useCallback(() => {
       setQuoteState("");
     }, []);
@@ -155,15 +140,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           setQuoteState("");
         }
 
-        // 如果有上传的文件，将文件引用添加到消息中
-        if (files.length > 0) {
-          const fileReferences = files
-            .map((f) => `[FILE]${f.url}|${f.name}[/FILE]`)
-            .join("\n");
-          text = text ? `${fileReferences}\n\n${text}` : fileReferences;
-          setFiles([]);
-        }
-
         // 调用 onSubmit（不等待）
         onSubmit({
           ...message,
@@ -173,7 +149,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         // 立即返回 resolved Promise，让表单立即清空
         return Promise.resolve();
       },
-      [files, quote, enableQuote, onSubmit]
+      [quote, enableQuote, onSubmit]
     );
 
     const isDisabled =
@@ -211,32 +187,6 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             </div>
           )}
 
-          {/* 已上传文件预览 */}
-          {files.length > 0 && (
-            <div className="space-y-2 w-full self-start">
-              <div className="flex flex-wrap gap-2">
-                {files.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 px-3 py-2 bg-primary/10 rounded-full text-sm group hover:bg-primary/20 transition-colors"
-                  >
-                    <FileTextIcon className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-foreground max-w-[200px] truncate">
-                      {file.name}
-                    </span>
-                    <button
-                      onClick={() => onRemoveFile(index)}
-                      className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
-                      aria-label="移除文件"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <PromptInputAttachments>
             {(attachment) => (
               <PromptInputAttachment data={attachment} key={attachment.id} />
@@ -247,7 +197,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             placeholder={placeholder}
             className={cn(
               "bg-transparent placeholder:text-muted-foreground/60 text-sm min-h-12 p-3 self-stretch focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none",
-              files.length > 0 ? "py-1" : "py-3",
+              "py-3",
               inputClassName
             )}
             autoFocus={autoFocus}
@@ -290,4 +240,4 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 ChatInput.displayName = "ChatInput";
 
 // 导出类型供其他组件使用
-export type { ChatInputProps, UploadedFile };
+export type { ChatInputProps };

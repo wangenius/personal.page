@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 interface TabsContextType {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
 
-export const TabsContext = createContext<TabsContextType | undefined>(undefined);
+export const TabsContext = createContext<TabsContextType | undefined>(
+  undefined
+);
 
 interface TabsProps {
   children: React.ReactNode;
@@ -13,14 +15,16 @@ interface TabsProps {
   className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ children, defaultValue, className = '' }) => {
-  const [activeTab, setActiveTab] = useState(defaultValue || '');
+const Tabs: React.FC<TabsProps> = ({
+  children,
+  defaultValue,
+  className = "",
+}) => {
+  const [activeTab, setActiveTab] = useState(defaultValue || "");
 
   return (
     <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      <div className={className}>
-        {children}
-      </div>
+      <div className={className}>{children}</div>
     </TabsContext.Provider>
   );
 };

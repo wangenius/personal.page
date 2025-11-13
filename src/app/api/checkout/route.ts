@@ -28,7 +28,13 @@ export async function GET(request: NextRequest) {
 
   const config = stripePlanConfig[plan];
 
-  const sessionHeaders = headers();
+  const rawHeaders = await headers();
+  // convert ReadonlyHeaders to a standard Headers instance expected by auth.api.getSession
+  const sessionHeaders = new Headers();
+  for (const [key, value] of rawHeaders.entries()) {
+    sessionHeaders.set(key, value);
+  }
+
   const session = await auth.api.getSession({ headers: sessionHeaders });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });

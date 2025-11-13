@@ -15,8 +15,8 @@ import {
   ChatInput,
   type ChatInputProps,
   type ChatInputRef,
-} from "@/components/baybar/chat/ChatInput";
-import { MessageRenderer } from "@/components/baybar/chat/MessageRenderer";
+} from "@/components/baybar/ChatInput";
+import { MessageRenderer } from "@/components/baybar/MessageRenderer";
 import { useChatStore } from "@/lib/chatStore";
 import { toggleBayBar } from "@/lib/viewManager";
 import { X } from "lucide-react";

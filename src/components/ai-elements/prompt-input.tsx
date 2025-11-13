@@ -38,6 +38,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { nanoid } from "nanoid";
+import Image from "next/image";
 import {
   type ChangeEvent,
   type ChangeEventHandler,
@@ -106,7 +107,7 @@ export const usePromptInputController = () => {
 };
 
 // Optional variants (do NOT throw). Useful for dual-mode components.
-const optional_usePromptInputController = () => {
+const useOptionalUsePromptInputController = () => {
   return useContext(PromptInputContext);
 };
 
@@ -120,7 +121,7 @@ export const useProviderAttachments = () => {
   return ctx;
 };
 
-const optional_useProviderAttachments = () => {
+const useOptionalUseProviderAttachments = () => {
   return useContext(ProviderAttachmentsContext);
 };
 
@@ -233,7 +234,7 @@ const LocalAttachmentsContext = createContext<AttachmentsContext | null>(null);
 
 export const usePromptInputAttachments = () => {
   // Dual-mode: prefer provider if present, otherwise use local
-  const provider = optional_useProviderAttachments();
+  const provider = useOptionalUseProviderAttachments();
   const local = useContext(LocalAttachmentsContext);
   const context = provider ?? local;
   if (!context) {
@@ -270,7 +271,7 @@ export function PromptInputAttachment({
       {...props}
     >
       {mediaType === "image" ? (
-        <img
+        <Image
           alt={data.filename || "attachment"}
           className="size-full rounded-md object-cover"
           height={56}
@@ -451,7 +452,7 @@ export const PromptInput = ({
   ...props
 }: PromptInputProps) => {
   // Try to use a provider controller if present
-  const controller = optional_usePromptInputController();
+  const controller = useOptionalUsePromptInputController();
   const usingProvider = !!controller;
 
   // Refs
@@ -540,36 +541,58 @@ export const PromptInput = ({
     [matchesAccept, maxFiles, maxFileSize, onError]
   );
 
-  const add = usingProvider
-    ? (files: File[] | FileList) => controller.attachments.add(files)
-    : addLocal;
+  const removeLocal = useCallback(
+    (id: string) => {
+      setItems((prev) => {
+        const found = prev.find((file) => file.id === id);
+        if (found?.url) {
+          URL.revokeObjectURL(found.url);
+        }
+        return prev.filter((file) => file.id !== id);
+      });
+    },
+    []
+  );
 
-  const remove = usingProvider
-    ? (id: string) => controller.attachments.remove(id)
-    : (id: string) =>
-        setItems((prev) => {
-          const found = prev.find((file) => file.id === id);
-          if (found?.url) {
-            URL.revokeObjectURL(found.url);
-          }
-          return prev.filter((file) => file.id !== id);
-        });
+  const clearLocal = useCallback(() => {
+    setItems((prev) => {
+      for (const file of prev) {
+        if (file.url) {
+          URL.revokeObjectURL(file.url);
+        }
+      }
+      return [];
+    });
+  }, []);
 
-  const clear = usingProvider
-    ? () => controller.attachments.clear()
-    : () =>
-        setItems((prev) => {
-          for (const file of prev) {
-            if (file.url) {
-              URL.revokeObjectURL(file.url);
-            }
-          }
-          return [];
-        });
+  const providerAttachments = controller?.attachments;
+  const providerAdd = providerAttachments?.add;
+  const providerRemove = providerAttachments?.remove;
+  const providerClear = providerAttachments?.clear;
+  const providerOpenFileDialog = providerAttachments?.openFileDialog;
 
-  const openFileDialog = usingProvider
-    ? () => controller.attachments.openFileDialog()
-    : openFileDialogLocal;
+  const add = useMemo(
+    () => (usingProvider && providerAdd ? providerAdd : addLocal),
+    [usingProvider, providerAdd, addLocal]
+  );
+
+  const remove = useMemo(
+    () => (usingProvider && providerRemove ? providerRemove : removeLocal),
+    [usingProvider, providerRemove, removeLocal]
+  );
+
+  const clear = useMemo(
+    () => (usingProvider && providerClear ? providerClear : clearLocal),
+    [usingProvider, providerClear, clearLocal]
+  );
+
+  const openFileDialog = useMemo(
+    () =>
+      usingProvider && providerOpenFileDialog
+        ? providerOpenFileDialog
+        : openFileDialogLocal,
+    [usingProvider, providerOpenFileDialog, openFileDialogLocal]
+  );
 
   // Let provider know about our hidden file input so external menus can call openFileDialog()
   useEffect(() => {
@@ -693,7 +716,7 @@ export const PromptInput = ({
 
     // Convert blob URLs to data URLs asynchronously
     Promise.all(
-      files.map(async ({ id, ...item }) => {
+      files.map(async (item) => {
         if (item.url && item.url.startsWith("blob:")) {
           return {
             ...item,
@@ -725,7 +748,7 @@ export const PromptInput = ({
             controller.textInput.clear();
           }
         }
-      } catch (error) {
+      } catch {
         // Don't clear on error - user may want to retry
       }
     });
@@ -783,7 +806,7 @@ export const PromptInputTextarea = ({
   placeholder = "What would you like to know?",
   ...props
 }: PromptInputTextareaProps) => {
-  const controller = optional_usePromptInputController();
+  const controller = useOptionalUsePromptInputController();
   const attachments = usePromptInputAttachments();
 
   const handleKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {

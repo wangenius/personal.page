@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();

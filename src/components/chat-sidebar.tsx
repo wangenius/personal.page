@@ -3,10 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { SimpleChatPanel } from "@/components/simple-chat-panel";
 import { cn } from "@/lib/utils";
-import { useViewManager, toggleBayBar } from "@/lib/viewManager";
+import { useViewManager } from "@/lib/viewManager";
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function ChatSidebar() {
   const { isBayBarOpen } = useViewManager();

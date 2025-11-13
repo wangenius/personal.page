@@ -5,14 +5,19 @@ import { signUp } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Github } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 
 export default function SignUpPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,10 +73,10 @@ export default function SignUpPage() {
       <div className="flex min-h-screen items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">📧 验证你的邮箱</CardTitle>
-            <CardDescription>
-              注册成功！请检查你的邮箱
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">
+              📧 验证你的邮箱
+            </CardTitle>
+            <CardDescription>注册成功！请检查你的邮箱</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -80,7 +85,7 @@ export default function SignUpPage() {
                 <p>我们已经发送了一封验证邮件到：</p>
                 <p className="font-medium mt-1">{email}</p>
               </div>
-              
+
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p>📨 请按照以下步骤完成验证：</p>
                 <ol className="list-decimal list-inside space-y-1 ml-2">
@@ -103,9 +108,7 @@ export default function SignUpPage() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
             <Button asChild className="w-full">
-              <Link href="/signin">
-                前往登录
-              </Link>
+              <Link href="/signin">前往登录</Link>
             </Button>
             <div className="text-sm text-fd-muted-foreground text-center">
               已经验证？{" "}
@@ -124,9 +127,7 @@ export default function SignUpPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">注册</CardTitle>
-          <CardDescription>
-            创建一个新账户
-          </CardDescription>
+          <CardDescription>创建一个新账户</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -178,11 +179,7 @@ export default function SignUpPage() {
                 disabled={loading}
               />
             </div>
-            {error && (
-              <div className="text-sm text-destructive">
-                {error}
-              </div>
-            )}
+            {error && <div className="text-sm text-destructive">{error}</div>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "注册中..." : "注册"}
             </Button>
@@ -221,4 +218,3 @@ export default function SignUpPage() {
     </div>
   );
 }
-

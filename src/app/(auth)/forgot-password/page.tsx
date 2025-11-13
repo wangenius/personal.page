@@ -4,12 +4,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,9 +26,6 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      // 这里需要添加忘记密码的API调用
-      // 目前better-auth的client可能还没有暴露这个方法
-      // 需要使用fetch直接调用API
       const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,10 +50,10 @@ export default function ForgotPasswordPage() {
       <div className="flex min-h-screen items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">📧 检查你的邮箱</CardTitle>
-            <CardDescription>
-              我们已发送密码重置邮件
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">
+              📧 检查你的邮箱
+            </CardTitle>
+            <CardDescription>我们已发送密码重置邮件</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -60,7 +62,7 @@ export default function ForgotPasswordPage() {
                 <p>请检查邮箱：</p>
                 <p className="font-medium mt-1">{email}</p>
               </div>
-              
+
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p>📨 请按照以下步骤重置密码：</p>
                 <ol className="list-decimal list-inside space-y-1 ml-2">
@@ -74,9 +76,7 @@ export default function ForgotPasswordPage() {
           </CardContent>
           <CardFooter>
             <Button asChild className="w-full">
-              <Link href="/signin">
-                返回登录
-              </Link>
+              <Link href="/signin">返回登录</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -107,11 +107,7 @@ export default function ForgotPasswordPage() {
                 disabled={loading}
               />
             </div>
-            {error && (
-              <div className="text-sm text-destructive">
-                {error}
-              </div>
-            )}
+            {error && <div className="text-sm text-destructive">{error}</div>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "发送中..." : "发送重置邮件"}
             </Button>
