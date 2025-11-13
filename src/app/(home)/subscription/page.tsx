@@ -56,17 +56,17 @@ const PLAN_ORDER: PlanKey[] = ["monthly", "yearly", "lifetime"];
 
 const planMeta: Record<PlanKey, { price: string; href: string; buttonVariant: "default" | "outline" }> = {
   monthly: {
-    price: "¥79",
+    price: "¥59",
     href: "/api/checkout?plan=monthly",
     buttonVariant: "outline",
   },
   yearly: {
-    price: "¥799",
+    price: "¥399",
     href: "/api/checkout?plan=yearly",
     buttonVariant: "default",
   },
   lifetime: {
-    price: "¥2499",
+    price: "¥1,199",
     href: "/api/checkout?plan=lifetime",
     buttonVariant: "default",
   },

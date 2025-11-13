@@ -4,19 +4,19 @@
       "name": "Monthly Membership",
       "tagline": "Flexible start, cancel anytime",
       "period": "per month",
-      "cta": "Unlock now · ¥79/mo"
+      "cta": "Unlock now · ¥59/mo"
     },
     "yearly": {
       "name": "Annual Membership",
       "tagline": "Save ¥149 and secure priority 1v1 access",
       "period": "per year",
-      "cta": "Unlock now · ¥799/yr"
+      "cta": "Unlock now · ¥399/yr"
     },
     "lifetime": {
       "name": "Lifetime Membership",
       "tagline": "One-time payment for lifelong access",
       "period": "lifetime",
-      "cta": "Unlock now · ¥2499"
+      "cta": "Unlock now · ¥1,199"
     }
   },
   "benefits": {

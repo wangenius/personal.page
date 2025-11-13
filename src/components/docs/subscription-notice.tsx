@@ -21,7 +21,7 @@ export function SubscriptionNotice() {
         </CardDescription>
       </CardHeader>
       <CardContent className="relative flex flex-col gap-4 text-sm text-slate-100 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-slate-200/80">月付 ¥79 · 年付 ¥799 · 永久 ¥2499</p>
+        <p className="text-slate-200/80">月付 ¥59 · 年付 ¥399 · 永久 ¥1,199</p>
         <Button
           asChild
           variant="secondary"
