@@ -136,7 +136,7 @@ export default function SignUpPage() {
               <Input
                 id="name"
                 type="text"
-                placeholder="神仙鱼"
+                placeholder="wangenius"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required

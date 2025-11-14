@@ -65,3 +65,28 @@ export async function getDocPreviewSegments(
     return [];
   }
 }
+
+/**
+ * 根据 /docs/... 路径获取文档原始内容（去掉 frontmatter）
+ */
+export async function getDocFullContentByPath(docPath: string): Promise<string | null> {
+  try {
+    const normalized = docPath.replace(/^https?:\/\/[^/]+/, "");
+    const withoutBase = normalized.replace(/^\/docs\/?/, "");
+    const slug = withoutBase.split("/").filter(Boolean);
+
+    const page = source.getPage(slug.length ? slug : undefined);
+    const filePath =
+      (page as { absolutePath?: string } | undefined)?.absolutePath ??
+      page?.absolutePath;
+
+    if (!filePath) return null;
+
+    const raw = await readFile(filePath, "utf-8");
+    const content = raw.replace(FRONTMATTER_REGEX, "").trim();
+    return content;
+  } catch (error) {
+    console.error("Failed to load full doc content:", error);
+    return null;
+  }
+}

@@ -105,7 +105,7 @@ export function SimpleChatPanel() {
             parts: [
               {
                 type: "text",
-                text: "你好，我是神仙鱼 AI 助手。有什么可以帮你的吗？",
+                text: "你好，我是 wangenius，有什么可以帮你的吗？",
               },
             ],
           },
@@ -118,7 +118,7 @@ export function SimpleChatPanel() {
 
   const handleOptionSelect = useCallback((formattedText: string) => {
     if (!formattedText) return;
-    chatInputRef.current?.setQuote(formattedText);
+    chatInputRef.current?.setQuote({ text: formattedText });
     chatInputRef.current?.focus();
   }, []);
 

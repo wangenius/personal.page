@@ -180,7 +180,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         >
           {/* 引用内容显示 */}
           {enableQuote && quote && (
-            <div className="mb-2 relative rounded-2xl bg-muted-foreground/10 p-3 animate-in slide-in-from-bottom-2 w-full self-start">
+            <div className="relative rounded-2xl bg-muted-foreground/10 p-3 animate-in slide-in-from-bottom-2 w-full self-start">
               <Button
                 onClick={handleClearQuote}
                 className="absolute top-2 right-2 h-5 w-5 rounded-full opacity-70 hover:opacity-100 transition-opacity"
@@ -207,7 +207,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             placeholder={placeholder}
             className={cn(
               "bg-transparent placeholder:text-muted-foreground/60 text-sm min-h-12 p-3 self-stretch focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none",
-              "py-3",
+              quote ? "py-1" : "py-3",
               inputClassName
             )}
             autoFocus={autoFocus}

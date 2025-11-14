@@ -1,8 +1,8 @@
-import { randomUUID } from "node:crypto";
 import { db } from "./db";
 import { subscription as subscriptionTable } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
 import { isPlanKey, type PlanKey } from "./plans";
+import { v4 as uuidv4 } from "uuid";
 
 const ACTIVE_STATUSES = new Set(["active", "trialing", "paid"]);
 
@@ -23,7 +23,9 @@ export async function saveSubscriptionRecord(entry: SubscriptionRecordInput) {
   const existing = await db
     .select()
     .from(subscriptionTable)
-    .where(eq(subscriptionTable.stripeCheckoutSessionId, entry.checkoutSessionId))
+    .where(
+      eq(subscriptionTable.stripeCheckoutSessionId, entry.checkoutSessionId)
+    )
     .limit(1);
 
   if (existing.length > 0) {
@@ -37,12 +39,14 @@ export async function saveSubscriptionRecord(entry: SubscriptionRecordInput) {
         expiresAt: entry.expiresAt,
         updatedAt: now,
       })
-      .where(eq(subscriptionTable.stripeCheckoutSessionId, entry.checkoutSessionId));
+      .where(
+        eq(subscriptionTable.stripeCheckoutSessionId, entry.checkoutSessionId)
+      );
     return;
   }
 
   await db.insert(subscriptionTable).values({
-    id: randomUUID(),
+    id: uuidv4(),
     userId: entry.userId,
     plan: entry.plan,
     status: normalizedStatus,
@@ -62,7 +66,7 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
     .limit(5);
 
   return rows.some((record) =>
-    ACTIVE_STATUSES.has(record.status?.toLowerCase() ?? ""),
+    ACTIVE_STATUSES.has(record.status?.toLowerCase() ?? "")
   );
 }
 
@@ -81,7 +85,7 @@ export type SubscriptionRecord = {
 };
 
 export async function getLatestSubscription(
-  userId: string,
+  userId: string
 ): Promise<SubscriptionRecord | null> {
   const rows = await db
     .select({
