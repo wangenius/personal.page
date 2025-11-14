@@ -11,7 +11,7 @@ interface LanguageSwitcherProps {
 }
 
 const toggleLanguage = (current: Locale): Locale =>
-  current === "en" ? "zh-cn" : "en";
+  current === "en" ? "cn" : "en";
 
 export function LanguageSwitcher({
   variant = "compact",

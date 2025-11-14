@@ -14,7 +14,7 @@ export const dictionaries = {
     subscription: subscriptionEn,
     timeline: timelineEn,
   },
-  "zh-cn": {
+  cn: {
     hero: heroZh,
     navigation: navigationZh,
     subscription: subscriptionZh,

@@ -5,7 +5,7 @@
   - `base/dsa/leetcode` — 20
   - `base/math` — 17
   - `base/cs/web` — 6
-- Clear one-to-one mappings exist to your zh-cn English structure (e.g., `字符串相关/回文串` → `string-related/palindromes.mdx`, `模块和编译/编译` → `modules-and-compilation/compilation.mdx`, `二维空间` → `two-dimensional-space.mdx`).
+- Clear one-to-one mappings exist to your cn English structure (e.g., `字符串相关/回文串` → `string-related/palindromes.mdx`, `模块和编译/编译` → `modules-and-compilation/compilation.mdx`, `二维空间` → `two-dimensional-space.mdx`).
 
 ## Plan
 1. Web (base/cs/web)
@@ -13,7 +13,7 @@
 
 2. DSA/Leetcode (base/dsa/leetcode)
 - Rename directory segments to ASCII (`动态规划` → `dynamic-programming`, `双指针相关` → `two-pointers`, `字符串相关` → `string-related`, `数组相关` → `array-related`, `栈相关` → `stack-related`, `树相关` → `tree-related`, `递归` → `recursion`).
-- Rename files using the already-established zh-cn English filenames (e.g., `最大子数组和` → `maximum-subarray.mdx`, `二分查找` → `binary-search.mdx`).
+- Rename files using the already-established cn English filenames (e.g., `最大子数组和` → `maximum-subarray.mdx`, `二分查找` → `binary-search.mdx`).
 
 3. Math (base/math)
 - Discrete mathematics: convert `集合论` → `set-theory.mdx`, `逻辑和命题演算` → `logic-and-propositional-calculus.mdx`, `形式语言和自动机` → `formal-languages-and-automata.mdx`, `概论` → `overview-zh.mdx`.
@@ -21,7 +21,7 @@
 - Calculus: convert nested `积分学/*` to `integral-calculus/*` and rename `函数` → `functions.mdx`, `微分学` → `differential-calculus.mdx`, `微分方程` → `differential-equations.mdx`, `级数` → `series.mdx`.
 
 4. Languages (base/lang)
-- Rust: rename Chinese directory segments (`变量和声明`, `数据类型`, `模块和编译`, `表达式和函数`, `错误处理`, `面向对象`, `多线程`) and files to ASCII matching zh-cn mappings (e.g., `变量和常量` → `variables-and-constants.mdx`).
+- Rust: rename Chinese directory segments (`变量和声明`, `数据类型`, `模块和编译`, `表达式和函数`, `错误处理`, `面向对象`, `多线程`) and files to ASCII matching cn mappings (e.g., `变量和常量` → `variables-and-constants.mdx`).
 - Python: rename `数据类型` → `data-types` and `函数和模块` → `functions-and-modules`, `面向对象` → `object-oriented`, etc.
 - C++: rename `面向对象`, `表达式和函数`, `模板和泛型`, `模块和编译`, `标准库和STL`, `变量和声明`, plus `io/网络` → `io/network`.
 - Compile: rename `概述`, `编译`, `自动机`, `词法分析`, `语义分析`, `语法分析与文法`, `语法树` to their ASCII equivalents.

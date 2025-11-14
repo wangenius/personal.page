@@ -49,7 +49,7 @@ type CheckoutFeedback = {
 
 const LOCALE_TAGS: Record<Locale, string> = {
   en: "en-US",
-  "zh-cn": "zh-CN",
+  "cn": "cn",
 };
 
 const PLAN_ORDER: PlanKey[] = ["monthly", "yearly", "lifetime"];

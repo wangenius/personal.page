@@ -29,6 +29,9 @@ importers:
       '@mdx-js/react':
         specifier: ^3.1.0
         version: 3.1.1(@types/react@19.2.4)(react@19.2.0)
+      '@orama/tokenizers':
+        specifier: ^3.1.16
+        version: 3.1.16
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -161,6 +164,9 @@ importers:
       lucide-react:
         specifier: ^0.540.0
         version: 0.540.0(react@19.2.0)
+      mandarin:
+        specifier: link:@orama/tokenizers/mandarin
+        version: link:@orama/tokenizers/mandarin
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6
@@ -1008,6 +1014,10 @@ packages:
 
   '@orama/orama@3.1.16':
     resolution: {integrity: sha512-scSmQBD8eANlMUOglxHrN1JdSW8tDghsPuS83otqealBiIeMukCQMOf/wc0JJjDXomqwNdEQFLXLGHrU6PGxuA==}
+    engines: {node: '>= 20.0.0'}
+
+  '@orama/tokenizers@3.1.16':
+    resolution: {integrity: sha512-QLYWlcFNs3G2ikJJewxSsC/JSz3Ltz5uZED1yAubhMg5Vk3jG/3P4UkDYt5SzuimkQYwYnHXVGlw93ZzsP+M0w==}
     engines: {node: '>= 20.0.0'}
 
   '@peculiar/asn1-android@2.5.0':
@@ -5519,6 +5529,10 @@ snapshots:
 
   '@orama/orama@3.1.16': {}
 
+  '@orama/tokenizers@3.1.16':
+    dependencies:
+      '@orama/orama': 3.1.16
+
   '@peculiar/asn1-android@2.5.0':
     dependencies:
       '@peculiar/asn1-schema': 2.5.0
@@ -7626,7 +7640,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.2.0(eslint@8.57.1)
@@ -7656,7 +7670,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -7671,7 +7685,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.4(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
