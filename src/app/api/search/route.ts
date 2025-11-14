@@ -2,22 +2,10 @@ import { source } from "@/lib/source";
 import { createFromSource } from "fumadocs-core/search/server";
 import { createTokenizer } from "@orama/tokenizers/mandarin";
 
+// Apply Mandarin tokenizer globally, without locale-based filtering.
+// Do NOT set `language` when using a custom tokenizer (Orama restriction).
 export const { GET } = createFromSource(source, {
-  // https://docs.orama.com/docs/orama-js/supported-languages
-  localeMap: {
-    default: {
-      components: {
-        tokenizer: createTokenizer(), // 中文+英文混合可用
-      },
-    },
-    cn: {
-      components: {
-        tokenizer: createTokenizer(),
-      },
-      search: {
-        threshold: 0,
-        tolerance: 0,
-      },
-    },
+  components: {
+    tokenizer: createTokenizer(),
   },
 });
