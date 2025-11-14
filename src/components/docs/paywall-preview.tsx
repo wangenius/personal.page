@@ -12,12 +12,12 @@ export function PaywallPreview({ segments, components }: PaywallPreviewProps) {
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden">
-        <div className="max-h-[420px] overflow-hidden [mask-image:linear-gradient(180deg,#000_60%,rgba(0,0,0,0.1))]">
+        <div className="max-h-[420px] overflow-hidden">
           {segments.map((Segment, index) => (
             <Segment key={index} components={components} />
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background via-background/80 to-transparent dark:from-slate-900" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-background via-background/80 to-transparent dark:from-slate-900" />
       </div>
       <div className="flex items-center justify-between rounded-2xl border border-dashed border-slate-200 px-4 py-3 text-sm text-muted-foreground dark:border-slate-800">
         <span>订阅后可继续阅读剩余内容</span>

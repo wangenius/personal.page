@@ -1,11 +1,7 @@
 import { source } from "@/lib/source";
 import { getDocPreviewSegments, requiresSubscription } from "@/lib/docs-access";
-import {
-  DocsPage,
-  DocsBody,
-  DocsDescription,
-  DocsTitle,
-} from "fumadocs-ui/page";
+import { DocsPage, DocsBody, DocsDescription, DocsTitle } from "fumadocs-ui/page";
+import { SelectionQuote } from "@/components/docs/selection-quote";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createRelativeLink } from "fumadocs-ui/mdx";
@@ -40,14 +36,16 @@ export default async function LangDocsPage(props: {
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        {locked ? (
-          <PaywallPreview
-            segments={previewSegments}
-            components={baseComponents}
-          />
-        ) : (
-          <MDXContent components={baseComponents} />
-        )}
+        <SelectionQuote>
+          {locked ? (
+            <PaywallPreview
+              segments={previewSegments}
+              components={baseComponents}
+            />
+          ) : (
+            <MDXContent components={baseComponents} />
+          )}
+        </SelectionQuote>
       </DocsBody>
     </DocsPage>
   );

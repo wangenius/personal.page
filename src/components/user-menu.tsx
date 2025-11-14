@@ -14,18 +14,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { TbLogout } from "react-icons/tb";
-import {
-  SubscriptionStatusDto,
-  SubscriptionStatusResponse,
-} from "@/lib/subscription";
 import { cn } from "@/lib/utils";
 import { BiUser } from "react-icons/bi";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const [subscriptionStatus, setSubscriptionStatus] =
-    useState<SubscriptionStatusDto | null>(null);
 
   useEffect(() => {
     setImageUrl(session?.user.image || undefined);
@@ -40,37 +34,6 @@ export function UserMenu() {
         })
         .catch(() => {});
     }
-  }, [session]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    if (!session) {
-      setSubscriptionStatus(null);
-      return () => {
-        isMounted = false;
-      };
-    }
-
-    fetch("/api/subscription/status", { cache: "no-store" })
-      .then(async (res) => {
-        if (!res.ok) {
-          return null;
-        }
-        return (await res.json()) as SubscriptionStatusResponse | null;
-      })
-      .then((payload) => {
-        if (!isMounted) return;
-        setSubscriptionStatus(payload?.subscription ?? null);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setSubscriptionStatus(null);
-      });
-
-    return () => {
-      isMounted = false;
-    };
   }, [session]);
 
   if (isPending) {

@@ -117,7 +117,7 @@ export function dialog({
               className={cn(
                 "relative z-50 max-h-[85vh] max-w-[80vw] rounded-lg bg-background p-6 pt-3 shadow-lg w-[800px] flex flex-col gap-4",
                 className,
-                transparent && "bg-transparent backdrop-blur-none !shadow-none"
+                transparent && "bg-transparent backdrop-blur-none shadow-none!"
               )}
               {...props}
             >
