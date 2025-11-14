@@ -36,14 +36,12 @@ export const get_doc_content = tool({
 export const get_docs_tree = tool({
   description:
     "获取 /docs 下的文档树形结构和路径信息，可选指定语言（默认为 en）用于快速浏览文档结构。",
-  inputSchema: z
-    .object({
-      lang: z
-        .string()
-        .optional()
-        .describe("文档语言，例如 en 或 zh，不传则默认 en"),
-    })
-    .optional(),
+  inputSchema: z.object({
+    lang: z
+      .string()
+      .optional()
+      .describe("文档语言，例如 en 或 zh，不传则默认 en"),
+  }),
   execute: async (input) => {
     try {
       const lang = input?.lang ?? "en";
@@ -78,7 +76,7 @@ export const get_docs_tree = tool({
 export const get_blog_list = tool({
   description:
     "获取 blog 下所有文章的简要列表和路径信息，包括 slug、url、标题、描述和日期。",
-  inputSchema: z.object({}).optional(),
+  inputSchema: z.object({}),
   execute: async () => {
     try {
       const posts = [...blog.getPages()].sort(
@@ -152,7 +150,7 @@ export const get_blog_content = tool({
 export const get_products_list = tool({
   description:
     "获取 products 下所有产品页面的简要列表和路径信息，包括 slug、url、标题和描述。",
-  inputSchema: z.object({}).optional(),
+  inputSchema: z.object({}),
   execute: async () => {
     try {
       const items = [...products.getPages()];

@@ -35,6 +35,7 @@ export async function POST(request: Request) {
       get_products_list,
       get_product_content,
     },
+    temperature: 0.7,
     stopWhen: stepCountIs(20),
   });
 
