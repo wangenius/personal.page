@@ -83,8 +83,8 @@ export const get_blog_list = tool({
     try {
       const posts = [...blog.getPages()].sort(
         (a, b) =>
-          new Date(b.data.date ?? b.file.name).getTime() -
-          new Date(a.data.date ?? a.file.name).getTime(),
+          new Date(b.data.date as string).getTime() -
+          new Date(a.data.date as string).getTime()
       );
 
       return {
@@ -93,7 +93,7 @@ export const get_blog_list = tool({
           url: post.url,
           title: post.data.title,
           description: post.data.description ?? null,
-          date: (post.data.date ?? post.file.name) as string,
+          date: post.data.date as string,
         })),
       } as const;
     } catch (error: any) {

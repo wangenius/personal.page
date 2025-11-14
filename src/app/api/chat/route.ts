@@ -21,10 +21,12 @@ export const maxDuration = 30;
 export async function POST(request: Request) {
   const { messages = [] }: { messages?: UIMessage[] } = await request.json();
 
+  const msgs = convertToModelMessages(messages);
+  console.log(JSON.stringify(msgs));
   const result = streamText({
     model: MAIN_MODEL,
     system: systemPrompt,
-    messages: convertToModelMessages(messages),
+    messages: msgs,
     tools: {
       get_doc_content,
       get_docs_tree,

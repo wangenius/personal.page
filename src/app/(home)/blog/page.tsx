@@ -7,8 +7,8 @@ import { Calendar, ArrowRight } from "lucide-react";
 export default function Page() {
   const posts = [...blog.getPages()].sort(
     (a, b) =>
-      new Date(b.data.date ?? b.file.name).getTime() -
-      new Date(a.data.date ?? a.file.name).getTime()
+      new Date(b.data.date as string).getTime() -
+      new Date(a.data.date as string).getTime()
   );
 
   const [featured, ...rest] = posts;
@@ -23,7 +23,7 @@ export default function Page() {
   return (
     <main className="mx-auto w-full max-w-fd-container px-4 md:py-12">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl border bg-gradient-to-b from-fd-card to-fd-background p-8 md:p-12">
+      <section className="relative overflow-hidden rounded-2xl border bg-linear-to-b from-fd-card to-fd-background p-8 md:p-12">
         <div className="relative z-10">
           <p className="text-xs uppercase tracking-wide text-fd-muted-foreground">
             Blog
@@ -61,9 +61,7 @@ export default function Page() {
               <div className="flex items-center gap-3 text-sm text-fd-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span>
-                  {new Date(
-                    featured.data.date ?? featured.file.name
-                  ).toDateString()}
+                  {new Date(featured.data.date as string).toDateString()}
                 </span>
               </div>
               <h2 className="mt-2 text-2xl font-semibold leading-snug tracking-tight md:text-3xl md:leading-snug group-hover:underline">
@@ -99,9 +97,7 @@ export default function Page() {
           >
             <div className="flex items-center gap-2 text-xs text-fd-muted-foreground">
               <Calendar className="h-3.5 w-3.5" />
-              <span>
-                {new Date(post.data.date ?? post.file.name).toDateString()}
-              </span>
+              <span>{new Date(post.data.date as string).toDateString()}</span>
             </div>
             <p className="mt-2 text-lg font-medium group-hover:underline">
               {post.data.title}
