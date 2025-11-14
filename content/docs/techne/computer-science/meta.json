@@ -1,6 +1,10 @@
 {
-  "title": "Computer Science",
+  "title": "计算机科学",
   "pages": [
-    "..."
+    "computer-operator",
+    "data-and-algorithms",
+    "operating-system",
+    "web-and-network",
+    "software-engineer"
   ]
 }
