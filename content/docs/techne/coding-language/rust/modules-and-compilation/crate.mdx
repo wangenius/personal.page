@@ -1,0 +1,64 @@
+---
+title: crate
+
+slug: crate
+---
+
+crate 是 rust 中的一个编译单元。每当调用 rustc some_file.rs 时， some_file.rs 都会被视为 crate 文件。如果 some_file.rs 中有 mod 声明，则在运行之前，模块文件的内容将插入到 crate 文件中找到 mod 声明的位置编译器对其进行处理。换句话说，模块不会单独编译，只有包会被编译。
+
+板条箱可以编译成二进制文件或库。默认情况下， rustc 将从箱子中生成二进制文件。可以通过将 --crate-type 标志传递给 lib 来覆盖此行为。
+
+## create
+
+让我们创建一个库，然后看看如何将其链接到另一个板条箱。
+
+在 rary.rs 中：
+
+```rust
+pub fn public_function() {
+   println!("called rary's `public_function()`");
+}
+
+fn private_function() {
+   println!("called rary's `private_function()`");
+}
+
+pub fn indirect_access() {
+   print!("called rary's `indirect_access()`, that\n> ");
+
+   private_function();
+}
+```
+
+```text title="output"
+$ rustc --crate-type=lib rary.rs
+$ ls lib*
+library.rlib
+```
+库以“lib”为前缀，默认情况下它们以板条箱文件命名，但可以通过将 --crate-name 选项传递给 rustc 或使用 < b2> 属性。
+
+## using
+
+要将箱子链接到这个新库，您可以使用 rustc 的 --extern 标志。然后，其所有项目都将导入到与库同名的模块下。该模块的行为方式通常与任何其他模块相同。
+
+```rust
+// extern crate rary; // May be required for rust 2015 edition or earlier
+
+fn main() {
+    rary::public_function();
+
+    // Error! `private_function` is private
+    //rary::private_function();
+
+    rary::indirect_access();
+}
+```
+
+```text title="output"
+# Where library.rlib is the path to the compiled library, assumed that it's
+# in the same directory here:
+$ rustc executable.rs --extern rary=library.rlib && ./executable 
+called rary's `public_function()`
+called rary's `indirect_access()`, that
+> called rary's `private_function()`
+```

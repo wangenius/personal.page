@@ -11,15 +11,17 @@ import {
   remarkImage,
   remarkHeading,
 } from "fumadocs-core/mdx-plugins";
+
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import remarkDirective from "remark-directive";
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 const DOC_ROOT = "content/docs";
 
 const accessControlledFrontmatter = frontmatterSchema.extend({
-  free: z.enum(["yes", "no"]).default("no"),
+  free: z.boolean().default(false),
 });
 
 export const docs = defineDocs({
@@ -34,7 +36,13 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
-    remarkPlugins: [remarkAdmonition, remarkMath, remarkImage, remarkHeading],
+    remarkPlugins: [
+      remarkDirective,
+      remarkAdmonition,
+      remarkMath,
+      remarkImage,
+      remarkHeading,
+    ],
     rehypePlugins: (v) => [rehypeKatex, ...v],
     remarkImageOptions: {
       placeholder: "none",

@@ -1,0 +1,198 @@
+---
+title : 标准库
+
+slug : 标准库
+---
+
+首先需要介绍的是 C++ 本身的版本。由于 C++ 本身只是一门语言，而不同的编译器对 C++ 的实现方法各不一致，因此需要标准化来约束编译器的实现，使得 C++ 代码在不同的编译器下表现一致。C++ 自 1985 年诞生以来，一共由国际标准化组织（ISO）发布了 5 个正式的 C++ 标准，依次为 C++98、C++03、C++11（亦称 C++0x）、C++14（亦称 C++1y）、C++17（亦称 C++1z）、C++20（亦称 C++2a）。C++ 标准草案在 open-std 网站上，最新的标准 C++23（亦称 C++2b）仍在制定中。此外还有一些补充标准，例如 C++ TR1。
+
+每一个版本的 C++ 标准不仅规定了 C++ 的语法、语言特性，还规定了一套 C++ 内置库的实现规范，这个库便是 C++ 标准库。C++ 标准库中包含大量常用代码的实现，如输入输出、基本数据结构、内存管理、多线程支持等。掌握 C++ 标准库是编写更现代的 C++ 代码必要的一步。C++ 标准库的详细文档在 cppreference 网站上，文档对标准库中的类型函数的用法、效率、注意事项等都有介绍，请善用。
+
+需要指出的是，不同的 OJ 平台对 C++ 版本均不相同，例如 最新的 ICPC 比赛规则 支持 C++20 标准。根据 NOI 科学委员会决议，自 2021 年 9 月 1 日起 NOI Linux 2.0 作为 NOI 系列比赛和 CSP-J/S 等活动的标准环境使用。NOI Linux 2.0 中指定的 g++ 9.3.0 默认支持标准 为 C++14，并支持 C++17 标准，可以满足绝大部分竞赛选手的需求。因此在学习 C++ 时要注意比赛支持的标准，避免在赛场上时编译报错。
+
+## 标准模板库（STL）
+
+STL 即标准模板库（Standard Template Library），是 C++ 标准库的一部分，里面包含了一些模板化的通用的数据结构和算法。由于其模板化的特点，它能够兼容自定义的数据类型，避免大量的造轮子工作。NOI 和 ICPC 赛事都支持 STL 库的使用，因此合理利用 STL 可以避免编写无用算法，并且充分利用编译器对模板库优化提高效率。STL 库的详细介绍请参见对应的页面：STL 容器 和 STL 算法。
+
+## 标准库
+
+在ISOC++标准中, 标准库规范占了2/3的篇幅. 除了提供标准库组件外, 大多数C++实现还提供GUI,web api, database api等.
+
+标准库提供的设施分为以下:
+1. 运行时语言支持: 对资源分配和运行时类型信息的支持
+2. C标准库: 进行了非常小的修改,以便尽量减少和类型系统的冲突
+3. 字符串: 包括对国际字符集,本地化和子串只读视图的支持
+4. 对正则表达式的支持
+5. IO流: 一个可扩展的IO框架, 用户可以向其中添加自己设计的类型,流,缓冲策略,区域设定和字符集等.
+6. 容器(如vector和map)和算法(find,sort,merge)框架:人们习惯上称这个框架为标准模板库(STL), 用户可以向其中添加自己定义的容器或算法.
+7. 对数值计算的支持
+8. 对并发程序的设计和支持:包括thread和锁机制
+9. 大多数STL算法和一些数值算法的并行版本
+10. 支持模板源程序设计的工具(类型萃取等),STL风格的泛型程序设计(pair),通用程序设计(variant,optional等)和clock
+11. 高效安全的通用资源管理和可选的垃圾收集器的接口
+12. 用于资源管理的智能指针: unique_ptr和shared_ptr
+13. 特殊用途容器:array,bitset,tuple等
+14. 对应常计量单位的后缀:ms毫秒,i虚部
+
+## 标准库头文件和名字空间
+
+每个标准库设施都是通过若干标准库头文件提供的
+
+```cpp
+#include <string>
+#include <list>
+```
+包含这两个头文件,程序就可以使用string和list了
+标准库定义在一个名为std的名字空间中, 要使用把标准库设施, 可以使用std::前缀:
+```cpp
+std::string sheep {"hello word"};
+std::list<std::string> slogans {"hello","world"};
+```
+
+c++ 标准库中也提供了来自c标准库的头文件如stdlib.h. 这类头文件都有一个对应的版本，名字加了前缀c而少了后缀.h. 对应版本中的声明都放在了std名字空间中.
+
+|std header files| some content|
+|-|-|
+|\<algorithm>|copy(),find(),sort()|
+|\<array>|array|
+|\<chrono>|duration,time_point|
+|\<bitset>||
+|\<cmath>|sqrt(),pow()|
+|\<complex>|complex,sqrt(),pow()|
+|\<climits>||
+|\<deque>||
+|\<filesystem>|path|
+|\<forward_list>|forward_list|
+|\<fstream>|fstream,ifstream,ofstream|
+|\<functional>||
+|\<future>|future,promise|
+|\<ios>|hex,dec,scientific,fixed,defaultfloat|
+|\<iostream>|istream,ostream,cin,cout|
+|\<list>||
+|\<map>|map,multimap|
+|\<memory>|unique_ptr,shared_ptr,allocator|
+|\<random>|default_random_engine,normal_distribution|
+|\<regex>|regex,smatch|
+|\<string>|string,basic_string|
+|\<set>|set,multiset|
+|\<sstream>|istringstream,ostringstream|
+|\<stdexcept>|length_error,out_of_range,runtime_error|
+|\<thread>|thread|
+|\<queue>||
+|\<stack>||
+|\<tuple>||
+|\<unordered_map>|unordered_map,unordered_multimap|
+|\<unordered_set>||
+|\<utility>|move(),swap(),pair()|
+|\<variant>|variant|
+|\<vector>|vector|
+
+具体查询:
+[c++标准库接口下列标头的汇集定义](https://zh.cppreference.com/w/cpp/header)
+
+其中:
+
+语言支持库提供了 C++ 语言中特定部分需要的组件，例如内存分配（new/delete）和异常处理。
+
+概念库描述了 C++ 程序为进行编译期模板实参验证和根据类型的属性分派函数而可能要用到的库组件。(C++20 起)
+
+诊断库提供了在 C++ 程序中报告错误的统一框架，包括预定义的异常类。
+
+内存管理库提供了内存管理所需的组件，包括智能指针和有作用域分配器 (C++11 起)。
+
+元编程库描述了用于模板和常量求值的设施，包括类型特征，整数序列 (C++14 起)和有理数算术。(C++11 起)
+
+通用工具库包含了其他库元素需要用到的组件，例如动态存储管理所需的预定义的存储分配器，以及 C++ 程序中用作基础设施的组件，例如元组和 (C++11 起)函数包装器。
+
+字符串库针对表示为以下类型的同质序列的字符序列的文本进行操纵提供支持：char，char8_t， (C++20 起)char16_t，char32_t， (C++11 起)wchar_t 或其他字符式类型。
+
+容器，迭代器，范围 (C++20 起)和算法库向 C++ 程序提供了最广泛使用的算法和数据结构的一个子集。
+
+数值库提供了数值算法和复数组件以扩展对数值处理的支持。valarray 组件提供了对同时处理多个数值的支持，它可以在支持的平台上被实现为采用并行操作。随机数组件提供了生成伪随机数的设施。 (C++11 起)
+
+时间库提供了通用的时间工具。
+
+本地化库为文本处理提供了国际化的扩展支持。
+
+输入/输出库提供了用于 C++ 程序的主要输入和输出机制的 I/O 流组件。它们可以和库的其他元素一起使用，尤其是字符串、本地化和迭代器。
+
+正则表达式库提供了正则表达式的匹配和搜索。
+
+线程支持库提供了用于创建和管理线程的组件，包括原子操作，互斥锁和线程间通信。(C++11 起)
+
+## STL
+
+除了从C标准库保留下来的一些功能之外，C++还提供了一个基于模版实现的标准模版库（Standard Template Library, 简称STL）。
+
+STL基于模版实现了一些面向序列数据的表示以及常用的操作
+
+STL支持了一种抽象的编程模式
+
+隐藏了一些低级的程序元素，如数组、链表、循环等
+
+1、STL（Standard Template Library），即标准模板库，是标准库的子集. 是一个高效的C++程序库，包含了诸多常用的基本数据结构和基本算法。为广大C++程序员们提供了一个可扩展的应用框架，高度体现了软件的可复用性。
+
+2、从逻辑层次来看，在STL中体现了泛型化程序设计的思想（generic programming）。在这种思想里，大部分基本算法被抽象，被泛化，独立于与之对应的数据结构，用于以相同或相近的方式处理各种不同情形。
+
+3、从实现层次看，整个STL是以一种类型参数化（type parameterized）的方式实现的，基于模板（template）。
+
+<Callout type="success" title="STL和std的区别">
+STL是标准模板库，是标准库的子集。主要是容器、算法、迭代器。标准库还包括stream,string等，STL大约占了标准库内容得80%
+
+std是命名空间的名字，目的是为了避免命名空间污染。模板库（包括stl）的设计者，特意在库文件里面加上了命名空间。这样，我们使用者就可以在定义自己的函数时，定义自己的命名空间。然后在自己定义的命名空间作用域范围内，使用我们自己定义的、但可能和标准库里的函数重名的函数。这样就不会有函数冲突了，使用时注意命名空间的作用域就好了！
+
+也就是说，模板库(包括 stl,stream,string)中的所有名字的使用都得通过std::。
+</Callout>
+
+STL有六大组件，但主要包含容器、迭代器和算法三个部分。
+
+1. 容器（Containers）：用来管理某类对象的集合。每一种容器都有其优点和缺点，所以为了应付程序中的不同需求，STL 准备了七种基本容器类型。
+     1. 向量
+     2. 队列
+     3. 栈
+     4. 集合
+2. 迭代器（Iterators）：用来在一个对象集合的元素上进行遍历动作。这个对象集合或许是个容器，或许是容器的一部分。每一种容器都提供了自己的迭代器，而这些迭代器了解该种容器的内部结构。
+     1. 迭代器实现了抽象的指针功能，它们指向容器中的数据元素，用于对容器中的数据元素进行遍历和访问。
+     2. 迭代器是容器和算法之间的桥梁：传给算法的不是容器，而是指向容器中元素的迭代器，算法通过迭代器实现对容器中数据元素的访问。这样使得算法与容器保持独立，从而提高算法的通用性。
+3. 算法（Algorithms）：用来处理对象集合中的元素，比如 Sort，Search，Copy，Erase 那些元素。通过迭代器的协助，我们只需撰写一次算法，就可以将它应用于任意容器之上，这是因为所有容器的迭代器都提供一致的接口。
+
+STL 的基本观念就是将数据和操作分离。数据由容器进行管理，操作则由算法进行，而迭代器在两者之间充当粘合剂，使任何算法都可以和任何容器交互运作。这一篇博客暂时只介绍容器，下一篇介绍迭代器。
+
+## 使用STL的例子
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+using namespace std;
+
+void display(int x) { cout << ' ' << x; return; }
+int main()
+{
+    vector<int> v; //创建容器对象v，元素类型为int
+    int x;
+    cin >> x;
+    while (x > 0) //生成容器v中的元素
+    {
+        v.push_back(x); //往容器v中增加一个元素
+        cin >> x;
+    }
+    //利用算法max_element计算并输出容器v中的最大元素
+    cout << "Max = " << *max_element(v.begin(),v.end()) << endl;
+    //利用算法accumulate计算并输出容器v中所有元素的和
+    cout << "Sum = " << accumulate(v.begin(),v.end(),0) << endl;
+    //利用算法sort对容器v中的元素进行排序
+    sort(v.begin(),v.end()); 
+    //利用算法for_each输出排序结果
+    cout << "Sorted result is:\n";
+    for_each(v.begin(),v.end(),display);
+    cout << '\n';
+    return 0;
+}
+```
+
+一个利用STL容器迭代器算法的使用: [在“学生”容器中作统计](https://cui-jiacai.gitbook.io/c++-stl-tutorial/gai-shu/yi-ge-chuan-lian-qian-wen-de-li-zi)
+
+## Boost 库
+
+Boost 是除了标准库外，另一个久副盛名的开源 C++ 工具库，其代码具有可移植、高质量、高性能、高可靠性等特点。Boost 中的模块数量非常之大，功能全面，并且拥有完备的跨平台支持，因此被看作 C++ 的准标准库。C++ 标准中的不少特性也都来自于 Boost，如智能指针、元编程、日期和时间等。尽管在 OI 中无法使用 Boost，但是 Boost 中有不少轮子可以用来验证算法或者对拍，如 Boost.Geometry 有 R 树的实现，Boost.Graph 有图的相关算法，Boost.Intrusive 则提供了一套与 STL 容器用法相似的侵入式容器。有兴趣的读者可以自行在网络搜索教程。

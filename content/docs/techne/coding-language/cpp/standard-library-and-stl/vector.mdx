@@ -1,0 +1,193 @@
+---
+title : vector
+
+slug : vector
+---
+
+向量（Vector）是一个封装了动态大小数组的顺序容器（Sequence Container）。跟任意其它类型容器一样，它能够存放各种类型的对象。可以简单的认为，向量是一个能够存放任意类型的动态数组。
+
+<Callout type="success" title="vector和array的区别">
+vector的数据安排及操作方式，与array非常相似，两者的唯一差别在于空间的运用的灵活性。
+
+array是静态空间，一旦配置了一般不能改变，如果要改变空间大小，需要自行完成以下三个步骤：
+
+1. 配置一块新的空间
+2. 将旧数据搬往新的空间
+3. 释放原来的空间
+
+而vector是动态空间，但其实vector的动态也是对于上述过程的封装，并且vector配置空间的策略也考虑了运行成本，采用特定的扩展的策略（并不是简单的成倍扩展）。
+</Callout>
+
+vector采用的数据结构非常简单，线性连续空间，它以两个迭代器_Myfirst和_Mylast分别指向配置得来的连续空间中已被使用的范围，并以迭代器Myend指向整块连续内存空间的尾端。
+
+为了降低空间配置时的成本，vector实际配置的大小可能比用户端需求大一些，以备将来可能的扩充，这便是容量的概念。
+
+一个vector容器的容量永远大于等于其大小，一旦容量等于大小，便是满载，下次再有新增元素，整个vector容器就得另觅居所。
+
+vector 是表示可以改变大小的数组的序列容器。
+
+|方法|	含义|
+|-|-|
+|vector|	构造函数|
+|~vector|	析构函数，销毁容器对象|
+|operator= |	将新内容分配给容器，替换其当前内容，并相应地修改其大小|
+|begin|	返回指向容器中第一个元素的迭代器|
+|end|	返回指向容器中最后一个元素之后的理论元素的迭代器|
+|rbegin|	返回指向容器中最后一个元素的反向迭代器|
+|rend|	返回一个反向迭代器，指向中第一个元素之前的理论元素|
+|cbegin|	返回指向容器中第一个元素的常量迭代器（const_iterator）|
+|cend|	返回指向容器中最后一个元素之后的理论元素的常量迭代器（const_iterator）|
+|crbegin|	返回指向容器中最后一个元素的常量反向迭代器（const_reverse_iterator）|
+|crend|	返回指向容器中第一个元素之前的理论元素的常量反向迭代器（const_reverse_iterator）|
+|size|	返回容器中元素的数量|
+|max_size|	返回容器可容纳的最大元素数|
+|resize|	调整容器的大小，使其包含 n（参数）个元素|
+|capacity|	返回当前为 vector 分配的存储空间（容量）的大小|
+|empty|	返回 vector 是否为空|
+|reserve|	请求 vector 容量至少足以包含 n（参数）个元素|
+|shrink_to_fit|	要求容器减小其 capacity（容量）以适应其 size（元素数量）|
+|operator[] |	返回容器中第 n（参数）个位置的元素的引用|
+|at|	返回容器中第 n（参数）个位置的元素的引用|
+|front|	返回对容器中第一个元素的引用|
+|back|	返回对容器中最后一个元素的引用|
+|data|	返回指向容器中第一个元素的指针|
+|assign|	将新内容分配给 vector，替换其当前内容，并相应地修改其 size|
+|push_back|	在容器的最后一个元素之后添加一个新元素|
+|pop_back|	删除容器中的最后一个元素，有效地将容器 size 减少一个|
+|insert|	通过在指定位置的元素之前插入新元素来扩展该容器，通过插入元素的数量有效地增加容器大小|
+|erase|	从 vector 中删除单个元素（position）或一系列元素（[first，last)），这有效地减少了被去除的元素的数量，从而破坏了容器的大小|
+|swap|	通过 x（参数）的内容交换容器的内容，x 是另一个类型相同、size 可能不同的 vector 对象|
+|clear|	从 vector 中删除所有的元素（被销毁），留下 size 为 0 的容器|
+|emplace|	通过在 position（参数）位置处插入新元素 args（参数）来扩展容器|
+|emplace_back|	在 vector 的末尾插入一个新的元素，紧跟在当前的最后一个元素之后|
+|get_allocator|	返回与vector关联的构造器对象的副本|
+|swap(vector)|	容器 x（参数）的内容与容器 y（参数）的内容交换。两个容器对象都必须是相同的类型（相同的模板参数）|
+|relational operators (vector) |	形如 `vectorA > vectorB`；依此比较每个元素的大小关系|
+
+:::tip 数据结构
+所谓动态增加大小，并不是在原空间之后续接新空间（因为无法保证原空间之后尚有可配置的空间），而是一块更大的内存空间，然后将原数据拷贝新空间，并释放原空间。
+
+因此，对vector的任何操作，一旦引起空间的重新配置，指向原vector的所有迭代器就都失效了。
+
+## vector 迭代器
+
+vector维护一个线性空间，所以不论元素类型如何，普通指针都可以作为vector的迭代器。
+
+1. 因为vector迭代器所需要的行为，如operator*，operator->，operator++，operator--，operator+，operator-，operator+=，operator-=，普通指针天生具备。
+2. vector指针支持随机存取，而普通指针正有着这样的能力。
+
+所以，vector提供的是随机访问迭代器（Random Access Iterator），其内部用普通指针实现。
+
+```cpp title="使用迭代器进行正序遍历"
+for (vector<T>::iterator it = v.begin(); it != v.end(); it++)
+{
+    cout << *it << endl;
+}
+/**
+ * 1. 迭代器的声明方式:  容器类型::迭代器类型
+ * 2. 顺序首尾迭代器由begin()和end()方法生成
+*/
+```
+
+```cpp title="使用迭代器进行逆向遍历"
+for (vector<T>::reverse_iterator it = v.rbegin(); it != v.rend(); it++)
+{
+    cout << *it << endl;
+}
+/**
+  * 1. 逆向迭代器不再是iterator，而是reverse_iterator
+  * 2. 逆序首位迭代器由rbegin()和rend()方法生成
+*/
+```
+判断迭代器是否能随机访问的方法:
+```cpp
+iterator++；
+iterator--；
+//通过编译，至少是双向迭代器
+  
+iterator = iterator + 1；
+//通过编译，则是随机访问迭代器
+```
+
+## 构造函数
+
+```cpp
+vector<T> v; // 采用模版类实现，默认构造函数
+vector<T> v(T* v1.begin(), T* v1.end()); // 将v1[begin(), end())区间中的元素拷贝给本身
+vector<T> v(int n, T elem); // 将n个elem拷贝给本身
+vector<T> v(const vector<T> v1); // 拷贝构造函数
+```
+
+比如:
+```cpp
+int array[5] = {1, 2, 3, 4, 5};
+vector<int> v(array, array + sizeof(array) / sizeof(int));
+// 联系我们之前提到的vector迭代器本质上是指针就不难理解了
+```
+
+## 成员函数
+
+### 赋值
+
+由于vector采用模版类实现，其完整的函数声明会稍显复杂，下面方法的演示会省略类型界定。
+
+```cpp
+assign(beg, end); // 将[beg, end)区间中的数据拷贝复制给本身
+assign(n, elem); // 将n个elem拷贝给本身
+vector& operator=(const vector& vec); // 重载赋值操作符
+```
+
+互换操作也可视为一种特殊的赋值：
+
+```cpp
+swap(vec); //将vec与本身的元素互换
+```
+巧用swap来收缩空间：
+```cpp
+vector<int>(v).swap(v);
+// vector<int>(v): 利用拷贝构造函数初始化匿名对象
+// swap(v): 交换的本质其实只是互换指向内存的指针
+// 匿名对象指针指向的内存会由系统自动释放
+```
+
+### 大小操作
+
+```cpp
+int size(); // 返回容器中的元素个数
+bool empty(); // 判断容器是否为空
+
+void resize(int num); 
+// 重新指定容器的长度为num，若容器变长，则以默认值填充新位置。
+// 若容器变短，则末尾超出容器长度的元素被删除
+void resize(int num, T elem); 
+// 重新指定容器的长度为num，若容器变长，则以elem填充新位置。
+// 若容器变短，则末尾超出容器长度的元素被删除
+
+int capacity(); // 返回容器的容量
+void reserve(int len); 
+// 容器预留len个元素长度，预留位置不初始化，元素不可访问
+```
+
+### 存取操作
+```cpp
+T& at(int idx); // 返回索引idx所指的数据，如果idx越界，抛出out_of_range异常
+T& operator[](int idx); // 返回索引idx所指的数据，如果idx越界，运行直接报错
+
+T& front(); // 返回首元素的引用
+T& back(); // 返回尾元素的引用
+```
+
+### 插入和删除
+
+```cpp
+insert(const_iterator pos, T elem); // 在pos位置处插入元素elem
+insert(const_iterator pos, int n, T elem); // 在pos位置插入n个元素elem
+insert(pos, beg, end); // 将[beg, end)区间内的元素插到位置pos
+push_back(T elem); // 尾部插入元素elem
+pop_back(); // 删除最后一个元素
+
+erase(const_iterator start, const_iterator end); // 删除区间[start, end)内的元素
+erase(const_iterator pos); // 删除位置pos的元素
+
+clear(); // 删除容器中的所有元素
+```

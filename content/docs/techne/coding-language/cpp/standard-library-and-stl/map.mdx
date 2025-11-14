@@ -1,0 +1,78 @@
+---
+title : map
+
+slug : map
+---
+
+std提供了一个名为map的平衡二叉搜索树(红黑树)
+
+也被称为关联数组或字典.
+
+map 的特性是，所有的元素都会根据元素的键值自动排序；
+
+map 的所有元素都是pair，同时拥有实值和键值。
+
+pair的第一元素被视为键值，第二元素被视为实值；
+
+map不允许两个元素有相同的键值；
+
+和set类似的原因，我们不能通过迭代器改变map的键值，但我们可以任意修改实值。
+
+map和list在增删元素的时候具有相似的性质。
+
+map和multimap的操作类似，唯一的区别是multimap键值可重复。
+
+map和multimap都是以红黑树作为底层实现机制。
+
+map和multimap包含在同一个头文件中。
+
+```cpp
+map<string,int> phone_book{
+    {"xiao ming",123},
+        {"li yuan fang",223},
+    {"liu bai",339547674124}
+}
+```
+
+map支持下标操作, 给定下标值应该是map的第一个类型(称为关键字key),得到的结果是与关键字关联的值(map的值或者映射类型)
+
+```cpp
+int get_num(const string& s){
+    return phone_book[s];
+}
+```
+换句话,对map进行下标操作本质上是进行一次搜索, 如果未能找到key,则向map插入一个新元素.
+
+如果避免讲一个无效电话号码添加到电话簿中,就应该使用find()和insert()来代替`[]`;
+
+map 是关联容器，按照特定顺序存储由 key value (键值) 和 mapped value (映射值) 组合形成的元素。
+
+|方法	|含义|
+|-|-|
+|map|	构造函数|
+|begin|	返回引用容器中第一个元素的迭代器|
+|key_comp|	返回容器用于比较键的比较对象的副本|
+|value_comp|	返回可用于比较两个元素的比较对象，以获取第一个元素的键是否在第二个元素之前|
+|find|	在容器中搜索具有等于 k（参数）的键的元素，如果找到则返回一个迭代器，否则返回 map::end 的迭代器|
+|count|	在容器中搜索具有等于 k（参数）的键的元素，并返回匹配的数量|
+|lower_bound|	返回一个非递减序列 [first, last)（参数）中的第一个大于等于值 val（参数）的位置的迭代器|
+|upper_bound|	返回一个非递减序列 [first, last)（参数）中第一个大于 val（参数）的位置的迭代器|
+|equal_range|	获取相同元素的范围，返回包含容器中所有具有与 k（参数）等价的键的元素的范围边界（`pair< map<char,int>::iterator`, `map<char,int>::iterator >`）|
+
+用于需要根据关键字来访问元素的场合。容器中每个元素是一个pair结构类型，该结构有两个成员：first和second，关键字对应first，值对应second，元素是根据其关键字排序的。
+
+对于map，不同元素的关键字不能相同；
+
+对于multimap，不同元素的关键字可以相同。
+
+它们在头文件map中定义，常常用某种二叉树来实现。
+
+有时候我们不需要排序，所以在C++11标准中新增加了unordered_map
+
+和unordered_multimap容器。
+
+## unordered_map
+
+搜索map的时间代价是o(log n), n是map中元素的数目. 通常情况下这样的性能非常好. 
+
+unordered_map是哈希表. 

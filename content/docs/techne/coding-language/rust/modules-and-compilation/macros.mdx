@@ -1,0 +1,302 @@
+---
+title: 宏
+
+slug: 宏
+---
+
+rust 提供了一个强大的宏系统，允许元编程。正如您在前面的章节中所看到的，宏看起来像函数，只是它们的名称以 bang ! 结尾，但宏不是生成函数调用，而是扩展为与其余部分一起编译的源代码的程序。然而，与 C 和其他语言中的宏不同，rust 宏被扩展为抽象语法树，而不是字符串预处理，因此您不会遇到意外的优先级错误。
+
+宏是使用 macro_rules! 宏创建的。
+
+```rust
+// This is a simple macro named `say_hello`.
+macro_rules! say_hello {
+    // `()` indicates that the macro takes no argument.
+    () => {
+        // The macro will expand into the contents of this block.
+        println!("Hello!")
+    };
+}
+
+fn main() {
+    // This call will expand into `println!("Hello")`
+    say_hello!()
+}
+```
+
+那么为什么宏有用呢？
+
+不要重复自己。在很多情况下，您可能需要在多个地方使用不同类型的类似功能。通常，编写宏是避免重复代码的有效方法。 （稍后会详细介绍）
+
+特定领域的语言。宏允许您为特定目的定义特殊语法。 （稍后会详细介绍）
+
+可变参数接口。有时您想要定义一个带有可变数量参数的接口。一个示例是 println! ，它可以采用任意数量的参数，具体取决于格式字符串。 （稍后会详细介绍）
+
+## 语法
+
+### 代号
+
+宏的参数以美元符号 $ 为前缀，并用指示符注释类型：
+
+```rust
+macro_rules! create_function {
+    // This macro takes an argument of designator `ident` and
+    // creates a function named `$func_name`.
+    // The `ident` designator is used for variable/function names.
+    ($func_name:ident) => {
+        fn $func_name() {
+            // The `stringify!` macro converts an `ident` into a string.
+            println!("You called {:?}()",
+                     stringify!($func_name));
+        }
+    };
+}
+
+// Create functions named `foo` and `bar` with the above macro.
+create_function!(foo);
+create_function!(bar);
+
+macro_rules! print_result {
+    // This macro takes an expression of type `expr` and prints
+    // it as a string along with its result.
+    // The `expr` designator is used for expressions.
+    ($expression:expr) => {
+        // `stringify!` will convert the expression *as it is* into a string.
+        println!("{:?} = {:?}",
+                 stringify!($expression),
+                 $expression);
+    };
+}
+
+fn main() {
+    foo();
+    bar();
+
+    print_result!(1u32 + 1);
+
+    // Recall that blocks are expressions too!
+    print_result!({
+        let x = 1u32;
+
+        x * x + 2 * x - 1
+    });
+}
+```
+
+这些是一些可用的指示符：
+
+- block
+- expr 用于表达式
+- ident 用于变量/函数名称
+- item
+- literal 用于文字常量
+- pat （模式）
+- path
+- stmt （声明）
+- tt （令牌树）
+- ty （类型）
+- vis （可见性限定符）
+
+有关完整列表，请参阅 rust 参考。
+
+### 重载
+
+可以重载宏以接受不同的参数组合。在这方面， macro_rules! 的工作方式与匹配块类似：
+```rust
+// `test!` will compare `$left` and `$right`
+// in different ways depending on how you invoke it:
+macro_rules! test {
+    // Arguments don't need to be separated by a comma.
+    // Any template can be used!
+    ($left:expr; and $right:expr) => {
+        println!("{:?} and {:?} is {:?}",
+                 stringify!($left),
+                 stringify!($right),
+                 $left && $right)
+    };
+    // ^ each arm must end with a semicolon.
+    ($left:expr; or $right:expr) => {
+        println!("{:?} or {:?} is {:?}",
+                 stringify!($left),
+                 stringify!($right),
+                 $left || $right)
+    };
+}
+
+fn main() {
+    test!(1i32 + 1 == 2i32; and 2i32 * 2 == 4i32);
+    test!(true; or false);
+}
+```
+
+### 重复
+
+宏可以在参数列表中使用 + 来指示参数可以至少重复一次，或者使用 * 来指示参数可以重复零次或多次。
+
+在以下示例中，用 `$(...)`,`+` 包围匹配器将匹配一个或多个表达式，以逗号分隔。另请注意，最后一种情况下分号是可选的。
+
+```rust
+// `find_min!` will calculate the minimum of any number of arguments.
+macro_rules! find_min {
+    // Base case:
+    ($x:expr) => ($x);
+    // `$x` followed by at least one `$y,`
+    ($x:expr, $($y:expr),+) => (
+        // Call `find_min!` on the tail `$y`
+        std::cmp::min($x, find_min!($($y),+))
+    )
+}
+
+fn main() {
+    println!("{}", find_min!(1));
+    println!("{}", find_min!(1 + 2, 2));
+    println!("{}", find_min!(5, 2 * 3, 4));
+}
+```
+
+## Don't repeat yourself
+
+宏允许通过分解函数和/或测试套件的公共部分来编写 DRY 代码。以下是在 `Vec<T>` 上实现和测试 += 、 *= 和 -= 运算符的示例：
+
+```rust
+use std::ops::{Add, Mul, Sub};
+
+macro_rules! assert_equal_len {
+    // The `tt` (token tree) designator is used for
+    // operators and tokens.
+    ($a:expr, $b:expr, $func:ident, $op:tt) => {
+        assert!($a.len() == $b.len(),
+                "{:?}: dimension mismatch: {:?} {:?} {:?}",
+                stringify!($func),
+                ($a.len(),),
+                stringify!($op),
+                ($b.len(),));
+    };
+}
+
+macro_rules! op {
+    ($func:ident, $bound:ident, $op:tt, $method:ident) => {
+        fn $func<T: $bound<T, Output=T> + Copy>(xs: &mut Vec<T>, ys: &Vec<T>) {
+            assert_equal_len!(xs, ys, $func, $op);
+
+            for (x, y) in xs.iter_mut().zip(ys.iter()) {
+                *x = $bound::$method(*x, *y);
+                // *x = x.$method(*y);
+            }
+        }
+    };
+}
+
+// Implement `add_assign`, `mul_assign`, and `sub_assign` functions.
+op!(add_assign, Add, +=, add);
+op!(mul_assign, Mul, *=, mul);
+op!(sub_assign, Sub, -=, sub);
+
+mod test {
+    use std::iter;
+    macro_rules! test {
+        ($func:ident, $x:expr, $y:expr, $z:expr) => {
+            #[test]
+            fn $func() {
+                for size in 0usize..10 {
+                    let mut x: Vec<_> = iter::repeat($x).take(size).collect();
+                    let y: Vec<_> = iter::repeat($y).take(size).collect();
+                    let z: Vec<_> = iter::repeat($z).take(size).collect();
+
+                    super::$func(&mut x, &y);
+
+                    assert_eq!(x, z);
+                }
+            }
+        };
+    }
+
+    // Test `add_assign`, `mul_assign`, and `sub_assign`.
+    test!(add_assign, 1u32, 2u32, 3u32);
+    test!(mul_assign, 2u32, 3u32, 6u32);
+    test!(sub_assign, 3u32, 2u32, 1u32);
+}
+```
+
+```text title="output"
+$ rustc --test dry.rs && ./dry
+running 3 tests
+test test::mul_assign ... ok
+test test::add_assign ... ok
+test test::sub_assign ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
+```
+
+## 领域特定语言 (DSL)
+
+DSL 是嵌入 rust 宏中的一种迷你“语言”。它是完全有效的 rust，因为宏系统扩展为正常的 rust 结构，但它看起来像一种小语言。这允许您为某些特殊功能（在边界内）定义简洁或直观的语法。
+
+假设我想定义一个小的计算器 API。我想提供一个表达式并将输出打印到控制台。
+
+```rust
+macro_rules! calculate {
+    (eval $e:expr) => {
+        {
+            let val: usize = $e; // Force types to be unsigned integers
+            println!("{} = {}", stringify!{$e}, val);
+        }
+    };
+}
+
+fn main() {
+    calculate! {
+        eval 1 + 2 // hehehe `eval` is _not_ a rust keyword!
+    }
+
+    calculate! {
+        eval (1 + 2) * (3 / 4)
+    }
+}
+```
+
+```text title="output"
+1 + 2 = 3
+(1 + 2) * (3 / 4) = 0
+```
+
+这是一个非常简单的示例，但已经开发了更复杂的接口，例如 lazy_static 或 clap 。
+
+另外，请注意宏中的两对大括号。除了 () 或 [] 之外，外部的也是 macro_rules! 语法的一部分。
+
+## 可变参数接口
+
+可变参数接口接受任意数量的参数。例如， println! 可以采用任意数量的参数，由格式字符串确定。
+
+我们可以将上一节中的 calculate! 宏扩展为可变参数：
+
+```rust
+macro_rules! calculate {
+    // The pattern for a single `eval`
+    (eval $e:expr) => {
+        {
+            let val: usize = $e; // Force types to be integers
+            println!("{} = {}", stringify!{$e}, val);
+        }
+    };
+
+    // Decompose multiple `eval`s recursively
+    (eval $e:expr, $(eval $es:expr),+) => {{
+        calculate! { eval $e }
+        calculate! { $(eval $es),+ }
+    }};
+}
+
+fn main() {
+    calculate! { // Look ma! Variadic `calculate!`!
+        eval 1 + 2,
+        eval 3 + 4,
+        eval (2 * 3) + 1
+    }
+}
+```
+```text title="output"
+1 + 2 = 3
+3 + 4 = 7
+(2 * 3) + 1 = 7
+```

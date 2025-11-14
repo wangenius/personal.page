@@ -1,4 +1,4 @@
-import { source, DEFAULT_DOC_LANGUAGE, docLanguages } from "@/lib/source";
+import { source } from "@/lib/source";
 import { getDocPreviewSegments, requiresSubscription } from "@/lib/docs-access";
 import {
   DocsPage,
@@ -15,20 +15,15 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 interface PageParams {
-  lang: "en" | "zh-cn";
   slug?: string[];
 }
 
 export default async function LangDocsPage(props: {
   params: Promise<PageParams>;
 }) {
-  const { lang, slug } = await props.params;
+  const { slug } = await props.params;
 
-  if (!docLanguages.includes(lang)) {
-    notFound();
-  }
-
-  const page = source.getPage(slug, lang);
+  const page = source.getPage(slug);
   if (!page) notFound();
   const requestHeaders = await headers();
   const userSession = await auth.api.getSession({ headers: requestHeaders });
@@ -46,12 +41,10 @@ export default async function LangDocsPage(props: {
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         {locked ? (
-          <div className="space-y-8">
-            <PaywallPreview
-              segments={previewSegments}
-              components={baseComponents}
-            />
-          </div>
+          <PaywallPreview
+            segments={previewSegments}
+            components={baseComponents}
+          />
         ) : (
           <MDXContent components={baseComponents} />
         )}
@@ -60,26 +53,12 @@ export default async function LangDocsPage(props: {
   );
 }
 
-export async function generateStaticParams() {
-  return source
-    .generateParams("slug", "lang")
-    .filter((entry) => entry.lang !== DEFAULT_DOC_LANGUAGE)
-    .map((entry) => ({
-      slug: entry.slug,
-      lang: entry.lang,
-    }));
-}
-
 export async function generateMetadata(props: {
   params: Promise<PageParams>;
 }): Promise<Metadata> {
-  const { lang, slug } = await props.params;
+  const { slug } = await props.params;
 
-  if (!docLanguages.includes(lang)) {
-    notFound();
-  }
-
-  const page = source.getPage(slug, lang);
+  const page = source.getPage(slug);
   if (!page) notFound();
 
   return {

@@ -1,6 +1,6 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
-import { docsI18nConfig, source } from "@/lib/source";
+import { source } from "@/lib/source";
 
 interface LangLayoutProps {
   children: ReactNode;
@@ -17,7 +17,6 @@ export default async function LangDocsLayout({
     <div className="flex-1 flex flex-col">
       <DocsLayout
         tree={source.getPageTree(lang)}
-        i18n={docsI18nConfig}
         nav={{
           enabled: false,
         }}

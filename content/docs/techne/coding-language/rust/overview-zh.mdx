@@ -1,0 +1,126 @@
+---
+title : 概述
+
+slug : 概述
+---
+
+>   rust is a modern systems programming language focusing on safety, speed, and concurrency. It accomplishes these goals by being memory safe without using garbage collection
+
+## 安装
+
+rust 的平台支持定义为三层，这与可用的安装方法密切对应：一般来说，rust 项目为所有第 1 层和第 2 层平台提供二进制构建，并且它们都可以通过 `rustup` 安装。某些 2 层平台仅提供标准库，而不提供编译器本身；也就是说，它们只是交叉编译目标； rust 代码可以在这些平台上运行，但它们不运行编译器本身。可以使用 `rustup target add` 命令安装此类目标。
+
+### rustup
+
+> Installation of rust is made easy through rustup, a console-based tool for managing rust versions and associated tools.
+
+离线安装。 `rustup` 根据需要从 Internet 下载组件。如果您需要在无法访问互联网的情况下安装 rust，则 `rustup` 不适合。
+
+优先考虑 `curl | sh` 。在 Unix 上，我们通常通过 `curl` 运行 shell 脚本来安装 `rustup` 。有些人担心这种安排的安全性，并且更愿意自己下载并运行安装程序。
+
+rustup 和 Cargo 是 rust 编程语言的两个工具。
+
+rustup 是 rust 官方提供的多版本管理工具，它可以帮助你安装、升级和管理 rust 编译器（称为 rustc）和其他 rust 工具（如 rust 标准库、文档生成工具 rustdoc 和测试工具 rust-test）的版本。它还可以帮助你在不同的 rust 项目之间切换不同版本的 rust 工具链。
+
+Cargo 是 rust 的包管理和构建工具，它可以帮助你管理你的 rust 项目的依赖关系、构建和测试代码以及发布你的库或应用程序。它还可以帮助你在 crates.io 上搜索和使用第三方库。
+
+总的来说，rustup 是负责管理 rust 工具链的版本，而 Cargo 则是负责管理 rust 项目的依赖关系、构建和测试的工具。
+
+From the installation screen, it is clear that rust related files are stored in the folder
+
+`C:\Users\{PC}\.cargo\bin`
+
+The contents of the folder are:
+```bash
+cargo-fmt.exe
+cargo.exe
+rls.exe
+rust-gdb.exe
+rust-lldb.exe
+rustc.exe // this is the compiler for rust
+rustdoc.exe
+rustfmt.exe
+rustup.exe
+```
+
+### 系统包管理器
+
+特别是在 Linux 上，而且在带有 Homebrew、MacPorts 或 pkgsrc 的 macOS 以及带有 Chocolatey 或 Scoop 的 Windows 上，开发人员有时更喜欢使用其平台的包管理器安装 rust。
+
+<Callout type="success">
+我一般使用scoop下载rustup.
+</Callout>
+
+### GUI
+
+-   GUI 安装以及与 Windows 上的“添加/删除程序”集成。 `rustup` 在控制台中运行，并且不会像典型的 Windows 程序那样注册其安装。如果您更喜欢 Windows 上更典型的 GUI 安装，可以使用独立的 `.msi` 安装程序。将来 `rustup` 还将在 Windows 上提供 GUI 安装程序。
+
+### windows
+
+在 Windows 上，请访问 https://www.rust-lang.org/tools/install 并按照安装 rust 的说明进行操作。在安装过程中的某个时刻，您将收到一条消息，说明您还需要 Visual Studio 2013 或更高版本的 MSVC 构建工具。
+
+要获取构建工具，您需要安装 Visual Studio 2022。当被询问要安装哪些工作负载时，包括：
+
+-   “使用 C++ 进行桌面开发”
+-   Windows 10 或 11 SDK
+-   英语语言包组件以及您选择的任何其他语言包
+
+本书的其余部分使用可在 cmd.exe 和 PowerShell 中运行的命令。如果存在具体差异，我们将解释使用哪个。
+
+### Linux/MacOS
+
+```rust
+$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+```
+
+该命令下载脚本并开始安装 `rustup` 工具，该工具将安装 rust 的最新稳定版本。系统可能会提示您输入密码。如果安装成功，会出现下面一行：
+
+```
+rust is installed now. Great!
+```
+
+您还需要一个链接器，这是 rust 用来将其编译输出连接到一个文件中的程序。您很可能已经拥有一个。如果出现链接器错误，则应安装 C 编译器，该编译器通常包含链接器。 C 编译器也很有用，因为一些常见的 rust 包依赖于 C 代码，并且需要 C 编译器。
+
+Linux 用户通常应该根据其发行版的文档安装 GCC 或 Clang。例如，如果您使用 Ubuntu，则可以安装 `build-essential` 软件包。
+
+### 安装问题故障排除
+
+要检查 rust 是否正确安装，请打开 shell 并输入以下行：
+
+```console
+$ rustc --version
+```
+
+您应该看到已发布的最新稳定版本的版本号、提交哈希值和提交日期，格式如下：
+
+```text
+rustc x.y.z (abcabcabc yyyy-mm-dd)
+```
+
+如果你看到这个信息，说明你已经安装rust成功了！如果您没有看到此信息，请检查 rust 是否在您的 `%PATH%` 系统变量中，如下所示。
+
+在 Windows CMD 中，使用：
+
+```console
+> echo %PATH%
+```
+
+ 在 PowerShell 中，使用：
+
+```bash
+> echo $env:Path
+```
+
+在 Linux 和 macOS 中，使用：
+
+```console
+$ echo $PATH
+```
+
+如果一切正确，但 rust 仍然无法工作，您可以从很多地方获得帮助。在社区页面上了解如何与其他 rustaceans（我们给自己起的一个愚蠢的昵称）取得联系。
+
+## 包管理器
+
+## 构建工具
+
+## 所有权系统

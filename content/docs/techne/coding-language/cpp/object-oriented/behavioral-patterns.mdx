@@ -1,0 +1,1144 @@
+---
+title: 行为型模式
+
+slug: 行为型模式
+---
+
+一共十一种。
+
+## 模板方法模式
+
+TemplateMethod 定义一个操作中的算法骨架，而将算法的一些步骤延迟到子类中，使得子类可以不改变该算法结构的情况下重定义该算法的某些特定步骤。
+
+优点
+
+它封装了不变部分，扩展可变部分。它把认为是不变部分的算法封装到父类中实现，而把可变部分算法由子类继承实现，便于子类继续扩展。
+它在父类中提取了公共的部分代码，便于代码复用。部分方法是由子类实现的，因此子类可以通过扩展方式增加相应的功能，符合开闭原则。
+
+缺点
+
+对每个不同的实现都需要定义一个子类，这会导致类的个数增加，系统更加庞大，设计也更加抽象。
+父类中的抽象方法由子类实现，子类执行的结果会影响父类的结果，这导致一种反向的控制结构，它提高了代码阅读的难度。
+
+应用场景
+
+在面向对象程序设计过程中，程序员常常会遇到这种情况：设计一个系统时知道了算法所需的关键步骤，而且确定了这些步骤的执行顺序，但某些步骤的具体实现还未知，或者说某些步骤的实现与具体的环境相关。生活中的例子: 一个人每天会起床、吃饭、做事、睡觉等，其中“做事”的内容每天可能不同。我们把这些规定了流程或格式的实例定义成模板，允许使用者根据自己的需求去更新它，例如，简历模板、论文模板、Word 中模板文件等。
+
+实现方式
+
+抽象类负责给出一个算法的轮廓和骨架, 即定义两种类型的方法
+
+- 模板方法: 定义了算法的骨架，按某种顺序调用其包含的基本方法
+- 基本方法:
+- 抽象方法：在抽象类中申明，由具体子类实现
+- 具体方法：在抽象类中已经实现，在具体子类中可以继承或重写它
+- 钩子方法：在抽象类中已经实现，包括用于判断的逻辑方法和需要子类重写的空方法两种
+
+```cpp
+#pragma once
+
+#include <iostream>
+
+namespace template_method {
+
+/// @brief 抽象类, 给出一个算法的轮廓和骨架
+class AbstractClass {
+public:
+    virtual ~AbstractClass() {}
+
+    /// @brief 模板方法, 定义了算法的骨架，按某种顺序调用其包含的基本方法
+    virtual void TemplateMethod() {
+        SpecificMethodA();
+        if (HookMethodB()) {
+            HookMethodA();
+        }
+        AbstractMethod();
+        SpecificMethodB();
+    }
+
+protected:
+    /// @brief 基本方法, 可以有三种
+    ///             - 抽象方法：在抽象类中申明，由具体子类实现
+    ///             - 具体方法：在抽象类中已经实现，在具体子类中可以继承或重写它
+    ///             - 钩子方法：在抽象类中已经实现，包括用于判断的逻辑方法和需要子类重写的空方法两种
+    virtual void AbstractMethod() = 0;
+    virtual void SpecificMethodA() {
+        printf("this is AbstractClass::SpecificMethodA!\n");
+    }
+    virtual void SpecificMethodB() {
+        printf("this is AbstractClass::SpecificMethodB!\n");
+    }
+    virtual void HookMethodA() {    // 通常为空实现
+        printf("this is AbstractClass::HookMethodA!\n");
+    }
+    virtual bool HookMethodB() { return false; }
+};
+
+/// @brief 具体类, 实现抽象类中所定义的抽象方法和钩子方法
+class ConcreteClass : public AbstractClass {
+public:
+    virtual void AbstractMethod() {
+        printf("this is ConcreteClass::AbstractMethod!\n");
+    }
+
+protected:
+    virtual void SpecificMethodB() {
+        printf("this is ConcreteClass::SpecificMethodB!\n");
+    }
+    virtual void HookMethodA() {    // 通常为空实现
+        printf("this is ConcreteClass::HookMethodA!\n");
+    }
+    virtual bool HookMethodB() { return true; }
+};
+
+} // namespace template_method
+
+void Test_13_composite_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    template_method::AbstractClass* ptr = new template_method::ConcreteClass();
+    ptr->TemplateMethod();
+
+    delete ptr;
+}
+
+// -------------------- Test_13_template_method_impl_1 --------------------
+// this is AbstractClass::SpecificMethodA!
+// this is ConcreteClass::HookMethodA!
+// this is ConcreteClass::AbstractMethod!
+// this is ConcreteClass::SpecificMethodB!
+```
+
+## 命令模式
+
+含义
+
+Command 将一个请求封装为一个对象，使发出请求的责任和执行请求的责任分割开。
+
+优点
+降低系统的耦合度。命令模式能将调用操作的对象与实现该操作的对象解耦。
+增加或删除命令非常方便。采用命令模式增加与删除命令不会影响其他类，它满足“开闭原则”，对扩展比较灵活。
+可以实现宏命令。命令模式可以与组合模式结合，将多个命令装配成一个组合命令，即宏命令。
+方便实现 Undo 和 Redo 操作。命令模式可以与备忘录模式结合，实现命令的撤销与恢复。
+缺点
+可能产生大量具体命令类。因为计对每一个具体操作都需要设计一个具体命令类，这将增加系统的复杂性。
+应用场景
+
+在软件开发系统中，常常出现“方法的请求者”与“方法的实现者”之间存在紧密的耦合关系。这不利于软件功能的扩展与维护。例如，想对行为进行“撤销、重做、记录”等处理都很不方便。
+在现实生活中，这样的例子也很多，例如，电视机遥控器（命令发送者）通过按钮（具体命令）来遥控电视机（命令接收者），还有计算机键盘上的“功能键”等。
+示例
+
+简单调用
+
+```cpp
+#pragma once
+
+  #include <iostream>
+
+  namespace command {
+
+  /// @brief 抽象命令类, 声明执行命令的接口
+  class AbstractCommand {
+  public:
+      virtual ~AbstractCommand() {}
+      virtual void Execute() = 0;
+  };
+
+  /// @brief 命令接收者, 执行命令功能的相关操作，是具体命令对象业务的真正实现者
+  class Receiver {
+  public:
+      void Action() {
+          printf("this is Receiver::Action!\n");
+      }
+  };
+
+  /// @brief 具体命令类, 它拥有接收者对象，并通过调用接收者的功能来完成命令要执行的操作
+  class ConcreteCommand : public AbstractCommand {
+  public:
+      ConcreteCommand() {
+          receiver_.reset(new Receiver());
+      }
+      virtual void Execute() {
+          receiver_->Action();
+      }
+
+  private:
+      std::shared_ptr<Receiver> receiver_;
+  };
+
+  /// @brief 命令请求者, 请求的发送者，它通常拥有很多的命令对象，并通过访问命令对象来执行相关请求，它不直接访问接收者
+  class Invoker{
+  public:
+      Invoker(AbstractCommand* cmd) : cmd_(cmd) {}
+      void SetCommand(AbstractCommand* cmd) {
+          cmd_ = cmd;
+      }
+      void Request() {
+          cmd_->Execute();
+      }
+
+  private:
+      AbstractCommand* cmd_;
+  };
+
+  } // namespace command
+
+  void Test_15_command_impl_1() {
+      printf("-------------------- %s --------------------\n", __FUNCTION__);
+      std::shared_ptr<command::AbstractCommand> cmd(new command::ConcreteCommand());
+
+    command::Invoker client(cmd.get());
+      client.Request();
+}
+
+  // -------------------- Test_15_command_impl_1 --------------------
+  // this is Receiver::Action!
+```
+
+## 迭代器模式
+
+含义
+
+Iterator 提供一种方法来顺序访问聚合对象中的一系列数据，而不暴露聚合对象的内部表示。
+
+优点
+访问一个聚合对象的内容而无须暴露它的内部表示。
+遍历任务交由迭代器完成，这简化了聚合类。
+它支持以不同方式遍历一个聚合，甚至可以自定义迭代器的子类以支持新的遍历。
+增加新的聚合类和迭代器类都很方便，无须修改原有代码。
+封装性良好，为遍历不同的聚合结构提供一个统一的接口。
+缺点
+增加了类的个数，这在一定程度上增加了系统的复杂性。
+```cpp
+// 直接使用 STL 即可.
+```
+
+## 观察者模式
+
+含义
+
+Observer 多个对象间存在一对多关系，当一个对象发生改变时，把这种改变通知给其他多个对象，从而影响其他对象的行为。
+
+在现实世界中，许多对象并不是独立存在的，其中一个对象的行为发生改变可能会导致一个或者多个其他对象的行为也发生改变。例如，某种商品的物价上涨时会导致部分商家高兴，而消费者伤心；还有，当我们开车到交叉路口时，遇到红灯会停，遇到绿灯会行。这样的例子还有很多，例如，股票价格与股民、微信公众号与微信用户、气象局的天气预报与听众、小偷与警察等。
+
+在软件世界也是这样，例如，Excel 中的数据与折线图、饼状图、柱状图之间的关系；MVC 模式中的模型与视图的关系；事件模型中的事件源与事件处理者。
+
+优点
+降低了目标与观察者之间的耦合关系，两者之间是抽象耦合关系。
+目标与观察者之间建立了一套触发机制。
+缺点
+目标与观察者之间的依赖关系并没有完全解除，而且有可能出现循环引用。
+当观察者对象很多时，通知的发布会花费很多时间，影响程序的效率。
+应用场景
+
+对象间存在一对多关系，一个对象的状态发生改变会影响其他对象。
+当一个抽象模型有两个方面，其中一个方面依赖于另一方面时，可将这二者封装在独立的对象中以使它们可以各自独立地改变和复用。
+
+```cpp
+#pragma once
+
+#include <vector>
+
+namespace observer {
+
+/// @brief 抽象观察者, 包含了一个更新自己的抽象方法，当接到具体主题的更改通知时被调用。
+class AbstractObserver {
+public:
+    ~AbstractObserver() {}
+
+    // 被告知时做出响应
+    virtual void Response() = 0;
+};
+
+/// @brief 具体观察者, 实现抽象观察者中定义的抽象方法，以便在得到目标的更改通知时更新自身的状态。
+class ConcreteObserverA : public AbstractObserver {
+public:
+    virtual void Response() {
+        printf("this is ConcreteObserverA::Response!\n");
+    }
+};
+class ConcreteObserverB : public AbstractObserver {
+public:
+    virtual void Response() {
+        printf("this is ConcreteObserverB::Response!\n");
+    }
+};
+
+/// @brief 抽象主题类, 它提供了一个用于保存观察者对象的聚集类和增加、删除观察者对象的方法，以及通知所有观察者的抽象方法
+class AbstractSubject {
+public:
+    virtual ~AbstractSubject() {}
+
+    virtual void NotifyObserver() = 0;
+
+    void AddObserver(AbstractObserver* observer) {
+        observers_.emplace_back(observer);
+    }
+    void RemoveObserver(AbstractObserver* observer) {
+        for (auto it = observers_.begin(); it != observers_.end(); it++) {
+            if ((*it) == observer) {
+                observers_.erase(it++);
+                break;
+            }
+        }
+    }
+
+protected:
+    std::vector<AbstractObserver*> observers_;
+};
+
+/// @brief 具体主题类, 它实现抽象目标中的通知方法，当具体主题的内部状态发生改变时，通知所有注册过的观察者对象。
+class ConcreteSubject : public AbstractSubject {
+public:
+    virtual void NotifyObserver() {
+        for (auto* observer : observers_) {
+            observer->Response();
+        }
+    }
+};
+
+} // namespace observer
+
+void Test_18_observer_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<observer::AbstractSubject> ptr_subject(new observer::ConcreteSubject());
+    std::shared_ptr<observer::AbstractObserver> ptr_observer_A(new observer::ConcreteObserverA());
+    std::shared_ptr<observer::AbstractObserver> ptr_observer_B(new observer::ConcreteObserverB());
+
+    ptr_subject->AddObserver(ptr_observer_A.get());
+    ptr_subject->AddObserver(ptr_observer_B.get());
+
+    ptr_subject->NotifyObserver();
+}
+
+// -------------------- Test_18_observer_impl_1 --------------------
+// this is ConcreteObserverA::Response!
+// this is ConcreteObserverB::Response!
+```
+
+## 中介者模式
+
+含义
+
+Mediator 定义一个中介对象来简化原有对象之间的交互关系，降低系统中对象间的耦合度，使原有对象之间不必相互了解。
+
+优点
+降低了对象之间的耦合性，使得对象易于独立地被复用。
+将对象间的一对多关联转变为一对一的关联，提高系统的灵活性，使得系统易于维护和扩展。
+缺点
+当同事类太多时，中介者的职责将很大，它会变得复杂而庞大，以至于系统难以维护。
+应用场景
+
+当对象之间存在复杂的网状结构关系而导致依赖关系混乱且难以复用时。
+当想创建一个运行于多个类之间的对象，又不想生成新的子类时。
+示例
+
+```cpp
+#pragma once
+
+#include <list>
+
+namespace mediator {
+    
+/// @brief 抽象同事类, 定义同事类的接口，保存中介者对象，提供同事对象交互的抽象方法，实现所有相互影响的同事类的公共功能
+class AbstractMediator;
+class AbstractColleague {
+public:
+    virtual ~AbstractColleague() {}
+
+    /// @brief 抽象接口
+    virtual void Receive() = 0;
+    virtual void Send() = 0;
+
+    /// @brief 设置中介对象
+    void SetMedium(AbstractMediator* mediator) {
+        mediator_ = mediator;
+    }
+
+protected:
+    AbstractMediator* mediator_ = nullptr;
+};
+
+/// @brief 具体同事类, 抽象同事类的实现者，当需要与其他同事对象交互时，由中介者对象负责后续的交互
+class ConcreteColleagueA : public AbstractColleague {
+public:
+    virtual void Receive();
+    virtual void Send();
+};
+class ConcreteColleagueB : public AbstractColleague {
+public:
+    virtual void Receive();
+    virtual void Send();
+};
+
+/// @brief 抽象中介类, 中介者的接口，提供了同事对象注册与转发同事对象信息的抽象方法
+class AbstractMediator {
+public:
+    virtual ~AbstractMediator() {}
+
+    /// @brief 注册
+    virtual void Register(AbstractColleague* colleague) = 0;
+    /// @brief 转发
+    virtual void Relay(AbstractColleague* colleague) = 0;
+};
+
+/// @brief 具体中介类, 实现中介者接口. 管理同事对象，协调各个同事角色之间的交互关系，依赖于同事角色
+class ConcreteMediator : public AbstractMediator {
+public:
+    virtual void Register(AbstractColleague* colleague) {
+        for (auto* c : colleagues_) {
+            if (c == colleague) return;
+        }
+        colleagues_.emplace_back(colleague);
+        colleague->SetMedium(this);
+    }
+
+    virtual void Relay(AbstractColleague* colleague) {
+        for (auto* c : colleagues_) {
+            // 转发给除自己外的同事
+            if (c != colleague) c->Receive();
+        }
+    }
+
+private:
+    std::list<AbstractColleague*> colleagues_;
+};
+
+///////////////////////////////////////////////////////// 同事类实现
+void ConcreteColleagueA::Receive() {
+    printf("this is ConcreteColleagueA::Receive!\n");
+}
+void ConcreteColleagueA::Send() {
+    printf("this is ConcreteColleagueA::Send!\n");
+    // 请中介者转发
+    mediator_->Relay(this);
+}
+void ConcreteColleagueB::Receive() {
+    printf("this is ConcreteColleagueB::Receive!\n");
+}
+void ConcreteColleagueB::Send() {
+    printf("this is ConcreteColleagueB::Send!\n");
+    // 请中介者转发
+    mediator_->Relay(this);
+}
+
+} // namespace mediator
+
+void Test_19_mediator_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<mediator::AbstractMediator> ptr_md(new mediator::ConcreteMediator());
+
+    std::shared_ptr<mediator::AbstractColleague> ptr_c1(new mediator::ConcreteColleagueA());
+    std::shared_ptr<mediator::AbstractColleague> ptr_c2(new mediator::ConcreteColleagueB());
+
+    ptr_md->Register(ptr_c1.get());
+    ptr_md->Register(ptr_c2.get());
+
+    ptr_c1->Send();
+
+    printf("-----------\n");
+
+    ptr_c2->Send();
+}
+
+// -------------------- Test_19_mediator_impl_1 --------------------
+// this is ConcreteColleagueA::Send!
+// this is ConcreteColleagueB::Receive!
+// -----------
+// this is ConcreteColleagueB::Send!
+// this is ConcreteColleagueA::Receive!
+```
+
+## 备忘录模式
+
+含义
+
+Memento 在不破坏封装性的前提下，获取并保存一个对象的内部状态，以便以后恢复它。
+
+优点
+提供了一种可以恢复状态的机制。当用户需要时能够比较方便地将数据恢复到某个历史的状态。
+实现了内部状态的封装。除了创建它的发起人之外，其他对象都不能够访问这些状态信息。
+简化了发起人类。发起人不需要管理和保存其内部状态的各个备份，所有状态信息都保存在备忘录中，并由管理者进行管理，这符合单一职责原则。
+缺点
+资源消耗大。如果要保存的内部状态信息过多或者特别频繁，将会占用比较大的内存资源。
+应用场景
+
+很多应用软件都提供了这项功能，如 Word、记事本、Photoshop、Eclipse 等软件在编辑时按 Ctrl+Z 组合键时能撤销当前操作，使文档恢复到之前的状态；还有在 IE 中的后退键、数据库事务管理中的回滚操作、玩游戏时的中间结果存档功能、数据库与操作系统的备份操作、棋类游戏中的悔棋功能等都属于这类。
+```cpp
+#pragma once
+
+namespace memento {
+    
+/// @brief 需求: 利用备忘录模式设计相亲游戏
+///     假如有西施、王昭君、貂蝉、杨玉环四大美女同你相亲，你可以选择其中一位作为你的爱人，游戏提供后悔机制，不爱了可以换人
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+/// @brief 备忘录, 提供了获取和存储美女信息的功能
+class Memento_Girl {
+public:
+    Memento_Girl(const std::string& name) : name_(name) {}
+    const std::string& GetName() const {
+        return name_;
+    }
+
+private:
+    std::string name_;
+};
+
+/// @brief 发起人, 记录当前时刻的内部状态信息（临时妻子的姓名）
+class Originator_Man {
+public:
+    void SetGirlName(const std::string& girl) {
+        girl_name_ = girl;
+    }
+    const std::string& GetGirlName() const {
+        return girl_name_;
+    }
+
+    /// 提供创建备忘录和恢复备忘录数据的功能
+    Memento_Girl* CreateMemento_Gril() {
+        return new Memento_Girl(girl_name_);
+    }
+    void RestoreMemento(Memento_Girl* m) {
+        SetGirlName(m->GetName());
+    }
+
+private:
+    std::string girl_name_;
+};
+
+/// @brief 管理者, 对备忘录进行管理，用于保存相亲者（Man）前面选过的美女信息
+class Caretaker_GirlStack {
+public:
+    ~Caretaker_GirlStack() {
+        for (auto* girl : girls_) {
+            delete girl;
+        }
+    }
+    void Push(Memento_Girl* girl) {
+        girls_.emplace_back(girl);
+    }
+    Memento_Girl* Pop() {
+        Memento_Girl* girl = girls_.back();
+        girls_.pop_back();
+        return girl;
+    }
+
+private:
+    std::vector<Memento_Girl*> girls_;
+};
+
+} // namespace memento
+
+void Test_22_memento_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<memento::Originator_Man> man_ptr(new memento::Originator_Man());
+    std::shared_ptr<memento::Caretaker_GirlStack> girl_stack_ptr(new memento::Caretaker_GirlStack());
+
+    man_ptr->SetGirlName("XiShi");
+    girl_stack_ptr->Push(man_ptr->CreateMemento_Gril());
+    printf("Now, You Select: %s\n", man_ptr->GetGirlName().c_str());
+    
+    man_ptr->SetGirlName("WangZhaoJun");
+    printf("Now, You Reselect: %s\n", man_ptr->GetGirlName().c_str());
+
+    man_ptr->RestoreMemento(girl_stack_ptr->Pop());
+    printf("Now, You Restore To Select: %s\n", man_ptr->GetGirlName().c_str());
+}
+
+// -------------------- Test_22_memento_impl_1 --------------------
+// Now, You Select: XiShi
+// Now, You Reselect: WangZhaoJun
+// Now, You Restore To Select: XiShi
+```
+
+## 解释器模式
+
+含义
+
+Interpreter : 为语言创建解释器，通常由语言的语法和语法分析来定义。
+
+优点
+扩展性好。由于在解释器模式中使用类来表示语言的文法规则，因此可以通过继承等机制来改变或扩展文法。
+容易实现。在语法树中的每个表达式节点类都是相似的，所以实现其文法较为容易。
+缺点
+执行效率较低。解释器模式中通常使用大量的循环和递归调用，当要解释的句子较复杂时，其运行速度很慢，且代码的调试过程也比较麻烦。
+会引起类膨胀。解释器模式中的每条规则至少需要定义一个类，当包含的文法规则很多时，类的个数将急剧增加，导致系统难以管理与维护。
+可应用的场景比较少。在软件开发中，需要定义语言文法的应用实例非常少，所以这种模式很少被使用到。
+应用场景
+
+当语言的文法较为简单，且执行效率不是关键问题时。
+当问题重复出现，且可以用一种简单的语言来进行表达时。
+当一个语言需要解释执行，并且语言中的句子可以表示为一个抽象语法树的时候，如 XML 文档解释。
+注意：解释器模式在实际的软件开发中使用比较少，因为它会引起效率、性能以及维护等问题。
+
+示例
+
+用解释器模式设计一个"厦漳泉"公交车卡的读卡器程序。
+
+```cpp
+#pragma once
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+/*
+    用解释器模式设计一个"厦漳泉"公交车卡的读卡器程序。
+
+    说明：假如"厦漳泉"公交车读卡器可以判断乘客的身份，如果是这三座城市的"老人"" "妇女" "儿童"就可以免费乘车，其他人员乘车一次扣 2 元。
+*/
+/*
+    文法规则
+    <expression> ::= <city>的<person>
+    <city> ::= 厦门|泉州|漳州
+    <person> ::= 老人|妇女|儿童
+*/
+
+namespace interpreter {
+
+/// @brief 抽象表达式, 定义解释器的接口，约定解释器的解释操作，主要包含解释方法 interpret()。
+class AbstractExpression {
+public:
+    virtual ~AbstractExpression() {}
+
+    /// @brief 解释方法
+    virtual bool Interpret(const std::string& info) = 0;
+};
+
+/// @brief 终结符表达式, 是抽象表达式的子类，用来实现文法中与终结符相关的操作，文法中的每一个终结符都有一个具体终结表达式与之相对应。
+class TerminalExpression : public AbstractExpression {
+public:
+    TerminalExpression(const std::vector<std::string>& content) : contents_(content) {}
+
+    virtual bool Interpret(const std::string& info) {
+        for (auto& content : contents_) {
+            if (info == content) return true;
+            std::size_t len = info.size();
+            for (int i = 0; i < content.size(); i++) {
+                if (i + len  <= content.size() && content.substr(i, i+len).compare(info) == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+private:
+    std::vector<std::string> contents_;
+};
+
+/// @brief 非终结符表达式, 也是抽象表达式的子类，用来实现文法中与非终结符相关的操作，文法中的每条规则都对应于一个非终结符表达式。
+class NonterminalExpression : public AbstractExpression {
+public:
+    NonterminalExpression(std::shared_ptr<AbstractExpression>& city_eps, std::shared_ptr<AbstractExpression>& person_eps) : city_eps_(city_eps), person_eps_(person_eps) {}
+
+    virtual bool Interpret(const std::string& info) {
+        std::vector<std::string> split_vec;
+        if (2 != Split(info, '|', split_vec)) {
+            return false;
+        }
+        return city_eps_->Interpret(split_vec[0]) && person_eps_->Interpret(split_vec[1]);
+    }
+
+protected:
+    size_t Split(const std::string& src, const char ch, std::vector<std::string>& vec) {
+        size_t nPos = 0;
+        std::string tmp;
+        for (size_t i = 0; i < src.size(); i++) {
+            if (src[i] == ch) {
+                tmp = src.substr(nPos, i - nPos);
+                if (!tmp.empty() && tmp != "\n")
+                    vec.push_back(tmp);
+                nPos = i + 1;
+            }
+        }
+        if (nPos <= src.size()) {
+            tmp = src.substr(nPos, src.size() - nPos);
+            if (!tmp.empty() && tmp != "\n")
+                vec.push_back(tmp);
+        }
+        return vec.size();
+    }
+
+private:
+    std::shared_ptr<AbstractExpression> city_eps_ = nullptr;
+    std::shared_ptr<AbstractExpression> person_eps_ = nullptr;
+};
+
+/// @brief 环境类, 通常包含各个解释器需要的数据或是公共的功能，一般用来传递被所有解释器共享的数据，后面的解释器可以从这里获取这些值。
+class Context {
+public:
+    Context() {
+        std::vector<std::string> citys;
+        std::vector<std::string> persons;
+
+        citys.emplace_back("厦门");
+        citys.emplace_back("漳州");
+        citys.emplace_back("泉州");
+
+        persons.emplace_back("老人");
+        persons.emplace_back("妇女");
+        persons.emplace_back("儿童");
+
+        std::shared_ptr<AbstractExpression> city_eps(new TerminalExpression(citys));
+        std::shared_ptr<AbstractExpression> person_eps(new TerminalExpression(persons));
+        
+        eps_.reset(new NonterminalExpression(city_eps, person_eps));
+    }
+    void FreeRide(const std::string& info) {
+        if (eps_ && eps_->Interpret(info)) {
+            printf("身份识别: %s, 您本次乘车免费！\n", info.c_str());
+        }
+        else {
+            printf("身份识别: %s, 本次乘车扣费2元！\n", info.c_str());
+        }
+    }
+
+protected:
+    std::shared_ptr<AbstractExpression> eps_;
+};
+
+} // namespace interpreter
+
+void Test_23_visitor_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<interpreter::Context> context(new interpreter::Context());
+    context->FreeRide("厦门|老人");
+    context->FreeRide("漳州|妇女");
+    context->FreeRide("泉州|儿童");
+    context->FreeRide("上海|老人");
+    context->FreeRide("厦门|青年");
+}
+
+// -------------------- Test_23_visitor_impl_1 --------------------
+// 身份识别: 厦门|老人, 您本次乘车免费！
+// 身份识别: 漳州|妇女, 您本次乘车免费！
+// 身份识别: 泉州|儿童, 您本次乘车免费！
+// 身份识别: 上海|老人, 本次乘车扣费2元！
+// 身份识别: 厦门|青年, 本次乘车扣费2元！
+```
+
+## 状态模式
+
+含义
+
+State 允许一个对象在其内部状态发生改变时改变其行为能力。
+
+​在软件开发过程中，应用程序中的有些对象可能会根据不同的情况做出不同的行为，我们把这种对象称为有状态的对象，而把影响对象行为的一个或多个动态变化的属性称为状态。当有状态的对象与外部事件产生互动时，其内部状态会发生改变，从而使得其行为也随之发生改变。如人的情绪有高兴的时候和伤心的时候，不同的情绪有不同的行为，当然外界也会影响其情绪变化。
+
+​对这种有状态的对象编程，传统的解决方案是：将这些所有可能发生的情况全都考虑到，然后使用 if-else 语句来做状态判断，再进行不同情况的处理。但当对象的状态很多时，程序会变得很复杂。而且增加新的状态要添加新的 if-else 语句，这违背了“开闭原则”，不利于程序的扩展。
+
+优点
+状态模式将与特定状态相关的行为局部化到一个状态中，并且将不同状态的行为分割开来，满足“单一职责原则”。
+减少对象间的相互依赖。将不同的状态引入独立的对象中会使得状态转换变得更加明确，且减少对象间的相互依赖。
+有利于程序的扩展。通过定义新的子类很容易地增加新的状态和转换。
+缺点
+状态模式的使用必然会增加系统的类与对象的个数
+应用场景
+
+当一个对象的行为取决于它的状态，并且它必须在运行时根据状态改变它的行为时。
+一个操作中含有庞大的分支结构，并且这些分支决定于对象的状态时。
+
+```cpp
+#pragma once
+
+#include <iostream>
+
+namespace state {
+
+/// @brief 环境类, 定义了客户感兴趣的接口，维护一个当前状态，并将与状态相关的操作委托给当前状态对象来处理
+class AbstractState;
+class EnvContext {
+public:
+    EnvContext();
+    void SetState(std::shared_ptr<AbstractState>& state) {
+        state_ = state;
+    }
+    std::shared_ptr<AbstractState>& GetState() {
+        return state_;
+    }
+    void Operation();
+
+private:
+    std::shared_ptr<AbstractState> state_ = nullptr;
+};
+
+/// @brief 抽象状态类, 封装环境对象中的特定状态所对应的行为
+class AbstractState {
+public:
+    virtual ~AbstractState() {}
+    virtual void Operation(EnvContext* context) = 0;
+};
+
+/// @brief 具体状态类, 实现抽象状态所对应的行为
+class ConcreteStateA : public AbstractState {
+public:
+    virtual void Operation(EnvContext* context);
+};
+class ConcreteStateB : public AbstractState {
+public:
+    virtual void Operation(EnvContext* context);
+};
+
+EnvContext::EnvContext() {
+    state_.reset(new ConcreteStateA()); // 给定初始状态
+}
+
+void EnvContext::Operation() {
+    state_->Operation(this);
+}
+
+void ConcreteStateA::Operation(EnvContext* context) {
+    printf("Now Your State is A!\n");
+    // 同时改变状态
+    std::shared_ptr<AbstractState> new_state(new ConcreteStateB());
+    context->SetState(new_state);
+}
+
+void ConcreteStateB::Operation(EnvContext* context) {
+    printf("Now Your State is B!\n");
+    // 同时改变状态
+    std::shared_ptr<AbstractState> new_state(new ConcreteStateA());
+    context->SetState(new_state);
+}
+
+} // namespace state
+
+void Test_17_state_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<state::EnvContext> ptr(new state::EnvContext());
+    ptr->Operation();   // A
+    ptr->Operation();   // B
+    ptr->Operation();   // A
+    ptr->Operation();   // B
+}
+
+// -------------------- Test_17_state_impl_1 --------------------
+// Now Your State is A!
+// Now Your State is B!
+// Now Your State is A!
+// Now Your State is B!
+```
+
+## 策略模式
+
+含义
+
+Strategy 定义了一系列算法，并将每个算法封装起来，使它们可以相互替换，且算法的改变不会影响使用算法的客户。
+
+优点
+多重条件语句不易维护，而使用策略模式可以避免使用多重条件语句。
+策略模式提供了一系列的可供重用的算法族，恰当使用继承可以把算法族的公共代码转移到父类里面，从而避免重复的代码。
+策略模式可以提供相同行为的不同实现，客户可以根据不同时间或空间要求选择不同的。
+策略模式提供了对开闭原则的完美支持，可以在不修改原代码的情况下，灵活增加新算法。
+策略模式把算法的使用放到环境类中，而算法的实现移到具体策略类中，实现了二者的分离。
+缺点
+客户端必须理解所有策略算法的区别，以便适时选择恰当的算法类。
+策略模式造成很多的策略类。
+应用场景
+
+在现实生活中常常遇到实现某种目标存在多种策略可供选择的情况，例如，出行旅游可以乘坐飞机、乘坐火车、骑自行车或自己开私家车等，超市促销可以釆用打折、送商品、送积分等方法。
+在软件开发中也常常遇到类似的情况，当实现某一个功能存在多种算法或者策略，我们可以根据环境或者条件的不同选择不同的算法或者策略来完成该功能，如数据排序策略有冒泡排序、选择排序、插入排序、二叉树排序等。
+
+```cpp
+#pragma once
+
+#include <stdio.h>
+
+namespace strategy {
+
+/// @brief 抽象策略类, 定义了一个公共接口，各种不同的算法以不同的方式实现这个接口，环境角色使用这个接口调用不同的算法
+class AbstractStrategy {
+public:
+    virtual ~AbstractStrategy() {}
+    virtual void StrategyMethod() = 0;
+};
+
+/// @brief 具体策略类, 实现了抽象策略定义的接口，提供具体的算法实现
+class ConcreteStrategyA : public AbstractStrategy {
+public:
+    virtual void StrategyMethod() {
+        printf("this is ConcreteStrategyA::StrategyMethod!\n");
+    }
+};
+class ConcreteStrategyB : public AbstractStrategy {
+public:
+    virtual void StrategyMethod() {
+        printf("this is ConcreteStrategyB::StrategyMethod!\n");
+    }
+};
+
+/// @brief 环境类, 持有一个策略类的引用，最终给客户端调用
+class Context {
+public:
+    void SetStrategy(AbstractStrategy* strategy) {
+        strategy_ = strategy;
+    }
+    void StrategyMethod() {
+        if (strategy_) strategy_->StrategyMethod();
+    }
+
+private:
+    AbstractStrategy* strategy_ = nullptr;
+};
+
+} // namespace strategy
+
+void Test_14_strategy_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    strategy::AbstractStrategy* ptr_strategy_A = new strategy::ConcreteStrategyA();
+    strategy::AbstractStrategy* ptr_strategy_B = new strategy::ConcreteStrategyB();
+
+    strategy::Context env_;
+    env_.SetStrategy(ptr_strategy_A);
+    env_.StrategyMethod();
+
+    env_.SetStrategy(ptr_strategy_B);
+    env_.StrategyMethod();
+
+    delete ptr_strategy_A;
+    delete ptr_strategy_B;
+}
+
+// -------------------- Test_14_strategy_impl_1 --------------------
+// this is ConcreteStrategyA::StrategyMethod!
+// this is ConcreteStrategyB::StrategyMethod!
+```
+
+## 职责链模式
+
+含义
+
+Chain of Responsibility 把请求从链中的一个对象传到下一个对象，直到请求被响应为止。通过这种方式去除对象之间的耦合。
+
+注: 责任链模式也叫职责链模式。
+
+优点
+降低了对象之间的耦合度。该模式使得一个对象无须知道到底是哪一个对象处理其请求以及链的结构，发送者和接收者也无须拥有对方的明确信息。
+增强了系统的可扩展性。可以根据需要增加新的请求处理类，满足开闭原则。
+增强了给对象指派职责的灵活性。当工作流程发生变化，可以动态地改变链内的成员或者调动它们的次序，也可动态地新增或者删除责任。
+责任链简化了对象之间的连接。每个对象只需保持一个指向其后继者的引用，不需保持其他所有处理者的引用，这避免了使用众多的 if 或者 if···else 语句。
+责任分担。每个类只需要处理自己该处理的工作，不该处理的传递给下一个对象完成，明确各类的责任范围，符合类的单一职责原则。
+缺点
+不能保证每个请求一定被处理。由于一个请求没有明确的接收者，该请求可能一直传到链的末端都得不到处理。
+对比较长的职责链，请求的处理可能涉及多个处理对象，系统性能将受到一定影响。
+职责链建立的合理性要靠客户端来保证，增加了客户端的复杂性，可能会由于职责链的错误设置而导致系统出错，如可能会造成循环调用。
+应用场景
+
+在现实生活中，常常会出现这样的事例：一个请求有多个对象可以处理，但每个对象的处理条件或权限不同。例如，公司员工请假，可批假的领导有部门负责人、副总经理、总经理等，但每个领导能批准的天数不同，员工必须根据自己要请假的天数去找不同的领导签名，也就是说员工必须记住每个领导的姓名、电话和地址等信息，这增加了难度。
+在计算机软硬件中也有相关例子，如总线网中数据报传送，每台计算机根据目标地址是否同自己的地址相同来决定是否接收；还有异常处理中，处理程序根据异常的类型决定自己是否处理该异常等。
+
+```cpp
+#pragma once
+
+#include <iostream>
+#include <string>
+
+namespace responsibility {
+
+/// @brief 抽象处理者, 定义一个处理请求的接口，包含抽象处理方法和一个后继连接
+class AbstractHandler {
+public:
+    virtual ~AbstractHandler() {}
+    virtual void SetNext(AbstractHandler* handler) {
+        next_ = handler;
+    }
+    virtual AbstractHandler* GetNext() {
+        return next_;
+    }
+
+    virtual void Request(const std::string& state) = 0;
+
+private:
+    AbstractHandler* next_ = nullptr;
+};
+
+/// @brief 具体处理者, 实现抽象处理者的处理方法，判断能否处理本次请求，如果可以处理请求则处理，否则将该请求转给它的后继者
+class ConcreteHandlerA : public AbstractHandler {
+public:
+    virtual void Request(const std::string& state) {
+        if (0 == state.compare("A")) {
+            printf("this is ConcreteHandlerA::Request!\n");
+        }
+        else {
+            if (GetNext()) {
+                GetNext()->Request(state);
+            }
+            else {
+                printf("From A, Nobody handle this request!\n");
+            }
+        }
+    }
+};
+class ConcreteHandlerB : public AbstractHandler {
+public:
+    virtual void Request(const std::string& state) {
+        if (0 == state.compare("B")) {
+            printf("this is ConcreteHandlerB::Request!\n");
+        }
+        else {
+            if (!GetNext()) {
+                GetNext()->Request(state);
+            }
+            else {
+                printf("From B, Nobody handle this request!\n");
+            }
+        }
+    }
+};
+
+} // namespace responsibility
+
+void Test_16_chain_of_responsibility_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::shared_ptr<responsibility::AbstractHandler> ptr_A(new responsibility::ConcreteHandlerA());
+    std::shared_ptr<responsibility::AbstractHandler> ptr_B(new responsibility::ConcreteHandlerB());
+
+    ptr_A->SetNext(ptr_B.get());
+    ptr_A->Request("B");
+}
+
+// -------------------- Test_16_chain_of_responsibility_impl_1 --------------------
+// this is ConcreteHandlerB::Request!
+```
+
+## 访问者模式
+
+含义
+
+Visitor 在不改变集合元素的前提下，为一个集合中的每个元素提供多种访问方式，即每个元素有多个访问者对象访问。
+
+优点
+扩展性好。能够在不修改对象结构中的元素的情况下，为对象结构中的元素添加新的功能。
+复用性好。可以通过访问者来定义整个对象结构通用的功能，从而提高系统的复用程度。
+灵活性好。访问者模式将数据结构与作用于结构上的操作解耦，使得操作集合可相对自由地演化而不影响系统的数据结构。
+符合单一职责原则。访问者模式把相关的行为封装在一起，构成一个访问者，使每一个访问者的功能都比较单一。
+缺点
+增加新的元素类很困难。在访问者模式中，每增加一个新的元素类，都要在每一个具体访问者类中增加相应的具体操作，这违背了“开闭原则”。
+破坏封装。访问者模式中具体元素对访问者公布细节，这破坏了对象的封装性。
+违反了依赖倒置原则。访问者模式依赖了具体类，而没有依赖抽象类。
+应用场景
+
+对象结构相对稳定，但其操作算法经常变化的程序。
+对象结构中的对象需要提供多种不同且不相关的操作，而且要避免让这些操作的变化影响对象的结构。
+对象结构包含很多类型的对象，希望对这些对象实施一些依赖于其具体类型的操作。
+```cpp
+#pragma once
+
+#include <iostream>
+#include <list>
+
+namespace visitor {
+
+/// @brief 抽象访问者, 定义一个访问具体元素的接口，为每个具体元素类对应一个访问操作，该操作中的参数类型标识了被访问的具体元素。
+class ConcreteElementA;
+class ConcreteElementB;
+class AbstractVisitor {
+public:
+    virtual ~AbstractVisitor() {}
+
+    /// @brief 访问操作, 依赖于具体元素类
+    virtual void Visit(ConcreteElementA* element) = 0;
+    virtual void Visit(ConcreteElementB* element) = 0;
+};
+
+/// @brief 具体访问者, 实现抽象访问者角色中声明的各个访问操作，确定访问者访问一个元素时该做什么。
+class ConcreteVisitorA : public AbstractVisitor {
+public:
+    virtual void Visit(ConcreteElementA* element);
+    virtual void Visit(ConcreteElementB* element);
+};
+class ConcreteVisitorB : public AbstractVisitor {
+public:
+    virtual void Visit(ConcreteElementA* element);
+    virtual void Visit(ConcreteElementB* element);
+};
+
+/// @brief 抽象元素, 声明一个包含接受操作 accept() 的接口，被接受的访问者对象作为 accept() 方法的参数
+class AbstractElement {
+public:
+    virtual ~AbstractElement() {}
+
+    virtual void Accept(AbstractVisitor* visitor) = 0;
+};
+
+/// @brief 具体元素角色：实现抽象元素角色提供的 accept() 操作，另外具体元素中可能还包含本身业务逻辑的相关操作。
+class ConcreteElementA : public AbstractElement {
+public:
+    virtual void Accept(AbstractVisitor* visitor) {
+        visitor->Visit(this);
+    }
+    
+    void OperatorA() {
+        printf("this is ConcreteElementA::OperatorA!\n");
+    }
+};
+class ConcreteElementB : public AbstractElement {
+public:
+    virtual void Accept(AbstractVisitor* visitor) {
+        visitor->Visit(this);
+    }
+    
+    void OperatorB() {
+        printf("this is ConcreteElementB::OperatorB!\n");
+    }
+};
+
+void ConcreteVisitorA::Visit(ConcreteElementA* element) {
+    printf("this is ConcreteVisitorA::Visit!\n");
+    element->OperatorA();
+}
+void ConcreteVisitorA::Visit(ConcreteElementB* element) {
+    printf("this is ConcreteVisitorA::Visit!\n");
+    element->OperatorB();
+}
+void ConcreteVisitorB::Visit(ConcreteElementA* element) {
+    printf("this is ConcreteVisitorB::Visit!\n");
+    element->OperatorA();
+}
+void ConcreteVisitorB::Visit(ConcreteElementB* element) {
+    printf("this is ConcreteVisitorB::Visit!\n");
+    element->OperatorB();
+}
+
+} // namespace visitor
+
+void Test_20_visitor_impl_1() {
+    printf("-------------------- %s --------------------\n", __FUNCTION__);
+    std::list<visitor::AbstractElement*> elements;
+    elements.emplace_back(new visitor::ConcreteElementA());
+    elements.emplace_back(new visitor::ConcreteElementB());
+
+    // 为所有元素设置访问者A
+    std::shared_ptr<visitor::AbstractVisitor> ptr_visitor_a(new visitor::ConcreteVisitorA());
+    for (auto* e : elements) {
+        e->Accept(ptr_visitor_a.get());
+    }
+
+    printf("----------------------\n");
+
+    // 为所有元素设置访问者B
+    std::shared_ptr<visitor::AbstractVisitor> ptr_visitor_b(new visitor::ConcreteVisitorB());
+    for (auto* e : elements) {
+        e->Accept(ptr_visitor_b.get());
+    }
+
+    for (auto* e : elements) {
+        if (e) delete e;
+    }
+}
+
+// -------------------- Test_20_visitor_impl_1 --------------------
+// this is ConcreteVisitorA::Visit!
+// this is ConcreteElementA::OperatorA!
+// this is ConcreteVisitorA::Visit!
+// this is ConcreteElementB::OperatorB!
+// ----------------------
+// this is ConcreteVisitorB::Visit!
+// this is ConcreteElementA::OperatorA!
+// this is ConcreteVisitorB::Visit!
+// this is ConcreteElementB::OperatorB!
+```

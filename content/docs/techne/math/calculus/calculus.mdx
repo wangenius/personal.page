@@ -1,0 +1,236 @@
+---
+title: Calculus
+
+slug: calculus
+---
+
+## Functions
+
+Monotonicity: When the derivative of a function is greater than 0, the function is strictly increasing
+
+Mathematical expression: When $\frac{df}{dx} > 0$, the function is strictly increasing
+
+### Limits
+
+```math
+\lim_{x \to a} f(x) = A \Longleftrightarrow \forall \varepsilon > 0, \exists \delta > 0, |x - a| < \delta \Rightarrow |f(x)-A|<\varepsilon
+```
+
+1. $\lim f(x) = A$: The limit exists. The limit at a point has nothing to do with the existence and value of the function value at that point. If the left limit = right limit = the function value at that point, then the function is continuous at that point.
+2. $\lim f_+(x) =\lim f_-(x)$: The limit is unique
+3. **Removing the hat from equality**: $\lim f(x) = A \Longleftrightarrow f(x) = A + \alpha(x), \lim \alpha(x) = 0$
+4. **Removing the hat from inequality**: $A>0 \implies f(x) > 0$
+5. **Putting the hat on inequality**: $f(x) \ge 0 \implies A \ge 0$
+
+### Continuity
+
+Composite functions formed by continuous intervals after finite composition are continuous within the domain
+The four arithmetic operations of continuous functions are continuous
+Basic elementary functions are continuous
+Elementary functions are continuous within the definition interval
+The inverse function of a continuous monotonic function is still continuous and monotonic in the corresponding interval
+
+<Callout>
+[Calculation and Existence of Function Limits]
+
+1. **Operation rules**: It is necessary to ensure that when doing split operations, the limits after splitting exist separately
+2. **Equivalent infinitesimals**: Ordinary function type; Composite function type; Variable upper limit integral type; Extended type; Identity transformation;
+3. **L'Hôpital's Rule**
+4. **Taylor Formula**
+5. **Squeeze Theorem and Monotone Convergence Theorem** (more for sequences)
+</Callout>
+
+### Function Mean Value Theorems
+
+If $f(x)$ is continuous on $[a,b]$:
+
+1. **Boundedness Theorem**: $m\le f(x)\le M$
+2. **Extreme Value Theorem**: $\exist a,b \to f(a) = m,  f(b)=M$
+3. **Intermediate Value Theorem**: $m\le \mu\le M,\exist \xi\in[a,b]\to f(\xi)=\mu$
+4. **Mean Value Theorem**: $x_i\in[a,b], \exist \xi \in [x_1,x_n]\to f(\xi) = (1/n)\sum f(x_i)$
+5. **Zero Point Theorem**: $f(a)\cdot f(b) < 0 \implies \exist \xi \in (a,b) \to f(\xi) = 0$
+
+### Multi-level Function Behavior Relationships
+
+1. **Differentiable at a point implies continuous, but continuous does not necessarily imply differentiable**
+2. **If left and right derivatives exist (do not need to be equal), it must be continuous. But the derivative at a point cannot determine the monotonicity on the interval (the derivative of one point cannot determine an interval).**
+3. **Existence Theorem of Indefinite Integral**: Continuous functions must have primitive functions. The first kind of discontinuity has no primitive function. Infinite discontinuity has no primitive function. Oscillating discontinuity may have primitive functions
+4. **Existence Theorem of Definite Integral**: If continuous on a closed interval, it must be integrable. If monotonic on a closed interval, it must be integrable. If bounded on a closed interval, with finite discontinuity points, it is integrable. Integrable functions must be bounded.
+5. **If integrable on a closed interval, then the variable upper limit integral function is continuous**
+6. **If continuous on a closed interval, then the variable upper limit integral function is differentiable**
+7. **Variable limit integral**: If integrable on a closed interval, the variable limit integral is continuous. (If the variable limit integral exists, it must be continuous)
+8. **If continuous on a closed interval, the variable limit integral is differentiable.**
+
+   ![Derivative Behavior Relationship](/img/导数性态关系.png)
+
+## Sequences
+
+### Calculation and Existence of Limits
+
+1. **Necessary and sufficient condition**: All subsequences converge to $A$.
+2. **Reduction principle**: The function limit of continuous variables = the function limit of discrete variables.
+3. **Definition method**
+4. **Squeeze Theorem**
+5. **Monotone Convergence Theorem**
+
+## Space and Geometry
+
+### Vector Space
+
+1. **Unit vectors**: $e_X,e_Y,e_Z$: Unit vectors.
+2. **Vector representation**: $v = (v_x,v_y,v_z)\quad u=(u_x,u_y,u_z)$: Vectors.
+3. **Vector magnitude**: $|v| = \sqrt{v_x^2 + v_y^2 + v_z^2}$: The magnitude of the vector.
+4. **Dot product**: $v \cdot u = (v_x,v_y,v_z)\cdot(u_x,u_y,u_z) = v_xu_x+v_yu_y+v_zu_z$
+5. **Vector perpendicularity**: $v \bot u \Longleftrightarrow \theta = \pi/2 \Longleftrightarrow v \cdot u = 0 \Longleftrightarrow v_xu_x+v_yu_y+v_zu_z = 0$
+6. **Vector dot product**: $v\cdot u = |v||u|\cos \theta \implies \cos \theta = (v\cdot u)/(|v||u|)$
+7. $v_i =  v\cdot e_i$: Equal to the dot product of the vector and unit vectors in each direction.
+8. $a=\langle v,X \rangle \quad b =\langle v,Y \rangle \quad c = \langle v,Z \rangle$
+9. **Direction cosines**: $\cos\alpha=v_x/|v|;\quad\cos\beta=v_y/|v|;\quad\cos\gamma=v_z/|v|$
+10. $a = (\cos \alpha,\cos \beta,\cos\gamma)$ The unit vector of vector $v$, representing direction
+11. **Projection**: $\Pi_uv = (v\cdot u)/|u| = |v|\cos \theta$
+12. $v\times u = \left| \begin{array} {ccc} i & j &k\\v_x&v_y&v_z\\u_x&u_y&u_z \end{array}\right|$
+13. $|v \times u| = |v||u|\sin \theta$: The right-hand rule determines the direction, used to calculate normal vectors and area
+14. **Mixed product**: $[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$, if the mixed product = 0, the three vectors are coplanar.
+
+### Field Theory Basics
+
+1. **Hamilton operator**:
+
+```math
+\nabla = \left(\frac{\partial}{\partial x},\frac{\partial}{\partial y},\frac{\partial}{\partial z}\right)
+```
+
+2. **Directional derivative**: For a ternary function $u=u(x,y,z)$ defined at point $P_0=(x_0,y_0,z_0)$, the distance $t= \sqrt{(x-x_0)^2+(y-y_0)^2+(z-z_0)^2}$
+
+```math
+\frac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\frac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\frac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}\\=\nabla u(P_0) \cdot l^o = u_x^{\prime}(P_0)\cos \alpha+u_y^{\prime}(P_0)\cos \beta + u_z^{\prime}(P_0)\cos \gamma = |\nabla||l^o|\cos \theta
+```
+
+3. **Gradient**:
+
+```math
+\text{grad}\,u|_{P_0} =\nabla u(P_0) = (u_x^{\prime}(P_0),u_y^{\prime}(P_0),u_z^{\prime}(P_0))
+```
+
+4. **Divergence**: Vector field: $A(x,y,z) = (P(x,y,z),Q(x,y,z),R(x,y,z))$
+
+```math
+\text{div}\,A =\nabla \cdot A = \frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}
+```
+
+5. **Curl**:
+
+```math
+\text{rot}\,A = \nabla\times A = \begin{vmatrix} i & j &k\\\frac{\partial}{\partial x}&\frac{\partial}{\partial y}&\frac{\partial}{\partial z}\\P&Q&R\end{vmatrix}
+```
+
+### Plane Geometry Formulas
+
+- **Plane figure area**:
+
+```math
+S=\begin{cases}\int_{a}^{b}\left|y_1(x)-y_2(x)\right|\mathrm{d}x\\ \frac{1}{2}\int_{\alpha}^{\beta}\left|r_1^2(\theta)-r_2^2(\theta)\right|\mathrm{d}\theta\end{cases}
+```
+
+- **Volume of revolution**:
+
+```math
+V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2(x)-y_2^2(x)\right|\mathrm{d}x\\ 2\pi\int_{a}^{b}x\left|y_1(x)-y_2(x)\right|\mathrm{d}x\end{cases}
+```
+
+- **Arc differential**:
+
+```math
+\mathrm{d}s=\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2+[z^{\prime}(t)]^2}\mathrm{d}t=\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta=\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t
+```
+
+- **Plane curve arc length**:
+
+```math
+s=\int \mathrm{d}s=\int_{a}^{b}\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\int_{\alpha}^{\beta}\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t=\int_{\alpha}^{\beta}\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta
+```
+
+- **Centroid of plane figure**:
+
+```math
+\bar{x}=\frac{\iint_{D}x\mathrm{d}\sigma}{\iint_{D}\mathrm{d}\sigma}
+```
+
+- **Curvature**:
+
+```math
+K=\frac{\mathrm{d}\theta}{\mathrm{d}\rho} = \frac{|y^{\prime\prime}|}{\rho^3}
+```
+
+- **Curvature radius**: $R=1/K$
+
+- **Surface area of revolution**:
+
+```math
+S=2\pi\int_{a}^{b}\left|y(x)\right|\sqrt{1+[y^{\prime}(x)]^2}\mathrm{d}x=2\pi\int_{\alpha}^{\beta}\left|y(t)\right|\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2}\mathrm{d}t
+```
+
+- **Area of region**:
+
+```math
+A=\iint_{D}\mathrm{d}\sigma
+```
+
+- **Volume of object**:
+
+```math
+V=\iiint_{\Omega}\mathrm{d}v
+```
+
+### Space Planes and Space Lines
+
+| Item | Space Plane | Space Line |
+| ------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Normal/Direction Vector | Normal $n=(A,B,C)$ | Direction vector $\tau = (l,m,n)$ |
+| Equation | $Ax+By+Cz+D=0$ | Space line determined by intersection of two space planes |
+| Point-normal form/Point-direction form | Normal vector $\cdot$ plane vector = 0：$A(x-x_0)+B(y-y_0)+C(z-z_0)=0$ | Component ratios are equal：$(x-x_0)/l = (y-y_0)/m = (z-z_0)/n$ |
+| Other forms | Three vectors are coplanar: determinant of third-order matrix composed of $(x,y,z)$ and three non-collinear points on the plane = 0 | Two-point form equality, parametric equation |
+| Perpendicular condition | Plane perpendicular to plane is equivalent to normal vector perpendicular to normal vector | Line perpendicular to plane is equivalent to normal vector and direction vector parallel; line perpendicular to line is equivalent to direction vector perpendicular to direction vector |
+| Parallel condition | Plane parallel to plane is equivalent to normal vector parallel to normal vector | Line parallel to plane is equivalent to normal vector and direction vector perpendicular; line parallel to line is equivalent to direction vector parallel to direction vector |
+| Distance from point to plane/line | Distance from point to plane：$d= | Ax_0+By_0+Cz_0+D | /\sqrt{A^2+B^2+C^2}$ | Distance from point $P$ to line：$d= | \tau\times PM | / | \tau | $ |
+| Angle formula | Angle between plane and plane：$\theta = \arccos( | n_1\cdot n_2 | /( | n_1 | | n_2 | )) = \min\{\langle n_1,n_2\rangle,\pi-\langle n_1,n_2\rangle\}\in[0,\pi/2]$ | Angle between line and line：$\theta = \arccos( | \tau_1\cdot \tau_2 | /( | \tau_1 | | \tau_2 | )) = \min\{\langle \tau_1,\tau_2\rangle,\pi-\langle \tau_1,\tau_2\rangle\}\in[0,\pi/2]$ |
+| Angle between plane and line | $\theta = \arcsin( | \tau\cdot n | /( | \tau | | n | )) = | \pi/2-\langle \tau,n\rangle | \in[0,\pi/2]$ |
+
+### Space Surfaces and Space Curves
+
+| Item | Space Surface $\Sigma$ | Space Curve $\Gamma$ |
+| ------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Equation | $F(x,y,z) = 0$ | $\begin{cases}F(x,y,z) = 0, \\ G(x,y,z) = 0,\end{cases}$ |
+| Normal/Tangent Vector | Normal vector: $n = (F_x, F_y, F_z)$ partial derivatives at point $P_0$ | Tangent vector: $\tau = (A,B,C)$, obtained by cross product of gradient vectors. Under parametric equation: $\tau = (x_t, y_t, z_t)$ derivatives |
+| Tangent plane/Normal plane | Tangent plane: $F_x(x-x_0)+F_y(y-y_0)+F_z(z-z_0)=0$ | Normal plane: $x_t(x-x_0)+ y_t(y-y_0)+z_t(z-z_0)=0$ |
+| Normal/Tangent line | Normal line: $(x-x_0)/F_x=(y-y_0)/F_y=(z-z_0)/F_z$ | Tangent line: $(x-x_0)/x_t=(y-y_0)/y_t=(z-z_0)/z_t$ |
+
+## Variable Independence
+
+1. Independent variables, that is, when one quantity changes, it will not cause changes in other quantities except the dependent variable. Only when a physical quantity is expressed by independent variables can the functional relationship given by it be correct.
+
+2. Non-independent variables, when one quantity changes, it will cause changes in other quantities except the dependent variable. Treating non-independent variables as independent variables is a major taboo in determining the relationship between physical quantities.
+
+Correctly determining whether the physical quantities in the physical expression are constants or variables, independent variables or non-independent variables, is not only the premise and guarantee for correctly answering related questions, but also can simplify the solution process.
+
+In the ideal gas state equation, PV/T=C, where C is a constant. It can be regarded as a constraint relationship g(P,V,T) = C. When one variable changes, it will inevitably cause changes in the other two variables. P, V, T are the three non-independent variables of g.
+
+## Variable Correlation
+
+> Partial differentiation of correlated variables
+
+There is a function $f(x,y) = x + y$. Now the partial derivative of $x$: $\partial f/\partial x= 1$
+
+If we let $x = u, y = u + v$: $\partial f/\partial u = 2$
+
+The current result is somewhat confusing, because $x = u$, so $x$ and $u$ are equivalent, but the results obtained are not the same: $\partial f/\partial x \neq \partial f/\partial u$
+
+This point was introduced in "[Multivariable Calculus 4 - Total Differential and Chain Rule](http://www.cnblogs.com/bigmonkey/p/8350943)". In fact:
+
+```math
+\frac{\partial f}{\partial u}=\frac{\partial f}{\partial x}\frac{\partial x}{\partial u}+\frac{\partial f}{\partial y}\frac{\partial y}{\partial u}=1\times1+1\times1=2
+```
+
+This requires careful examination of partial derivatives. When calculating $f_x$, it means changing $x$ while keeping $y$ unchanged; while calculating $f_u$ means changing $u$ while keeping $v$ unchanged. Since $x = u$, changing $u$ is the same as changing $x$, but keeping $v$ unchanged is not the same as keeping $y$ unchanged. If $y$ is kept unchanged, because $x = u$, changing $x$ also means changing $u$, so in order to keep $y$ unchanged, $v$ must also change accordingly, so that $y = u + v$ remains unchanged. When $v$ is kept unchanged, $v=y-u=y-x$, it can be seen that keeping $v$ unchanged is actually keeping $y - x$ unchanged, which is different from keeping $y$ unchanged. These partial derivatives seem simple, but they are actually risky to use, because keeping them constant is not obvious.
+
+[Multivariable Calculus - Circulation, Curl and Green's, Stokes' Theorems, Flux, Divergence and Gauss's Theorem](https://zhuanlan.zhihu.com/p/71503766)

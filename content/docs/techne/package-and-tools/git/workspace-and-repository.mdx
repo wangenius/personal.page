@@ -1,0 +1,148 @@
+---
+title : 工作区和版本库
+
+slug : 工作区和版本库
+---
+
+## 工作区
+
+### 撤销修改
+
+```bash
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   readme.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+```bash
+$ git checkout -- readme.txt
+```
+把readme.txt文件在工作区的修改全部撤销，这里有两种情况：
+1. 一种是readme.txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；
+2. 一种是readme.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态。
+
+总之，就是让这个文件回到最近一次git commit或git add时的状态。
+
+<Callout type="warning" title="git checkout">
+git checkout -- file命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令，我们在后面的分支管理中会再次遇到git checkout命令。
+</Callout>
+## 创建
+
+```bash
+$ git init
+```
+
+所有的版本控制系统，其实只能跟踪文本文件的改动，比如TXT文件，网页，所有的程序代码等等，Git也不例外。版本控制系统可以告诉你每次的改动，比如在第5行加了一个单词“Linux”，在第8行删了一个单词“Windows”。而图片、视频这些二进制文件，虽然也能由版本控制系统管理，但没法跟踪文件的变化，只能把二进制文件每次改动串起来，也就是只知道图片从100KB改成了120KB，但到底改了啥，版本控制系统不知道，也没法知道。
+
+## 文件放入仓库
+
+```bash
+$ git add readme.txt
+```
+
+## 文件提交到仓库
+
+```bash
+$ git commit -m "wrote a readme file"
+```
+
+## git状态
+
+```bash
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   readme.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+## 查看修改
+查看工作区和版本库里面最新版本的区别：
+```bash
+$ git diff readme.txt
+#或
+$ git diff HEAD -- readme.txt
+diff --git a/readme.txt b/readme.txt
+index 46d49bf..9247db6 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -1,2 +1,2 @@
+-Git is a version control system.
++Git is a distributed version control system.
+ Git is free software.
+```
+
+## 查看提交
+
+```bash
+$ git log
+#或者
+$ git log --pretty=oneline
+```
+
+需要友情提示的是，你看到的一大串类似1094adb...的是commit id（版本号），和SVN不一样，Git的commit id不是1，2，3……递增的数字，而是一个SHA1计算出来的一个非常大的数字，用十六进制表示，而且你看到的commit id和我的肯定不一样，以你自己的为准。为什么commit id需要用这么一大串数字表示呢？因为Git是分布式的版本控制系统，后面我们还要研究多人在同一个版本库里工作，如果大家都用1，2，3……作为版本号，那肯定就冲突了。
+
+## 版本回退(撤回代码)
+
+```bash
+git reset --soft HEAD^
+```
+
+这样就成功的撤销了你的commit,注意，仅仅是撤回commit操作，您写的代码仍然保留。
+
+HEAD^的意思是上一个版本，也可以写成HEAD~1
+如果你进行了2次commit，想都撤回，可以使用HEAD~2
+
+至于这几个参数：
+
+1. `--mixed`
+   意思是：不删除工作空间改动代码，撤销commit，并且撤销git add . 操作
+   这个为默认参数,`git reset --mixed HEAD^` 和 `git reset HEAD^` 效果是一样的。
+
+2. `--soft`
+   不删除工作空间改动代码，撤销commit，不撤销git add .
+
+3. `--hard`
+   删除工作空间改动代码，撤销commit，撤销git add .
+
+注意完成这个操作后，就恢复到了上一次的commit状态。
+
+顺便说一下，如果commit注释写错了，只是想改一下注释，只需要：
+`git commit --amend`
+
+此时会进入默认vim编辑器，修改注释完毕后保存就好了。
+首先，Git必须知道当前版本是哪个版本，在Git中，用`HEAD`表示当前版本，也就是最新的提交1094adb...（注意我的提交ID和你的肯定不一样），上一个版本就是`HEAD^`，上上一个版本就是`HEAD^^`，当然往上100个版本写100个^比较容易数不过来，所以写成`HEAD~100`。
+
+```bash
+$ git reset --hard HEAD^
+HEAD is now at e475afc add distributed
+```
+
+只要上面的命令行窗口还没有被关掉，你就可以顺着往上找啊找啊，找到那个append GPL的commit id是1094adb...，于是就可以指定回到未来的某个版本：
+
+```bash
+$ git reset --hard 1094a
+HEAD is now at 83b0afe append GPL
+```
+
+版本号没必要写全，前几位就可以了，Git会自动去找。当然也不能只写前一两位，因为Git可能会找到多个版本号，就无法确定是哪一个了。
+
+当关掉了命令行窗口,还想回到未来,在Git中，总是有后悔药可以吃的。当你用`$ git reset --hard HEAD^`回退到add distributed版本时，再想恢复到append GPL，就必须找到append GPL的`commit id`。Git提供了一个命令`git reflog`用来记录你的每一次命令：
+
+```bash
+$ git reflog
+e475afc HEAD@{1}: reset: moving to HEAD^
+1094adb (HEAD -> master) HEAD@{2}: commit: append GPL
+e475afc HEAD@{3}: commit: add distributed
+eaadf4e HEAD@{4}: commit (initial): wrote a readme file
+```

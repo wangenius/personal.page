@@ -1,0 +1,14 @@
+{
+  "title": "技艺志",
+  "root": true,
+  "pages": [
+    "index",
+    "ai",
+    "computer-science",
+    "algorithms",
+    "coding-language",
+    "package-and-tools",
+    "...",
+    "math"
+  ]
+}

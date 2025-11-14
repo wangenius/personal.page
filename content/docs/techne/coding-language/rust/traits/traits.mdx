@@ -1,0 +1,543 @@
+---
+title : traits
+
+slug : traits
+---
+
+trait 是为未知类型定义的方法集合： Self 。他们可以访问同一特征中声明的其他方法。
+
+可以为任何数据类型实现特征。在下面的示例中，我们定义了一组方法 Animal 。然后为 Sheep 数据类型实现 Animal trait ，允许使用 Animal 中的方法和 Sheep
+
+```rust
+struct Sheep { naked: bool, name: &'static str }
+
+trait Animal {
+    // Associated function signature; `Self` refers to the implementor type.
+    fn new(name: &'static str) -> Self;
+
+    // Method signatures; these will return a string.
+    fn name(&self) -> &'static str;
+    fn noise(&self) -> &'static str;
+
+    // Traits can provide default method definitions.
+    fn talk(&self) {
+        println!("{} says {}", self.name(), self.noise());
+    }
+}
+
+impl Sheep {
+    fn is_naked(&self) -> bool {
+        self.naked
+    }
+
+    fn shear(&mut self) {
+        if self.is_naked() {
+            // Implementor methods can use the implementor's trait methods.
+            println!("{} is already naked...", self.name());
+        } else {
+            println!("{} gets a haircut!", self.name);
+
+            self.naked = true;
+        }
+    }
+}
+
+// Implement the `Animal` trait for `Sheep`.
+impl Animal for Sheep {
+    // `Self` is the implementor type: `Sheep`.
+    fn new(name: &'static str) -> Sheep {
+        Sheep { name: name, naked: false }
+    }
+
+    fn name(&self) -> &'static str {
+        self.name
+    }
+
+    fn noise(&self) -> &'static str {
+        if self.is_naked() {
+            "baaaaah?"
+        } else {
+            "baaaaah!"
+        }
+    }
+    
+    // Default trait methods can be overridden.
+    fn talk(&self) {
+        // For example, we can add some quiet contemplation.
+        println!("{} pauses briefly... {}", self.name, self.noise());
+    }
+}
+
+fn main() {
+    // Type annotation is necessary in this case.
+    let mut dolly: Sheep = Animal::new("Dolly");
+    // TODO ^ Try removing the type annotations.
+
+    dolly.talk();
+    dolly.shear();
+    dolly.talk();
+}
+```
+
+类似于OOP的 interface {}, 定义了一组可以被共享的行为，只要实现了特征，你就能使用这组行为
+
+如果不同的类型具有相同的行为，那么我们就可以定义一个特征，然后为这些类型实现该特征。
+
+定义 Trait
+
+```rust
+pub trait Person{
+  fn say(&self) -> String;
+}
+```
+
+## Trait 的关联类型
+
+trait 除了可以定义方法，还可以定义类型，实现 Trait 特征时，也需要实现关联类型，像泛型的 T, 需要指明类型
+
+```rust
+pub struct Puppy;
+trait Animal {
+    type Baby; // 关联类型
+    fn have_baby(&self) ->Self::Baby;
+}
+impl Animal for Dog {
+    type Baby = Puppy; // 确认关联类型
+    fn have_baby(&self) -> Self::Baby {
+        println!("A puppy is born.");
+        Puppy
+    }
+}
+```
+
+## 实现trait
+
+```rust
+struct User {
+    id:i32,
+    name:String,
+}
+// 实现trait
+impl Person for User {
+    fn say(&self)->String{
+        format!("id is {}, name is {}",self.id, self.name)
+    }
+}
+```
+
+###### trait 的孤儿规则
+
+**如果你想要为类型** `A` **实现特征** `T`**，那么** `A` **或者** `T` **至少有一个是在当前作用域 中定义的！**
+
+###### trait 的默认实现
+
+定义具有**默认实现**的方法，这样其它类型无需再实现该方法，或者也可以选择重载该方法
+
+```rust
+pub trait Person {
+    fn author(&self)->String;
+    fn say(&self) { // 有具体的实现，其他类型可以不实现或者重载这个方法
+        print!("{} is saying", self.author());
+    }
+}
+```
+
+trait 作为参数使用
+
+```rust
+fn notify(item: &impl Person) { // 参数是trait, 写法就是 impl trait
+    item.say();
+}
+fn notify2(item: &(impl Person+Display) { // 多重约束，参数必须实现Person和Display特征
+    item.say();
+}
+fn main() {
+    let u1 = User{name:String::from("aa")};
+    notify(&u1)
+}
+```
+
+###### 特征约束 (trait bound(绑定))
+
+trait 作为参数使用，我们使用 impl trait 其实是一个语法糖，本质是这样：
+
+```rust
+fn notify3<T: Person>(user:&T){ // 对T类型，必须实现Person特征进行限制，T: Person就是特征约束
+    user.say();
+}
+```
+
+多重约束
+
+```rust
+fn notify3<T: Person+Display>(user:&T){ // 对T类型，必须实现Person特征进行限制，T: Person就是特征约束
+    user.say();
+}
+```
+
+函数返回中的 impl Trait
+可以通过 impl Trait 来说明一个函数返回了一个类型，该类型实现了某个特征。
+
+但是这种写法有个缺点，只可以返回一种具体的类型，这种类型实现了 Person trait
+
+```rust
+fn createp(n:&str)->impl Person{
+    User{
+        name:String::from(n)
+    }
+}
+fn main() {
+    let u1 = createp("aa");
+    let u2 = createp("bb");
+}
+```
+
+##### Trait 对象
+
+上面 User 实现了 Person, 如果又有一个 Child 实现了 Person.
+
+Trait 对象指向实现了 Person 特征的类型的实例，也就是指向了 User 或者 Child 的实例，这种映射关系是存储在一张表中，可以在运行时通过特征对象找到具体调用的类型方法。
+
+特征对象：Box，当成一个引用即可，只不过它包裹的值会被强制分配在堆上。
+
+```rust
+fn createp(n:&str, b:bool) -> Box<dyn Person>{ // 返回一个特征对象（类似智能指针，当做一个引用即可）
+    if b {
+        Box::new(User{
+            name:String::from(n)
+        })
+    }else{
+        Box::new(Child{ // 通过Box::new()创建特征对象
+            name:String::from(n),
+            age:1
+        })
+    }
+}
+fn notify(item: Box<dyn Person>) { // 参数是特征对象
+    item.say();
+}
+fn main() {
+    let u1 = createp("aa",true); 
+    let u2 = createp("bb",false);
+    notify(u1);
+    notify(u2);
+}
+```
+
+特征对象原理
+
+泛型是在编译期完成处理的：编译器会为每一个泛型参数对应的具体类型生成一份代码，这种方式是静态分发 (static dispatch)，因为是在编译期完成的，对于运行期性能完全没有任何影响。
+
+与静态分发相对应的是动态分发 (dynamic dispatch)，在这种情况下，直到运行时，才能确定需要调用什么方法。之前代码中的关键字 dyn 正是在强调这一 “动态” 的特点。
+
+Box, 包含了两个指针
+
+ptr: 指向实现了特征 Person 的具体类型的实例，比如类型 User 的实例、类型 Child 的实例
+
+vptr 指向一个虚表 vtable, 保存了实例对于可以调用的实现于特征 Person 的方法
+
+trait 对象的限制
+不是所有的 trait 都有 trait 对象，必须满足一定条件的 trait
+
+方法的返回类型不能是 Self
+方法没有任何泛型参数
+
+## Derive
+
+编译器能够通过 #[derive] 属性为某些特征提供基本实现。如果需要更复杂的行为，这些特征仍然可以手动实现。
+
+以下是可衍生特征的列表：
+
+比较特征： Eq 、 PartialEq 、 Ord 、 PartialOrd 。
+Clone ，通过副本从 &T 创建 T 。
+Copy ，给出类型“复制语义”而不是“移动语义”。
+Hash ，从 &T 计算哈希值。
+Default ，创建数据类型的空实例。
+Debug ，使用 `{:?}` 格式化程序格式化值。
+
+```rust
+// `Centimeters`, a tuple struct that can be compared
+#[derive(PartialEq, PartialOrd)]
+struct Centimeters(f64);
+
+// `Inches`, a tuple struct that can be printed
+#[derive(Debug)]
+struct Inches(i32);
+
+impl Inches {
+    fn to_centimeters(&self) -> Centimeters {
+        let &Inches(inches) = self;
+
+        Centimeters(inches as f64 * 2.54)
+    }
+}
+
+// `Seconds`, a tuple struct with no additional attributes
+struct Seconds(i32);
+
+fn main() {
+    let _one_second = Seconds(1);
+
+    // Error: `Seconds` can't be printed; it doesn't implement the `Debug` trait
+    //println!("One second looks like: {:?}", _one_second);
+    // TODO ^ Try uncommenting this line
+
+    // Error: `Seconds` can't be compared; it doesn't implement the `PartialEq` trait
+    //let _this_is_true = (_one_second == _one_second);
+    // TODO ^ Try uncommenting this line
+
+    let foot = Inches(12);
+
+    println!("One foot equals {:?}", foot);
+
+    let meter = Centimeters(100.0);
+
+    let cmp =
+        if foot.to_centimeters() < meter {
+            "smaller"
+        } else {
+            "bigger"
+        };
+
+    println!("One foot is {} than one meter.", cmp);
+}
+```
+
+## 使用dyn返回特征
+
+rust 编译器需要知道每个函数的返回类型需要多少空间。这意味着所有函数都必须返回具体类型。与其他语言不同，如果您具有 Animal 这样的特征，则无法编写返回 Animal 的函数，因为其不同的实现将需要不同的内存量。
+
+然而，有一个简单的解决方法。我们的函数不是直接返回特征对象，而是返回一个包含一些 Animal 的 Box 。 box 只是对堆中某些内存的引用。因为引用具有静态已知的大小，并且编译器可以保证它指向堆分配的 Animal ，所以我们可以从函数中返回一个特征！
+
+每当 rust 在堆上分配内存时，都会尝试尽可能明确。因此，如果您的函数以这种方式返回指向堆上特征的指针，则需要使用 dyn 关键字编写返回类型，例如 `Box<dyn Animal>` 。
+
+```rust
+struct Sheep {}
+struct Cow {}
+
+trait Animal {
+    // Instance method signature
+    fn noise(&self) -> &'static str;
+}
+
+// Implement the `Animal` trait for `Sheep`.
+impl Animal for Sheep {
+    fn noise(&self) -> &'static str {
+        "baaaaah!"
+    }
+}
+
+// Implement the `Animal` trait for `Cow`.
+impl Animal for Cow {
+    fn noise(&self) -> &'static str {
+        "moooooo!"
+    }
+}
+
+// Returns some struct that implements Animal, but we don't know which one at compile time.
+fn random_animal(random_number: f64) -> Box<dyn Animal> {
+    if random_number < 0.5 {
+        Box::new(Sheep {})
+    } else {
+        Box::new(Cow {})
+    }
+}
+
+fn main() {
+    let random_number = 0.234;
+    let animal = random_animal(random_number);
+    println!("You've randomly chosen an animal, and it says {}", animal.noise());
+}
+```
+
+## 运算符重载
+
+在 rust 中，许多运算符可以通过特征重载。也就是说，一些运算符可用于根据其输入参数完成不同的任务。这是可能的，因为运算符是方法调用的语法糖。例如， a + b 中的 + 运算符调用 add 方法（如 a.add(b) 中）。此 add 方法是 Add 特征的一部分。因此， + 运算符可以由 Add 特征的任何实现者使用。
+
+可以在 core::ops 中找到重载运算符的特征列表，例如 Add 。
+
+```rust
+use std::ops;
+
+struct Foo;
+struct Bar;
+
+#[derive(Debug)]
+struct FooBar;
+
+#[derive(Debug)]
+struct BarFoo;
+
+// The `std::ops::Add` trait is used to specify the functionality of `+`.
+// Here, we make `Add<Bar>` - the trait for addition with a RHS of type `Bar`.
+// The following block implements the operation: Foo + Bar = FooBar
+impl ops::Add<Bar> for Foo {
+    type Output = FooBar;
+
+    fn add(self, _rhs: Bar) -> FooBar {
+        println!("> Foo.add(Bar) was called");
+
+        FooBar
+    }
+}
+
+// By reversing the types, we end up implementing non-commutative addition.
+// Here, we make `Add<Foo>` - the trait for addition with a RHS of type `Foo`.
+// This block implements the operation: Bar + Foo = BarFoo
+impl ops::Add<Foo> for Bar {
+    type Output = BarFoo;
+
+    fn add(self, _rhs: Foo) -> BarFoo {
+        println!("> Bar.add(Foo) was called");
+
+        BarFoo
+    }
+}
+
+fn main() {
+    println!("Foo + Bar = {:?}", Foo + Bar);
+    println!("Bar + Foo = {:?}", Bar + Foo);
+}
+```
+
+## Drop
+Drop 特征只有一个方法： drop ，当对象超出范围时会自动调用该方法。 Drop 特征的主要用途是释放实现者实例拥有的资源。
+
+Box 、 Vec 、 String 、 File 和 Process 是实现 Drop 免费资源的特征。还可以为任何自定义数据类型手动实现 Drop 特征。
+
+以下示例将打印到控制台添加到 drop 函数，以在调用该函数时进行通知。
+```rust
+struct Droppable {
+    name: &'static str,
+}
+
+// This trivial implementation of `drop` adds a print to console.
+impl Drop for Droppable {
+    fn drop(&mut self) {
+        println!("> Dropping {}", self.name);
+    }
+}
+
+fn main() {
+    let _a = Droppable { name: "a" };
+
+    // block A
+    {
+        let _b = Droppable { name: "b" };
+
+        // block B
+        {
+            let _c = Droppable { name: "c" };
+            let _d = Droppable { name: "d" };
+
+            println!("Exiting block B");
+        }
+        println!("Just exited block B");
+
+        println!("Exiting block A");
+    }
+    println!("Just exited block A");
+
+    // Variable can be manually dropped using the `drop` function
+    drop(_a);
+    // TODO ^ Try commenting this line
+
+    println!("end of the main function");
+
+    // `_a` *won't* be `drop`ed again here, because it already has been
+    // (manually) `drop`ed
+}
+```
+
+## super traits
+
+rust 没有“继承”，但您可以将一个特征定义为另一个特征的超集。例如：
+
+```rust
+trait Person {
+    fn name(&self) -> String;
+}
+
+// Person is a supertrait of Student.
+// Implementing Student requires you to also impl Person.
+trait Student: Person {
+    fn university(&self) -> String;
+}
+
+trait Programmer {
+    fn fav_language(&self) -> String;
+}
+
+// CompSciStudent (computer science student) is a subtrait of both Programmer 
+// and Student. Implementing CompSciStudent requires you to impl both supertraits.
+trait CompSciStudent: Programmer + Student {
+    fn git_username(&self) -> String;
+}
+
+fn comp_sci_student_greeting(student: &dyn CompSciStudent) -> String {
+    format!(
+        "My name is {} and I attend {}. My favorite language is {}. My Git username is {}",
+        student.name(),
+        student.university(),
+        student.fav_language(),
+        student.git_username()
+    )
+}
+
+fn main() {}
+```
+
+## 消除重叠特征的歧义
+
+一个类型可以实现许多不同的特征。如果两个特征都需要相同的函数名称怎么办？例如，许多特征可能有一个名为 get() 的方法。他们甚至可能有不同的返回类型！
+
+好消息：因为每个特征实现都有自己的 impl 块，所以很清楚您正在实现哪个特征的 get 方法。
+
+当需要调用这些方法时怎么办？为了消除它们之间的歧义，我们必须使用完全限定语法。
+
+```rust
+trait UsernameWidget {
+    // Get the selected username out of this widget
+    fn get(&self) -> String;
+}
+
+trait AgeWidget {
+    // Get the selected age out of this widget
+    fn get(&self) -> u8;
+}
+
+// A form with both a UsernameWidget and an AgeWidget
+struct Form {
+    username: String,
+    age: u8,
+}
+
+impl UsernameWidget for Form {
+    fn get(&self) -> String {
+        self.username.clone()
+    }
+}
+
+impl AgeWidget for Form {
+    fn get(&self) -> u8 {
+        self.age
+    }
+}
+
+fn main() {
+    let form = Form {
+        username: "rustacean".to_owned(),
+        age: 28,
+    };
+
+    // If you uncomment this line, you'll get an error saying
+    // "multiple `get` found". Because, after all, there are multiple methods
+    // named `get`.
+    // println!("{}", form.get());
+
+    let username = <Form as UsernameWidget>::get(&form);
+    assert_eq!("rustacean".to_owned(), username);
+    let age = <Form as AgeWidget>::get(&form);
+    assert_eq!(28, age);
+}
+```

@@ -1,0 +1,383 @@
+---
+title: 基本数据类型
+
+slug: 基本数据类型
+---
+
+数字文字可以通过添加类型作为后缀来进行类型注释。例如，要指定文字 42 的类型应为 i32 ，请编写 42i32 。
+
+无后缀数字文字的类型取决于它们的使用方式。如果不存在约束，编译器将使用 i32 表示整数，使用 f64 表示浮点数。
+
+前面的代码中用到了一些概念还没有解释，这里给不耐烦的读者做一个简单的解释：
+
+std::mem::size_of_val 是一个函数，但使用其完整路径进行调用。代码可以分割成称为模块的逻辑单元。在本例中， size_of_val 函数在 mem 模块中定义， mem 模块在 std 包中定义。有关更多详细信息，请参阅模块和 crate。
+
+```rust
+fn main() {
+    // Suffixed literals, their types are known at initialization
+    let x = 1u8;
+    let y = 2u32;
+    let z = 3f32;
+
+    // Unsuffixed literals, their types depend on how they are used
+    let i = 1;
+    let f = 1.0;
+
+    // `size_of_val` returns the size of a variable in bytes
+    println!("size of `x` in bytes: {}", std::mem::size_of_val(&x));
+    println!("size of `y` in bytes: {}", std::mem::size_of_val(&y));
+    println!("size of `z` in bytes: {}", std::mem::size_of_val(&z));
+    println!("size of `i` in bytes: {}", std::mem::size_of_val(&i));
+    println!("size of `f` in bytes: {}", std::mem::size_of_val(&f));
+}
+```
+
+## 整型
+
+rust 标量类型都是通过自动拷贝的方式来赋值的。
+
+### 整数int
+
+```rust
+fn main() {
+    let x:i32 = -32;
+    let y:u32 = 45;
+    let z:i64 = -3332;
+    let t:isize = 43;//大小与计算机架构相同
+    let r:usize = 143;//大小与计算机架构相同
+    //整形字面值
+    let a = 0xff;
+    let b = 98_22;
+    let c = 0b1111_0000;
+    let d = b'A';//表示char A的Unicode编码 输出用decimal表示
+}
+
+```
+
+### 布尔bool
+
+正如其他大部分编程语言一样，rust 中的布尔类型有两个可能的值：`true` 和 `false`。rust 中的布尔类型使用 `bool` 表示。例如：
+
+```rust
+fn main() {
+    let t = true;
+
+    let f: bool = false; // 显式指定类型注解
+}
+```
+
+### 浮点float
+
+```rust
+fn main() {
+    let x = 2.0; // f64 双精度
+
+    let y: f32 = 3.0; // f32 单精度
+}
+```
+
+### 字符char
+
+目前为止只使用到了数字，不过 rust 也支持字母。rust 的 `char` 类型是语言中最原生的字母类型，如下代码展示了如何使用它。（注意 `char` 由单引号指定，不同于字符串使用双引号。）
+
+```rust
+fn main() {
+    let c = 'z';
+    let z = 'ℤ';
+    let heart_eyed_cat = '😻';
+}
+```
+
+rust 的 `char` 类型的大小为四个字节(four bytes)，并代表了一个 Unicode 标量值（Unicode Scalar Value），这意味着它可以比 ASCII 表示更多内容。在 rust 中，拼音字母（Accented letters），中文、日文、韩文等字符，emoji（绘文字）以及零长度的空白字符都是有效的 `char` 值。Unicode 标量值包含从 `U+0000` 到 `U+D7FF` 和 `U+E000` 到 `U+10FFFF` 在内的值。不过，“字符” 并不是一个 Unicode 中的概念，所以人直觉上的 “字符” 可能与 rust 中的 `char` 并不符合。
+
+### &T
+
+比如&str，&[T]等
+
+## 类型转换
+
+rust 提供了多种机制来更改或定义原始类型和用户定义类型。以下部分涵盖：
+
+- 原始类型之间的转换
+- 指定所需的文字类型
+- 使用类型推断
+- 别名类型
+
+rust 不提供原始类型之间的隐式类型转换（强制）。但是，可以使用 as 关键字执行显式类型转换（强制转换）。
+
+整数类型之间的转换规则通常遵循 C 约定，除非 C 具有未定义的行为。 rust 中明确定义了整型类型之间所有强制转换的行为。
+
+```rust
+// Suppress all warnings from casts which overflow.
+#![allow(overflowing_literals)]
+
+fn main() {
+  let decimal = 65.4321_f32;
+
+  // Error! No implicit conversion
+  let integer: u8 = decimal;
+  // FIXME ^ Comment out this line
+
+  // Explicit conversion
+  let integer = decimal as u8;
+  let character = integer as char;
+
+  // Error! There are limitations in conversion rules.
+  // A float cannot be directly converted to a char.
+  let character = decimal as char;
+  // FIXME ^ Comment out this line
+
+  println!("Casting: {} -> {} -> {}", decimal, integer, character);
+
+  // when casting any value to an unsigned type, T,
+  // T::MAX + 1 is added or subtracted until the value
+  // fits into the new type
+
+  // 1000 already fits in a u16
+  println!("1000 as a u16 is: {}", 1000 as u16);
+
+  // 1000 - 256 - 256 - 256 = 232
+  // Under the hood, the first 8 least significant bits (LSB) are kept,
+  // while the rest towards the most significant bit (MSB) get truncated.
+  println!("1000 as a u8 is : {}", 1000 as u8);
+  // -1 + 256 = 255
+  println!("  -1 as a u8 is : {}", (-1i8) as u8);
+
+  // For positive numbers, this is the same as the modulus
+  println!("1000 mod 256 is : {}", 1000 % 256);
+
+  // When casting to a signed type, the (bitwise) result is the same as
+  // first casting to the corresponding unsigned type. If the most significant
+  // bit of that value is 1, then the value is negative.
+
+  // Unless it already fits, of course.
+  println!(" 128 as a i16 is: {}", 128 as i16);
+
+  // In boundary case 128 value in 8-bit two's complement representation is -128
+  println!(" 128 as a i8 is : {}", 128 as i8);
+
+  // repeating the example above
+  // 1000 as u8 -> 232
+  println!("1000 as a u8 is : {}", 1000 as u8);
+  // and the value of 232 in 8-bit two's complement representation is -24
+  println!(" 232 as a i8 is : {}", 232 as i8);
+
+  // Since rust 1.45, the `as` keyword performs a *saturating cast*
+  // when casting from float to int. If the floating point value exceeds
+  // the upper bound or is less than the lower bound, the returned value
+  // will be equal to the bound crossed.
+
+  // 300.0 as u8 is 255
+  println!(" 300.0 as u8 is : {}", 300.0_f32 as u8);
+  // -100.0 as u8 is 0
+  println!("-100.0 as u8 is : {}", -100.0_f32 as u8);
+  // nan as u8 is 0
+  println!("   nan as u8 is : {}", f32::NAN as u8);
+
+  // This behavior incurs a small runtime cost and can be avoided
+  // with unsafe methods, however the results might overflow and
+  // return **unsound values**. Use these methods wisely:
+  unsafe {
+      // 300.0 as u8 is 44
+      println!(" 300.0 as u8 is : {}", 300.0_f32.to_int_unchecked::<u8>());
+      // -100.0 as u8 is 156
+      println!("-100.0 as u8 is : {}", (-100.0_f32).to_int_unchecked::<u8>());
+      // nan as u8 is 0
+      println!("   nan as u8 is : {}", f32::NAN.to_int_unchecked::<u8>());
+  }
+}
+```
+
+## 类型推断
+
+类型推断引擎非常智能。它不仅仅在初始化期间查看值表达式的类型。它还研究了之后如何使用变量来推断其类型。这是类型推断的高级示例：
+
+```rust
+fn main() {
+    // Because of the annotation, the compiler knows that `elem` has type u8.
+    let elem = 5u8;
+
+    // Create an empty vector (a growable array).
+    let mut vec = Vec::new();
+    // At this point the compiler doesn't know the exact type of `vec`, it
+    // just knows that it's a vector of something (`Vec<_>`).
+
+    // Insert `elem` in the vector.
+    vec.push(elem);
+    // Aha! Now the compiler knows that `vec` is a vector of `u8`s (`Vec<u8>`)
+    // TODO ^ Try commenting out the `vec.push(elem)` line
+
+    println!("{:?}", vec);
+}
+```
+
+不需要变量的类型注释
+
+## aliasing
+
+type 语句可用于为现有类型指定新名称。类型必须具有 UpperCamelCase 名称，否则编译器将发出警告。此规则的例外是原始类型： usize 、 f32 等。
+
+```rust
+// `NanoSecond`, `Inch`, and `U64` are new names for `u64`.
+type NanoSecond = u64;
+type Inch = u64;
+type U64 = u64;
+
+fn main() {
+    // `NanoSecond` = `Inch` = `U64` = `u64`.
+    let nanoseconds: NanoSecond = 5 as u64;
+    let inches: Inch = 2 as U64;
+
+    // Note that type aliases *don't* provide any extra type safety, because
+    // aliases are *not* new types
+    println!("{} nanoseconds + {} inches = {} unit?",
+             nanoseconds,
+             inches,
+             nanoseconds + inches);
+}
+```
+
+别名的主要用途是减少样板代码；例如 `io::Result<T>` 类型是 `Result<T, io::Error>` 类型的别名。
+
+rust 通过使用特征来解决自定义类型（即 struct 和 enum ）之间的转换。通用转换将使用 From 和 Into 特征。然而，对于更常见的情况，有更具体的方法，特别是在 String 之间进行转换时。
+
+## 类型转换
+
+原始类型可以通过强制转换相互转换。
+
+rust 通过使用特征来解决自定义类型（即 struct 和 enum ）之间的转换。通用转换将使用 From 和 Into 特征。然而，对于更常见的情况，有更具体的方法，特别是在 String 之间进行转换时。
+### From
+From 特征允许类型定义如何从另一种类型创建自身，从而提供了一种非常简单的机制来在多种类型之间进行转换。标准库中有许多此特征的实现，用于原始类型和常见类型的转换。
+
+例如我们可以轻松地将 str 转换为 String
+
+```rust
+let my_str = "hello";
+let my_string = String::from(my_str);
+```
+我们可以做类似的事情来定义我们自己的类型的转换。
+
+```rust
+use std::convert::From;
+
+#[derive(Debug)]
+struct Number {
+    value: i32,
+}
+
+impl From<i32> for Number {
+    fn from(item: i32) -> Self {
+        Number { value: item }
+    }
+}
+
+fn main() {
+    let num = Number::from(30);
+    println!("My number is {:?}", num);
+}
+```
+
+### Into
+
+Into 特征只是 From 特征的倒数。也就是说，如果您已经为您的类型实现了 From 特征， Into 将在必要时调用它。
+
+使用 Into 特征通常需要指定要转换的类型，因为编译器大多数时候无法确定这一点。然而，考虑到我们免费获得该功能，这是一个小小的权衡。
+
+```rust
+use std::convert::Into;
+
+#[derive(Debug)]
+struct Number {
+    value: i32,
+}
+
+impl Into<Number> for i32 {
+    fn into(self) -> Number {
+        Number { value: self }
+    }
+}
+
+fn main() {
+    let int = 5;
+    // Try removing the type annotation
+    let num: Number = int.into();
+    println!("My number is {:?}", num);
+}
+```
+
+### TryFrom & TryTo
+
+与 From 和 Into 类似， TryFrom 和 TryInto 是用于在类型之间进行转换的通用特征。与 From / Into 不同， TryFrom / TryInto 特征用于易出错的转换，因此返回 Result
+
+```rust
+use std::convert::TryFrom;
+use std::convert::TryInto;
+
+#[derive(Debug, PartialEq)]
+struct EvenNumber(i32);
+
+impl TryFrom<i32> for EvenNumber {
+    type Error = ();
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        if value % 2 == 0 {
+            Ok(EvenNumber(value))
+        } else {
+            Err(())
+        }
+    }
+}
+
+fn main() {
+    // TryFrom
+
+    assert_eq!(EvenNumber::try_from(8), Ok(EvenNumber(8)));
+    assert_eq!(EvenNumber::try_from(5), Err(()));
+
+    // TryInto
+
+    let result: Result<EvenNumber, ()> = 8i32.try_into();
+    assert_eq!(result, Ok(EvenNumber(8)));
+    let result: Result<EvenNumber, ()> = 5i32.try_into();
+    assert_eq!(result, Err(()));
+}
+```
+
+### toString
+
+将任何类型转换为 String 就像实现该类型的 ToString 特征一样简单。您应该实现 fmt::Display 特征，而不是直接这样做，它会自动提供 ToString ，并且还允许打印 print! 部分中讨论的类型。
+
+```rust
+use std::fmt;
+
+struct Circle {
+    radius: i32
+}
+
+impl fmt::Display for Circle {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Circle of radius {}", self.radius)
+    }
+}
+
+fn main() {
+    let circle = Circle { radius: 6 };
+    println!("{}", circle.to_string());
+}
+```
+
+### 解析字符串
+
+将字符串转换为多种类型很有用，但更常见的字符串操作之一是将它们从字符串转换为数字。惯用的方法是使用 parse 函数，并安排类型推断或使用“turbofish”语法指定要解析的类型。以下示例显示了两种替代方案。
+
+只要为该类型实现了 FromStr 特征，就会将字符串转换为指定的类型。标准库中的许多类型都实现了这一点。要在用户定义的类型上获得此功能，只需实现该类型的 FromStr 特征即可。
+
+```rust
+fn main() {
+    let parsed: i32 = "5".parse().unwrap();
+    let turbo_parsed = "10".parse::<i32>().unwrap();
+
+    let sum = parsed + turbo_parsed;
+    println!("Sum: {:?}", sum);
+}
+```

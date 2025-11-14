@@ -1,0 +1,196 @@
+---
+
+title: scoop
+slug: scoop
+---
+
+:link:[scoop](https://scoop.sh/)是适用于 Windows 的命令行安装程序。
+
+1. 消除权限弹出窗口
+2. 隐藏 GUI 向导式安装程序
+3. 防止安装大量程序造成路径污染
+4. 避免安装和卸载程序产生意外的副作用
+5. 自动查找并安装依赖项
+6. 自行执行所有额外的设置步骤以获得工作程序
+
+## 安装
+
+### 环境需求
+
+1. PowerShell 5 +: PowerShell 执行策略必须是以下项之一： `Unrestricted` ， `RemoteSigned` 或 `ByPass` 执行安装程序。
+
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+2. NET Framework 4.5 +
+
+### 默认安装
+
+从非管理员 PowerShell 运行此命令，以使用默认配置安装 scoop，scoop 将安装到 `C:\Users\<YOUR USERNAME>\scoop`。
+
+```bash
+irm get.scoop.sh | iex
+# You can use proxies if you have network trouble in accessing GitHub, e.g.
+irm get.scoop.sh -Proxy 'http://127.0.0.1:10808' | iex
+```
+
+### 自定义安装
+
+(指定安装位置, 配置环境变量)
+<Callout type="warning" title="提醒">
+首先确保你能访问 `raw.githubusercontent.com`.(大陆地区不能直接访问).
+</Callout>
+
+#### 新方法
+
+1. 使用 invoke-restmethod 下载安装程序。
+
+```bash
+irm get.scoop.sh -outfile 'install.ps1'
+```
+
+2. 查看安装程序的所有可配置参数。
+
+```bash
+.\install.ps1 -?
+```
+
+```bash title="SYNTAX"
+ D:\download\install.ps1 [[-ScoopDir] <String>] [[-ScoopGlobalDir] <String>] [[-ScoopCacheDir] <String>] [-NoProxy] [[-Proxy] <Uri>] [[-ProxyCredential] <PSCredential>] [-ProxyUseDefaultCredentials] [-RunAsAdmin] [<CommonParameters>]
+```
+
+3. 您可以将 scoop 安装到自定义目录，配置 scoop 将全局程序安装到自定义目录，并在安装过程中绕过系统代理。
+
+```bash
+.\install.ps1 -ScoopDir 'D:\scoop' -ScoopGlobalDir 'D:\scoop\apps' -NoProxy
+```
+
+#### 旧方法
+
+```bash title="以管理员身份打开PowerShell"
+$env:SCOOP='D:\Applications\Scoop'
+[Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+$env:SCOOP_GLOBAL='F:\GlobalScoopApps'
+[Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
+```
+
+```bash showLineNumbers
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+iwr -useb get.scoop.sh | iex
+```
+
+#### 对于管理员
+
+出于安全考虑，默认情况下已禁用管理员控制台下的安装。如果您知道自己在做什么并想以管理员身份安装 Scoop。请下载安装程序，并在提升的控制台中使用该 -RunAsAdmin 参数手动执行它。下面是示例：
+
+```bash
+irm get.scoop.sh -outfile 'install.ps1'
+.\install.ps1 -RunAsAdmin [-OtherParameters ...]
+# I don't care about other parameters and want a one-line command
+iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+```
+
+#### 静默安装
+
+您可以将所有输出重定向到 Out-Null 或日志文件以使安装程序静音。并且可以用来 $LASTEXITCODE 检查安装结果， 0 安装成功后即可。
+
+```bash
+# Omit outputs
+.\install.ps1 [-Parameters ...] | Out-Null
+# Or collect logs
+.\install.ps1 [-Parameters ...] > install.log
+# Get result
+$LASTEXITCODE
+```
+
+## 使用
+
+### Scoop 仓库换为国内仓库
+
+:::info[Scoop 官方维护的仓库]
+
+- 默认仓库 main : https://github.com/ScoopInstaller/Main
+- 默认仓库的补充 extras(超级强大): https://github.com/lukesampson/scoop-extras
+
+可以直接通过`scoop bucket add <repo_name>`安装
+
+镜像仓库：
+
+- main : https://codechina.csdn.net/mirrors/ScoopInstaller/Main.git
+- extras: https://codechina.csdn.net/mirrors/lukesampson/scoop-extras.git
+- 更多的可以在[CSDN GitHub 加速计划上](https://codechina.csdn.net/mirrors)找到
+
+#### 删除原有仓库
+
+```bash
+scoop bucket list
+scoop bucket rm main
+```
+
+#### 添加镜像仓库
+
+```bash
+scoop bucket add main https://codechina.csdn.net/mirrors/ScoopInstaller/Main.git
+scoop bucket add extras https://codechina.csdn.net/mirrors/lukesampson/scoop-extras.git
+```
+
+#### 更新一下
+
+```bash
+scoop update
+```
+
+### 使用 Scoop 安装常用软件
+
+```bash
+scoop install 7zip aria2 python vscode typora vlc sumatrapdf
+```
+
+#### 安装其他
+
+```bash title="Cascadia-Code"
+PS C:\> scoop bucket add nerd-fonts
+Checking repo... OK
+The nerd-fonts bucket was added successfully.
+PS C:\> scoop install Cascadia-Code
+Installing 'Cascadia-Code' (2111.01) [64bit]
+CascadiaCode-2111.01.zip (23.7 MB) [===================================] 100%
+Checking hash of CascadiaCode-2111.01.zip ... ok.
+Extracting CascadiaCode-2111.01.zip ... done.
+Running installer script...
+Linking ~\scoop\apps\Cascadia-Code\current => ~\scoop\apps\Cascadia-Code\2111.01
+'Cascadia-Code' (2111.01) was installed successfully!
+PS C:\>|
+```
+
+```bash title="vsc"
+PS C:\> scoop bucket add extras
+Checking repo... OK
+The extras bucket was added successfully.
+PS C:\> scoop install vscode
+Installing 'vscode' (1.68.1) [64bit]
+dl.7z (108.1 MB) [====================================================] 100%
+Checking hash of dl.7z ... ok.
+Extracting dl.7z ... done.
+Linking ~\scoop\apps\vscode\current => ~\scoop\apps\vscode\1.68.1
+Creating shortcut for Visual Studio Code (code.exe)
+Persisting data
+Running post_install script...
+'vscode' (1.68.1) was installed successfully!
+PS C:\>|
+```
+
+```bash title="安装git"
+scoop install git
+```
+
+最后，愉快的使用 scoop 吧
+
+#### 安装指定版本的软件
+
+可以在软件名字后面指定完整的版本号
+
+```bash
+scoop install python@3.7.8
+```

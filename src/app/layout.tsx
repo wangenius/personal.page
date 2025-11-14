@@ -4,7 +4,6 @@ import { RootProvider } from "fumadocs-ui/provider";
 import type { ReactNode } from "react";
 import { GlobalLayoutWrapper } from "@/components/global-layout-wrapper";
 import { LanguageProvider } from "@/components/language-provider";
-import { DEFAULT_DOC_LANGUAGE, docLocaleItems } from "@/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +12,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         <link rel="icon" href="/icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="shortcut icon" href="/icon.png" />
-        <meta name="theme-color" content="#ffffff" />
         <title>WANGENIUS</title>
       </head>
       <body className="flex flex-col min-h-screen max-h-screen overflow-hidden">
@@ -23,10 +21,6 @@ export default function Layout({ children }: { children: ReactNode }) {
             options: {
               api: "/api/search",
             },
-          }}
-          i18n={{
-            locale: DEFAULT_DOC_LANGUAGE,
-            locales: docLocaleItems,
           }}
         >
           <LanguageProvider>

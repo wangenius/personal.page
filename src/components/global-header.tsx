@@ -28,8 +28,6 @@ import type { IconType } from "react-icons";
 import { useLanguage } from "@/components/language-provider";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
-import { getLocalizedDocPath } from "@/lib/i18n/routing";
-import type { DocLanguage } from "@/lib/i18n/doc-config";
 
 type NavLink = {
   id: keyof Dictionary["navigation"]["links"];
@@ -51,24 +49,12 @@ export function GlobalHeader() {
   const searchContext = useSearchContext();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { dictionary, language } = useLanguage();
+  const { dictionary } = useLanguage();
   const { navigation } = dictionary;
 
-  const docLocale = language as DocLanguage;
-  const docsRootPath = getLocalizedDocPath("/docs", docLocale);
-
   const resolveNavLink = (link: NavLink) => {
-    const isDocsLink = link.url.startsWith("/docs");
-    const href = isDocsLink
-      ? (getLocalizedDocPath(link.url, docLocale) ?? link.url)
-      : link.url;
-    const active =
-      (isDocsLink &&
-        docsRootPath &&
-        pathname === docsRootPath &&
-        link.url === "/docs/techne") ||
-      pathname === href ||
-      pathname?.startsWith(`${href}/`);
+    const href = link.url;
+    const active = pathname === href || pathname?.startsWith(`${href}/`);
     return { href, active };
   };
 

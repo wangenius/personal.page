@@ -1,10 +1,8 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/language-provider";
 import type { Locale } from "@/lib/i18n/dictionaries";
 import { cn } from "@/lib/utils";
-import { getLocalizedDocPath } from "@/lib/i18n/routing";
 import { Button } from "./ui/button";
 
 interface LanguageSwitcherProps {
@@ -20,18 +18,10 @@ export function LanguageSwitcher({
   className,
 }: LanguageSwitcherProps) {
   const { language, setLanguage, dictionary } = useLanguage();
-  const pathname = usePathname();
-  const router = useRouter();
   const { languageSwitcher } = dictionary.navigation;
   const nextLanguage = toggleLanguage(language);
   const handleSwitchLanguage = () => {
     setLanguage(nextLanguage);
-    const nextDocPath = pathname
-      ? getLocalizedDocPath(pathname, nextLanguage)
-      : null;
-    if (nextDocPath && nextDocPath !== pathname) {
-      router.push(nextDocPath);
-    }
   };
 
   return (
