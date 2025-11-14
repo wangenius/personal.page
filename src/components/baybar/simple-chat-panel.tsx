@@ -20,6 +20,7 @@ import { MessageRenderer } from "@/components/baybar/MessageRenderer";
 import { useChatStore } from "@/lib/chatStore";
 import { toggleBayBar } from "@/lib/viewManager";
 import { X } from "lucide-react";
+import { dialog } from "../custom/DialogModal";
 
 type TextPart = Extract<UIMessage["parts"][number], { type: "text" }>;
 
@@ -92,21 +93,26 @@ export function SimpleChatPanel() {
   );
 
   const handleClearChat = useCallback(() => {
-    clearStoredMessages();
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        parts: [
+    dialog.confirm({
+      title: "清空对话",
+      content: "确定要清空对话吗？",
+      onOk: () => {
+        clearStoredMessages();
+        setMessages([
           {
-            type: "text",
-            text: "你好，我是神仙鱼 AI 助手。有什么可以帮你的吗？",
+            id: "welcome",
+            role: "assistant",
+            parts: [
+              {
+                type: "text",
+                text: "你好，我是神仙鱼 AI 助手。有什么可以帮你的吗？",
+              },
+            ],
           },
-        ],
+        ]);
       },
-    ]);
-    if (error) clearError();
-  }, [clearStoredMessages, setMessages, error, clearError]);
+    });
+  }, [clearStoredMessages, setMessages]);
 
   const visibleMessages = messages.filter((msg) => msg.role !== "system");
 
@@ -117,14 +123,14 @@ export function SimpleChatPanel() {
   }, []);
 
   return (
-    <div className="h-full w-full md:w-[400px] flex flex-col overflow-hidden bg-accent">
+    <div className="h-full w-full md:w-[400px] flex flex-col overflow-hidden">
       {/* 顶部固定栏 */}
-      <div className="flex h-12 md:h-10 flex-none items-center justify-between md:justify-end px-4 md:px-2">
+      <div className="flex h-12 md:h-10 flex-none items-center justify-between px-4 md:px-2">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => toggleBayBar(false)}
-          className="h-8 w-8 md:hidden"
+          className="h-8 w-8"
         >
           <X className="h-5 w-5" />
           <span className="sr-only">Close chat</span>
@@ -133,11 +139,11 @@ export function SimpleChatPanel() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 md:h-6 md:w-6"
+            className="h-8 w-8"
             onClick={handleClearChat}
             title="清空对话"
           >
-            <TbTrash className="h-4 w-4 md:h-3.5 md:w-3.5" />
+            <TbTrash className="size-5" />
           </Button>
         </div>
       </div>

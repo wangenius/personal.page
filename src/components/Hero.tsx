@@ -24,7 +24,7 @@ export const Hero = () => {
 
   return (
     <section
-      className="relative mb-12 overflow-hidden rounded-[32px]"
+      className="relative mb-12 overflow-hidden rounded-4xl"
       aria-labelledby="profile-hero-heading"
     >
       <div className="pointer-events-none absolute inset-0 opacity-80">
@@ -134,7 +134,7 @@ export const Hero = () => {
             <div className="rounded-2xl border border-white/10 bg-fd-card/30 p-4">
               <div className="relative space-y-4">
                 <span
-                  className="absolute left-[6px] top-4 hidden h-[calc(100%-32px)] w-px bg-white/15 sm:block"
+                  className="absolute left-1.5 top-4 hidden h-[calc(100%-32px)] w-px bg-white/15 sm:block"
                   aria-hidden
                 />
                 {personaStages.map((stage) => (

@@ -1,9 +1,8 @@
-import { createXai } from "@ai-sdk/xai";
+import { createDeepSeek } from "@ai-sdk/deepseek";
 
-export const openai = createXai({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_API_URL,
+export const openai = createDeepSeek({
+  apiKey: process.env.OPENAI_API_KEY!,
+  baseURL: process.env.OPENAI_API_URL!,
 });
 
-export const BASE_MODEL = openai("grok-4-fast-reasoning");
-export const MAIN_MODEL = openai("kimi-k2-0905-preview");
+export const MAIN_MODEL = openai("deepseek-v3.2-exp");

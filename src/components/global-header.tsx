@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useSearchContext } from "fumadocs-ui/provider";
 import { usePathname } from "next/navigation";
-import { toggleBayBar } from "@/lib/viewManager";
+import { toggleBayBar, useViewManager } from "@/lib/viewManager";
 import { useState } from "react";
 import {
   Sheet,
@@ -17,31 +17,30 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import {
-  TbBaseline,
-  TbBox,
-  TbBrandBlogger,
-  TbMoneybag,
-  TbSubscript,
-} from "react-icons/tb";
-import type { IconType } from "react-icons";
 import { useLanguage } from "@/components/language-provider";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
+import {
+  BsLayoutSidebarReverse,
+  BsLayoutSidebarInsetReverse,
+  BsSun,
+  BsMoon,
+} from "react-icons/bs";
+import { BiSearch } from "react-icons/bi";
+import { cn } from "@/lib/cn";
 
 type NavLink = {
   id: keyof Dictionary["navigation"]["links"];
   url: string;
-  icon: IconType;
 };
 
 const navLinks: NavLink[] = [
-  { id: "techne", url: "/docs/techne", icon: TbBaseline },
-  { id: "venture", url: "/docs/venture", icon: TbMoneybag },
-  { id: "anthropocene", url: "/docs/anthropocene", icon: TbMoneybag },
-  { id: "blog", url: "/blog", icon: TbBrandBlogger },
-  { id: "products", url: "/products", icon: TbBox },
-  { id: "subscribe", url: "/subscription", icon: TbSubscript },
+  { id: "techne", url: "/docs/techne" },
+  { id: "venture", url: "/docs/venture" },
+  { id: "anthropocene", url: "/docs/anthropocene" },
+  { id: "blog", url: "/blog" },
+  { id: "products", url: "/products" },
+  { id: "subscribe", url: "/subscription" },
 ];
 
 export function GlobalHeader() {
@@ -51,6 +50,7 @@ export function GlobalHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { dictionary } = useLanguage();
   const { navigation } = dictionary;
+  const { isBayBarOpen } = useViewManager();
 
   const resolveNavLink = (link: NavLink) => {
     const href = link.url;
@@ -91,6 +91,8 @@ export function GlobalHeader() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-1">
+          <UserMenu />
+
           <Button
             variant="ghost"
             size="icon"
@@ -98,7 +100,7 @@ export function GlobalHeader() {
             onClick={() => searchContext.setOpenSearch(true)}
             title={navigation.actions.search}
           >
-            <Search className="h-4 w-4" />
+            <BiSearch className="h-4 w-4" />
             <span className="sr-only">{navigation.actions.search}</span>
           </Button>
 
@@ -109,27 +111,29 @@ export function GlobalHeader() {
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             title={navigation.actions.toggleTheme}
           >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <BsSun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <BsMoon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">{navigation.actions.toggleTheme}</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => toggleBayBar()}
-            title={navigation.actions.chat}
-          >
-            <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">{navigation.actions.chat}</span>
           </Button>
 
           <LanguageSwitcher />
 
           <div className="h-4 w-px bg-border mx-1" />
 
-          <UserMenu />
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn("h-8 w-8", isBayBarOpen ? "bg-muted" : "")}
+            onClick={() => toggleBayBar()}
+            title={navigation.actions.chat}
+          >
+            {isBayBarOpen ? (
+              <BsLayoutSidebarInsetReverse className="h-4 w-4" />
+            ) : (
+              <BsLayoutSidebarReverse className="h-4 w-4" />
+            )}
+            <span className="sr-only">{navigation.actions.chat}</span>
+          </Button>
         </div>
 
         {/* Mobile Actions - Only essential buttons */}
@@ -183,7 +187,6 @@ export function GlobalHeader() {
                     {navigation.sections.navigation}
                   </div>
                   {navLinks.map((link) => {
-                    const Icon = link.icon;
                     const { href, active } = resolveNavLink(link);
                     return (
                       <Link
@@ -196,7 +199,6 @@ export function GlobalHeader() {
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        <Icon className="h-4 w-4" aria-hidden />
                         <span>{navigation.links[link.id]}</span>
                       </Link>
                     );

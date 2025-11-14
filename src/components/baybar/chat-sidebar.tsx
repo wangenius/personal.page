@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { SimpleChatPanel } from "@/components/simple-chat-panel";
+import { SimpleChatPanel } from "@/components/baybar/simple-chat-panel";
 import { cn } from "@/lib/utils";
 import { useViewManager } from "@/lib/viewManager";
 import { useEffect, useState } from "react";

@@ -2,7 +2,7 @@
 
 import { type ReactNode } from "react";
 import { GlobalHeader } from "@/components/global-header";
-import { ChatSidebar } from "@/components/chat-sidebar";
+import { ChatSidebar } from "@/components/baybar/chat-sidebar";
 import { useChatInputFocus } from "@/lib/useChatInputFocus";
 
 interface GlobalLayoutWrapperProps {

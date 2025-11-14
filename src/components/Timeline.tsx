@@ -155,10 +155,10 @@ export const Timeline = () => {
       <div className="hidden gap-10 md:grid md:grid-cols-[100px_1fr]">
         <div className="relative" style={{ minHeight: timelineHeight }}>
           <div className="absolute inset-0">
-            <div className="absolute right-2 top-0 bottom-0 w-px bg-gradient-to-b from-slate-900 via-slate-300/70 to-transparent" />
+            <div className="absolute right-2 top-0 bottom-0 w-px  to-transparent" />
             {activeRange ? (
               <div
-                className="absolute right-[6px] w-[6px] rounded-full bg-slate-900/25 transition-all duration-300"
+                className="absolute right-1.5 w-1.5 rounded-full bg-slate-900/25 transition-all duration-300"
                 style={activeRange}
               />
             ) : null}

@@ -164,7 +164,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           onError={(error) => console.error("附件处理错误:", error)}
           onSubmit={handleSubmit}
           className={cn(
-            "w-full [&>div]:p-2 [&>div]:border-0 [&>div]:shadow-none [&>div]:bg-muted-foreground/10 [&>div]:ring-0 [&>div]:ring-offset-0 [&>div]:outline-none [&>div]:rounded-2xl [&>div]:hover:bg-muted-foreground/30 [&>div]:focus-within:bg-muted-foreground/30 [&>div]:focus-within:ring-0 [&>div]:focus-within:outline-none [&>div]:transition-colors [&>div]:items-start [&_*]:focus:ring-0 [&_*]:focus-visible:ring-0 [&_*]:focus:outline-none [&_*]:focus-visible:outline-none",
+            "w-full [&>div]:p-2 [&>div]:border-0 [&>div]:shadow-none [&>div]:bg-muted-foreground/10 [&>div]:ring-0 [&>div]:ring-offset-0 [&>div]:outline-none [&>div]:rounded-2xl [&>div]:hover:bg-muted-foreground/30 [&>div]:focus-within:bg-muted-foreground/30 [&>div]:focus-within:ring-0 [&>div]:focus-within:outline-none [&>div]:transition-colors [&>div]:items-start **:focus:ring-0 **:focus-visible:ring-0 **:focus:outline-none **:focus-visible:outline-none",
             className
           )}
         >

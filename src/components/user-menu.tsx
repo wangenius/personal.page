@@ -13,12 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { TbLogout, TbUser } from "react-icons/tb";
-import { Badge } from "@/components/ui/badge";
+import { TbLogout } from "react-icons/tb";
 import {
   SubscriptionStatusDto,
   SubscriptionStatusResponse,
 } from "@/lib/subscription";
+import { cn } from "@/lib/utils";
+import { BiUser } from "react-icons/bi";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
@@ -75,7 +76,7 @@ export function UserMenu() {
   if (isPending) {
     return (
       <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-        <TbUser className="h-4 w-4" />
+        <BiUser className="h-4 w-4" />
       </Button>
     );
   }
@@ -97,7 +98,7 @@ export function UserMenu() {
       <div className="flex items-center gap-2">
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-            <Avatar className="h-7 w-7">
+            <Avatar className={cn("h-7 w-7")}>
               <AvatarImage src={imageUrl} alt={session.user.name} />
               <AvatarFallback className="text-xs">
                 {session.user.name?.[0]?.toUpperCase() || "U"}
@@ -105,14 +106,6 @@ export function UserMenu() {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        {subscriptionStatus?.isActive && (
-          <Badge
-            variant="outline"
-            className="text-[10px] uppercase tracking-widest"
-          >
-            订阅用户
-          </Badge>
-        )}
       </div>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
