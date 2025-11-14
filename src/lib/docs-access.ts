@@ -6,15 +6,13 @@ import { hasActiveSubscription } from "@/lib/subscription";
 
 type DocPage = ReturnType<typeof source.getPage>;
 
-const FREE_FLAG = "yes";
-
 export function isDocFree(page?: DocPage): boolean {
-  return Boolean(page && page.data?.free === FREE_FLAG);
+  return Boolean(page && page.data?.free);
 }
 
 export async function requiresSubscription(
   page?: DocPage,
-  userId?: string,
+  userId?: string
 ): Promise<boolean> {
   if (!page) return false;
   if (isDocFree(page)) return false;
