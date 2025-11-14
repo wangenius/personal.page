@@ -130,6 +130,12 @@
   height: calc(100vh - var(--fd-banner-height)) !important;
   background-color: var(--color-fd-background) !important;
   border-radius: var(--radius-lg) !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+#nd-sidebar > div > div[data-radix-scroll-area-viewport] {
+  padding: 0.5rem !important;
 }
 
 /* Hide default docs sidebar header block on desktop */

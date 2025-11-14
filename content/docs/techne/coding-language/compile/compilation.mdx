@@ -1,10 +1,9 @@
 ---
 title : 编译
-
-slug : 编译
 ---
 
 source code：
+
 ```text
 int num = ( max + min ) / 2;
 ```
@@ -23,7 +22,6 @@ int num = ( max + min ) / 2;
 ## parsing
 语法分析
 
-The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. Did you ever diagram sentences in English class? If so, you’ve done what a parser does, except that English has thousands and thousands of “keywords” and an overflowing cornucopia of ambiguity. Programming languages are much simpler.
 下一步是解析。 这就是我们从句法中得到语法的地方——语法能够将较小的部分组成较大的表达式和语句。你在英语课上做过语法图解吗？如果有，你就做了解析器所做的事情，区别在于，英语中有成千上万的“关键字”和大量的歧义，而编程语言要简单得多。
 
 解析器将扁平的词法单元序列转化为树形结构，树形结构能更好地反映语法的嵌套本质。这些树有两个不同的名称:解析树或抽象语法树，这取决于它们与源语言的语法结构有多接近。在实践中，语言黑客通常称它们为“语法树”、“AST”，或者干脆直接说“树”。

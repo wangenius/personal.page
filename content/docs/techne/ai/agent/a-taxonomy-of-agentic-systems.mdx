@@ -1,0 +1,317 @@
+---
+title: 智能体能力分层体系
+---
+
+（Agent 能力的五级进化体系：从思维 → 工具 → 策略 → 协作 → 自进化）
+
+白皮书给出了一个非常重要的 Agent 能力分层体系，从 **Level 0 → Level 4**。这不是简单的“模型是否强”，而是整个系统结构在能力上的阶梯式跃迁。
+
+注意：
+**每一层不是“选一种”，而是下一层会吸收上一层；每前进一步，都需要不仅更强的模型，更强的 Orchestration、Tooling、Memory 与 Governance 能力。**
+
+下面我按“架构深度 + 行为能力”逐级拆开。
+
+---
+
+# **Level 0 — Core Reasoning System（纯认知体，不连接真实世界）**
+
+白皮书对 Level 0 的描述非常明确：
+
+> 这是单纯的「推理引擎」，没有工具、没有记忆、没有外部世界。
+
+它只具备：
+
+- 语言理解
+- 逻辑推理
+- 规划能力（理论上的）
+- 基于训练数据的知识
+
+但缺乏：
+
+- 实时信息
+- 执行能力
+- 状态持续性
+- 地域/系统连接
+
+这个层级本质上还不是“Agent”，只能算“强推理模型”。
+
+### **Level 0 的哲学本质：封闭世界假设（Closed-World Assumption）**
+
+模型认为**世界 = 训练时见过的文本**。
+如果某件事发生在训练截止之后，它根本不知道。
+
+### **典型“假 Agent”陷阱**
+
+很多人以为 prompt 写得复杂就等于 Agent，其实仍然是 Level 0。
+比如：
+
+- “请按以下步骤依次执行……”
+- “你需要假装你在用 API 调用……”
+- “你是一个全能助手，你可以做任何事……”
+
+这些都只是“语言形容”，并不形成真正的 Agent 行为。
+
+---
+
+# **Level 1 — Connected Problem Solver（可访问世界、可执行动作）**
+
+这是「最基础，但已经算 Agent 的层级」。
+
+文档定义：
+
+> 能调用工具，能够查实时数据，能够完成单步骤任务。
+
+核心能力的跃迁：
+
+### **从“知道世界” → “接触世界”**
+
+Level 1 做的事是：
+
+- 模型能说：**“我需要查一下。”**
+- 然后真的查（调用 Search API / DB / RAG）
+- 并把查到的数据用于生成答案
+
+这是第一个“智能循环”，但它的循环是非常局部的：
+
+```
+reason → call tool → produce answer
+```
+
+### 这个层级本质是“单回合工具增强模型”
+
+它能：
+
+- 搜索
+- 查询数据库
+- 获取结构化数据
+- 做一次性解析、合成
+
+但不能：
+
+- 做长链规划
+- 跨多个步骤迭代
+- 主动处理子任务
+- 维护任务状态
+
+这类系统通常仍然依赖「人类给出明确可执行指令」。
+
+它只是增强版 ChatGPT，而不是任务执行系统。
+
+---
+
+# **Level 2 — Strategic Problem Solver（具备多步规划与上下文工程）**
+
+这是白皮书里非常关键的层级：
+
+> Level 2 能“构建一个计划”，并围绕这个计划进行上下文工程，然后逐步执行。
+
+从系统视角：
+
+### **这是第一层真正意义上的“Agent”**
+
+因为它具备：
+
+- 多步骤推理（Chain-of-Thought, ReAct）
+- 工具使用序列化（Tool chaining）
+- 上下文工程（Context engineering）
+- 状态管理（Stateful execution）
+- 能根据中间结果调整计划（Dynamic replanning）
+
+执行路径类似：
+
+```
+goal → plan → act1 → observe → adjust → act2 → observe → ... → finish
+```
+
+### Level 2 的核心突破：**上下文管理能力（Context Engineering）**
+
+文档特别强调：
+
+> Level 2 的关键是 Agent 能主动构建、修剪、组织上下文，使推理保持“聚焦”。
+
+这是因为：
+
+- 模型的 context window 有限
+- 信息多了会压缩推理质量
+- 信息少了会推错方向
+- 工具调用结果格式各异，需要统一管理
+
+### 这个层级是今天大多数“看似强”Agent 的上限
+
+你看到的：
+
+- 自动化客服
+- 自动整合资料
+- 自动生成报告
+- 自动分析长文档
+- 自动执行两三步的流程
+
+大多数都停在 Level 2。
+
+**没有协作，没有自进化，没有委托能力。**
+
+---
+
+# **Level 3 — Collaborative Multi-Agent System（多 Agent 协作体系）**
+
+这个层级跨度巨大，是从“单体 Agent”跳向“社会型智能系统”。
+
+文档定义：
+
+> 一个 Agent 能创建任务给另一个 Agent，形成分工合作的团队。
+
+这相当于：
+
+### **从“单个专家” → “一个小型组织”**
+
+它具备：
+
+- Delegation：任务委派能力
+- Specialization：多 Agent 按专业分工
+- Coordination：协调不同 Agent 的任务顺序
+- Aggregation：合并多个 Agent 输出
+- Parallelism：多个 Agent 并发工作
+- Long-running tasks：长周期执行（小时/天）
+- Self-Consistency：互相审查、迭代
+
+协作方式可以是：
+
+- Manager → Worker
+- Researcher → Writer → Critic
+- Extractor → Analyzer → Executor
+- Planner → Sub-planner → Executor
+
+这和人类组织极其类似：
+
+- PM 负责拆目标
+- 工程师负责执行
+- QA 负责审查
+- Ops 负责运行
+- 文档系统负责记录
+
+### Level 3 难点不在模型，而在“治理”
+
+问题变成：
+
+- 如何隔离 Agent 的权限？
+- 如何防止无限循环委派？
+- 如何调度？
+- 如何监控？
+- 如何避免冲突？
+- 如何合并结果？
+- 如何定义各 Agent 的职责边界？
+
+这比“写一个强 prompt”难太多。
+
+Level 3 的本质是：
+
+> **一个 AI 多代理的操作系统（Agent OS）开始形成。**
+
+---
+
+# **Level 4 — Self-Evolving System（自我扩展、自我进化的 Agent）**
+
+这是白皮书里最前沿的层级，也是最容易被误解的部分。
+
+文档描述：
+
+> Level 4 的系统可以识别自己的能力缺口，并自动创建新工具或新 Agent 来弥补。
+
+这意味着：
+
+### **Agent 不再被明确编程，而是开始“自我扩充能力”。**
+
+表现包括：
+
+#### 1. **Meta-Reasoning（元推理）**
+
+Agent 能判断：
+
+- “我缺一个工具”
+- “我缺一个子 Agent”
+- “我该换策略”
+- “我该重新设计任务结构”
+
+#### 2. **Automatic Tool Creation（自动工具生成）**
+
+例如：
+
+- 自动生成 Python 小脚本
+- 自动生成 SQL
+- 自动创建 Scraper
+- 自动生成新的 API Wrapper
+
+以弥补功能空白。
+
+#### 3. **Automatic Agent Creation（自动构建子 Agent）**
+
+比如：
+
+- “我需要一个负责情感分析的子 Agent”
+- “我需要一个优化写作风格的 Critic Agent”
+
+Agent 会调用某种「AgentFactory」或「Tooling Framework」来构建新的智能单位。
+
+#### 4. **Self-Optimization（自我优化）**
+
+模型会根据历史轨迹：
+
+- 总结模式
+- 修正 prompt 格式
+- 修正规划逻辑
+- 修正工具使用策略
+- 优化任务执行路径
+
+形成“经验曲线”。
+
+### Level 4 的运行特征：
+
+**系统像“生态系统”一样变化，而不是像“程序”一样运行。**
+
+这一层是极少数组织在探索的（Google DeepMind / Anthropic / OpenAI 内部演示级系统）。
+
+未来会在以下方向爆发：
+
+- 科研自动化（AutoDiscover）
+- 数学与算法自动探索（AlphaEvolve）
+- 企业级自动化系统
+- AI 自主运行的软件生态
+
+Level 4 本质上是：
+
+> **AI 系统开始具备“自我组织能力（Self-Organization）”。**
+
+---
+
+# **深度总结（不带任何应用场景）**
+
+## **Level 的本质升级不是“能力强弱”，而是“系统结构”在升级**
+
+| Level | Agent 是什么？    | 系统结构                              |
+| ----- | ----------------- | ------------------------------------- |
+| 0     | 大模型            | 单体推理模块                          |
+| 1     | 有工具的模型      | API + LLM                             |
+| 2     | 有策略的 Agent    | Orchestrator + Memory + Loop          |
+| 3     | 多 Agent 协作系统 | Delegation + SubAgents + Coordination |
+| 4     | 自进化系统        | Meta-Agent + Tool/Agent Factory       |
+
+核心升级不是模型，而是：
+
+- 状态
+- 记忆
+- 工具能力
+- 角色体系
+- 任务治理
+- 系统拓扑结构
+
+### **Level = 系统架构复杂度，决定了 Agent 的上限。**
+
+---
+
+# \*\*准备继续 Part 5 吗？
+
+Part 5 是最关键的一节：\*\*
+
+> **Core Agent Architecture（Model / Tools / Orchestration）**
+
+会完整拆解「每一层到底怎么写、怎么放、怎么抽象」。
