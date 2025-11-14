@@ -75,23 +75,28 @@ export function parseFiles(text: string): {
 
 /**
  * 解析消息中的引用标记
- * 格式：[QUOTE_START]\nquote text\n[QUOTE_END]\n\nmessage text
+ * 支持格式：
+ * - [QUOTE_START]\nquote text\n[QUOTE_END]\n\nmessage text
+ * - [QUOTE_START=/docs/xxx/xxx]\nquote text\n[QUOTE_END]\n\nmessage text
  */
 export interface ParsedQuote {
   hasQuote: boolean;
   quote: string;
   message: string;
+  path?: string;
 }
 
 export function parseQuote(text: string): ParsedQuote {
-  const quoteRegex = /\[QUOTE_START\]\n([\s\S]*?)\n\[QUOTE_END\]\n\n([\s\S]*)/;
+  // 可选路径部分：=...，例如 =/docs/xxx/xxx
+  const quoteRegex = /\[QUOTE_START(?:=([^\]]+))?\]\n([\s\S]*?)\n\[QUOTE_END\]\n\n([\s\S]*)/;
   const match = text.match(quoteRegex);
 
   if (match) {
     return {
       hasQuote: true,
-      quote: match[1],
-      message: match[2],
+      path: match[1] || undefined,
+      quote: match[2],
+      message: match[3],
     };
   }
 

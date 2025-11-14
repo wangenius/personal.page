@@ -25,7 +25,7 @@ const ATTACHMENT_ACCEPT =
 
 // 对外暴露的方法接口
 export interface ChatInputRef {
-  setQuote: (text: string) => void;
+  setQuote: (params: { text: string; path?: string }) => void;
   clearQuote: () => void;
   focus: () => void;
 }
@@ -67,13 +67,15 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     ref
   ) => {
     const [quote, setQuoteState] = useState<string>("");
+    const [quotePath, setQuotePath] = useState<string | undefined>(undefined);
 
     // 对外暴露方法
     useImperativeHandle(
       ref,
       () => ({
-        setQuote: (text: string) => {
-          setQuoteState(text);
+        setQuote: (params: { text: string; path?: string }) => {
+          setQuoteState(params.text);
+          setQuotePath(params.path);
           // 聚焦到输入框
           setTimeout(() => {
             const textarea = document.querySelector<HTMLTextAreaElement>(
@@ -86,6 +88,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         },
         clearQuote: () => {
           setQuoteState("");
+          setQuotePath(undefined);
         },
         focus: () => {
           const textarea = document.querySelector<HTMLTextAreaElement>(
@@ -104,9 +107,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     // 监听全局引用事件
     useEffect(() => {
       const handleSetQuote = (event: Event) => {
-        const customEvent = event as CustomEvent<{ text: string }>;
+        const customEvent = event as CustomEvent<{ text: string; path?: string }>;
         if (customEvent.detail?.text && enableQuote) {
           setQuoteState(customEvent.detail.text);
+          setQuotePath(customEvent.detail.path);
           // 聚焦到输入框
           setTimeout(() => {
             const textarea = document.querySelector<HTMLTextAreaElement>(
@@ -127,6 +131,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     const handleClearQuote = useCallback(() => {
       setQuoteState("");
+      setQuotePath(undefined);
     }, []);
 
     // 处理提交，将文件信息和引用内容附加到消息中
@@ -136,8 +141,13 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
         // 如果有引用内容，将其添加到消息前面
         if (enableQuote && quote) {
-          text = `[QUOTE_START]\n${quote}\n[QUOTE_END]\n\n${text}`;
+          const header = quotePath
+            ? `[QUOTE_START=${quotePath}]`
+            : "[QUOTE_START]";
+
+          text = `${header}\n${quote}\n[QUOTE_END]\n\n${text}`;
           setQuoteState("");
+          setQuotePath(undefined);
         }
 
         // 调用 onSubmit（不等待）
@@ -149,7 +159,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
         // 立即返回 resolved Promise，让表单立即清空
         return Promise.resolve();
       },
-      [quote, enableQuote, onSubmit]
+      [quote, enableQuote, onSubmit, quotePath]
     );
 
     const isDisabled =

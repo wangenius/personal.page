@@ -59,9 +59,11 @@ export function SelectionQuote({ children }: SelectionQuoteProps) {
   const handleQuote = () => {
     if (!state?.text) return;
 
+    const path = typeof window !== "undefined" ? window.location.pathname : undefined;
+
     window.dispatchEvent(
       new CustomEvent("set-quote", {
-        detail: { text: state.text },
+        detail: { text: state.text, path },
       })
     );
 
