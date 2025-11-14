@@ -7,6 +7,7 @@ import { createMetadata } from '@/lib/metadata';
 import { buttonVariants } from '@/components/ui/button';
 import { Control } from '@/app/(home)/blog/[slug]/page.client';
 import { getMDXComponents } from '@/mdx-components';
+import { SelectionQuote } from '@/components/docs/selection-quote';
 
 export default async function Page(props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
@@ -41,10 +42,12 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
         </Link>
       </div>
       <article className="flex flex-col mx-auto w-full max-w-fd-container py-8 lg:flex-row">
-        <div className="prose min-w-0 flex-1 p-4">
-          <InlineTOC items={toc} />
-          <Mdx components={getMDXComponents()} />
-        </div>
+        <SelectionQuote>
+          <div className="prose min-w-0 flex-1 p-4">
+            <InlineTOC items={toc} />
+            <Mdx components={getMDXComponents()} />
+          </div>
+        </SelectionQuote>
         <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
           <div>
             <p className="mb-1 text-fd-muted-foreground">Written by</p>

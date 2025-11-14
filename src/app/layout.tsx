@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { GlobalLayoutWrapper } from "@/components/global-layout-wrapper";
 import { LanguageProvider } from "@/components/language-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SelectionProvider } from "@/components/docs/selection-quote";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -26,7 +27,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             }}
           >
             <LanguageProvider>
-              <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
+              <SelectionProvider>
+                <GlobalLayoutWrapper>{children}</GlobalLayoutWrapper>
+              </SelectionProvider>
             </LanguageProvider>
           </RootProvider>
         </ThemeProvider>

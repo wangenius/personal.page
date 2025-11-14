@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { SelectField } from "@/components/docs/selection-quote";
 import { type ReasoningUIPart, type ToolUIPart, type UIMessage } from "ai";
 import { FileText, CornerDownRight } from "lucide-react";
 import {
@@ -278,90 +279,96 @@ export function MessageRenderer({
 
   return (
     <Message className={"w-full"} key={message.id} from={message.role}>
-      {message.role === "assistant" ? (
-        <MessageContent variant="flat" className="w-full">
-          {/* 思考过程 */}
-          {hasValidThinking && (
-            <ChainOfThought className="max-w-full w-full" defaultOpen={true}>
-              <ChainOfThoughtHeader className="max-w-auto w-full">
-                {getChainTitle()}
-              </ChainOfThoughtHeader>
-              <ChainOfThoughtContent className="max-w-full w-full mb-4">
-                {thinkingParts.map((part, idx) => {
-                  if (part.type === "reasoning") {
-                    const reasoningPart = part as ReasoningUIPart;
-                    if (!reasoningPart.text?.trim()) return null;
-                    stepCounter++;
-                    return (
-                      <ChainOfThoughtStep
-                        key={`${message.id}-reasoning-${idx}`}
-                        label={`步骤 ${stepCounter}`}
-                        status={
-                          reasoningPart.state === "done"
-                            ? "complete"
-                            : isStreaming
-                              ? "active"
-                              : "pending"
-                        }
-                      >
-                        <div className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          {reasoningPart.text}
-                        </div>
-                      </ChainOfThoughtStep>
-                    );
-                  }
-
-                  if (part.type.startsWith("tool-")) {
-                    const toolPart = part as ToolUIPart;
-                    stepCounter++;
-                    const methodName = toolPart.type
-                      .split("-")
-                      .slice(1)
-                      .join("_");
-
-                    return (
-                      <ChainOfThoughtStep
-                        key={`${message.id}-tool-${idx}`}
-                        label={`步骤 ${stepCounter}`}
-                        status={
-                          toolPart.state === "output-available"
-                            ? "complete"
-                            : toolPart.state === "output-error"
+      <SelectField
+        onSelect={(text) => ({
+          text,
+        })}
+      >
+        {message.role === "assistant" ? (
+          <MessageContent variant="flat" className="w-full">
+            {/* 思考过程 */}
+            {hasValidThinking && (
+              <ChainOfThought className="max-w-full w-full" defaultOpen={true}>
+                <ChainOfThoughtHeader className="max-w-auto w-full">
+                  {getChainTitle()}
+                </ChainOfThoughtHeader>
+                <ChainOfThoughtContent className="max-w-full w-full mb-4">
+                  {thinkingParts.map((part, idx) => {
+                    if (part.type === "reasoning") {
+                      const reasoningPart = part as ReasoningUIPart;
+                      if (!reasoningPart.text?.trim()) return null;
+                      stepCounter++;
+                      return (
+                        <ChainOfThoughtStep
+                          key={`${message.id}-reasoning-${idx}`}
+                          label={`步骤 ${stepCounter}`}
+                          status={
+                            reasoningPart.state === "done"
                               ? "complete"
                               : isStreaming
                                 ? "active"
                                 : "pending"
-                        }
-                      >
-                        <div className="flex items-center gap-2.5 px-2 py-1.5">
-                          <code className="font-mono text-xs text-foreground/60 bg-muted rounded-md px-2 py-1">
-                            {methodName}
-                          </code>
-                        </div>
-                      </ChainOfThoughtStep>
-                    );
-                  }
+                          }
+                        >
+                          <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+                            {reasoningPart.text}
+                          </div>
+                        </ChainOfThoughtStep>
+                      );
+                    }
 
-                  return null;
-                })}
-              </ChainOfThoughtContent>
-            </ChainOfThought>
-          )}
+                    if (part.type.startsWith("tool-")) {
+                      const toolPart = part as ToolUIPart;
+                      stepCounter++;
+                      const methodName = toolPart.type
+                        .split("-")
+                        .slice(1)
+                        .join("_");
 
-          {/* 助手回复内容 */}
-          {messageText && message.role === "assistant" && (
-            <div className="text-sm leading-relaxed">
-              <Response>{messageText}</Response>
-            </div>
-          )}
-        </MessageContent>
-      ) : (
-        /* 用户消息 */
-        <UserMessageContent
-          parsedQuote={parsedQuote}
-          parsedFiles={parsedFiles}
-        />
-      )}
+                      return (
+                        <ChainOfThoughtStep
+                          key={`${message.id}-tool-${idx}`}
+                          label={`步骤 ${stepCounter}`}
+                          status={
+                            toolPart.state === "output-available"
+                              ? "complete"
+                              : toolPart.state === "output-error"
+                                ? "complete"
+                                : isStreaming
+                                  ? "active"
+                                  : "pending"
+                          }
+                        >
+                          <div className="flex items-center gap-2.5 px-2 py-1.5">
+                            <code className="font-mono text-xs text-foreground/60 bg-muted rounded-md px-2 py-1">
+                              {methodName}
+                            </code>
+                          </div>
+                        </ChainOfThoughtStep>
+                      );
+                    }
+
+                    return null;
+                  })}
+                </ChainOfThoughtContent>
+              </ChainOfThought>
+            )}
+
+            {/* 助手回复内容 */}
+            {messageText && message.role === "assistant" && (
+              <div className="text-sm leading-relaxed">
+                <Response>{messageText}</Response>
+              </div>
+            )}
+          </MessageContent>
+        ) : (
+          /* 用户消息 */
+          <UserMessageContent
+            parsedQuote={parsedQuote}
+            parsedFiles={parsedFiles}
+          />
+        )}
+      </SelectField>
     </Message>
   );
 }
