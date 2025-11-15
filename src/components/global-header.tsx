@@ -1,5 +1,3 @@
-"use client";
-
 import { MessageSquare, Search, Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
@@ -180,7 +178,7 @@ export function GlobalHeader() {
 
               <div className="flex flex-col gap-6 mt-6">
                 {/* Navigation Links */}
-                <nav className="flex flex-col gap-3">
+                <nav className="flex flex-col gap-3 px-2">
                   <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
                     {navigation.sections.navigation}
                   </div>

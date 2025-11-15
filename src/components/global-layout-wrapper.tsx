@@ -12,7 +12,7 @@ interface GlobalLayoutWrapperProps {
 export function GlobalLayoutWrapper({ children }: GlobalLayoutWrapperProps) {
   useChatInputFocus(true, true); // 启用快捷键 + 自动切换 Baybar
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div suppressHydrationWarning className="flex h-screen overflow-hidden">
       {/* Main content area */}
       <div className="flex flex-col flex-1 overflow-hidden">
         <GlobalHeader />
