@@ -1,4 +1,9 @@
 {
   "title": "AI",
-  "description": "AI related knowledge"
+  "description": "AI related knowledge",
+  "pages": [
+    "overview",
+    "llm",
+    "..."
+  ]
 }

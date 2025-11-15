@@ -2,21 +2,15 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
 import { source } from "@/lib/source";
 
-interface LangLayoutProps {
+interface DocsLayoutProps {
   children: ReactNode;
-  params: Promise<{ lang: string }>;
 }
 
-export default async function LangDocsLayout({
-  children,
-  params,
-}: LangLayoutProps) {
-  const { lang } = await params;
-
+export default function LangDocsLayout({ children }: DocsLayoutProps) {
   return (
     <div className="flex-1 flex flex-col">
       <DocsLayout
-        tree={source.getPageTree(lang)}
+        tree={source.getPageTree()}
         nav={{
           enabled: false,
         }}

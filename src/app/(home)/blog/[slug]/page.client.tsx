@@ -1,7 +1,7 @@
 "use client";
 import { Check, Share } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 
 export function Control({ url }: { url: string }) {
@@ -10,7 +10,7 @@ export function Control({ url }: { url: string }) {
   });
 
   return (
-    <button
+    <Button
       type="button"
       className={cn(
         buttonVariants({ className: "gap-2", variant: "secondary" })
@@ -19,6 +19,6 @@ export function Control({ url }: { url: string }) {
     >
       {isChecked ? <Check className="size-4" /> : <Share className="size-4" />}
       {isChecked ? "Copied URL" : "Share Post"}
-    </button>
+    </Button>
   );
 }

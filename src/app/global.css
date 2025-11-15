@@ -134,9 +134,9 @@
   padding: 0 !important;
 }
 
-#nd-sidebar > div > div[data-radix-scroll-area-viewport] {
+/* #nd-sidebar > div > div[data-radix-scroll-area-viewport] {
   padding: 0.5rem !important;
-}
+} */
 
 /* Hide default docs sidebar header block on desktop */
 #nd-sidebar > div:first-child {
@@ -144,6 +144,9 @@
 }
 
 #nd-sidebar > div:last-child {
-  display: none !important;
   border: none !important;
+}
+
+#nd-sidebar > div > div[data-radix-scroll-area-viewport] {
+  padding: 0.5rem !important;
 }
