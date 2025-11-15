@@ -124,6 +124,7 @@
 /* Adjust fumadocs sidebar to account for custom header */
 :root {
   --fd-banner-height: 3rem; /* 48px = h-12 header height */
+  --fd-sidebar-offset: 0px !important;
 }
 #nd-sidebar {
   top: var(--fd-banner-height) !important;
@@ -132,6 +133,8 @@
   border-radius: var(--radius-lg) !important;
   border: none !important;
   padding: 0 !important;
+  inset-inline-start: 0 !important;
+  transform: none !important;
 }
 
 /* #nd-sidebar > div > div[data-radix-scroll-area-viewport] {
@@ -141,6 +144,8 @@
 /* Hide default docs sidebar header block on desktop */
 #nd-sidebar > div:first-child {
   display: none !important;
+  padding: 0 !important;
+  width: 0 !important;
 }
 
 #nd-sidebar > div:last-child {

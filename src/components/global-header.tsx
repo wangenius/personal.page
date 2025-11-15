@@ -1,4 +1,4 @@
-import { MessageSquare, Search, Moon, Sun, Menu } from "lucide-react";
+import { MessageSquare, Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
@@ -48,6 +48,21 @@ export function GlobalHeader() {
   const { navigation } = dictionary;
   const { isBayBarOpen } = useViewManager();
 
+  const openSearchDialog = () => {
+    if (typeof window === "undefined") return;
+
+    const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+
+    const event = new KeyboardEvent("keydown", {
+      key: "k",
+      code: "KeyK",
+      metaKey: isMac,
+      ctrlKey: !isMac,
+    });
+
+    window.dispatchEvent(event);
+  };
+
   const resolveNavLink = (link: NavLink) => {
     const href = link.url;
     const active = pathname === href || pathname?.startsWith(`${href}/`);
@@ -93,7 +108,7 @@ export function GlobalHeader() {
             variant="ghost"
             size="icon"
             className="h-8 w-8"
-            onClick={() => {}}
+            onClick={openSearchDialog}
             title={navigation.actions.search}
           >
             <BiSearch className="h-4 w-4" />
@@ -138,7 +153,7 @@ export function GlobalHeader() {
             variant="ghost"
             size="icon"
             className="h-8 w-8"
-            onClick={() => {}}
+            onClick={openSearchDialog}
             title={navigation.actions.search}
           >
             <Search className="h-4 w-4" />
@@ -168,7 +183,7 @@ export function GlobalHeader() {
                 <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+            <SheetContent side="right" className="w-screen max-w-none">
               <SheetTitle className="sr-only">
                 {navigation.sheet.title}
               </SheetTitle>
@@ -176,59 +191,62 @@ export function GlobalHeader() {
                 {navigation.sheet.description}
               </SheetDescription>
 
-              <div className="flex flex-col gap-6 mt-6">
-                {/* Navigation Links */}
-                <nav className="flex flex-col gap-3 px-2">
-                  <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
+              <div className="mt-4 flex flex-col gap-6 px-4 pb-6">
+                {/* Navigation - plain list */}
+                <div className="flex flex-col gap-3">
+                  <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
                     {navigation.sections.navigation}
                   </div>
-                  {navLinks.map((link) => {
-                    const { href, active } = resolveNavLink(link);
-                    return (
-                      <Link
-                        key={link.url}
-                        href={href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 py-2 text-base font-medium transition-colors ${
-                          active
-                            ? "text-foreground"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <span>{navigation.links[link.id]}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
+                  <nav className="flex flex-col gap-1.5">
+                    {navLinks.map((link) => {
+                      const { href, active } = resolveNavLink(link);
+                      return (
+                        <Link
+                          key={link.url}
+                          href={href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={cn(
+                            "flex items-center py-1.5 text-sm",
+                            active
+                              ? "text-foreground font-medium"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          <span className="truncate">
+                            {navigation.links[link.id]}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
 
-                {/* Divider */}
-                <div className="h-px bg-border" />
-
-                {/* Actions */}
+                {/* Settings - aligned with header style */}
                 <div className="flex flex-col gap-3">
-                  <div className="text-xs font-semibold text-muted-foreground uppercase mb-1">
+                  <div className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
                     {navigation.sections.settings}
                   </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {/* Theme toggle: same icon button style as header */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      title={navigation.actions.toggleTheme}
+                    >
+                      <BsSun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <BsMoon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                      <span className="sr-only">{navigation.actions.toggleTheme}</span>
+                    </Button>
 
-                  {/* Theme Toggle */}
-                  <button
-                    onClick={() => {
-                      setTheme(theme === "dark" ? "light" : "dark");
-                    }}
-                    className="flex items-center gap-3 text-base font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
-                  >
-                    <Sun className="h-4 w-4 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-4 w-4 rotate-90 scale-0 dark:rotate-0 dark:scale-100" />
-                    <span className="ml-6">
-                      {navigation.actions.toggleTheme}
-                    </span>
-                  </button>
+                    {/* Language switcher: same component as header */}
+                    <LanguageSwitcher />
 
-                  <LanguageSwitcher variant="full" />
-
-                  {/* User Menu Content */}
-                  <div className="py-2">
-                    <UserMenu />
+                    {/* User menu: same component as header, pushed to the right */}
+                    <div className="ml-auto">
+                      <UserMenu />
+                    </div>
                   </div>
                 </div>
               </div>
