@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { getBayBarOpen, toggleBayBar } from "@/lib/viewManager";
 
 interface SelectionQuoteState {
   text: string;
@@ -86,11 +87,23 @@ export function SelectionProvider({ children }: SelectionProviderProps) {
       ...(state.meta ?? {}),
     };
 
-    window.dispatchEvent(
-      new CustomEvent("set-quote", {
-        detail,
-      })
-    );
+    const isOpen = getBayBarOpen();
+
+    const dispatchQuote = () => {
+      window.dispatchEvent(
+        new CustomEvent("set-quote", {
+          detail,
+        })
+      );
+    };
+
+    if (!isOpen) {
+      toggleBayBar(true);
+      // 等待侧边栏动画完成后再发送事件，确保 ChatInput 已挂载并监听
+      setTimeout(dispatchQuote, 400);
+    } else {
+      dispatchQuote();
+    }
 
     setState(null);
     const selection = window.getSelection();

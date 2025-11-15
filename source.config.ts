@@ -5,11 +5,11 @@ import {
   frontmatterSchema,
   metaSchema,
 } from "fumadocs-mdx/config";
-import z from "zod";
+import { optional, union, z } from "zod/v4/mini";
 import {
-  remarkAdmonition,
   remarkImage,
   remarkHeading,
+  remarkDirectiveAdmonition
 } from "fumadocs-core/mdx-plugins";
 
 import remarkMath from "remark-math";
@@ -21,7 +21,7 @@ import remarkDirective from "remark-directive";
 const DOC_ROOT = "content/docs";
 
 const accessControlledFrontmatter = frontmatterSchema.extend({
-  free: z.boolean().default(false),
+  free: optional(z.boolean()),
 });
 
 export const docs = defineDocs({
@@ -38,7 +38,7 @@ export default defineConfig({
   mdxOptions: {
     remarkPlugins: [
       remarkDirective,
-      remarkAdmonition,
+      remarkDirectiveAdmonition,
       remarkMath,
       remarkImage,
       remarkHeading,
@@ -55,8 +55,8 @@ export const blog = defineCollections({
   dir: "content/blog",
   async: true,
   schema: frontmatterSchema.extend({
-    author: z.string().optional(),
-    date: z.union([z.string(), z.date()]).optional(),
+    author: optional(z.string()),
+    date: optional(union([z.string(), z.date()])),
   }),
 });
 
@@ -65,7 +65,7 @@ export const product = defineCollections({
   dir: "content/products",
   async: true,
   schema: frontmatterSchema.extend({
-    author: z.string().optional(),
-    date: z.union([z.string(), z.date()]).optional(),
+    author: optional(z.string()),
+    date: optional(union([z.string(), z.date()])),
   }),
 });

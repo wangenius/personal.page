@@ -12,6 +12,7 @@ import {
   get_docs_tree,
   get_product_content,
   get_products_list,
+  search,
 } from "./tool";
 import systemPrompt from "./system";
 
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
       get_blog_content,
       get_products_list,
       get_product_content,
+      search,
     },
     temperature: 0.7,
     stopWhen: stepCountIs(20),

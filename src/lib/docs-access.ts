@@ -4,7 +4,11 @@ import type { MdxContent } from "@fumadocs/mdx-remote/client";
 import { source } from "@/lib/source";
 import { hasActiveSubscription } from "@/lib/subscription";
 
-type DocPage = ReturnType<typeof source.getPage>;
+type DocPage =
+  | (NonNullable<ReturnType<typeof source.getPage>> & {
+      data: { free?: boolean };
+    })
+  | undefined;
 
 export function isDocFree(page?: DocPage): boolean {
   return Boolean(page && page.data?.free);

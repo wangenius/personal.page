@@ -1,14 +1,18 @@
 import Link from "next/link";
-import { blog } from "@/lib/source";
+import { blogs } from "@/lib/source";
 import { cn } from "@/lib/cn";
 import { buttonVariants } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
 
+const formatDate = (value?: string | Date) =>
+  value ? new Date(value).toDateString() : null;
+
+const getPostTimestamp = (value?: string | Date): number =>
+  value ? new Date(value).getTime() : 0;
+
 export default function Page() {
-  const posts = [...blog.getPages()].sort(
-    (a, b) =>
-      new Date(b.data.date as string).getTime() -
-      new Date(a.data.date as string).getTime()
+  const posts = [...blogs.getPages()].sort(
+    (a, b) => getPostTimestamp(b.data.date) - getPostTimestamp(a.data.date)
   );
 
   const [featured, ...rest] = posts;
@@ -60,9 +64,7 @@ export default function Page() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-3 text-sm text-fd-muted-foreground">
                 <Calendar className="h-4 w-4" />
-                <span>
-                  {new Date(featured.data.date as string).toDateString()}
-                </span>
+                  <span>{formatDate(featured.data.date) ?? "Date TBD"}</span>
               </div>
               <h2 className="mt-2 text-2xl font-semibold leading-snug tracking-tight md:text-3xl md:leading-snug group-hover:underline">
                 {featured.data.title}
@@ -97,7 +99,7 @@ export default function Page() {
           >
             <div className="flex items-center gap-2 text-xs text-fd-muted-foreground">
               <Calendar className="h-3.5 w-3.5" />
-              <span>{new Date(post.data.date as string).toDateString()}</span>
+              <span>{formatDate(post.data.date) ?? "Date TBD"}</span>
             </div>
             <p className="mt-2 text-lg font-medium group-hover:underline">
               {post.data.title}

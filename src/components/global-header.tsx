@@ -6,7 +6,6 @@ import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useSearchContext } from "fumadocs-ui/provider";
 import { usePathname } from "next/navigation";
 import { toggleBayBar, useViewManager } from "@/lib/viewManager";
 import { useState } from "react";
@@ -45,7 +44,6 @@ const navLinks: NavLink[] = [
 
 export function GlobalHeader() {
   const { theme, setTheme } = useTheme();
-  const searchContext = useSearchContext();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { dictionary } = useLanguage();
@@ -97,7 +95,7 @@ export function GlobalHeader() {
             variant="ghost"
             size="icon"
             className="h-8 w-8"
-            onClick={() => searchContext.setOpenSearch(true)}
+            onClick={() => {}}
             title={navigation.actions.search}
           >
             <BiSearch className="h-4 w-4" />
@@ -142,7 +140,7 @@ export function GlobalHeader() {
             variant="ghost"
             size="icon"
             className="h-8 w-8"
-            onClick={() => searchContext.setOpenSearch(true)}
+            onClick={() => {}}
             title={navigation.actions.search}
           >
             <Search className="h-4 w-4" />

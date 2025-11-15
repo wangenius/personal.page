@@ -26,13 +26,13 @@ export default async function LangDocsPage(props: {
   const locked = await requiresSubscription(page, userSession?.user.id);
   const previewSegments = locked ? await getDocPreviewSegments(page, 2) : [];
 
-  const MDXContent = page.data.body;
+  const MDXContent = (page.data as any).body;
   const baseComponents = getMDXComponents({
     a: createRelativeLink(source, page),
   });
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>

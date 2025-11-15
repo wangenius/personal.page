@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { InlineTOC } from "fumadocs-ui/components/inline-toc";
-import { blog } from "@/lib/source";
+import { blogs } from "@/lib/source";
 import { createMetadata } from "@/lib/metadata";
 import { buttonVariants } from "@/components/ui/button";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
@@ -13,7 +13,7 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const page = blog.getPage([params.slug]);
+  const page = blogs.getPage([params.slug]);
 
   if (!page) notFound();
   const { body: Mdx, toc } = await page.data.load();
@@ -33,9 +33,11 @@ export default async function Page(props: {
         }}
       >
         <h1 className="mb-2 text-3xl font-bold text-white">
-          {page.data.title as string}
+          {page.data.title}
         </h1>
-        <p className="mb-4 text-white/80">{page.data.description as string}</p>
+        {page.data.description ? (
+          <p className="mb-4 text-white/80">{page.data.description}</p>
+        ) : null}
         <Link
           href="/blog"
           className={buttonVariants({ size: "sm", variant: "secondary" })}
@@ -53,12 +55,14 @@ export default async function Page(props: {
         <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
           <div>
             <p className="mb-1 text-fd-muted-foreground">Written by</p>
-            <p className="font-medium">{page.data.author as string}</p>
+            <p className="font-medium">
+              {page.data.author ?? "Anonymous"}
+            </p>
           </div>
           <div>
             <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
             <p className="font-medium">
-              {new Date(page.data.date as string).toDateString()}
+              {page.data.date ? new Date(page.data.date).toDateString() : "Date to be announced"}
             </p>
           </div>
           <Control url={page.url} />
@@ -72,7 +76,7 @@ export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const page = blog.getPage([params.slug]);
+  const page = blogs.getPage([params.slug]);
 
   if (!page) notFound();
 
@@ -84,7 +88,7 @@ export async function generateMetadata(props: {
 }
 
 export function generateStaticParams(): { slug: string }[] {
-  return blog.getPages().map((page) => ({
+  return blogs.getPages().map((page) => ({
     slug: page.slugs[0],
   }));
 }

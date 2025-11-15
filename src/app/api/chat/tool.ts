@@ -1,10 +1,37 @@
 import { z } from "zod";
 import { readFile } from "node:fs/promises";
 import { getDocFullContentByPath } from "@/lib/docs-access";
-import { blog, products, source } from "@/lib/source";
+import { blogs, products, source } from "@/lib/source";
 import { tool } from "ai";
+import { initAdvancedSearch } from "fumadocs-core/search/server";
+import { createTokenizer } from "@orama/tokenizers/mandarin";
+import type { StructuredData } from "fumadocs-core/mdx-plugins";
 
 const FRONTMATTER_REGEX = /^---[\r\n]+[\s\S]*?[\r\n]+---/;
+
+const emptyStructuredData: StructuredData = {
+  headings: [],
+  contents: [],
+};
+
+const advancedSearch = initAdvancedSearch({
+  indexes: source.getPages().map((page) => ({
+    id: page.url,
+    title: page.data.title,
+    description: page.data.description,
+    url: page.url,
+    structuredData: emptyStructuredData,
+  })),
+  components: {
+    tokenizer: createTokenizer(),
+  },
+});
+
+const getTimestamp = (value?: string | Date) =>
+  value ? new Date(value).getTime() : 0;
+
+const toIsoString = (value?: string | Date) =>
+  value ? new Date(value).toISOString() : null;
 
 export const get_doc_content = tool({
   description:
@@ -24,6 +51,41 @@ export const get_doc_content = tool({
       return {
         path,
         content,
+      } as const;
+    } catch (error: any) {
+      return {
+        error: error.message,
+      } as const;
+    }
+  },
+});
+
+export const search = tool({
+  description:
+    "使用站点内置的 Orama 高级搜索（基于 fumadocs source），按关键字搜索文档内容，返回结构化搜索结果。",
+  inputSchema: z.object({
+    query: z.string().describe("搜索关键字，例如 'subscription' 或 'BayBar'"),
+    locale: z
+      .string()
+      .optional()
+      .describe("可选，语言/locale，例如 'en'，会传给搜索引擎"),
+    tag: z
+      .union([z.string(), z.array(z.string())])
+      .optional()
+      .describe("可选，搜索标签（单个或多个），用于过滤搜索结果"),
+  }),
+  execute: async (input) => {
+    try {
+      const { query, locale, tag } = input;
+
+      const result = await advancedSearch.search(query, {
+        locale,
+        tag,
+      } as any);
+
+      return {
+        query,
+        ...result,
       } as const;
     } catch (error: any) {
       return {
@@ -79,10 +141,8 @@ export const get_blog_list = tool({
   inputSchema: z.object({}),
   execute: async () => {
     try {
-      const posts = [...blog.getPages()].sort(
-        (a, b) =>
-          new Date(b.data.date as string).getTime() -
-          new Date(a.data.date as string).getTime()
+      const posts = [...blogs.getPages()].sort(
+        (a, b) => getTimestamp(b.data.date) - getTimestamp(a.data.date)
       );
 
       return {
@@ -91,7 +151,7 @@ export const get_blog_list = tool({
           url: post.url,
           title: post.data.title,
           description: post.data.description ?? null,
-          date: post.data.date as string,
+          date: toIsoString(post.data.date),
         })),
       } as const;
     } catch (error: any) {
@@ -111,7 +171,7 @@ export const get_blog_content = tool({
   execute: async (input) => {
     try {
       const { slug } = input;
-      const page = blog.getPage([slug]);
+      const page = blogs.getPage([slug]);
 
       if (!page) {
         return {
@@ -119,10 +179,7 @@ export const get_blog_content = tool({
         } as const;
       }
 
-      const filePath =
-        (page as { absolutePath?: string } | undefined)?.absolutePath ??
-        (page as any).absolutePath ??
-        page.file?.path;
+      const filePath = page.absolutePath;
 
       if (!filePath) {
         return {
@@ -188,10 +245,7 @@ export const get_product_content = tool({
         } as const;
       }
 
-      const filePath =
-        (page as { absolutePath?: string } | undefined)?.absolutePath ??
-        (page as any).absolutePath ??
-        page.file?.path;
+      const filePath = page.absolutePath;
 
       if (!filePath) {
         return {
