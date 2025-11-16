@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { SelectField } from "@/components/docs/selection-quote";
 import { type ReasoningUIPart, type ToolUIPart, type UIMessage } from "ai";
-import { FileText, CornerDownRight } from "lucide-react";
+import { FileText, CornerDownRight, Copy, Check } from "lucide-react";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { dialog } from "@/components/custom/DialogModal";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 /**
  * 解析消息中的文件标记
@@ -104,6 +106,44 @@ export function parseQuote(text: string): ParsedQuote {
 }
 
 type ThinkingPart = ReasoningUIPart | ToolUIPart;
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCopied(true);
+      toast.success("复制成功");
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
+  };
+
+  return (
+    <Button
+      type="button"
+      onClick={handleCopy}
+      variant="ghost"
+      size="icon"
+      className="size-5 invisible group-hover:visible"
+    >
+      {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+    </Button>
+  );
+}
 
 /**
  * 文件显示组件
@@ -403,9 +443,10 @@ export function MessageRenderer({
                 return (
                   <div
                     key={`${message.id}-text-${segmentIndex}`}
-                    className="text-sm leading-relaxed"
+                    className="text-sm leading-relaxed group"
                   >
                     <Response>{segment.text}</Response>
+                    <CopyButton text={segment.text} />
                   </div>
                 );
               }
