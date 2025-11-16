@@ -129,12 +129,13 @@
 #nd-sidebar {
   top: var(--fd-banner-height) !important;
   height: calc(100vh - var(--fd-banner-height)) !important;
-  background-color: var(--color-fd-background) !important;
-  border-radius: var(--radius-lg) !important;
+  background-color: var(--color-background) !important;
+  /* border-radius: var(--radius-lg) !important; */
   border: none !important;
   padding: 0 !important;
   inset-inline-start: 0 !important;
   transform: none !important;
+  width: var(--fd-sidebar-width) !important;
 }
 
 /* #nd-sidebar > div > div[data-radix-scroll-area-viewport] {
@@ -154,4 +155,12 @@
 
 #nd-sidebar > div > div[data-radix-scroll-area-viewport] {
   padding: 0.5rem !important;
+}
+
+/* Adjust fumadocs TOC & tocnav so they stay within content area when baybar is open */
+@media (min-width: 768px) {
+  body.baybar-open #nd-toc,
+  body.baybar-open #nd-tocnav {
+    inset-inline-end: 400px !important; /* match Chatbar desktop width */
+  }
 }

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useViewManager } from "@/lib/viewManager";
 import { useEffect, useState } from "react";
 
-export function ChatSidebar() {
+export function Chatbar() {
   const { isBayBarOpen } = useViewManager();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -67,7 +67,7 @@ export function ChatSidebar() {
         },
       }}
       className={cn(
-        "hidden md:block h-full overflow-hidden border-l border-fd-border",
+        "hidden md:block h-full overflow-hidden bg-muted",
         !isBayBarOpen && "pointer-events-none"
       )}
     >

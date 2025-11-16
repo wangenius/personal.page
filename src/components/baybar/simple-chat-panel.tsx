@@ -4,7 +4,6 @@ import { useChat } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { TbTrash } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import {
   Conversation,
@@ -18,9 +17,8 @@ import {
 } from "@/components/baybar/ChatInput";
 import { MessageRenderer } from "@/components/baybar/MessageRenderer";
 import { useChatStore } from "@/lib/chatStore";
-import { toggleBayBar } from "@/lib/viewManager";
-import { X } from "lucide-react";
 import { dialog } from "../custom/DialogModal";
+import { TbTrash } from "react-icons/tb";
 
 type TextPart = Extract<UIMessage["parts"][number], { type: "text" }>;
 
@@ -124,30 +122,6 @@ export function SimpleChatPanel() {
 
   return (
     <div className="h-full w-full md:w-[400px] flex flex-col overflow-hidden">
-      {/* 顶部固定栏 */}
-      <div className="flex h-12 md:h-10 flex-none items-center justify-between px-4 md:px-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => toggleBayBar(false)}
-          className="h-8 w-8"
-        >
-          <X className="h-5 w-5" />
-          <span className="sr-only">Close chat</span>
-        </Button>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={handleClearChat}
-            title="清空对话"
-          >
-            <TbTrash className="size-5" />
-          </Button>
-        </div>
-      </div>
-
       {/* 对话内容 */}
       <Conversation className="flex-1 bg-transparent">
         <ConversationContent className="mx-auto flex w-full flex-col gap-1">
@@ -187,6 +161,17 @@ export function SimpleChatPanel() {
           onSubmit={handleInputSubmit}
           onStop={stop}
           enableQuote
+          toolbarChildren={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded-full"
+              onClick={handleClearChat}
+              title="清空对话"
+            >
+              <TbTrash className="size-4" />
+            </Button>
+          }
           showFileUpload={false}
         />
       </div>

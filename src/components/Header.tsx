@@ -40,7 +40,7 @@ const navLinks: NavLink[] = [
   { id: "subscribe", url: "/subscription" },
 ];
 
-export function GlobalHeader() {
+export function Header() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -209,7 +209,7 @@ export function GlobalHeader() {
                             "flex items-center py-1.5 text-sm",
                             active
                               ? "text-foreground font-medium"
-                              : "text-muted-foreground hover:text-foreground",
+                              : "text-muted-foreground hover:text-foreground"
                           )}
                         >
                           <span className="truncate">
@@ -232,12 +232,16 @@ export function GlobalHeader() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      onClick={() =>
+                        setTheme(theme === "dark" ? "light" : "dark")
+                      }
                       title={navigation.actions.toggleTheme}
                     >
                       <BsSun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                       <BsMoon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                      <span className="sr-only">{navigation.actions.toggleTheme}</span>
+                      <span className="sr-only">
+                        {navigation.actions.toggleTheme}
+                      </span>
                     </Button>
 
                     {/* Language switcher: same component as header */}

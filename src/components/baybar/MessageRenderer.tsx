@@ -182,7 +182,7 @@ function UserMessageContent({
       {/* 文本内容 - 最下面 */}
       {hasText && (
         <MessageContent
-          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl"
+          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl px-2 py-1 rounded-lg bg-muted-foreground/10!"
           variant="flat"
         >
           {textParts.map((part, idx) => {

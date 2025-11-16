@@ -35,7 +35,9 @@ const SelectionContext = createContext<SelectionProviderState | null>(null);
 export function useSelectionContext() {
   const ctx = useContext(SelectionContext);
   if (!ctx) {
-    throw new Error("useSelectionContext must be used within a SelectionProvider");
+    throw new Error(
+      "useSelectionContext must be used within a SelectionProvider"
+    );
   }
   return ctx;
 }
@@ -47,33 +49,36 @@ interface SelectionProviderProps {
 export function SelectionProvider({ children }: SelectionProviderProps) {
   const [state, setState] = useState<SelectionQuoteState | null>(null);
 
-  const showQuote = useCallback((payload: {
-    text: string;
-    rect: DOMRect;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    meta?: any;
-  }) => {
-    const { text, rect, meta } = payload;
-    if (!text.trim()) {
-      setState(null);
-      return;
-    }
+  const showQuote = useCallback(
+    (payload: {
+      text: string;
+      rect: DOMRect;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      meta?: any;
+    }) => {
+      const { text, rect, meta } = payload;
+      if (!text.trim()) {
+        setState(null);
+        return;
+      }
 
-    if (!rect || (rect.x === 0 && rect.y === 0 && rect.width === 0)) {
-      return;
-    }
+      if (!rect || (rect.x === 0 && rect.y === 0 && rect.width === 0)) {
+        return;
+      }
 
-    const x = rect.left + rect.width / 2;
-    const y = rect.top - 8;
+      const x = rect.left + rect.width / 2;
+      const y = rect.top - 8;
 
-    setState({
-      text,
-      x,
-      y,
-      visible: true,
-      meta,
-    });
-  }, []);
+      setState({
+        text,
+        x,
+        y,
+        visible: true,
+        meta,
+      });
+    },
+    []
+  );
 
   const hideQuote = useCallback(() => {
     setState((prev) => (prev ? { ...prev, visible: false } : null));
