@@ -7,6 +7,7 @@ import { createMetadata } from "@/lib/metadata";
 import { buttonVariants } from "@/components/ui/button";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
 import { getMDXComponents } from "@/mdx-components";
+import { LastReadTracker } from "@/components/LastReadTracker";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -19,6 +20,7 @@ export default async function Page(props: {
 
   return (
     <>
+      <LastReadTracker />
       <div
         className="mx-auto w-full max-w-fd-container rounded-xl mt-12 px-4 py-12 md:px-8"
         style={{

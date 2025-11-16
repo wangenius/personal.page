@@ -56,7 +56,10 @@
   ],
   "cta": {
     "primary": "查看作品",
-    "secondary": "订阅"
+    "secondary": "订阅",
+    "login": "登录",
+    "contact": "联系我",
+    "lastRead": "上次阅读"
   },
   "closing": {
     "title": "让风投研究与产品执行协同推进。",

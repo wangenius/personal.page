@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/components/language-provider";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
@@ -142,14 +143,22 @@ export const Timeline = () => {
     : null;
 
   return (
-    <section className="space-y-20 pb-24">
+    <section className="space-y-20 pb-24 mb-16">
       <div className="space-y-3">
         <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
           {timeline.section.label}
         </p>
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          {timeline.section.title}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+            {timeline.section.title}
+          </h2>
+          <Link
+            href="/products"
+            className="text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+          >
+            {timeline.section.viewProducts}
+          </Link>
+        </div>
       </div>
 
       <div className="hidden gap-10 md:grid md:grid-cols-[100px_1fr]">

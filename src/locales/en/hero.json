@@ -56,7 +56,10 @@
   ],
   "cta": {
     "primary": "View Work",
-    "secondary": "Subscribe"
+    "secondary": "Subscribe",
+    "login": "Log in",
+    "contact": "Contact",
+    "lastRead": "Last read"
   },
   "closing": {
     "title": "Pairing venture research with product execution.",

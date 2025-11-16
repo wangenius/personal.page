@@ -4,12 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Github, Twitter } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
+import { useSession } from "@/lib/auth-client";
+import { useEffect, useState } from "react";
 
 export const Hero = () => {
   const { dictionary } = useLanguage();
   const hero = dictionary.hero;
+  const { data: session } = useSession();
+  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
+  const [lastReadPath, setLastReadPath] = useState<string | null>(null);
   const {
     profile,
     heroSignals,
@@ -21,6 +25,44 @@ export const Hero = () => {
     introLabel,
     closing,
   } = hero;
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!session) {
+      setIsSubscribed(null);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    fetch("/api/subscription/status", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) return null;
+        return (await res.json()) as { subscription?: { isActive?: boolean } } | null;
+      })
+      .then((payload) => {
+        if (!isMounted) return;
+        setIsSubscribed(Boolean(payload?.subscription?.isActive));
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setIsSubscribed(null);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session]);
+
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      const stored = window.localStorage.getItem("last-read-path");
+      setLastReadPath(stored && stored.startsWith("/") ? stored : null);
+    } catch {
+      setLastReadPath(null);
+    }
+  }, []);
 
   return (
     <section
@@ -54,45 +96,36 @@ export const Hero = () => {
               {profile.description}
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" className="h-8" asChild>
-                <Link
-                  href="https://bento.me/wangenius"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                  <span>Bento</span>
-                </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Primary CTA: Subscribe when not subscribed (logged out or logged in without active sub) */}
+            {(!session || !isSubscribed) && (
+              <Button size="sm" className="px-5" asChild>
+                <Link href="/subscription">{cta.secondary}</Link>
               </Button>
-              <Button variant="outline" size="sm" className="h-8" asChild>
-                <Link
-                  href="https://x.com/iamwangenius"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <Twitter className="h-3 w-3" />
-                  <span>X</span>
-                </Link>
+            )}
+
+            {/* Secondary CTA: Login or Contact (always present) */}
+            {session ? (
+              <Button size="sm" variant="outline" className="px-5" asChild>
+                <Link href="#contact">{cta.contact}</Link>
               </Button>
-              <Button variant="outline" size="sm" className="h-8" asChild>
-                <Link
-                  href="https://github.com/wangenius"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <Github className="h-3 w-3" />
-                  <span>GitHub</span>
-                </Link>
+            ) : (
+              <Button size="sm" variant="outline" className="px-5" asChild>
+                <Link href="/signin">{cta.login}</Link>
               </Button>
-            </div>
-            <Button size="sm" variant="ghost" className="px-5" asChild>
-              <Link href="/subscription">{cta.secondary}</Link>
-            </Button>
+            )}
+
+            {/* Tertiary CTA: Last read (text style), only when subscribed, always rendered last */}
+            {session && isSubscribed ? (
+              <Button
+                variant="link"
+                size="sm"
+                className="px-0 text-sm text-fd-muted-foreground underline-offset-4 hover:underline"
+                asChild
+              >
+                <Link href={lastReadPath ?? "/subscription"}>{cta.lastRead}</Link>
+              </Button>
+            ) : null}
           </div>
           <p className="text-xs text-fd-muted-foreground/80">{mission}</p>
         </div>

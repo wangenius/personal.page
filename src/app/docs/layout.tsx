@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { source } from "@/lib/source";
 import { SidebarTrigger } from "fumadocs-ui/components/layout/sidebar";
+import { LastReadTracker } from "@/components/LastReadTracker";
 
 interface DocsLayoutProps {
   children: ReactNode;
@@ -32,6 +33,7 @@ export default function LangDocsLayout({ children }: DocsLayoutProps) {
         }}
       >
         {/* Mobile docs sidebar trigger: positioned near header avatar */}
+        <LastReadTracker />
         <div className="md:hidden z-10000">
           <SidebarTrigger className="fixed left-12 top-2 z-40 h-8 w-8 inline-flex items-center justify-center">
             <Menu className="h-4 w-4" />
