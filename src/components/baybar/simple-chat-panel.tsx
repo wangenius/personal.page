@@ -121,7 +121,10 @@ export function SimpleChatPanel() {
   }, []);
 
   return (
-    <div className="h-full w-full md:w-[400px] flex flex-col overflow-hidden">
+    <div
+      id="simple-chat-panel"
+      className="h-full w-full md:w-[400px] flex flex-col overflow-hidden"
+    >
       {/* 对话内容 */}
       <Conversation className="flex-1 bg-transparent">
         <ConversationContent className="mx-auto flex w-full flex-col gap-1">
@@ -165,7 +168,7 @@ export function SimpleChatPanel() {
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 rounded-full"
+              className="size-8 rounded-full"
               onClick={handleClearChat}
               title="清空对话"
             >

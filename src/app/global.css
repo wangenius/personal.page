@@ -165,13 +165,31 @@
   }
 }
 
-li {
-  @apply list-disc py-0;
-  list-style-position: inside;
+#simple-chat-panel {
+
+}
+
+#simple-chat-panel li {
+  /* 保留文字样式，不强制列表类型 */
+  @apply py-0;
   color: var(--color-muted-foreground);
 }
 
-ul {
+#simple-chat-panel ul {
   @apply list-disc py-1;
   list-style: disc inside;
+}
+
+/* Streamdown 有序列表：确保用数字编号 */
+#simple-chat-panel ol[data-streamdown="ordered-list"] {
+  list-style: decimal outside;
+  margin-left: 0;
+  padding-left: 1.25rem; /* 给数字留一点空间 */
+}
+
+/* Streamdown 无序列表：确保用圆点 */
+#simple-chat-panel ul[data-streamdown="unordered-list"] {
+  list-style: disc outside;
+  margin-left: 0;
+  padding-left: 1.25rem;
 }

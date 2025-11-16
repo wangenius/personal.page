@@ -4,12 +4,6 @@ import { useMemo } from "react";
 import { SelectField } from "@/components/docs/selection-quote";
 import { type ReasoningUIPart, type ToolUIPart, type UIMessage } from "ai";
 import { FileText, CornerDownRight } from "lucide-react";
-import {
-  ChainOfThought,
-  ChainOfThoughtHeader,
-  ChainOfThoughtContent,
-  ChainOfThoughtStep,
-} from "@/components/ai-elements/chain-of-thought";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { dialog } from "@/components/custom/DialogModal";
@@ -89,7 +83,8 @@ export interface ParsedQuote {
 
 export function parseQuote(text: string): ParsedQuote {
   // 可选路径部分：=...，例如 =/docs/xxx/xxx
-  const quoteRegex = /\[QUOTE_START(?:=([^\]]+))?\]\n([\s\S]*?)\n\[QUOTE_END\]\n\n([\s\S]*)/;
+  const quoteRegex =
+    /\[QUOTE_START(?:=([^\]]+))?\]\n([\s\S]*?)\n\[QUOTE_END\]\n\n([\s\S]*)/;
   const match = text.match(quoteRegex);
 
   if (match) {
@@ -107,6 +102,8 @@ export function parseQuote(text: string): ParsedQuote {
     message: text,
   };
 }
+
+type ThinkingPart = ReasoningUIPart | ToolUIPart;
 
 /**
  * 文件显示组件
@@ -210,7 +207,7 @@ export function MessageRenderer({
   isStreaming,
   getTextFromMessage,
 }: MessageRendererProps) {
-  const parts = message.parts ?? [];
+  const parts = useMemo(() => message.parts ?? [], [message.parts]);
   const messageText = getTextFromMessage(message);
 
   // 解析用户消息中的文件
@@ -227,20 +224,11 @@ export function MessageRenderer({
       : { hasQuote: false, quote: "", message: messageText };
   }, [messageText, message.role]);
 
-  // 过滤出 reasoning 和 tool parts
+  // 过滤出 reasoning 和 tool parts（用于整体状态判断）
   const thinkingParts = parts.filter(
     (part): part is ReasoningUIPart | ToolUIPart =>
       part.type === "reasoning" || part.type.startsWith("tool-")
   );
-
-  const hasValidThinking = thinkingParts.some((part) => {
-    if (part.type === "reasoning") {
-      return (part as ReasoningUIPart).text?.trim();
-    }
-    return true;
-  });
-
-  let stepCounter = 0;
 
   // 确定思维链标题
   const getChainTitle = () => {
@@ -277,6 +265,54 @@ export function MessageRenderer({
     }
   };
 
+  const segments = useMemo(() => {
+    if (message.role !== "assistant")
+      return [] as (
+        | { kind: "thinking"; parts: ThinkingPart[] }
+        | { kind: "text"; text: string }
+      )[];
+
+    const result: (
+      | { kind: "thinking"; parts: ThinkingPart[] }
+      | { kind: "text"; text: string }
+    )[] = [];
+
+    let currentThinking: ThinkingPart[] = [];
+    let currentTextParts: string[] = [];
+
+    const flushThinking = () => {
+      if (currentThinking.length === 0) return;
+      result.push({ kind: "thinking", parts: currentThinking });
+      currentThinking = [];
+    };
+
+    const flushText = () => {
+      if (currentTextParts.length === 0) return;
+      const text = currentTextParts.join("").trim();
+      if (text) {
+        result.push({ kind: "text", text });
+      }
+      currentTextParts = [];
+    };
+
+    for (const part of parts) {
+      if (part.type === "reasoning" || part.type.startsWith("tool-")) {
+        flushText();
+        currentThinking.push(part as ThinkingPart);
+      } else if (part.type === "text") {
+        flushThinking();
+        if (part.text) {
+          currentTextParts.push(part.text);
+        }
+      }
+    }
+
+    flushThinking();
+    flushText();
+
+    return result;
+  }, [message.role, parts]);
+
   return (
     <Message className={"w-full"} key={message.id} from={message.role}>
       <SelectField
@@ -286,79 +322,93 @@ export function MessageRenderer({
       >
         {message.role === "assistant" ? (
           <MessageContent variant="flat" className="w-full">
-            {/* 思考过程 */}
-            {hasValidThinking && (
-              <ChainOfThought className="max-w-full w-full" defaultOpen={true}>
-                <ChainOfThoughtHeader className="max-w-auto w-full">
-                  {getChainTitle()}
-                </ChainOfThoughtHeader>
-                <ChainOfThoughtContent className="max-w-full w-full mb-4">
-                  {thinkingParts.map((part, idx) => {
-                    if (part.type === "reasoning") {
-                      const reasoningPart = part as ReasoningUIPart;
-                      if (!reasoningPart.text?.trim()) return null;
-                      stepCounter++;
-                      return (
-                        <ChainOfThoughtStep
-                          key={`${message.id}-reasoning-${idx}`}
-                          label={`步骤 ${stepCounter}`}
-                          status={
-                            reasoningPart.state === "done"
-                              ? "complete"
-                              : isStreaming
-                                ? "active"
-                                : "pending"
-                          }
-                        >
-                          <div className="text-sm text-muted-foreground whitespace-pre-wrap">
-                            {reasoningPart.text}
+            {segments.map(
+              (
+                segment:
+                  | { kind: "thinking"; parts: ThinkingPart[] }
+                  | { kind: "text"; text: string },
+                segmentIndex: number
+              ) => {
+                if (segment.kind === "thinking") {
+                  const segmentThinkingParts = segment.parts;
+                  const reasoningTexts = segmentThinkingParts
+                    .filter((part: ThinkingPart) => part.type === "reasoning")
+                    .map((part: ThinkingPart) =>
+                      (part as ReasoningUIPart).text?.trim()
+                    )
+                    .filter((text): text is string => Boolean(text));
+
+                  const toolParts = segmentThinkingParts.filter((part) =>
+                    part.type.startsWith("tool-")
+                  ) as ToolUIPart[];
+
+                  if (reasoningTexts.length === 0 && toolParts.length === 0)
+                    return null;
+
+                  return (
+                    <div
+                      key={`${message.id}-thinking-${segmentIndex}`}
+                      className="space-y-0.5 text-xs text-muted-foreground"
+                    >
+                      {reasoningTexts.length > 0 && (
+                        <div className="rounded-md bg-muted/40 px-3 py-2">
+                          <div className="text-[11px] font-medium text-muted-foreground/80">
+                            {getChainTitle()}
                           </div>
-                        </ChainOfThoughtStep>
-                      );
-                    }
+                          <div className="space-y-1">
+                            {reasoningTexts.map((text, idx) => (
+                              <p
+                                key={`${message.id}-reasoning-${segmentIndex}-${idx}`}
+                                className="whitespace-pre-wrap leading-relaxed"
+                              >
+                                {text}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-                    if (part.type.startsWith("tool-")) {
-                      const toolPart = part as ToolUIPart;
-                      stepCounter++;
-                      const methodName = toolPart.type
-                        .split("-")
-                        .slice(1)
-                        .join("_");
+                      {toolParts.map((toolPart, idx) => {
+                        const methodName = toolPart.type
+                          .split("-")
+                          .slice(1)
+                          .join("_");
 
-                      return (
-                        <ChainOfThoughtStep
-                          key={`${message.id}-tool-${idx}`}
-                          label={`步骤 ${stepCounter}`}
-                          status={
-                            toolPart.state === "output-available"
-                              ? "complete"
-                              : toolPart.state === "output-error"
-                                ? "complete"
-                                : isStreaming
-                                  ? "active"
-                                  : "pending"
-                          }
-                        >
-                          <div className="flex items-center gap-2.5 px-2 py-1.5">
-                            <code className="font-mono text-xs text-foreground/60 bg-muted rounded-md px-2 py-1">
+                        let statusText = "调用中";
+                        if (toolPart.state === "output-available") {
+                          statusText = "完成";
+                        } else if (toolPart.state === "output-error") {
+                          statusText = "出错";
+                        }
+
+                        return (
+                          <div
+                            key={`${message.id}-tool-${segmentIndex}-${idx}`}
+                            className="flex items-center gap-2 pl-1"
+                          >
+                            <code className="font-mono text-[11px] text-foreground/70 bg-muted rounded px-1.5 py-0.5">
                               {methodName}
                             </code>
+                            <span className="text-[11px] text-muted-foreground/80">
+                              {statusText}
+                            </span>
                           </div>
-                        </ChainOfThoughtStep>
-                      );
-                    }
+                        );
+                      })}
+                    </div>
+                  );
+                }
 
-                    return null;
-                  })}
-                </ChainOfThoughtContent>
-              </ChainOfThought>
-            )}
-
-            {/* 助手回复内容 */}
-            {messageText && message.role === "assistant" && (
-              <div className="text-sm leading-relaxed">
-                <Response>{messageText}</Response>
-              </div>
+                // 文本片段
+                return (
+                  <div
+                    key={`${message.id}-text-${segmentIndex}`}
+                    className="text-sm leading-relaxed"
+                  >
+                    <Response>{segment.text}</Response>
+                  </div>
+                );
+              }
             )}
           </MessageContent>
         ) : (

@@ -107,7 +107,10 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     // 监听全局引用事件
     useEffect(() => {
       const handleSetQuote = (event: Event) => {
-        const customEvent = event as CustomEvent<{ text: string; path?: string }>;
+        const customEvent = event as CustomEvent<{
+          text: string;
+          path?: string;
+        }>;
         if (customEvent.detail?.text && enableQuote) {
           setQuoteState(customEvent.detail.text);
           setQuotePath(customEvent.detail.path);
@@ -174,26 +177,25 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
           onError={(error) => console.error("附件处理错误:", error)}
           onSubmit={handleSubmit}
           className={cn(
-            "w-full [&>div]:p-2 [&>div]:border-0 [&>div]:shadow-none [&>div]:bg-muted-foreground/10 [&>div]:ring-0 [&>div]:ring-offset-0 [&>div]:outline-none [&>div]:rounded-2xl [&>div]:hover:bg-muted-foreground/30 [&>div]:focus-within:bg-muted-foreground/30 [&>div]:focus-within:ring-0 [&>div]:focus-within:outline-none [&>div]:transition-colors [&>div]:items-start **:focus:ring-0 **:focus-visible:ring-0 **:focus:outline-none **:focus-visible:outline-none",
+            "w-full [&>div]:p-2 [&>div]:border-0 [&>div]:shadow-none [&>div]:bg-muted-foreground/10 [&>div]:ring-0 [&>div]:ring-offset-0 [&>div]:outline-none [&>div]:rounded-3xl [&>div]:hover:bg-muted-foreground/30 [&>div]:focus-within:bg-muted-foreground/30 [&>div]:focus-within:ring-0 [&>div]:focus-within:outline-none [&>div]:transition-colors [&>div]:items-start **:focus:ring-0 **:focus-visible:ring-0 **:focus:outline-none **:focus-visible:outline-none",
             className
           )}
         >
           {/* 引用内容显示 */}
           {enableQuote && quote && (
-            <div className="relative rounded-2xl bg-muted-foreground/10 p-3 animate-in slide-in-from-bottom-2 w-full self-start">
+            <div className="relative rounded-full bg-muted-foreground text-muted p-2 animate-in slide-in-from-bottom-2 w-full self-start flex items-center">
+              <div className="flex-1 text-sm text-muted/80 pl-2 pr-6 max-h-24 overflow-y-auto whitespace-nowrap truncate">
+                {quote.length > 40 ? quote.slice(0, 40) + "..." : quote}
+              </div>
               <Button
                 onClick={handleClearQuote}
-                className="absolute top-2 right-2 h-5 w-5 rounded-full opacity-70 hover:opacity-100 transition-opacity"
+                className="h-5 w-5 rounded-full opacity-70 hover:opacity-100 transition-opacity"
                 size={"icon"}
                 variant={"ghost"}
                 aria-label="清除引用"
               >
                 <XIcon className="h-4 w-4" />
               </Button>
-
-              <div className="text-sm text-foreground/50 pr-6 max-h-24 overflow-y-auto">
-                {quote.length > 80 ? quote.slice(0, 80) + "..." : quote}
-              </div>
             </div>
           )}
 
