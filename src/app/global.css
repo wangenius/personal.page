@@ -164,3 +164,14 @@
     inset-inline-end: 400px !important; /* match Chatbar desktop width */
   }
 }
+
+li {
+  @apply list-disc py-0;
+  list-style-position: inside;
+  color: var(--color-muted-foreground);
+}
+
+ul {
+  @apply list-disc py-1;
+  list-style: disc inside;
+}

@@ -67,7 +67,7 @@ export function Chatbar() {
         },
       }}
       className={cn(
-        "hidden md:block h-full overflow-hidden bg-muted",
+        "hidden md:block h-full overflow-hidden",
         !isBayBarOpen && "pointer-events-none"
       )}
     >
