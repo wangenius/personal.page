@@ -30,7 +30,7 @@ export function Chatbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-background md:hidden"
+            className="fixed inset-x-0 top-12 bottom-0 z-40 bg-background md:hidden"
           >
             {/* 聊天面板内容 */}
             <motion.div

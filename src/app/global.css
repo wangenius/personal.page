@@ -166,7 +166,6 @@
 }
 
 #simple-chat-panel {
-
 }
 
 #simple-chat-panel li {
@@ -192,4 +191,17 @@
   list-style: disc outside;
   margin-left: 0;
   padding-left: 1.25rem;
+}
+
+#nd-sidebar-mobile {
+  width: 100%;
+  max-width: unset !important;
+}
+
+#nd-sidebar-mobile > div:first-child > div {
+  display: none;
+}
+
+#nd-sidebar-mobile > div:first-child {
+  height: 2rem !important;
 }
