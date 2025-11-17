@@ -6,10 +6,12 @@ import { Contact } from "./Contact";
 
 export function PersonalProfile() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16 mb-20">
-      <Hero />
-      <Timeline />
-      <Contact />
+    <div className="w-full overflow-auto">
+      <div className="max-w-6xl px-4  mx-auto py-12 md:py-16">
+        <Hero />
+        <Timeline />
+        <Contact />
+      </div>
     </div>
   );
 }

@@ -49,12 +49,15 @@ type CheckoutFeedback = {
 
 const LOCALE_TAGS: Record<Locale, string> = {
   en: "en-US",
-  "cn": "cn",
+  cn: "cn",
 };
 
 const PLAN_ORDER: PlanKey[] = ["monthly", "yearly", "lifetime"];
 
-const planMeta: Record<PlanKey, { price: string; href: string; buttonVariant: "default" | "outline" }> = {
+const planMeta: Record<
+  PlanKey,
+  { price: string; href: string; buttonVariant: "default" | "outline" }
+> = {
   monthly: {
     price: "¥59",
     href: "/api/checkout?plan=monthly",
@@ -160,14 +163,24 @@ const benefitRows: BenefitRow[] = [
   },
 ];
 
-const benefitTierOrder: BenefitTierKey[] = ["free", "monthly", "yearly", "lifetime"];
+const benefitTierOrder: BenefitTierKey[] = [
+  "free",
+  "monthly",
+  "yearly",
+  "lifetime",
+];
 
-const formatExpirationDate = (value?: string | null, locale = LOCALE_TAGS.en) => {
+const formatExpirationDate = (
+  value?: string | null,
+  locale = LOCALE_TAGS.en
+) => {
   if (!value) {
     return null;
   }
   try {
-    return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(value));
+    return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
+      new Date(value)
+    );
   } catch {
     return null;
   }
@@ -216,7 +229,9 @@ function SubscriptionPageContent() {
   } = dictionary.subscription;
   const localeTag = LOCALE_TAGS[language] ?? LOCALE_TAGS.en;
   const [feedback, setFeedback] = useState<CheckoutFeedback | null>(null);
-  const [processedSessionId, setProcessedSessionId] = useState<string | null>(null);
+  const [processedSessionId, setProcessedSessionId] = useState<string | null>(
+    null
+  );
   const [subscriptionStatus, setSubscriptionStatus] =
     useState<SubscriptionStatusDto | null>(null);
 
@@ -255,7 +270,9 @@ function SubscriptionPageContent() {
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data?.error ?? feedbackMessages.syncError.description);
+          throw new Error(
+            data?.error ?? feedbackMessages.syncError.description
+          );
         }
         setFeedback({
           variant: "success",
@@ -304,7 +321,10 @@ function SubscriptionPageContent() {
   }, [session, isPending]);
 
   const isSubscribed = Boolean(subscriptionStatus?.isActive);
-  const expirationLabel = formatExpirationDate(subscriptionStatus?.expiresAt, localeTag);
+  const expirationLabel = formatExpirationDate(
+    subscriptionStatus?.expiresAt,
+    localeTag
+  );
   const fallbackExpirationLabel = computeFallbackExpiration(
     subscriptionStatus?.plan,
     subscriptionStatus?.createdAt,
@@ -313,7 +333,7 @@ function SubscriptionPageContent() {
   const isLifetimePlan = subscriptionStatus?.plan === "lifetime";
   const formattedExpiration = isLifetimePlan
     ? expiration.permanent
-    : expirationLabel ?? fallbackExpirationLabel ?? expiration.pending;
+    : (expirationLabel ?? fallbackExpirationLabel ?? expiration.pending);
   const currentPlanButtonLabel = isLifetimePlan
     ? buttons.lifetimeActive
     : `${buttons.currentPlanPrefix}${formattedExpiration}`;
@@ -328,126 +348,134 @@ function SubscriptionPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50">
-      <div className="mx-auto w-full max-w-4xl px-4 py-16 space-y-10">
-        {feedback && (
-          <Alert
-            variant={feedback.variant === "error" ? "destructive" : "default"}
-            className="shadow-sm"
-          >
-            <AlertTitle>{feedback.title}</AlertTitle>
-            <AlertDescription>{feedback.description}</AlertDescription>
-          </Alert>
-        )}
+    <main className="flex-1 overflow-auto">
+      <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50 max-w-6xl mx-auto">
+        <div className="mx-auto w-full max-w-4xl px-4 py-16 space-y-10">
+          {feedback && (
+            <Alert
+              variant={feedback.variant === "error" ? "destructive" : "default"}
+              className="shadow-sm"
+            >
+              <AlertTitle>{feedback.title}</AlertTitle>
+              <AlertDescription>{feedback.description}</AlertDescription>
+            </Alert>
+          )}
 
-        <section className="space-y-3">
-          {PLAN_ORDER.map((planKey) => {
-            const planTranslation = localizedPlans[planKey];
-            const planDetails = planMeta[planKey];
-            const isCurrentPlan = planKey === subscriptionStatus?.plan;
-            const buttonLabel = isSubscribed
-              ? isCurrentPlan
-                ? currentPlanButtonLabel
-                : buttons.alreadyMember
-              : planTranslation.cta;
-            return (
-              <Card
-                key={planKey}
-                className={cn(
-                  "flex items-center justify-between border border-slate-200/70 bg-white/90 px-5 py-4 text-sm dark:border-slate-800 dark:bg-slate-900/70",
-                  isCurrentPlan && "border-primary/70 shadow-sm"
-                )}
-              >
-                <div>
-                  <p className="font-semibold text-slate-900 dark:text-white">
-                    {planTranslation.name}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {planTranslation.tagline}
-                  </p>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="text-right">
-                    <p className="text-lg font-semibold">{planDetails.price}</p>
+          <section className="space-y-3">
+            {PLAN_ORDER.map((planKey) => {
+              const planTranslation = localizedPlans[planKey];
+              const planDetails = planMeta[planKey];
+              const isCurrentPlan = planKey === subscriptionStatus?.plan;
+              const buttonLabel = isSubscribed
+                ? isCurrentPlan
+                  ? currentPlanButtonLabel
+                  : buttons.alreadyMember
+                : planTranslation.cta;
+              return (
+                <Card
+                  key={planKey}
+                  className={cn(
+                    "flex items-center justify-between border border-slate-200/70 bg-white/90 px-5 py-4 text-sm dark:border-slate-800 dark:bg-slate-900/70",
+                    isCurrentPlan && "border-primary/70 shadow-sm"
+                  )}
+                >
+                  <div>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {planTranslation.name}
+                    </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {planTranslation.period}
+                      {planTranslation.tagline}
                     </p>
                   </div>
-                  <Button
-                    variant={planDetails.buttonVariant}
-                    size="sm"
-                    onClick={() => handleCheckout(planDetails.href)}
-                    disabled={isPending || isSubscribed}
-                  >
-                    {buttonLabel}
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </section>
-
-        <section id="membership-highlights">
-          <Card className="border border-slate-200/70 bg-white/90 text-sm dark:border-slate-800 dark:bg-slate-900/70">
-            <CardHeader className="grid grid-cols-5 gap-4 text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
-              <div>{benefits.headerLabel}</div>
-              {benefitTierOrder.map((tier) => (
-                <div key={tier} className="text-center">
-                  {benefits.tiers[tier]}
-                </div>
-              ))}
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {benefitRows.map((row) => (
-                <div
-                  key={row.key}
-                  className="grid grid-cols-5 gap-4 rounded-2xl px-4 py-3 text-slate-600 dark:text-slate-300"
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
-                    {benefits.rows[row.key]}
-                  </span>
-                  {benefitTierOrder.map((tier) => (
-                    <div
-                      key={`${row.key}-${tier}`}
-                      className="text-center text-slate-500 dark:text-slate-400"
-                    >
-                      {row[tier] ? (
-                        <CheckCircle className="mx-auto h-4 w-4 text-primary" />
-                      ) : (
-                        <Minus className="mx-auto h-4 w-4 text-slate-400" />
-                      )}
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <p className="text-lg font-semibold">
+                        {planDetails.price}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {planTranslation.period}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </section>
+                    <Button
+                      variant={planDetails.buttonVariant}
+                      size="sm"
+                      onClick={() => handleCheckout(planDetails.href)}
+                      disabled={isPending || isSubscribed}
+                    >
+                      {buttonLabel}
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </section>
 
-        <section className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
-          <p className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            {info.payment}
-          </p>
-          <p>
-            {info.support.beforeLink}
-            <Link
-              className="text-primary underline decoration-dotted"
-              href="/about"
-            >
-              {info.support.linkText}
-            </Link>
-            {info.support.afterLink}
-          </p>
-        </section>
+          <section id="membership-highlights">
+            <Card className="border border-slate-200/70 bg-white/90 text-sm dark:border-slate-800 dark:bg-slate-900/70">
+              <CardHeader className="grid grid-cols-5 gap-4 text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+                <div>{benefits.headerLabel}</div>
+                {benefitTierOrder.map((tier) => (
+                  <div key={tier} className="text-center">
+                    {benefits.tiers[tier]}
+                  </div>
+                ))}
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {benefitRows.map((row) => (
+                  <div
+                    key={row.key}
+                    className="grid grid-cols-5 gap-4 rounded-2xl px-4 py-3 text-slate-600 dark:text-slate-300"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+                      {benefits.rows[row.key]}
+                    </span>
+                    {benefitTierOrder.map((tier) => (
+                      <div
+                        key={`${row.key}-${tier}`}
+                        className="text-center text-slate-500 dark:text-slate-400"
+                      >
+                        {row[tier] ? (
+                          <CheckCircle className="mx-auto h-4 w-4 text-primary" />
+                        ) : (
+                          <Minus className="mx-auto h-4 w-4 text-slate-400" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
+            <p className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              {info.payment}
+            </p>
+            <p>
+              {info.support.beforeLink}
+              <Link
+                className="text-primary underline decoration-dotted"
+                href="/about"
+              >
+                {info.support.linkText}
+              </Link>
+              {info.support.afterLink}
+            </p>
+          </section>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
 export default function SubscriptionPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center px-4 py-12" />}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center px-4 py-12" />
+      }
+    >
       <SubscriptionPageContent />
     </Suspense>
   );

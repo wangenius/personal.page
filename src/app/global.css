@@ -206,7 +206,7 @@
 }
 
 #nd-page {
-  @apply flex-1 mx-auto flex flex-row justify-center p-0 overflow-hidden;
+  @apply flex-1 mx-auto flex flex-row justify-center p-0 overflow-hidden relative!;
 }
 
 #nd-toc {
@@ -215,4 +215,25 @@
 
 #nd-page > article {
   @apply flex-1 min-w-0 overflow-auto relative;
+}
+
+#nd-page > article > p {
+  @apply mt-0 mb-0! bg-muted py-1 px-3 rounded-lg text-[16px];
+}
+
+#nd-tocnav {
+  width: 100%;
+}
+
+#nd-page h2 {
+  @apply my-2;
+}
+
+#nd-page p {
+  @apply my-1;
+}
+
+
+#nd-page hr {
+  @apply my-4;
 }
