@@ -210,11 +210,11 @@
 }
 
 #nd-toc {
-  @apply relative p-0 m-0 flex-none w-64 top-0 inset-0;
+  @apply relative p-0 m-0 flex-none w-64 top-0! inset-0!;
 }
 
 #nd-page > article {
-  @apply flex-1 min-w-0 overflow-auto relative;
+  @apply flex-1 min-w-0 overflow-auto relative p-0;
 }
 
 #nd-page > article > p {
@@ -226,14 +226,14 @@
 }
 
 #nd-page h2 {
-  @apply my-2;
+  @apply my-5;
 }
 
 #nd-page p {
-  @apply my-1;
+  @apply my-2;
 }
-
 
 #nd-page hr {
   @apply my-4;
 }
+
