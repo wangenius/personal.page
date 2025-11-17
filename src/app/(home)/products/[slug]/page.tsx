@@ -16,7 +16,8 @@ export default async function Page(props: {
   const page = products.getPage([params.slug]);
 
   if (!page) notFound();
-  const { body: Mdx, toc } = await page.data.load();
+  const data = page.data as any;
+  const { body: Mdx, toc } = await data.load();
 
   return (
     <>
@@ -33,11 +34,9 @@ export default async function Page(props: {
           backgroundBlendMode: "difference, difference, normal",
         }}
       >
-        <h1 className="mb-2 text-3xl font-bold text-white">
-          {page.data.title}
-        </h1>
-        {page.data.description ? (
-          <p className="mb-4 text-white/80">{page.data.description}</p>
+        <h1 className="mb-2 text-3xl font-bold text-white">{data.title}</h1>
+        {data.description ? (
+          <p className="mb-4 text-white/80">{data.description}</p>
         ) : null}
         <Link
           href="/products"
@@ -54,12 +53,14 @@ export default async function Page(props: {
         <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
           <div>
             <p className="mb-1 text-fd-muted-foreground">Written by</p>
-            <p className="font-medium">{page.data.author ?? "Unknown"}</p>
+            <p className="font-medium">{data.author ?? "Unknown"}</p>
           </div>
           <div>
             <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
             <p className="font-medium">
-              {page.data.date ? new Date(page.data.date).toDateString() : "Date to be announced"}
+              {data.date
+                ? new Date(data.date).toDateString()
+                : "Date to be announced"}
             </p>
           </div>
           <Control url={page.url} />

@@ -17,8 +17,8 @@ const emptyStructuredData: StructuredData = {
 const advancedSearch = initAdvancedSearch({
   indexes: source.getPages().map((page) => ({
     id: page.url,
-    title: page.data.title,
-    description: page.data.description,
+    title: page.data.title || "",
+    description: page.data.description || "",
     url: page.url,
     structuredData: emptyStructuredData,
   })),

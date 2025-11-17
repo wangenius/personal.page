@@ -43,7 +43,7 @@ export const ActionButton = ({
       <Icon className="w-full h-full" strokeWidth={0.5} />
     </motion.div>
 
-    <div className="relative p-6 h-[160px] flex flex-col">
+    <div className="relative p-6 h-40 flex flex-col">
       {/* 图标区域 */}
       <motion.div
         variants={{

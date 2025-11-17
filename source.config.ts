@@ -9,7 +9,7 @@ import { optional, union, z } from "zod/v4/mini";
 import {
   remarkImage,
   remarkHeading,
-  remarkDirectiveAdmonition
+  remarkDirectiveAdmonition,
 } from "fumadocs-core/mdx-plugins";
 
 import remarkMath from "remark-math";
