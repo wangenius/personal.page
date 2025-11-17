@@ -86,11 +86,11 @@ slug: 概述
 
 ### 网络层/IP层
 
-`TCP/IP`体系中的网络层向上只提供简单灵活的、*无连接的、尽最大努力交付*的数据报服务。IP数据报`datagram`，→分组`fragment`网络层不提供服务质量的承诺，不保证分组交付的时限，所传送的分组可能出错、丢失、重复和失序，不可靠 **。为数据包提供最佳路径。**
+`TCP/IP`体系中的网络层向上只提供简单灵活的、*无连接的、尽最大努力交付*的数据报服务。IP数据报`datagram`，→分组`fragment`网络层不提供服务质量的承诺，不保证分组交付的时限，所传送的分组可能出错、丢失、重复和失序，不可靠 。为数据包提供最佳路径。
 
 ### Port层
 
-面向通信部分的最高层，也是用户功能的最底层。提供**进程**之间的逻辑通信。传输层对收到的报文进行差错检测（首部和数据部分），网络层只检查IP数据报的首部，不检查数据部分是否出错。提供两种协议，`TCP`，`UDP`，网络层无法同时实现数据报和虚电路两种协议。
+面向通信部分的最高层，也是用户功能的最底层。提供进程之间的逻辑通信。传输层对收到的报文进行差错检测（首部和数据部分），网络层只检查IP数据报的首部，不检查数据部分是否出错。提供两种协议，`TCP`，`UDP`，网络层无法同时实现数据报和虚电路两种协议。
 
 1.  2. 复用：发送方不同的应用进程都可以使用一个运输层协议传送数据
 
@@ -124,13 +124,13 @@ OSI体系结构理论完整，但是复杂不适用，TCP/IP成为事实上的�
 
 ### 传输层
 
-> The **TCP/IP** transport-level protocols allow application programs to communicate with other application programs.
+> The TCP/IP transport-level protocols allow application programs to communicate with other application programs.
 
 ### 网络层
 
 > The Internet network-level protocols handle machine-to-machine communication.
 
-    In other words, this layer implements **TCP/IP** routing. These protocols accept requests to send packets (along with the network address of the destination machine) from the Transport layer, convert the packets to datagram format, and send them down to the Network Interface layer for further processing.
+    In other words, this layer implements TCP/IP routing. These protocols accept requests to send packets (along with the network address of the destination machine) from the Transport layer, convert the packets to datagram format, and send them down to the Network Interface layer for further processing.
 
 ### 网络接口层
 
@@ -234,11 +234,11 @@ Cons:存在存储转发时延，需要传输额外的信息量
 5.  致命弱点：当网路中某个结点或某条链路出现故障而彻底失效时，所有经过该结点或该链路的虚电路将遭到破坏
 6.  分组首部不包含目的地址，包含的是虚电路标识符，相对于数据报的方式开销小。|
 
-**计算机网络的各层及其协议的集合。体系结构标准化网络有厂商标准化和国际标准化两个阶段。**
+计算机网络的各层及其协议的集合。体系结构标准化网络有厂商标准化和国际标准化两个阶段。
 
 计算机网络制造厂商的标准化：IBM的SNA（System Network Architecture），DEC的DNA（Digital Network Architecture），Novell的NetWare，Microsoft的LAN Manager，Apple的AppleTalk等
 
-国际标准化：**ISO**的**OSI/RM**，**IEEE**的802局域网标准，**ITU-T**的三个系列，**ANSI，EIA/TIA**
+国际标准化：ISO的OSI/RM，IEEE的802局域网标准，ITU-T的三个系列，ANSI，EIA/TIA
 
 ## 参考文献
 

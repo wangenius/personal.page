@@ -4,16 +4,16 @@ title: 智能体能力分层体系
 
 （Agent 能力的五级进化体系：从思维 → 工具 → 策略 → 协作 → 自进化）
 
-白皮书给出了一个非常重要的 Agent 能力分层体系，从 **Level 0 → Level 4**。这不是简单的“模型是否强”，而是整个系统结构在能力上的阶梯式跃迁。
+白皮书给出了一个非常重要的 Agent 能力分层体系，从 Level 0 → Level 4。这不是简单的“模型是否强”，而是整个系统结构在能力上的阶梯式跃迁。
 
 注意：
-**每一层不是“选一种”，而是下一层会吸收上一层；每前进一步，都需要不仅更强的模型，更强的 Orchestration、Tooling、Memory 与 Governance 能力。**
+每一层不是“选一种”，而是下一层会吸收上一层；每前进一步，都需要不仅更强的模型，更强的 Orchestration、Tooling、Memory 与 Governance 能力。
 
 下面我按“架构深度 + 行为能力”逐级拆开。
 
 ---
 
-# **Level 0 — Core Reasoning System（纯认知体，不连接真实世界）**
+# Level 0 — Core Reasoning System（纯认知体，不连接真实世界）
 
 白皮书对 Level 0 的描述非常明确：
 
@@ -35,12 +35,12 @@ title: 智能体能力分层体系
 
 这个层级本质上还不是“Agent”，只能算“强推理模型”。
 
-### **Level 0 的哲学本质：封闭世界假设（Closed-World Assumption）**
+### Level 0 的哲学本质：封闭世界假设（Closed-World Assumption）
 
-模型认为**世界 = 训练时见过的文本**。
+模型认为世界 = 训练时见过的文本。
 如果某件事发生在训练截止之后，它根本不知道。
 
-### **典型“假 Agent”陷阱**
+### 典型“假 Agent”陷阱
 
 很多人以为 prompt 写得复杂就等于 Agent，其实仍然是 Level 0。
 比如：
@@ -53,7 +53,7 @@ title: 智能体能力分层体系
 
 ---
 
-# **Level 1 — Connected Problem Solver（可访问世界、可执行动作）**
+# Level 1 — Connected Problem Solver（可访问世界、可执行动作）
 
 这是「最基础，但已经算 Agent 的层级」。
 
@@ -63,11 +63,11 @@ title: 智能体能力分层体系
 
 核心能力的跃迁：
 
-### **从“知道世界” → “接触世界”**
+### 从“知道世界” → “接触世界”
 
 Level 1 做的事是：
 
-- 模型能说：**“我需要查一下。”**
+- 模型能说：“我需要查一下。”
 - 然后真的查（调用 Search API / DB / RAG）
 - 并把查到的数据用于生成答案
 
@@ -99,7 +99,7 @@ reason → call tool → produce answer
 
 ---
 
-# **Level 2 — Strategic Problem Solver（具备多步规划与上下文工程）**
+# Level 2 — Strategic Problem Solver（具备多步规划与上下文工程）
 
 这是白皮书里非常关键的层级：
 
@@ -107,7 +107,7 @@ reason → call tool → produce answer
 
 从系统视角：
 
-### **这是第一层真正意义上的“Agent”**
+### 这是第一层真正意义上的“Agent”
 
 因为它具备：
 
@@ -123,7 +123,7 @@ reason → call tool → produce answer
 goal → plan → act1 → observe → adjust → act2 → observe → ... → finish
 ```
 
-### Level 2 的核心突破：**上下文管理能力（Context Engineering）**
+### Level 2 的核心突破：上下文管理能力（Context Engineering）
 
 文档特别强调：
 
@@ -148,11 +148,11 @@ goal → plan → act1 → observe → adjust → act2 → observe → ... → f
 
 大多数都停在 Level 2。
 
-**没有协作，没有自进化，没有委托能力。**
+没有协作，没有自进化，没有委托能力。
 
 ---
 
-# **Level 3 — Collaborative Multi-Agent System（多 Agent 协作体系）**
+# Level 3 — Collaborative Multi-Agent System（多 Agent 协作体系）
 
 这个层级跨度巨大，是从“单体 Agent”跳向“社会型智能系统”。
 
@@ -162,7 +162,7 @@ goal → plan → act1 → observe → adjust → act2 → observe → ... → f
 
 这相当于：
 
-### **从“单个专家” → “一个小型组织”**
+### 从“单个专家” → “一个小型组织”
 
 它具备：
 
@@ -205,11 +205,11 @@ goal → plan → act1 → observe → adjust → act2 → observe → ... → f
 
 Level 3 的本质是：
 
-> **一个 AI 多代理的操作系统（Agent OS）开始形成。**
+> 一个 AI 多代理的操作系统（Agent OS）开始形成。
 
 ---
 
-# **Level 4 — Self-Evolving System（自我扩展、自我进化的 Agent）**
+# Level 4 — Self-Evolving System（自我扩展、自我进化的 Agent）
 
 这是白皮书里最前沿的层级，也是最容易被误解的部分。
 
@@ -219,11 +219,11 @@ Level 3 的本质是：
 
 这意味着：
 
-### **Agent 不再被明确编程，而是开始“自我扩充能力”。**
+### Agent 不再被明确编程，而是开始“自我扩充能力”。
 
 表现包括：
 
-#### 1. **Meta-Reasoning（元推理）**
+#### 1. Meta-Reasoning（元推理）
 
 Agent 能判断：
 
@@ -232,7 +232,7 @@ Agent 能判断：
 - “我该换策略”
 - “我该重新设计任务结构”
 
-#### 2. **Automatic Tool Creation（自动工具生成）**
+#### 2. Automatic Tool Creation（自动工具生成）
 
 例如：
 
@@ -243,7 +243,7 @@ Agent 能判断：
 
 以弥补功能空白。
 
-#### 3. **Automatic Agent Creation（自动构建子 Agent）**
+#### 3. Automatic Agent Creation（自动构建子 Agent）
 
 比如：
 
@@ -252,7 +252,7 @@ Agent 能判断：
 
 Agent 会调用某种「AgentFactory」或「Tooling Framework」来构建新的智能单位。
 
-#### 4. **Self-Optimization（自我优化）**
+#### 4. Self-Optimization（自我优化）
 
 模型会根据历史轨迹：
 
@@ -266,7 +266,7 @@ Agent 会调用某种「AgentFactory」或「Tooling Framework」来构建新的
 
 ### Level 4 的运行特征：
 
-**系统像“生态系统”一样变化，而不是像“程序”一样运行。**
+系统像“生态系统”一样变化，而不是像“程序”一样运行。
 
 这一层是极少数组织在探索的（Google DeepMind / Anthropic / OpenAI 内部演示级系统）。
 
@@ -279,13 +279,13 @@ Agent 会调用某种「AgentFactory」或「Tooling Framework」来构建新的
 
 Level 4 本质上是：
 
-> **AI 系统开始具备“自我组织能力（Self-Organization）”。**
+> AI 系统开始具备“自我组织能力（Self-Organization）”。
 
 ---
 
-# **深度总结（不带任何应用场景）**
+# 深度总结（不带任何应用场景）
 
-## **Level 的本质升级不是“能力强弱”，而是“系统结构”在升级**
+## Level 的本质升级不是“能力强弱”，而是“系统结构”在升级
 
 | Level | Agent 是什么？    | 系统结构                              |
 | ----- | ----------------- | ------------------------------------- |
@@ -304,7 +304,7 @@ Level 4 本质上是：
 - 任务治理
 - 系统拓扑结构
 
-### **Level = 系统架构复杂度，决定了 Agent 的上限。**
+### Level = 系统架构复杂度，决定了 Agent 的上限。
 
 ---
 
@@ -312,6 +312,6 @@ Level 4 本质上是：
 
 Part 5 是最关键的一节：\*\*
 
-> **Core Agent Architecture（Model / Tools / Orchestration）**
+> Core Agent Architecture（Model / Tools / Orchestration）
 
 会完整拆解「每一层到底怎么写、怎么放、怎么抽象」。

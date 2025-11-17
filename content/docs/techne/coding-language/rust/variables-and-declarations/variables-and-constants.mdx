@@ -8,14 +8,14 @@ slug: 变量和常量
 
 还可以通过 const 和 static 关键字创建常量。
 
-在 rust 中，每一个值都属于某一个**数据类型**，这告诉 rust 它被指定为何种数据，以便明确数据处理方式。我们将看到两类数据类型子集：标量（scalar）和复合（compound）。
+在 rust 中，每一个值都属于某一个数据类型，这告诉 rust 它被指定为何种数据，以便明确数据处理方式。我们将看到两类数据类型子集：标量（scalar）和复合（compound）。
 
-rust 是 **静态类型**（_statically typed_）语言，也就是说在编译时就必须知道所有变量的类型。根据值及其使用方式，编译器通常可以推断出我们想要用的类型。当多种类型均有可能时，比如使用 `parse` 将 `String` 转换为数字时，必须增加类型注解，像这样：
+rust 是 静态类型（_statically typed_）语言，也就是说在编译时就必须知道所有变量的类型。根据值及其使用方式，编译器通常可以推断出我们想要用的类型。当多种类型均有可能时，比如使用 `parse` 将 `String` 转换为数字时，必须增加类型注解，像这样：
 
 ```rust
 let guess: u32 = "42".parse().expect("Not a number!");//correct
 let guess = "42".parse().expect("Not a number!");//error
-/**
+/
 error[E0282]: type annotations needed
  --> src/main.rs:2:9
   |
@@ -65,13 +65,13 @@ const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 //编译器能够在编译时计算一组有限的操作，这使我们可以选择以更容易理解和验证的方式写出此值。
 ```
 
-在声明它的作用域之中，常量在**整个程序生命周期中**都有效，此属性使得常量可以作为多处代码使用的全局范围的值，例如一个游戏中所有玩家可以获取的最高分或者光速。
+在声明它的作用域之中，常量在整个程序生命周期中都有效，此属性使得常量可以作为多处代码使用的全局范围的值，例如一个游戏中所有玩家可以获取的最高分或者光速。
 
 将遍布于应用程序中的硬编码值声明为常量，能帮助后来的代码维护人员了解值的意图。如果将来需要修改硬编码值，也只需修改汇聚于一处的硬编码值。
 
 ## 隐藏shadowing
 
-定义一个与之前变量同名的新变量称为第一个变量被第二个**隐藏**了。第二个变量“遮蔽”了第一个变量，此时任何使用该变量名的行为中都会视为是在使用第二个变量，直到第二个变量自己也被隐藏或第二个变量的作用域结束。
+定义一个与之前变量同名的新变量称为第一个变量被第二个隐藏了。第二个变量“遮蔽”了第一个变量，此时任何使用该变量名的行为中都会视为是在使用第二个变量，直到第二个变量自己也被隐藏或第二个变量的作用域结束。
 
 ```rust
 fn main() {
@@ -83,7 +83,7 @@ fn main() {
     }
     println!("The value of x is: {x}");
 }
-/**
+/
 $ cargo run
    Compiling variables v0.1.0 (file:///projects/variables)
     Finished dev [unoptimized + debuginfo] target(s) in 0.31s
@@ -101,7 +101,7 @@ let spaces = spaces.len();//usize类型 正确
 
 let mut spaces = "   ";
 spaces = spaces.len();
-/**
+/
 $ cargo run
    Compiling variables v0.1.0 (file:///projects/variables)
 error[E0308]: mismatched types

@@ -13,14 +13,14 @@ fn main() {
 
     println!("rect1 is {}", rect1);
 }
-/**
+/
 error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
 = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
 = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 */
 
 println!("rect1 is {:?}", rect1);
-/**
+/
 error[E0277]: `Rectangle` doesn't implement `std::fmt::Debug`
 = help: the trait `std::fmt::Debug` is not implemented for `Rectangle`
 = note: add `#[derive(Debug)]` or manually implement `std::fmt::Debug`
@@ -33,7 +33,7 @@ error[E0277]: `Rectangle` doesn't implement `std::fmt::Debug`
 
 不过编译器又一次给出了一个有帮助的信息：
 
-rust**确实**包含了打印出调试信息的功能，不过我们必须为结构体显式选择这个功能。为此，在结构体定义之前加上 `#[derive(Debug)]` 注解
+rust确实包含了打印出调试信息的功能，不过我们必须为结构体显式选择这个功能。为此，在结构体定义之前加上 `#[derive(Debug)]` 注解
 
 ```rust
 #[derive(Debug)]

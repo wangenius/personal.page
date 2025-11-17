@@ -197,7 +197,7 @@ let s2 = s1;
 let s1 = String::from("hello");
 let s2 = s1;
 println("{},world!",s1)
-/**
+/
 error\[E0382\]: borrow of moved value: \`s1\`
  --\> src/main.rs:4:26
   |
@@ -291,7 +291,7 @@ fn calculate_length(s: String) -> (String,usize){
 
 借用是引用传递参数的这一种方法过程。
 
-在**返回参数的所有权**的示例代码中，由于调用了`calculate_length`会导致`String`移动到函数体内部，而我们又希望在调用完毕之后继续使用该`String`，所以我们不得不使用元组将`String`作为元素再次返回。
+在返回参数的所有权的示例代码中，由于调用了`calculate_length`会导致`String`移动到函数体内部，而我们又希望在调用完毕之后继续使用该`String`，所以我们不得不使用元组将`String`作为元素再次返回。
 
 下面的示例重新定义了一个新的`calculate_length`函数。与之前不同的是，新的函数签名使用了`String`的引用作为参数而没有直接转移值的所有权。
 
@@ -337,7 +337,7 @@ fn main() {
 fn change(some_string: &String){
     some_string.push_str("world");
 } 
-/**
+/
 error\[E0596\]: cannot borrow `*some_string` as mutable, as it is behind a `&` reference
  --\> src/main.rs:7:5
   |
@@ -368,7 +368,7 @@ fn change(some_string: &mut String){
     let r2 = &mut s;
     println!("{},{},{}",s,r1,r2); 
 
-/**
+/
 error\[E0499\]: cannot borrow \`s\` as mutable more than once at a time
  --\> src/main.rs:4:14
   |
@@ -400,7 +400,7 @@ let mut s = String::from("hello");
 } // 由于r1在这里离开了作用域，所以我们可以合法地再创建一个可变引用。
   let r2 = &mut s; 
   
-/**
+/
 error\[E0502\]: cannot borrow \`s\` as mutable because it is also borrowed as immutable
  --\> src/main.rs:5:14
   |
@@ -414,9 +414,9 @@ error\[E0502\]: cannot borrow \`s\` as mutable because it is also borrowed as im
   */
 ```
 
-可变引用和不可变引用不可以共存。**我们不能在拥有不可变引用的同时创建可变引用。同时可变引用是唯一的。**
+可变引用和不可变引用不可以共存。我们不能在拥有不可变引用的同时创建可变引用。同时可变引用是唯一的。
 
-尽管这些编译错误会让人感到沮丧，但是要牢记一点：rust编译器可以为我们提早（**在编译时而不是在运行时**）暴露那些潜在的bug，并且明确指出出现问题的地方。你不再需要去追踪调试为何数据会在运行时发生了非预期的变化。
+尽管这些编译错误会让人感到沮丧，但是要牢记一点：rust编译器可以为我们提早（在编译时而不是在运行时）暴露那些潜在的bug，并且明确指出出现问题的地方。你不再需要去追踪调试为何数据会在运行时发生了非预期的变化。
 
 ## 悬垂引用
 
@@ -432,7 +432,7 @@ fn dangle() -> &String {
     let s = String::from("hello");
     &s
 }
-/**
+/
 error[E0106]: missing lifetime specifier
  --> main.rs:5:16
   |

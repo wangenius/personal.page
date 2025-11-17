@@ -628,7 +628,7 @@ fn print<T: Display + 'static>(message: &T) {
 }
 ```
 
-在这里，很明显 `'static` 是作为生命周期约束来使用了。 **那么问题来了， `&'static` 和 `T: 'static` 的用法到底有何区别？**
+在这里，很明显 `'static` 是作为生命周期约束来使用了。 那么问题来了， `&'static` 和 `T: 'static` 的用法到底有何区别？
 
 ## `[&'static](https://course.rs/advance/lifetime/static.html#static)`
 
@@ -636,7 +636,7 @@ fn print<T: Display + 'static>(message: &T) {
 
 对于字符串字面量来说，它直接被打包到二进制文件中，永远不会被 `drop`，因此它能跟程序活得一样久，自然它的生命周期是 `'static`。
 
-但是，**`&'static` 生命周期针对的仅仅是引用，而不是持有该引用的变量，对于变量来说，还是要遵循相应的作用域规则** :
+但是，`&'static` 生命周期针对的仅仅是引用，而不是持有该引用的变量，对于变量来说，还是要遵循相应的作用域规则 :
 
 ```rust
 use std::{slice::from_raw_parts, str::from_utf8_unchecked};
@@ -765,7 +765,7 @@ fn static_bound<T: Display + 'static>(t: &T) {
 
 大家有没有想过，到底是 `&'static` 这个引用还是该引用指向的数据活得跟程序一样久呢？
 
-**答案是引用指向的数据**，而引用本身是要遵循其作用域范围的，我们来简单验证下：
+答案是引用指向的数据，而引用本身是要遵循其作用域范围的，我们来简单验证下：
 
 ```rust
 fn main() {

@@ -58,7 +58,7 @@ createRef 每次重新渲染时都会创建一个新的 ref 对象，但是类�
 
 useRef 第1次渲染时创建一个对象之后，再新渲染时，如果发现这个对象已经存在过就不会再创建，它的性能更好一些，在函数组件中推荐使用 useRef。
 
-**createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。**
+createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。
 
 useRef returns a mutable ref object whose .current property is initialized to the passed argument (initialValue). The returned object will persist(坚持) for the full lifetime of the component(组件).
 
@@ -142,7 +142,7 @@ const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
 
 ### useCallBack在什么情况下使用？
 
-**在往子组件传入了一个函数并且子组件被React.momo缓存了的时候使用**
+在往子组件传入了一个函数并且子组件被React.momo缓存了的时候使用
 
 ---
 
@@ -150,13 +150,13 @@ const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
 
 React.memo()，是一种缓存技术。能看到这里的笔友我想都不需要我详细解释React.memo是干什么的。
 
-简单说，React.memo()是通过校验props中的数据是否改变的来决定组件是否需要重新渲染的一种缓存技术，**具体点说React.memo()其实是通过校验Props中的数据的内存地址是否改变来决定组件是否重新渲染组件的一种技术。**
+简单说，React.memo()是通过校验props中的数据是否改变的来决定组件是否需要重新渲染的一种缓存技术，具体点说React.memo()其实是通过校验Props中的数据的内存地址是否改变来决定组件是否重新渲染组件的一种技术。
 
-假设我们往子组件（假设子组件为Child组件）传入一个函数呢？当父组件的**其他State**（**与Child组件无关的state**）改变的时候。那么，因为状态的改变，父组件需要重新渲染，那被React.memo保护的子组件（Child组件）是否会被重新构建？
+假设我们往子组件（假设子组件为Child组件）传入一个函数呢？当父组件的其他State（与Child组件无关的state）改变的时候。那么，因为状态的改变，父组件需要重新渲染，那被React.memo保护的子组件（Child组件）是否会被重新构建？
 
 ```rust
 import {useCallBack,memo} from 'react';
-/**父组件**/
+/父组件/
 const Parent = () => {
   const [parentState,setParentState] = useState(0);  //父组件的state
 
@@ -181,9 +181,9 @@ const Child = memo(() => {
     })
 ```
 
-问:当我点击父组件中的Button改变父组件中的state。子组件会不会重新渲染。乍一看，改变的是parentState这个变量，和子组件半毛钱关系没有，子组件还被React.memo保护着，好像是不会被重新渲染。但这里的问题是，你要传个其他变量进去这也就走的通了。**但是传入的是函数，不行，走不通。会重新渲染。**
+问:当我点击父组件中的Button改变父组件中的state。子组件会不会重新渲染。乍一看，改变的是parentState这个变量，和子组件半毛钱关系没有，子组件还被React.memo保护着，好像是不会被重新渲染。但这里的问题是，你要传个其他变量进去这也就走的通了。但是传入的是函数，不行，走不通。会重新渲染。
 
-React.memo检测的是props中数据的栈地址是否改变。而**父组件重新构建的时候，会重新构建父组件中的所有函数**（旧函数销毁，新函数创建，等于更新了函数地址）,新的函数地址传入到子组件中被props检测到栈地址更新。也就引发了子组件的重新渲染。
+React.memo检测的是props中数据的栈地址是否改变。而父组件重新构建的时候，会重新构建父组件中的所有函数（旧函数销毁，新函数创建，等于更新了函数地址）,新的函数地址传入到子组件中被props检测到栈地址更新。也就引发了子组件的重新渲染。
 
 所以，在上面的代码示例里面，子组件是要被重新渲染的。
 

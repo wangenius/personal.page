@@ -20,7 +20,7 @@ Adapter 将一个类的接口转换成客户希望的另外一个接口，使得
 在软件设计中也可能出现：需要开发的具有某种业务功能的组件在现有的组件库中已经存在，但它们与当前系统的接口规范不兼容，如果重新开发这些组件成本又很高，这时用适配器模式能很好地解决这些问题。
 
 ```cpp
-/**
+/
  * 目标定义了客户端代码使用的领域特定接口。
  */
 class Target {
@@ -31,7 +31,7 @@ class Target {
   }
 };
 
-/**
+/
  * 适配器包含一些有用的行为，但其接口与现有的客户端代码不兼容。适配器需要在客户端代码可以使用它之前进行一些适应。
  */
 class Adaptee {
@@ -41,7 +41,7 @@ class Adaptee {
   }
 };
 
-/**
+/
  * 适配器使适配器的接口与目标的接口兼容。
  */
 class Adapter : public Target {
@@ -57,7 +57,7 @@ class Adapter : public Target {
   }
 };
 
-/**
+/
  * The client code supports all classes that follow the Target interface.
  */
 void ClientCode(const Target *target) {
@@ -111,7 +111,7 @@ Bridge 将抽象与实现分离，使它们可以独立变化。它是用组合�
 这样的例子还有很多，如不同颜色和字体的文字、不同品牌和功率的汽车、不同性别和职业的男女、支持不同平台和不同文件格式的媒体播放器等。
 
 ```cpp
-/**
+/
  * 实现定义了所有实现类的接口。它不必与抽象的接口匹配。事实上，这两个接口可以完全不同。通常，实现接口仅提供原始操作，而抽象根据这些原始操作定义更高级别的操作。
  */
 
@@ -121,7 +121,7 @@ class Implementation {
   virtual std::string OperationImplementation() const = 0;
 };
 
-/**
+/
  * Each Concrete Implementation corresponds to a specific platform and
  * implements the Implementation interface using that platform's API.
  */
@@ -138,14 +138,14 @@ class ConcreteImplementationB : public Implementation {
   }
 };
 
-/**
+/
  * The Abstraction defines the interface for the "control" part of the two class
  * hierarchies. It maintains a reference to an object of the Implementation
  * hierarchy and delegates all of the real work to this object.
  */
 
 class Abstraction {
-  /**
+  /
    * @var Implementation
    */
  protected:
@@ -163,7 +163,7 @@ class Abstraction {
            this->implementation_->OperationImplementation();
   }
 };
-/**
+/
  * You can extend the Abstraction without changing the Implementation classes.
  */
 class ExtendedAbstraction : public Abstraction {
@@ -176,7 +176,7 @@ class ExtendedAbstraction : public Abstraction {
   }
 };
 
-/**
+/
  * Except for the initialization phase, where an Abstraction object gets linked
  * with a specific Implementation object, the client code should only depend on
  * the Abstraction class. This way the client code can support any abstraction-
@@ -187,7 +187,7 @@ void ClientCode(const Abstraction& abstraction) {
   std::cout << abstraction.Operation();
   // ...
 }
-/**
+/
  * The client code should be able to work with any pre-configured abstraction-
  * implementation combination.
  */
@@ -222,7 +222,7 @@ ConcreteImplementationB: Here's the result on the platform B.
 ## 装饰模式
 
 ```cpp
-/**
+/
  * The base Component interface defines operations that can be altered by
  * decorators.
  */
@@ -231,7 +231,7 @@ class Component {
   virtual ~Component() {}
   virtual std::string Operation() const = 0;
 };
-/**
+/
  * Concrete Components provide default implementations of the operations. There
  * might be several variations of these classes.
  */
@@ -241,7 +241,7 @@ class ConcreteComponent : public Component {
     return "ConcreteComponent";
   }
 };
-/**
+/
  * The base Decorator class follows the same interface as the other components.
  * The primary purpose of this class is to define the wrapping interface for all
  * concrete decorators. The default implementation of the wrapping code might
@@ -249,7 +249,7 @@ class ConcreteComponent : public Component {
  * it.
  */
 class Decorator : public Component {
-  /**
+  /
    * @var Component
    */
  protected:
@@ -258,18 +258,18 @@ class Decorator : public Component {
  public:
   Decorator(Component* component) : component_(component) {
   }
-  /**
+  /
    * The Decorator delegates all work to the wrapped component.
    */
   std::string Operation() const override {
     return this->component_->Operation();
   }
 };
-/**
+/
  * Concrete Decorators call the wrapped object and alter its result in some way.
  */
 class ConcreteDecoratorA : public Decorator {
-  /**
+  /
    * Decorators may call parent implementation of the operation, instead of
    * calling the wrapped object directly. This approach simplifies extension of
    * decorator classes.
@@ -281,7 +281,7 @@ class ConcreteDecoratorA : public Decorator {
     return "ConcreteDecoratorA(" + Decorator::Operation() + ")";
   }
 };
-/**
+/
  * Decorators can execute their behavior either before or after the call to a
  * wrapped object.
  */
@@ -294,7 +294,7 @@ class ConcreteDecoratorB : public Decorator {
     return "ConcreteDecoratorB(" + Decorator::Operation() + ")";
   }
 };
-/**
+/
  * The client code works with all objects using the Component interface. This
  * way it can stay independent of the concrete classes of components it works
  * with.
@@ -306,14 +306,14 @@ void ClientCode(Component* component) {
 }
 
 int main() {
-  /**
+  /
    * This way the client code can support both simple components...
    */
   Component* simple = new ConcreteComponent;
   std::cout << "Client: I've got a simple component:\n";
   ClientCode(simple);
   std::cout << "\n\n";
-  /**
+  /
    * ...as well as decorated ones.
    *
    * Note how decorators can wrap not only simple components but the other
@@ -348,17 +348,17 @@ RESULT: ConcreteDecoratorB(ConcreteDecoratorA(ConcreteComponent))
 #include <iostream>
 #include <list>
 #include <string>
-/**
+/
  * The base Component class declares common operations for both simple and
  * complex objects of a composition.
  */
 class Component {
-  /**
+  /
    * @var Component
    */
  protected:
   Component *parent_;
-  /**
+  /
    * Optionally, the base Component can declare an interface for setting and
    * accessing a parent of the component in a tree structure. It can also
    * provide some default implementation for these methods.
@@ -371,7 +371,7 @@ class Component {
   Component *GetParent() const {
     return this->parent_;
   }
-  /**
+  /
    * In some cases, it would be beneficial to define the child-management
    * operations right in the base Component class. This way, you won't need to
    * expose any concrete component classes to the client code, even during the
@@ -380,21 +380,21 @@ class Component {
    */
   virtual void Add(Component *component) {}
   virtual void Remove(Component *component) {}
-  /**
+  /
    * You can provide a method that lets the client code figure out whether a
    * component can bear children.
    */
   virtual bool IsComposite() const {
     return false;
   }
-  /**
+  /
    * The base Component may implement some default behavior or leave it to
    * concrete classes (by declaring the method containing the behavior as
    * "abstract").
    */
   virtual std::string Operation() const = 0;
 };
-/**
+/
  * The Leaf class represents the end objects of a composition. A leaf can't have
  * any children.
  *
@@ -407,20 +407,20 @@ class Leaf : public Component {
     return "Leaf";
   }
 };
-/**
+/
  * The Composite class represents the complex components that may have children.
  * Usually, the Composite objects delegate the actual work to their children and
  * then "sum-up" the result.
  */
 class Composite : public Component {
-  /**
+  /
    * @var \SplObjectStorage
    */
  protected:
   std::list<Component *> children_;
 
  public:
-  /**
+  /
    * A composite object can add or remove other components (both simple or
    * complex) to or from its child list.
    */
@@ -428,7 +428,7 @@ class Composite : public Component {
     this->children_.push_back(component);
     component->SetParent(this);
   }
-  /**
+  /
    * Have in mind that this method removes the pointer to the list but doesn't
    * frees the
    *     memory, you should do it manually or better use smart pointers.
@@ -440,7 +440,7 @@ class Composite : public Component {
   bool IsComposite() const override {
     return true;
   }
-  /**
+  /
    * The Composite executes its primary logic in a particular way. It traverses
    * recursively through all its children, collecting and summing their results.
    * Since the composite's children pass these calls to their children and so
@@ -458,7 +458,7 @@ class Composite : public Component {
     return "Branch(" + result + ")";
   }
 };
-/**
+/
  * The client code works with all of the components via the base interface.
  */
 void ClientCode(Component *component) {
@@ -467,7 +467,7 @@ void ClientCode(Component *component) {
   // ...
 }
 
-/**
+/
  * Thanks to the fact that the child-management operations are declared in the
  * base Component class, the client code can work with any component, simple or
  * complex, without depending on their concrete classes.
@@ -481,7 +481,7 @@ void ClientCode2(Component *component1, Component *component2) {
   // ...
 }
 
-/**
+/
  * This way the client code can support the simple leaf components...
  */
 
@@ -490,7 +490,7 @@ int main() {
   std::cout << "Client: I've got a simple component:\n";
   ClientCode(simple);
   std::cout << "\n\n";
-  /**
+  /
    * ...as well as the complex composites.
    */
 
@@ -538,7 +538,7 @@ RESULT: Branch(Branch(Leaf+Leaf)+Branch(Leaf)+Leaf)
 ```
 ## 外观模式
 ```cpp
-/**
+/
  * The Subsystem can accept requests either from the facade or client directly.
  * In any case, to the Subsystem, the Facade is yet another client, and it's not
  * a part of the Subsystem.
@@ -553,7 +553,7 @@ class Subsystem1 {
     return "Subsystem1: Go!\n";
   }
 };
-/**
+/
  * Some facades can work with multiple subsystems at the same time.
  */
 class Subsystem2 {
@@ -567,7 +567,7 @@ class Subsystem2 {
   }
 };
 
-/**
+/
  * The Facade class provides a simple interface to the complex logic of one or
  * several subsystems. The Facade delegates the client requests to the
  * appropriate objects within the subsystem. The Facade is also responsible for
@@ -578,12 +578,12 @@ class Facade {
  protected:
   Subsystem1 *subsystem1_;
   Subsystem2 *subsystem2_;
-  /**
+  /
    * Depending on your application's needs, you can provide the Facade with
    * existing subsystem objects or force the Facade to create them on its own.
    */
  public:
-  /**
+  /
    * In this case we will delegate the memory ownership to Facade Class
    */
   Facade(
@@ -596,7 +596,7 @@ class Facade {
     delete subsystem1_;
     delete subsystem2_;
   }
-  /**
+  /
    * The Facade's methods are convenient shortcuts to the sophisticated
    * functionality of the subsystems. However, clients get only to a fraction of
    * a subsystem's capabilities.
@@ -612,7 +612,7 @@ class Facade {
   }
 };
 
-/**
+/
  * The client code works with complex subsystems through a simple interface
  * provided by the Facade. When a facade manages the lifecycle of the subsystem,
  * the client might not even know about the existence of the subsystem. This
@@ -623,7 +623,7 @@ void ClientCode(Facade *facade) {
   std::cout << facade->Operation();
   // ...
 }
-/**
+/
  * The client code may have some of the subsystem's objects already created. In
  * this case, it might be worthwhile to initialize the Facade with these objects
  * instead of letting the Facade create new instances.
@@ -651,7 +651,7 @@ Subsystem2: Fire!
 ## 享元模式
 
 ```cpp
-/**
+/
  * Flyweight Design Pattern
  *
  * Intent: Lets you fit more objects into the available amount of RAM by sharing
@@ -692,7 +692,7 @@ struct UniqueState
     }
 };
 
-/**
+/
  * The Flyweight stores a common portion of the state (also called intrinsic
  * state) that belongs to multiple real business entities. The Flyweight accepts
  * the rest of the state (extrinsic state, unique for each entity) via its
@@ -723,7 +723,7 @@ public:
         std::cout << "Flyweight: Displaying shared (" << *shared_state_ << ") and unique (" << unique_state << ") state.\n";
     }
 };
-/**
+/
  * The Flyweight Factory creates and manages the Flyweight objects. It ensures
  * that flyweights are shared correctly. When the client requests a flyweight,
  * the factory either returns an existing instance or creates a new one, if it
@@ -731,12 +731,12 @@ public:
  */
 class FlyweightFactory
 {
-    /**
+    /
      * @var Flyweight[]
      */
 private:
     std::unordered_map<std::string, Flyweight> flyweights_;
-    /**
+    /
      * Returns a Flyweight's string hash for a given state.
      */
     std::string GetKey(const SharedState &ss) const
@@ -753,7 +753,7 @@ public:
         }
     }
 
-    /**
+    /
      * Returns an existing Flyweight with a given state or creates a new one.
      */
     Flyweight GetFlyweight(const SharedState &shared_state)
@@ -793,7 +793,7 @@ void AddCarToPoliceDatabase(
     flyweight.Operation({owner, plates});
 }
 
-/**
+/
  * The client code usually creates a bunch of pre-populated flyweights in the
  * initialization stage of the application.
  */
@@ -851,7 +851,7 @@ Chevrolet_Camaro2018_pink
 
 ```cpp
 #include <iostream>
-/**
+/
  * The Subject interface declares common operations for both RealSubject and the
  * Proxy. As long as the client works with RealSubject using this interface,
  * you'll be able to pass it a proxy instead of a real subject.
@@ -860,7 +860,7 @@ class Subject {
  public:
   virtual void Request() const = 0;
 };
-/**
+/
  * The RealSubject contains some core business logic. Usually, RealSubjects are
  * capable of doing some useful work which may also be very slow or sensitive -
  * e.g. correcting input data. A Proxy can solve these issues without any
@@ -872,11 +872,11 @@ class RealSubject : public Subject {
     std::cout << "RealSubject: Handling request.\n";
   }
 };
-/**
+/
  * The Proxy has an interface identical to the RealSubject.
  */
 class Proxy : public Subject {
-  /**
+  /
    * @var RealSubject
    */
  private:
@@ -891,7 +891,7 @@ class Proxy : public Subject {
     std::cout << "Proxy: Logging the time of request.\n";
   }
 
-  /**
+  /
    * The Proxy maintains a reference to an object of the RealSubject class. It
    * can be either lazy-loaded or passed to the Proxy by the client.
    */
@@ -902,7 +902,7 @@ class Proxy : public Subject {
   ~Proxy() {
     delete real_subject_;
   }
-  /**
+  /
    * The most common applications of the Proxy pattern are lazy loading,
    * caching, controlling the access, logging, etc. A Proxy can perform one of
    * these things and then, depending on the result, pass the execution to the
@@ -915,7 +915,7 @@ class Proxy : public Subject {
     }
   }
 };
-/**
+/
  * The client code is supposed to work with all objects (both subjects and
  * proxies) via the Subject interface in order to support both real subjects and
  * proxies. In real life, however, clients mostly work with their real subjects

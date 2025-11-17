@@ -18,9 +18,9 @@ Mathematical expression: When $\frac{df}{dx} > 0$, the function is strictly incr
 
 1. $\lim f(x) = A$: The limit exists. The limit at a point has nothing to do with the existence and value of the function value at that point. If the left limit = right limit = the function value at that point, then the function is continuous at that point.
 2. $\lim f_+(x) =\lim f_-(x)$: The limit is unique
-3. **Removing the hat from equality**: $\lim f(x) = A \Longleftrightarrow f(x) = A + \alpha(x), \lim \alpha(x) = 0$
-4. **Removing the hat from inequality**: $A>0 \implies f(x) > 0$
-5. **Putting the hat on inequality**: $f(x) \ge 0 \implies A \ge 0$
+3. Removing the hat from equality: $\lim f(x) = A \Longleftrightarrow f(x) = A + \alpha(x), \lim \alpha(x) = 0$
+4. Removing the hat from inequality: $A>0 \implies f(x) > 0$
+5. Putting the hat on inequality: $f(x) \ge 0 \implies A \ge 0$
 
 ### Continuity
 
@@ -33,33 +33,33 @@ The inverse function of a continuous monotonic function is still continuous and 
 <Callout>
 [Calculation and Existence of Function Limits]
 
-1. **Operation rules**: It is necessary to ensure that when doing split operations, the limits after splitting exist separately
-2. **Equivalent infinitesimals**: Ordinary function type; Composite function type; Variable upper limit integral type; Extended type; Identity transformation;
-3. **L'Hôpital's Rule**
-4. **Taylor Formula**
-5. **Squeeze Theorem and Monotone Convergence Theorem** (more for sequences)
+1. Operation rules: It is necessary to ensure that when doing split operations, the limits after splitting exist separately
+2. Equivalent infinitesimals: Ordinary function type; Composite function type; Variable upper limit integral type; Extended type; Identity transformation;
+3. L'Hôpital's Rule
+4. Taylor Formula
+5. Squeeze Theorem and Monotone Convergence Theorem (more for sequences)
 </Callout>
 
 ### Function Mean Value Theorems
 
 If $f(x)$ is continuous on $[a,b]$:
 
-1. **Boundedness Theorem**: $m\le f(x)\le M$
-2. **Extreme Value Theorem**: $\exist a,b \to f(a) = m,  f(b)=M$
-3. **Intermediate Value Theorem**: $m\le \mu\le M,\exist \xi\in[a,b]\to f(\xi)=\mu$
-4. **Mean Value Theorem**: $x_i\in[a,b], \exist \xi \in [x_1,x_n]\to f(\xi) = (1/n)\sum f(x_i)$
-5. **Zero Point Theorem**: $f(a)\cdot f(b) < 0 \implies \exist \xi \in (a,b) \to f(\xi) = 0$
+1. Boundedness Theorem: $m\le f(x)\le M$
+2. Extreme Value Theorem: $\exist a,b \to f(a) = m,  f(b)=M$
+3. Intermediate Value Theorem: $m\le \mu\le M,\exist \xi\in[a,b]\to f(\xi)=\mu$
+4. Mean Value Theorem: $x_i\in[a,b], \exist \xi \in [x_1,x_n]\to f(\xi) = (1/n)\sum f(x_i)$
+5. Zero Point Theorem: $f(a)\cdot f(b) < 0 \implies \exist \xi \in (a,b) \to f(\xi) = 0$
 
 ### Multi-level Function Behavior Relationships
 
-1. **Differentiable at a point implies continuous, but continuous does not necessarily imply differentiable**
-2. **If left and right derivatives exist (do not need to be equal), it must be continuous. But the derivative at a point cannot determine the monotonicity on the interval (the derivative of one point cannot determine an interval).**
-3. **Existence Theorem of Indefinite Integral**: Continuous functions must have primitive functions. The first kind of discontinuity has no primitive function. Infinite discontinuity has no primitive function. Oscillating discontinuity may have primitive functions
-4. **Existence Theorem of Definite Integral**: If continuous on a closed interval, it must be integrable. If monotonic on a closed interval, it must be integrable. If bounded on a closed interval, with finite discontinuity points, it is integrable. Integrable functions must be bounded.
-5. **If integrable on a closed interval, then the variable upper limit integral function is continuous**
-6. **If continuous on a closed interval, then the variable upper limit integral function is differentiable**
-7. **Variable limit integral**: If integrable on a closed interval, the variable limit integral is continuous. (If the variable limit integral exists, it must be continuous)
-8. **If continuous on a closed interval, the variable limit integral is differentiable.**
+1. Differentiable at a point implies continuous, but continuous does not necessarily imply differentiable
+2. If left and right derivatives exist (do not need to be equal), it must be continuous. But the derivative at a point cannot determine the monotonicity on the interval (the derivative of one point cannot determine an interval).
+3. Existence Theorem of Indefinite Integral: Continuous functions must have primitive functions. The first kind of discontinuity has no primitive function. Infinite discontinuity has no primitive function. Oscillating discontinuity may have primitive functions
+4. Existence Theorem of Definite Integral: If continuous on a closed interval, it must be integrable. If monotonic on a closed interval, it must be integrable. If bounded on a closed interval, with finite discontinuity points, it is integrable. Integrable functions must be bounded.
+5. If integrable on a closed interval, then the variable upper limit integral function is continuous
+6. If continuous on a closed interval, then the variable upper limit integral function is differentiable
+7. Variable limit integral: If integrable on a closed interval, the variable limit integral is continuous. (If the variable limit integral exists, it must be continuous)
+8. If continuous on a closed interval, the variable limit integral is differentiable.
 
    ![Derivative Behavior Relationship](/img/导数性态关系.png)
 
@@ -67,58 +67,58 @@ If $f(x)$ is continuous on $[a,b]$:
 
 ### Calculation and Existence of Limits
 
-1. **Necessary and sufficient condition**: All subsequences converge to $A$.
-2. **Reduction principle**: The function limit of continuous variables = the function limit of discrete variables.
-3. **Definition method**
-4. **Squeeze Theorem**
-5. **Monotone Convergence Theorem**
+1. Necessary and sufficient condition: All subsequences converge to $A$.
+2. Reduction principle: The function limit of continuous variables = the function limit of discrete variables.
+3. Definition method
+4. Squeeze Theorem
+5. Monotone Convergence Theorem
 
 ## Space and Geometry
 
 ### Vector Space
 
-1. **Unit vectors**: $e_X,e_Y,e_Z$: Unit vectors.
-2. **Vector representation**: $v = (v_x,v_y,v_z)\quad u=(u_x,u_y,u_z)$: Vectors.
-3. **Vector magnitude**: $|v| = \sqrt{v_x^2 + v_y^2 + v_z^2}$: The magnitude of the vector.
-4. **Dot product**: $v \cdot u = (v_x,v_y,v_z)\cdot(u_x,u_y,u_z) = v_xu_x+v_yu_y+v_zu_z$
-5. **Vector perpendicularity**: $v \bot u \Longleftrightarrow \theta = \pi/2 \Longleftrightarrow v \cdot u = 0 \Longleftrightarrow v_xu_x+v_yu_y+v_zu_z = 0$
-6. **Vector dot product**: $v\cdot u = |v||u|\cos \theta \implies \cos \theta = (v\cdot u)/(|v||u|)$
+1. Unit vectors: $e_X,e_Y,e_Z$: Unit vectors.
+2. Vector representation: $v = (v_x,v_y,v_z)\quad u=(u_x,u_y,u_z)$: Vectors.
+3. Vector magnitude: $|v| = \sqrt{v_x^2 + v_y^2 + v_z^2}$: The magnitude of the vector.
+4. Dot product: $v \cdot u = (v_x,v_y,v_z)\cdot(u_x,u_y,u_z) = v_xu_x+v_yu_y+v_zu_z$
+5. Vector perpendicularity: $v \bot u \Longleftrightarrow \theta = \pi/2 \Longleftrightarrow v \cdot u = 0 \Longleftrightarrow v_xu_x+v_yu_y+v_zu_z = 0$
+6. Vector dot product: $v\cdot u = |v||u|\cos \theta \implies \cos \theta = (v\cdot u)/(|v||u|)$
 7. $v_i =  v\cdot e_i$: Equal to the dot product of the vector and unit vectors in each direction.
 8. $a=\langle v,X \rangle \quad b =\langle v,Y \rangle \quad c = \langle v,Z \rangle$
-9. **Direction cosines**: $\cos\alpha=v_x/|v|;\quad\cos\beta=v_y/|v|;\quad\cos\gamma=v_z/|v|$
+9. Direction cosines: $\cos\alpha=v_x/|v|;\quad\cos\beta=v_y/|v|;\quad\cos\gamma=v_z/|v|$
 10. $a = (\cos \alpha,\cos \beta,\cos\gamma)$ The unit vector of vector $v$, representing direction
-11. **Projection**: $\Pi_uv = (v\cdot u)/|u| = |v|\cos \theta$
+11. Projection: $\Pi_uv = (v\cdot u)/|u| = |v|\cos \theta$
 12. $v\times u = \left| \begin{array} {ccc} i & j &k\\v_x&v_y&v_z\\u_x&u_y&u_z \end{array}\right|$
 13. $|v \times u| = |v||u|\sin \theta$: The right-hand rule determines the direction, used to calculate normal vectors and area
-14. **Mixed product**: $[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$, if the mixed product = 0, the three vectors are coplanar.
+14. Mixed product: $[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$, if the mixed product = 0, the three vectors are coplanar.
 
 ### Field Theory Basics
 
-1. **Hamilton operator**:
+1. Hamilton operator:
 
 ```math
 \nabla = \left(\frac{\partial}{\partial x},\frac{\partial}{\partial y},\frac{\partial}{\partial z}\right)
 ```
 
-2. **Directional derivative**: For a ternary function $u=u(x,y,z)$ defined at point $P_0=(x_0,y_0,z_0)$, the distance $t= \sqrt{(x-x_0)^2+(y-y_0)^2+(z-z_0)^2}$
+2. Directional derivative: For a ternary function $u=u(x,y,z)$ defined at point $P_0=(x_0,y_0,z_0)$, the distance $t= \sqrt{(x-x_0)^2+(y-y_0)^2+(z-z_0)^2}$
 
 ```math
 \frac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\frac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\frac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}\\=\nabla u(P_0) \cdot l^o = u_x^{\prime}(P_0)\cos \alpha+u_y^{\prime}(P_0)\cos \beta + u_z^{\prime}(P_0)\cos \gamma = |\nabla||l^o|\cos \theta
 ```
 
-3. **Gradient**:
+3. Gradient:
 
 ```math
 \text{grad}\,u|_{P_0} =\nabla u(P_0) = (u_x^{\prime}(P_0),u_y^{\prime}(P_0),u_z^{\prime}(P_0))
 ```
 
-4. **Divergence**: Vector field: $A(x,y,z) = (P(x,y,z),Q(x,y,z),R(x,y,z))$
+4. Divergence: Vector field: $A(x,y,z) = (P(x,y,z),Q(x,y,z),R(x,y,z))$
 
 ```math
 \text{div}\,A =\nabla \cdot A = \frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}
 ```
 
-5. **Curl**:
+5. Curl:
 
 ```math
 \text{rot}\,A = \nabla\times A = \begin{vmatrix} i & j &k\\\frac{\partial}{\partial x}&\frac{\partial}{\partial y}&\frac{\partial}{\partial z}\\P&Q&R\end{vmatrix}
@@ -126,57 +126,57 @@ If $f(x)$ is continuous on $[a,b]$:
 
 ### Plane Geometry Formulas
 
-- **Plane figure area**:
+- Plane figure area:
 
 ```math
 S=\begin{cases}\int_{a}^{b}\left|y_1(x)-y_2(x)\right|\mathrm{d}x\\ \frac{1}{2}\int_{\alpha}^{\beta}\left|r_1^2(\theta)-r_2^2(\theta)\right|\mathrm{d}\theta\end{cases}
 ```
 
-- **Volume of revolution**:
+- Volume of revolution:
 
 ```math
 V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2(x)-y_2^2(x)\right|\mathrm{d}x\\ 2\pi\int_{a}^{b}x\left|y_1(x)-y_2(x)\right|\mathrm{d}x\end{cases}
 ```
 
-- **Arc differential**:
+- Arc differential:
 
 ```math
 \mathrm{d}s=\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2+[z^{\prime}(t)]^2}\mathrm{d}t=\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta=\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t
 ```
 
-- **Plane curve arc length**:
+- Plane curve arc length:
 
 ```math
 s=\int \mathrm{d}s=\int_{a}^{b}\sqrt{1+f_{x}^{\prime2}}\mathrm{d}x=\int_{\alpha}^{\beta}\sqrt{x_{t}^{\prime2}+y_{t}^{\prime2}}\mathrm{d}t=\int_{\alpha}^{\beta}\sqrt{r_{\theta}^2+r_{\theta}^{\prime2}}\mathrm{d}\theta
 ```
 
-- **Centroid of plane figure**:
+- Centroid of plane figure:
 
 ```math
 \bar{x}=\frac{\iint_{D}x\mathrm{d}\sigma}{\iint_{D}\mathrm{d}\sigma}
 ```
 
-- **Curvature**:
+- Curvature:
 
 ```math
 K=\frac{\mathrm{d}\theta}{\mathrm{d}\rho} = \frac{|y^{\prime\prime}|}{\rho^3}
 ```
 
-- **Curvature radius**: $R=1/K$
+- Curvature radius: $R=1/K$
 
-- **Surface area of revolution**:
+- Surface area of revolution:
 
 ```math
 S=2\pi\int_{a}^{b}\left|y(x)\right|\sqrt{1+[y^{\prime}(x)]^2}\mathrm{d}x=2\pi\int_{\alpha}^{\beta}\left|y(t)\right|\sqrt{[x^{\prime}(t)]^2+[y^{\prime}(t)]^2}\mathrm{d}t
 ```
 
-- **Area of region**:
+- Area of region:
 
 ```math
 A=\iint_{D}\mathrm{d}\sigma
 ```
 
-- **Volume of object**:
+- Volume of object:
 
 ```math
 V=\iiint_{\Omega}\mathrm{d}v

@@ -58,7 +58,7 @@ public:
         }
         return instance_; 
     }
-    /**
+    /
      * Finally, any singleton should define some business logic, which can be
      * executed on its instance.
      */
@@ -257,7 +257,7 @@ class Product {
   virtual std::string Operation() const = 0;
 };
 
-/**
+/
  * Concrete Products provide various implementations of the Product interface.
  */
 class ConcreteProduct1 : public Product {
@@ -273,21 +273,21 @@ class ConcreteProduct2 : public Product {
   }
 };
 
-/**
+/
  * The Creator class declares the factory method that is supposed to return an
  * object of a Product class. The Creator's subclasses usually provide the
  * implementation of this method.
  */
 
 class Creator {
-  /**
+  /
    * Note that the Creator may also provide some default implementation of the
    * factory method.
    */
  public:
   virtual ~Creator(){};
   virtual Product* FactoryMethod() const = 0;
-  /**
+  /
    * Also note that, despite its name, the Creator's primary responsibility is
    * not creating products. Usually, it contains some core business logic that
    * relies on Product objects, returned by the factory method. Subclasses can
@@ -305,12 +305,12 @@ class Creator {
   }
 };
 
-/**
+/
  * Concrete Creators override the factory method in order to change the
  * resulting product's type.
  */
 class ConcreteCreator1 : public Creator {
-  /**
+  /
    * Note that the signature of the method still uses the abstract product type,
    * even though the concrete product is actually returned from the method. This
    * way the Creator can stay independent of concrete product classes.
@@ -328,7 +328,7 @@ class ConcreteCreator2 : public Creator {
   }
 };
 
-/**
+/
  * The client code works with an instance of a concrete creator, albeit through
  * its base interface. As long as the client keeps working with the creator via
  * the base interface, you can pass it any creator's subclass.
@@ -340,7 +340,7 @@ void ClientCode(const Creator& creator) {
   // ...
 }
 
-/**
+/
  * The Application picks a creator's type depending on the configuration or
  * environment.
  */
@@ -501,7 +501,7 @@ Builder 将一个复杂对象分解成多个相对简单的部分，然后根据
 创建复杂对象的算法独立于该对象的组成部分以及它们的装配方式，即产品的构建过程和最终的表示是独立的。
 
 ```cpp
-/**
+/
  * It makes sense to use the Builder pattern only when your products are quite
  * complex and require extensive configuration.
  *
@@ -526,7 +526,7 @@ class Product1{
     }
 };
 
-/**
+/
  * The Builder interface specifies methods for creating the different parts of
  * the Product objects.
  */
@@ -537,7 +537,7 @@ class Builder{
     virtual void ProducePartB() const =0;
     virtual void ProducePartC() const =0;
 };
-/**
+/
  * The Concrete Builder classes follow the Builder interface and provide
  * specific implementations of the building steps. Your program may have several
  * variations of Builders, implemented differently.
@@ -547,7 +547,7 @@ class ConcreteBuilder1 : public Builder{
 
     Product1* product;
 
-    /**
+    /
      * A fresh builder instance should contain a blank product object, which is
      * used in further assembly.
      */
@@ -564,7 +564,7 @@ class ConcreteBuilder1 : public Builder{
     void Reset(){
         this->product= new Product1();
     }
-    /**
+    /
      * All production steps work with the same product instance.
      */
 
@@ -580,7 +580,7 @@ class ConcreteBuilder1 : public Builder{
         this->product->parts_.push_back("PartC1");
     }
 
-    /**
+    /
      * Concrete Builders are supposed to provide their own methods for
      * retrieving results. That's because various types of builders may create
      * entirely different products that don't follow the same interface.
@@ -597,7 +597,7 @@ class ConcreteBuilder1 : public Builder{
      * client code before disposing of the previous result.
      */
 
-    /**
+    /
      * Please be careful here with the memory ownership. Once you call
      * GetProduct the user of this function is responsable to release this
      * memory. Here could be a better option to use smart pointers to avoid
@@ -611,19 +611,19 @@ class ConcreteBuilder1 : public Builder{
     }
 };
 
-/**
+/
  * The Director is only responsible for executing the building steps in a
  * particular sequence. It is helpful when producing products according to a
  * specific order or configuration. Strictly speaking, the Director class is
  * optional, since the client can control builders directly.
  */
 class Director{
-    /**
+    /
      * @var Builder
      */
     private:
     Builder* builder;
-    /**
+    /
      * The Director works with any builder instance that the client code passes
      * to it. This way, the client code may alter the final type of the newly
      * assembled product.
@@ -635,7 +635,7 @@ class Director{
         this->builder=builder;
     }
 
-    /**
+    /
      * The Director can construct several product variations using the same
      * building steps.
      */
@@ -650,12 +650,12 @@ class Director{
         this->builder->ProducePartC();
     }
 };
-/**
+/
  * The client code creates a builder object, passes it to the director and then
  * initiates the construction process. The end result is retrieved from the
  * builder object.
  */
-/**
+/
  * I used raw pointers for simplicity however you may prefer to use smart
  * pointers here
  */

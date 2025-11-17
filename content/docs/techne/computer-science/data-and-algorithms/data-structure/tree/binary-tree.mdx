@@ -122,8 +122,8 @@ typedef TreeNode* Tree;
 ```cpp
 Tree& tree = new Tree();
 assert(tree.branches.length == tree.nodes.length - 1);
-assert(tree.layers(i).nodes.length == 2 ** (i - 1));
-assert(tree.layers(0,n).nodes.length == 2 ** n - 1);
+assert(tree.layers(i).nodes.length == 2  (i - 1));
+assert(tree.layers(0,n).nodes.length == 2  n - 1);
 assert(tree.layers.length == floor(log(tree.nodes.length))+1);
 assert(tree.layers.length == ceil(log(tree.nodes.length + 1)));
 ```

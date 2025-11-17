@@ -32,7 +32,7 @@ slug: 概率论
    2. 分配律：内并外交 = 内交并内交，内交外并 = 内并交内并，内差交 = 内交差
    3. 对偶律：长杠并短杠，开口换方向
 
-**概率**：随机事件$A$可能性大小的度量，满足非负性、规范性、可列可加性（任意可列个两两互斥事件的概率和=和事件的概率）。
+概率：随机事件$A$可能性大小的度量，满足非负性、规范性、可列可加性（任意可列个两两互斥事件的概率和=和事件的概率）。
 
 {/* 1.  $0<PA<1;P(\varnothing)=0,P\left(\Omega\right)=1$  */}
 > 概率等于0不等于不可能事件，概率等于1，不等于必然事件
@@ -172,9 +172,9 @@ const statistic_2: number = (X : number[])  => handle_2(X);
 {/* 9.  二维均匀分布：$f(x)=\begin{cases}\dfrac{1}{S_{D}},\left(x,y\right)\in D\\ 0,rest\end{cases}$  */}
 {/* 10.  二维正态分布$\left(X,Y\right)\sim N\left(\mu_1,\mu_2;\sigma_1^2,\sigma_2^2;\rho\right)$：$f\left(x\right)=\dfrac{1}{2\pi\sigma_1\sigma_2\sqrt{1-\rho^2}}\exp\left\lbrace-\dfrac{1}{2\left(1-\rho^2\right)}\left\lbrack\left(\dfrac{x-\mu_1}{\sigma_1}\right)^2-2\rho\left(\dfrac{x-\mu_1}{\sigma_1}\right)\left(\dfrac{x-\mu_2}{\sigma_2}\right)+\left(\dfrac{y-\mu_2}{\sigma_2}\right)^2\right\rbrack\right\rbrace$  */}
 
-{/* > **泊松定理**：在$n$重伯努利试验中，事件$A$在一次试验中发生的概率为$p_n$（与试验次数$n$有关），如果当$n$趋于无穷大时，$np_n\to\lambda$,则$\lim_{n\to\infin}C^k_np^k_n(1-p_n)^{n-k}=\dfrac{\lambda^k}{k!}e^{-\lambda}$ */}
+{/* > 泊松定理：在$n$重伯努利试验中，事件$A$在一次试验中发生的概率为$p_n$（与试验次数$n$有关），如果当$n$趋于无穷大时，$np_n\to\lambda$,则$\lim_{n\to\infin}C^k_np^k_n(1-p_n)^{n-k}=\dfrac{\lambda^k}{k!}e^{-\lambda}$ */}
 >  
-> 二项分布$B(n,p)$中，很大，$p$很小，乘积$\lambda$大小适中时，可以用**泊松分布做近似**。
+> 二项分布$B(n,p)$中，很大，$p$很小，乘积$\lambda$大小适中时，可以用泊松分布做近似。
 {/* $C^k_np^k_n(1-p_n)^{n-k}=\dfrac{(np)^k}{k!}e^{-np}$ */}
 {/* >  
 > 指数分布具有无记忆性：$P\left\lbrace X>t\right\rbrace=1-F\left(t\right)=e^{-\lambda t}$ */}
@@ -205,7 +205,7 @@ const statistic_2: number = (X : number[])  => handle_2(X);
 
 ### 数字特征
 
-> 期望====：描述随机变量平均取值状况特征的指标，加权平均,刻画随机变量平均取值状况特征的指标，刻画随机变量的一切可能值的集中位置。**有**==**概率密度****不一定****有期望** **，级数或连续型积分需要****绝对收敛**== **。**
+> 期望====：描述随机变量平均取值状况特征的指标，加权平均,刻画随机变量平均取值状况特征的指标，刻画随机变量的一切可能值的集中位置。有==概率密度不一定有期望 ，级数或连续型积分需要绝对收敛== 。
 
 {/* $EX=\sum x_ip_i;EX=\sum g(x_i)p_i$ */}
 
@@ -254,7 +254,7 @@ const statistic_2: number = (X : number[])  => handle_2(X);
 {/* 7.  $|\rho_{XY}|\le1$  */}
 {/* 8.  $Y=aX+b,\rho_{XY}=\left\{\begin{array}{}1&a>0;\\ -1&a<0;\end{array}\right.$  */}
 
-{/* > **切比雪夫不等式**：$\forall\varepsilon>0,P\left\lbrace\left|X-EX\right|\ge\varepsilon\right\rbrace\le\dfrac{DX}{\varepsilon^2}=\left(\dfrac{\sigma X}{\varepsilon}\right)^2$：表明方程是刻画随机变量与其期望值偏离程度的量，是描述随机变量X分散程度特征的指标。说明偏差大于等于某个值的概率是小的。偏差大于等于某个值的概率小于等于方差比上该值的平方。 */}
+{/* > 切比雪夫不等式：$\forall\varepsilon>0,P\left\lbrace\left|X-EX\right|\ge\varepsilon\right\rbrace\le\dfrac{DX}{\varepsilon^2}=\left(\dfrac{\sigma X}{\varepsilon}\right)^2$：表明方程是刻画随机变量与其期望值偏离程度的量，是描述随机变量X分散程度特征的指标。说明偏差大于等于某个值的概率是小的。偏差大于等于某个值的概率小于等于方差比上该值的平方。 */}
 
 ### 三大分布
 

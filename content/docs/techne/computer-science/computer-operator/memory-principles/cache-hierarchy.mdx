@@ -12,7 +12,7 @@ cache用于CPU与IO争抢内存访问权限，IO的优先级高，CPU直接访�
 
 Cache局部性原理：时间局部性和空间局部性
 
-cache分为若干大小相等的**块，和主存的块对应**，cache和主存的数据交换以cache块为单位
+cache分为若干大小相等的块，和主存的块对应，cache和主存的数据交换以cache块为单位
 
 ## 结构
 
@@ -22,11 +22,11 @@ cache分为若干大小相等的**块，和主存的块对应**，cache和主存
 
 ## 映射方式
 
-cache是SRAM，分为若干大小相等的`row`，和主存的`block`对应。cache与CPU之间的数据交换以`word`为单位，cache和主存的数据交换以`row`为单位。通过**地址映射**的方式进行对应。
+cache是SRAM，分为若干大小相等的`row`，和主存的`block`对应。cache与CPU之间的数据交换以`word`为单位，cache和主存的数据交换以`row`为单位。通过地址映射的方式进行对应。
 
-1. **全相联映射**：`district&cacheBlock(tag)<->inneroffset`，每一块可以装如cache中的任何位置，命中率最高，判断开销最大，时间最长，标记所占额外空间最大。标记比较速度慢，实现成本高，通常需要采用昂贵的按内容寻址的相联存储器
+1. 全相联映射：`district&cacheBlock(tag)<->inneroffset`，每一块可以装如cache中的任何位置，命中率最高，判断开销最大，时间最长，标记所占额外空间最大。标记比较速度慢，实现成本高，通常需要采用昂贵的按内容寻址的相联存储器
 
-2. **组相联映射**：`district(tag)-group-innerOffset`，组间采用直接映射，组内采用全相联映射。`cacheGroup = memBlock mod cacheGroupTotal`，CPU根据组号位找到对应的cache组，用区位号和标记位进行比较，相等且`status=1`，cache命中。
+2. 组相联映射：`district(tag)-group-innerOffset`，组间采用直接映射，组内采用全相联映射。`cacheGroup = memBlock mod cacheGroupTotal`，CPU根据组号位找到对应的cache组，用区位号和标记位进行比较，相等且`status=1`，cache命中。
 
 ```rust
 有效位-替换计数位-修改位-标记位-cache行号-行（块）内地址
@@ -56,6 +56,6 @@ CPU写请求如果命中，有可能遇到cache和主存内容不一致的问题
 
     4. 写分配法：cache写非命中，将要修改的主存块加载到cache中，然后更新cache
 
-**快表TLB命中一致性**：快表命中，页表一定命中，且该页面一定在内存中，因为TLB命中说明了此页面可以在页表中查询的到，（快表示页表的子集），既然在页表中查询的到，就说明此页面已经调入内存，此页是否在cache中，不能确定，cache和页表是两种独立的机制。
+快表TLB命中一致性：快表命中，页表一定命中，且该页面一定在内存中，因为TLB命中说明了此页面可以在页表中查询的到，（快表示页表的子集），既然在页表中查询的到，就说明此页面已经调入内存，此页是否在cache中，不能确定，cache和页表是两种独立的机制。
 
 命中率：
