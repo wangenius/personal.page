@@ -127,7 +127,6 @@
   --fd-sidebar-offset: 0px !important;
 }
 #nd-sidebar {
-  top: var(--fd-banner-height) !important;
   height: calc(100vh - var(--fd-banner-height)) !important;
   background-color: var(--color-background) !important;
   /* border-radius: var(--radius-lg) !important; */
@@ -155,14 +154,6 @@
 
 #nd-sidebar > div > div[data-radix-scroll-area-viewport] {
   padding: 0.5rem !important;
-}
-
-/* Adjust fumadocs TOC & tocnav so they stay within content area when baybar is open */
-@media (min-width: 768px) {
-  body.baybar-open #nd-toc,
-  body.baybar-open #nd-tocnav {
-    inset-inline-end: 400px !important; /* match Chatbar desktop width */
-  }
 }
 
 #simple-chat-panel {
@@ -204,4 +195,24 @@
 
 #nd-sidebar-mobile > div:first-child {
   height: 2rem !important;
+}
+
+#nd-docs-layout {
+  @apply flex flex-1 p-0! m-0! flex-row overflow-hidden!;
+}
+
+#nd-sidebar {
+  @apply relative top-0 pt-0;
+}
+
+#nd-page {
+  @apply flex-1 mx-auto flex flex-row justify-center p-0 overflow-hidden;
+}
+
+#nd-toc {
+  @apply relative p-0 m-0 flex-none w-64 top-0 inset-0;
+}
+
+#nd-page > article {
+  @apply flex-1 min-w-0 overflow-auto relative;
 }

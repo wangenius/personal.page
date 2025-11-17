@@ -1,3 +1,11 @@
 {
-  "title": "宏观经济学"
+  "title": "宏观经济学",
+  "pages": [
+    "overview",
+    "national-income-accounting",
+    "ad-as-model",
+    "is-lm-model",
+    "unemployment-inflation-business-cycle",
+    "macro-policy-goals-tradeoffs"
+  ]
 }

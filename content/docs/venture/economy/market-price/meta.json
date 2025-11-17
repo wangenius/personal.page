@@ -1,3 +1,10 @@
 {
-  "title": "市场机制与价格理论"
+  "title": "市场机制与价格理论",
+  "pages": [
+    "overview",
+    "price-mechanism",
+    "market-failure-externalities",
+    "public-goods-government",
+    "asymmetric-info-incentives"
+  ]
 }

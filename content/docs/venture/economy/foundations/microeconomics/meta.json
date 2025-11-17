@@ -1,3 +1,11 @@
 {
-  "title": "微观经济学"
+  "title": "微观经济学",
+  "pages": [
+    "overview",
+    "supply-demand",
+    "market-structure",
+    "consumer-theory-utility",
+    "firm-theory-costs",
+    "game-theory-basics"
+  ]
 }

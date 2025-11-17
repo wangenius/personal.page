@@ -1,3 +1,11 @@
 {
-  "title": "高阶专题与未来趋势"
+  "title": "高阶专题与未来趋势",
+  "pages": [
+    "overview",
+    "fintech-defi-blockchain",
+    "digital-currency-cbdc",
+    "climate-finance-esg",
+    "global-monetary-system-trends",
+    "new-inflation-paradigm-deglobalization"
+  ]
 }

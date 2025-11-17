@@ -1,3 +1,11 @@
 {
-  "title": "宏观经济指标与政策工具"
+  "title": "宏观经济指标与政策工具",
+  "pages": [
+    "gdp-growth",
+    "inflation-deflation",
+    "unemployment-natural-rate",
+    "fiscal-policy",
+    "monetary-policy",
+    "policy-lags-evaluation"
+  ]
 }

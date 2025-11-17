@@ -1,3 +1,10 @@
 {
-  "title": "金融体系结构"
+  "title": "金融体系结构",
+  "pages": [
+    "overview",
+    "central-bank-monetary-transmission",
+    "commercial-banks-shadow-banking",
+    "nonbank-financial-institutions",
+    "financial-infrastructure"
+  ]
 }

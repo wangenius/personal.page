@@ -1,3 +1,14 @@
 {
-  "title": "主要经济学流派"
+  "title": "主要经济学流派",
+  "pages": [
+    "overview",
+    "classical",
+    "keynesian",
+    "monetarist",
+    "neoclassical",
+    "new-keynesian",
+    "austrian",
+    "behavioral",
+    "development-institutional"
+  ]
 }

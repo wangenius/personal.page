@@ -1,3 +1,13 @@
 {
-  "title": "金融市场分类与功能"
+  "title": "金融市场分类与功能",
+  "pages": [
+    "overview",
+    "money-market",
+    "bond-market",
+    "stock-market",
+    "derivatives-market",
+    "fx-market",
+    "gold-commodities-market",
+    "multi-tier-capital-markets"
+  ]
 }

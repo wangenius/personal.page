@@ -1,3 +1,16 @@
 {
-  "title": "现代经济学与金融"
+  "title": "现代经济学与金融",
+  "pages": [
+    "overview",
+    "foundations",
+    "schools",
+    "market-price",
+    "macro-indicators-policy",
+    "financial-system-structure",
+    "financial-markets",
+    "regulation-risk",
+    "theory-policy-practice",
+    "global-china",
+    "advanced-future"
+  ]
 }

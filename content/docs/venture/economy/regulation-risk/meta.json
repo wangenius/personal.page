@@ -1,3 +1,11 @@
 {
-  "title": "金融监管与风险管理"
+  "title": "金融监管与风险管理",
+  "pages": [
+    "overview",
+    "macro-micro-prudential",
+    "systemic-risk",
+    "basel-banking-supervision",
+    "fintech-regulation-challenges",
+    "financial-consumer-protection"
+  ]
 }

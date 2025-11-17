@@ -42,9 +42,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               <Header />
               <SelectionProvider>
                 <main className="flex h-[calc(100vh-3rem)] w-full overflow-hidden">
-                  <div className="flex-1 min-w-0 overflow-auto relative">
-                    {children}
-                  </div>
+                  {children}
                   <Chatbar />
                 </main>
               </SelectionProvider>

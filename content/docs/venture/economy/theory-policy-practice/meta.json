@@ -1,3 +1,10 @@
 {
-  "title": "理论与政策实践连接"
+  "title": "理论与政策实践连接",
+  "pages": [
+    "overview",
+    "theory-in-policy",
+    "crisis-cases-2008",
+    "dsge-policy-models",
+    "policy-effectiveness-evaluation"
+  ]
 }
