@@ -446,7 +446,9 @@ export function MessageRenderer({
                     className="text-sm leading-relaxed group"
                   >
                     <Response>{segment.text}</Response>
-                    <CopyButton text={segment.text} />
+                    {segmentIndex === segments.length - 1 && (
+                      <CopyButton text={segment.text} />
+                    )}
                   </div>
                 );
               }

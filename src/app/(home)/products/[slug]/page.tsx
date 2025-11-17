@@ -84,9 +84,3 @@ export async function generateMetadata(props: {
       page.data.description ?? "The library for building documentation sites",
   });
 }
-
-// export function generateStaticParams(): { slug: string }[] {
-//   return products.getPages().map((page) => ({
-//     slug: page.slugs[0],
-//   }));
-// }
