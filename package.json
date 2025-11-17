@@ -67,6 +67,7 @@
     "katex": "^0.16.25",
     "lucide-react": "^0.540.0",
     "mandarin": "link:@orama/tokenizers/mandarin",
+    "mermaid": "^11.12.1",
     "nanoid": "^5.1.6",
     "next": "16.0.3",
     "next-themes": "^0.4.6",
