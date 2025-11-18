@@ -9,6 +9,7 @@ import { getMDXComponents } from "@/mdx-components";
 import { PaywallPreview } from "@/components/docs/paywall-preview";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { AnnotationHighlights } from "@/components/docs/annotation-highlights";
 
 interface PageParams {
   slug?: string[];
@@ -37,14 +38,16 @@ export default async function LangDocsPage(props: {
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <SelectionQuote>
-          {locked ? (
-            <PaywallPreview
-              segments={previewSegments}
-              components={baseComponents}
-            />
-          ) : (
-            <MDXContent components={baseComponents} />
-          )}
+          <AnnotationHighlights path={page.url}>
+            {locked ? (
+              <PaywallPreview
+                segments={previewSegments}
+                components={baseComponents}
+              />
+            ) : (
+              <MDXContent components={baseComponents} />
+            )}
+          </AnnotationHighlights>
         </SelectionQuote>
       </DocsBody>
     </DocsPage>

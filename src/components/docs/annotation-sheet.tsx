@@ -1,12 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import ReactDOM from "react-dom/client";
 import { useSession } from "@/lib/auth-client";
-import { dialog } from "@/components/custom/DialogModal";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 export type AnnotationTarget = {
   text: string;
@@ -208,9 +214,8 @@ function AnnotationDialogContent({
 
   function renderComment(
     commentItem: CommentDto,
-    repliesByParent: Record<string, CommentDto[]>,
     noteId: string,
-    depth: number
+    isChild: boolean
   ) {
     const isReplying =
       replyTarget?.noteId === noteId &&
@@ -219,32 +224,48 @@ function AnnotationDialogContent({
     return (
       <div
         key={`comment-${commentItem.id}`}
-        className="space-y-2 rounded-md border border-border/70 bg-muted-foreground/10 p-3"
+        className={
+          "flex gap-3 " +
+          (isChild
+            ? ""
+            : "rounded-xl border border-border/60 bg-background/95 px-3 py-2 shadow-sm")
+        }
       >
-        <div className="flex justify-between gap-3">
-          <div className="space-y-1">
-            <p className="text-sm leading-relaxed text-foreground">
-              {commentItem.body}
+        <div className={
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-semibold text-muted-foreground " +
+          (isChild ? "mt-0" : "mt-0.5")
+        }>
+          {(commentItem.userName?.[0] ?? commentItem.userEmail?.[0] ?? "匿")
+            .toString()
+            .toUpperCase()}
+        </div>
+        <div className={"flex-1 space-y-1 " + (isChild ? "py-1" : "")}>
+          <div className="space-y-0.5">
+            <p className="text-xs font-medium text-foreground">
+              {getDisplayName(commentItem.userName, commentItem.userEmail)}
             </p>
-            <p className="text-xs text-muted-foreground">
-              {getDisplayName(commentItem.userName, commentItem.userEmail)} ·{" "}
+            <p className="text-[11px] text-muted-foreground">
               {new Date(commentItem.createdAt).toLocaleString()}
             </p>
           </div>
-          <div className="flex flex-col gap-1 text-xs">
+          <p className="text-sm leading-relaxed text-foreground">
+            {commentItem.body}
+          </p>
+          <div className="flex items-center justify-end gap-1 text-[11px] text-muted-foreground">
             <Button
               variant="ghost"
               size="sm"
+              className="h-6 px-2 text-[11px] text-muted-foreground hover:text-foreground"
               onClick={() => handleToggleReply(noteId, commentItem.id)}
               disabled={!session?.user}
             >
-              {isReplying ? "取消" : "回复"}
+              {isReplying ? "取消回复" : "回复"}
             </Button>
             {session?.user?.id === commentItem.userId && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-destructive-foreground"
+                className="h-6 px-2 text-[11px] text-destructive-foreground hover:text-destructive"
                 onClick={() => handleDeleteComment(commentItem.id)}
                 disabled={deletingCommentId === commentItem.id}
               >
@@ -252,185 +273,94 @@ function AnnotationDialogContent({
               </Button>
             )}
           </div>
-        </div>
-        {isReplying && (
-          <div className="space-y-2 rounded-md border border-dashed border-border px-2 py-2">
-            <Textarea
-              placeholder="写下你的回复"
-              value={replyBody}
-              onChange={(event) => setReplyBody(event.target.value)}
-              disabled={!session?.user || replySubmitting}
-            />
-            <div className="flex items-center justify-between gap-2">
-              <Button
-                size="sm"
-                onClick={handlePostReply}
-                disabled={
-                  !session?.user || replySubmitting || !replyBody.trim()
-                }
-              >
-                {replySubmitting ? "提交中…" : "提交回复"}
-              </Button>
+          {isReplying && !isChild && (
+            <div className="mt-2 space-y-2 rounded-xl bg-muted/40 px-3 py-2">
+              <Textarea
+                placeholder="写下你的回复"
+                value={replyBody}
+                onChange={(event) => setReplyBody(event.target.value)}
+                disabled={!session?.user || replySubmitting}
+                className="min-h-[60px] resize-none border-0 bg-transparent px-0 py-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] text-muted-foreground">
+                  回复会和当前批注串联展示。
+                </p>
+                <Button
+                  size="sm"
+                  onClick={handlePostReply}
+                  disabled={
+                    !session?.user || replySubmitting || !replyBody.trim()
+                  }
+                >
+                  {replySubmitting ? "提交中…" : "提交回复"}
+                </Button>
+              </div>
               {replyError && (
                 <p className="text-xs text-destructive-foreground">
                   {replyError}
                 </p>
               )}
             </div>
-          </div>
-        )}
-        {renderReplies(repliesByParent, noteId, depth + 1, commentItem.id)}
+          )}
+        </div>
       </div>
     );
-  }
-
-  function renderReplies(
-    repliesByParent: Record<string, CommentDto[]>,
-    noteId: string,
-    depth: number,
-    parentId: string
-  ) {
-    const children = repliesByParent[parentId];
-    if (!children?.length) return null;
-    return children.map((reply) => (
-      <div
-        key={reply.id}
-        className="space-y-2"
-        style={{ marginLeft: depth * 16 }}
-      >
-        {renderComment(reply, repliesByParent, noteId, depth)}
-      </div>
-    ));
   }
 
   const targetSelection = target?.text ?? "尚未选中文本";
 
   return (
     <div className="flex h-full flex-col gap-4">
-      <div className="space-y-2 rounded-lg border border-border bg-muted/40 px-3 py-3">
-        <p className="text-xs uppercase tracking-wide text-muted-foreground">
-          已选文本
-        </p>
-        <p className="text-sm font-medium text-foreground">{targetSelection}</p>
-      </div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            添加批注
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {session?.user ? "所有人可见" : "请先登录"}
-          </p>
-        </div>
-        <Textarea
-          placeholder="写下你的理解或补充"
-          value={body}
-          onChange={(event) => setBody(event.target.value)}
-          disabled={!session?.user || submitting}
-        />
-        <div className="flex items-center justify-between gap-2">
-          {actionError ? (
-            <p className="text-xs text-destructive-foreground">{actionError}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              批注会和选中的段落进行模糊匹配
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={close}
-              className="text-muted-foreground"
-            >
-              关闭
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleCreateNote}
-              disabled={!session?.user || submitting || !body.trim()}
-            >
-              {submitting ? "保存中…" : "保存批注"}
-            </Button>
-          </div>
-        </div>
-      </div>
-      <Separator />
       <div className="flex flex-1 flex-col gap-3 overflow-hidden">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            当前批注
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {isFetching ? "加载中…" : `${notes.length} 条记录`}
-          </p>
-        </div>
         <div className="flex-1 overflow-hidden">
           {isFetching ? (
-            <p className="text-xs text-muted-foreground">正在加载已有批注…</p>
+            <p className="text-xs text-muted-foreground">…</p>
           ) : fetchError ? (
             <p className="text-xs text-destructive-foreground">{fetchError}</p>
           ) : notes.length === 0 ? (
-            <p className="text-xs text-muted-foreground">
-              暂无批注，快来第一个补充吧。
-            </p>
+            <p className="text-xs text-muted-foreground">暂无批注。</p>
           ) : (
             <ScrollArea className="h-full">
-              <div className="space-y-4 pr-2">
+              <div className="space-y-4">
                 {notes.map((noteItem) => {
-                  const repliesByParent = noteItem.comments.reduce<
-                    Record<string, CommentDto[]>
-                  >((acc, commentItem) => {
-                    if (!commentItem.parentCommentId) return acc;
-                    const list = acc[commentItem.parentCommentId] ?? [];
-                    return {
-                      ...acc,
-                      [commentItem.parentCommentId]: [...list, commentItem],
-                    };
-                  }, {});
-
-                  const rootComments = noteItem.comments.filter(
-                    (commentItem) => !commentItem.parentCommentId
+                  const sortedComments = [...noteItem.comments].sort(
+                    (a, b) =>
+                      new Date(a.createdAt).getTime() -
+                      new Date(b.createdAt).getTime()
                   );
+
+                  const [rootComment, ...childComments] = sortedComments;
 
                   return (
                     <div
                       key={`note-${noteItem.id}`}
-                      className="space-y-3 rounded-2xl border border-border/70 bg-background/90 px-3 py-3 shadow-sm"
+                      className="space-y-2 border-b border-border/60 pb-3 last:border-b-0 last:pb-0"
                     >
-                      <div className="space-y-1">
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                          选区
-                        </p>
-                        <p className="text-sm font-medium text-foreground">
-                          {noteItem.selection}
-                        </p>
+                      {!rootComment ? (
                         <p className="text-xs text-muted-foreground">
-                          {getDisplayName(
-                            noteItem.userName,
-                            noteItem.userEmail
-                          )}{" "}
-                          · {new Date(noteItem.createdAt).toLocaleString()}
+                          还没有评论。
                         </p>
-                      </div>
-                      <div className="space-y-3">
-                        {rootComments.length === 0 ? (
-                          <p className="text-xs text-muted-foreground">
-                            还没有评论。
-                          </p>
-                        ) : (
-                          rootComments.map((root) => (
-                            <div key={root.id}>
-                              {renderComment(
-                                root,
-                                repliesByParent,
-                                noteItem.id,
-                                0
-                              )}
+                      ) : (
+                        <div className="space-y-2">
+                          {/* 根评论 */}
+                          {renderComment(rootComment, noteItem.id, false)}
+
+                          {/* 之后的评论放在一个背景下 */}
+                          {childComments.length > 0 && (
+                            <div className="space-y-1 rounded-xl bg-muted/15 px-3 py-2">
+                              <p className="text-[11px] text-muted-foreground">
+                                后续评论
+                              </p>
+                              {childComments.map((commentItem) => (
+                                <div key={commentItem.id}>
+                                  {renderComment(commentItem, noteItem.id, true)}
+                                </div>
+                              ))}
                             </div>
-                          ))
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -439,20 +369,103 @@ function AnnotationDialogContent({
           )}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">
-        批注匹配使用正则：默认匹配所选文本的第一个出现位置。
-      </p>
+      <div className="space-y-2">
+        <p className="rounded-xl bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+          选中文本：<span className="text-foreground">{targetSelection}</span>
+        </p>
+
+        <div className="flex gap-3 rounded-2xl bg-background/95 px-3 py-2 shadow-sm">
+          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-semibold text-muted-foreground">
+            {(session?.user?.name?.[0] ?? session?.user?.email?.[0] ?? "我")
+              .toString()
+              .toUpperCase()}
+          </div>
+          <div className="flex-1 space-y-2">
+            <Textarea
+              placeholder={session?.user ? "补充一句话..." : "登录后可添加批注"}
+              value={body}
+              onChange={(event) => setBody(event.target.value)}
+              disabled={!session?.user || submitting}
+              className="min-h-[72px] resize-none border-0 bg-transparent px-0 py-1 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] text-muted-foreground">
+                批注仅对当前路径可见，你可以随时补充或删除。
+              </p>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={close}>
+                  关闭
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleCreateNote}
+                  disabled={!session?.user || submitting || !body.trim()}
+                >
+                  {submitting ? "保存中…" : "保存"}
+                </Button>
+              </div>
+            </div>
+            {actionError && (
+              <p className="text-xs text-destructive-foreground">
+                {actionError}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export function openAnnotationDialog(target: AnnotationTarget) {
-  return dialog({
-    title: "添加批注",
-    description: "追加一条独立于对话的记录，会并列展示同路径所有批注。",
-    className: "max-w-5xl w-[92vw]",
-    content: (close) => (
-      <AnnotationDialogContent target={target} close={close} />
-    ),
-  });
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  const host = document.createElement("div");
+  document.body.appendChild(host);
+  const root = ReactDOM.createRoot(host);
+
+  function SheetPortal() {
+    const [open, setOpen] = useState(true);
+
+    useEffect(() => {
+      if (!open) {
+        root.unmount();
+        document.body.removeChild(host);
+      }
+    }, [open]);
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    return (
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent
+          side="right"
+          className="flex h-full w-full max-w-xl flex-col gap-0 p-0"
+        >
+          <SheetHeader className="flex-none border-b px-4 pb-3 pt-4">
+            <SheetTitle>添加批注</SheetTitle>
+            <SheetDescription>
+              追加一条独立于对话的记录，会并列展示同路径所有批注。
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex-1 overflow-hidden px-4 pb-4 pt-2">
+            <AnnotationDialogContent target={target} close={handleClose} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  root.render(<SheetPortal />);
+
+  return () => {
+    root.unmount();
+    if (host.parentNode) {
+      host.parentNode.removeChild(host);
+    }
+  };
 }

@@ -9,6 +9,7 @@ import { Control } from "@/app/(home)/blog/[slug]/page.client";
 import { getMDXComponents } from "@/mdx-components";
 import { SelectionQuote } from "@/components/docs/selection-quote";
 import { LastReadTracker } from "@/components/LastReadTracker";
+import { AnnotationHighlights } from "@/components/docs/annotation-highlights";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -48,10 +49,12 @@ export default async function Page(props: {
       </div>
       <article className="flex flex-col mx-auto w-full max-w-fd-container py-8 lg:flex-row">
         <SelectionQuote>
-          <div className="prose min-w-0 flex-1 p-4">
-            <InlineTOC items={toc} />
-            <Mdx components={getMDXComponents()} />
-          </div>
+          <AnnotationHighlights path={page.url}>
+            <div className="prose min-w-0 flex-1 p-4">
+              <InlineTOC items={toc} />
+              <Mdx components={getMDXComponents()} />
+            </div>
+          </AnnotationHighlights>
         </SelectionQuote>
         <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
           <div>
