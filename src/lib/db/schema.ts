@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -65,3 +66,38 @@ export const subscription = pgTable("subscription", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
+
+export const note = pgTable("note", {
+  id: text("id").primaryKey(),
+  path: text("path").notNull(),
+  selection: text("selection").notNull(),
+  selectorRegex: text("selectorRegex").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export const comment = pgTable("comment", {
+  id: text("id").primaryKey(),
+  noteId: text("noteId")
+    .notNull()
+    .references(() => note.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  // self-reference handled via relations() to avoid circular definition
+  parentCommentId: text("parentCommentId"),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export const commentRelations = relations(comment, ({ one, many }) => ({
+  parent: one(comment, {
+    fields: [comment.parentCommentId],
+    references: [comment.id],
+  }),
+  replies: many(comment),
+}));

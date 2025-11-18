@@ -8,6 +8,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
+import { openAnnotationDialog } from "@/components/docs/annotation-sheet";
 import { getBayBarOpen, toggleBayBar } from "@/lib/viewManager";
 
 interface SelectionQuoteState {
@@ -48,6 +50,7 @@ interface SelectionProviderProps {
 
 export function SelectionProvider({ children }: SelectionProviderProps) {
   const [state, setState] = useState<SelectionQuoteState | null>(null);
+  const pathname = usePathname();
 
   const showQuote = useCallback(
     (payload: {
@@ -115,6 +118,23 @@ export function SelectionProvider({ children }: SelectionProviderProps) {
     if (selection) selection.removeAllRanges();
   }, [state]);
 
+  const handleAddAnnotation = useCallback(() => {
+    if (!state?.text) return;
+    const docPath =
+      pathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "");
+    if (!docPath) return;
+
+    openAnnotationDialog({
+      text: state.text,
+      path: docPath,
+    });
+
+    setState(null);
+    const selection = window.getSelection();
+    if (selection) selection.removeAllRanges();
+  }, [pathname, state]);
+
   return (
     <SelectionContext.Provider value={{ state, showQuote, hideQuote }}>
       <div className="relative">
@@ -127,9 +147,21 @@ export function SelectionProvider({ children }: SelectionProviderProps) {
               top: state.y,
             }}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={handleQuote}
           >
-            <span>引用到对话</span>
+            <button
+              type="button"
+              className="rounded-full px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              onClick={handleQuote}
+            >
+              引用到对话
+            </button>
+            <button
+              type="button"
+              className="rounded-full px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              onClick={handleAddAnnotation}
+            >
+              添加批注
+            </button>
           </div>
         )}
       </div>

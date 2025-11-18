@@ -168,6 +168,7 @@ export function SimpleChatPanel() {
             <Button
               variant="ghost"
               size="icon"
+              type="button"
               className="size-8 rounded-full"
               onClick={handleClearChat}
               title="清空对话"

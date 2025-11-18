@@ -8,6 +8,13 @@
       "when": 1762997232840,
       "tag": "0000_init-subscription",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1763433982574,
+      "tag": "0001_chemical_blink",
+      "breakpoints": true
     }
   ]
 }
