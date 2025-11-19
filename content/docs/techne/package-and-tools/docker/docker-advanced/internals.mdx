@@ -1,0 +1,7 @@
+---
+title: 运行时与镜像内部
+---
+- 生命周期：从 `docker run` 到 runc/containerd 的调用链，占位说明关键组件。
+- 隔离机制：Namespace（pid、net、mnt、ipc、uts）、Cgroups、Seccomp/AppArmor 的角色。
+- 镜像格式：Manifest、Config、Layer Tarball 结构，为后续自建 registry/镜像签名做铺垫。
+- 调试思路：`ctr`、`nerdctl` 在 containerd 场景的使用位置，便于脱离 dockerd 进行排错。

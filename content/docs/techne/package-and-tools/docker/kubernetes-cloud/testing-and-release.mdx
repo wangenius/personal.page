@@ -1,0 +1,7 @@
+---
+title: 测试与发布路径
+---
+- 镜像到集群：CI 中构建/签名镜像，推送到 ACR/私有 Registry，再由 CD 系统（Argo CD/GitOps）应用到集群。
+- 环境分层：本地 Kind/k3d → 预发布集群（可重建）→ 生产 ACK，保持同构的 YAML/Helm Chart。
+- 验证手段：探针（liveness/readiness/startup）、滚动更新策略（`maxUnavailable`/`maxSurge`）、回滚与灰度发布占位。
+- 安全合规：镜像扫描、Admission Webhook/OPA Gatekeeper、审计日志与密钥管理（KMS/Secret Manager）的位置说明。

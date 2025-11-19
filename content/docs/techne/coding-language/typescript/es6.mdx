@@ -1,0 +1,598 @@
+---
+title: ES6
+---
+
+https://zh.javascript.info/
+
+> ECMAScript​​ 和 ​​JavaScript​​ 到底是什么关系？ 要讲清楚这个问题，需要回顾历史。1996年11月，JavaScript 的创造者 Netscape 公司，决定将 JavaScript 提交给国际标准化组织ECMA，希望这种语言能够成为国 际标准。次年，ECMA 发布262号标准文件（ECMA-262）的第一版，规定了浏览 器脚本语言的标准，并将这种语言称为 ECMAScript，这个版本就是1.0版。 该标准从一开始就是针对 JavaScript 语言制定的，但是之所以不叫 JavaScript，有 两个原因。一是商标，Java 是 Sun 公司的商标，根据授权协议，只有 Netscape 公司可以合法地使用 JavaScript 这个名字，且 JavaScript 本身也已经被 Netscape 公司注册为商标。二是想体现这门语言的制定者是 ECMA，不是 Netscape，这样 有利于保证这门语言的开放性和中立性。 因此，ECMAScript 和 JavaScript 的关系是，前者是后者的规格，后者是前者的一 种实现（另外的 ECMAScript 方言还有 Jscript 和 ActionScript）。日常场合，这两 个词是可以互换的 《ECMAScript 6 入门》
+
+ES6和CommonJS的区别
+
+1. 增加的`let` 只在代码块中有效。
+2. 新增块级作用域
+3. 函数可以在块级作用域声明，但是尽量避免。兼容问题。
+4. do
+
+```javascript
+let x = do {
+let t = f();
+t * t + 1
+}
+```
+
+[Babel](https://www.notion.so/Babel-122f95213f838076acfdc2ce4d6744c2?pvs=21)
+
+# 声明变量
+
+:::info
+es5只有两种`var` 和`function` ，es6增加了`let` ,`const` ,`import` ,`class`
+:::
+
+## 顶层对象的属性
+
+在浏览器环境中指`window` ，node环境中指`global`
+
+es5中顶层对象的属性和全局变量是等价的。
+
+```javascript
+window.a = 1;
+a // 1
+a = 2;
+window.a // 2;
+```
+
+es6规定，`const` ，`let` ，`class` 声明的全局变量，不属于顶层对象的属性。
+
+```javascript
+var a = 1;
+window.a // 1;
+let b = 1;
+window.b //undefined
+```
+
+### global对象
+
+## 变量的解构赋值
+
+```javascript
+let [a, b, c] = [1, 2, 3]
+let [ , , third] = ["foo", "bar", "baz"];
+third //  'baz'
+let [x, , y] = [1, 2, 3];
+x // 1
+y // 3
+let [head, ...tail] = [1, 2, 3, 4];
+head // 1
+tail // [2, 3, 4]
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
+```
+
+上面两个例子，都属于不完全解构，但是可以成功。 如果等号的右边不是数组（或者严格地说，不是可遍历的结构，参见`Iterator`），那么将会报错。
+
+```javascript
+function* fibs() {
+let a = 0;
+let b = 1;
+while (true) {
+yield a;
+[a, b] = [b, a + b];
+}
+}
+let [first, second, third, fourth, fifth, sixth] = fibs();
+sixth // 5
+```
+
+上面代码中， fibs 是一个 `Generator` 函数（参见《Generator 函数》一章），原生具有 `Iterator` 接口。解构赋值会依次从这个接口获取值。
+
+解构赋值允许指定默认值
+
+```javascript
+let [foo = true] = [];
+foo // true
+let [x, y = 'b'] = ['a']; // x='a', y='b'
+let [x, y = 'b'] = ['a', undefined]; // x='a', y='b'
+let [x = 1] = [undefined];
+x // 1
+let [x = 1] = [null];
+x // null
+```
+
+注意，ES6 内部使用严格相等运算符（ === ），判断一个位置是否有值。所以，如果一个数组成员不严格等于 undefined ，默认值是不会生效的。
+
+如果默认值是一个表达式，那么这个表达式是惰性求值的，即只有在用到的时候， 才会求值。
+
+```javascript
+function f() {
+console.log('aaa');
+}
+let [x = f()] = [1];
+```
+
+上面代码中，因为 x 能取到值，所以函数 f 根本不会执行。上面的代码其实等价 于下面的代码。
+
+```javascript
+let x;
+if ([1][0] === undefined) {
+  x = f();
+} else {
+  x = [1][0];
+}
+```
+
+默认值可以引用解构赋值的其他变量，但该变量必须已经声明。
+
+```javascript
+let [x = 1, y = x] = []; // x=1; y=1
+let [x = 1, y = x] = [2]; // x=2; y=2
+let [x = 1, y = x] = [1, 2]; // x=1; y=2
+let [x = y, y = 1] = []; // ReferenceError
+```
+
+上面最后一个表达式之所以会报错，是因为 x 用到默认值 y 时， y 还没有声明
+
+```javascript
+let {toString: s} = 123;
+s === Number.prototype.toString // true
+let {toString: s} = true;
+s === Boolean.prototype.toString // true
+```
+
+上面代码中，数值和布尔值的包装对象都有 toString 属性，因此变量 s 都能取 到值。 解构赋值的规则是，只要等号右边的值不是对象或数组，就先将其转为对象。由 于 undefined 和 null 无法转为对象，所以对它们进行解构赋值，都会报错。
+
+```javascript
+let { prop: x } = undefined; // TypeError
+let { prop: y } = null; // TypeError
+```
+
+### 用途
+
+```javascript
+let x = 1; let y = 2;
+[x,y] = [y, x]
+```
+
+## const
+
+const 实际上保证的，并不是变量的值不得改动，而是变量指向的那个内存地址不得改动。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，因此等同于常量。但对于复合类型的数据（主要是对象和数组），变量指向的内存地址，保存的只是一个指针， const 只能保证这个指针是固定的，至于它指向的数据结构是不是可变的，就完全不能控制了。因此，将一个 对象声明为常量必须非常小心。
+
+```javascript
+const foo = {};
+// 为 foo 添加一个属性，可以成功
+foo.prop = 123;
+foo.prop // 123
+// 将 foo 指向另一个对象，就会报错
+foo = {}; // TypeError: "foo" is read-only
+```
+
+上面代码中，常量 foo 储存的是一个地址，这个地址指向一个对象。不可变的只 是这个地址，即不能把 foo 指向另一个地址，但对象本身是可变的，所以依然可 以为其添加新属性。
+
+如果真的想将对象冻结，应该使用 Object.freeze 方法。
+
+```javascript
+const foo = Object.freeze({})
+foo.prop = 123;
+// 常规模式不起作用，严格模式报错
+```
+
+# 概念
+
+## 变量提升和暂时性死区
+
+1. 使用​`var`​时，通俗来说，变量提升是指在 ​​JavaScript​​ 代码执行过程中，JavaScript 引擎把变量的声明部分和函数的声明部分提升到代码开头的行为。变量被提升后，会给变量设置默认值为 undefined。 正是由于 JavaScript 存在变量提升这种特性，导致了很多与直觉不太相符的代码，这也是 JavaScript 的一个设计缺陷。虽然 ECMAScript6 已经通过引入块级作用域并配合使用 let、const 关键字，避开了这种设计缺陷，但是由于 JavaScript 需要向下兼容，所以变量提升在很长时间内还会继续存在。
+2. 暂时性死区：如果区块中存在 let 和 const 命令，这个区块对这些命令声明的 变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报 错。总之，在代码块内，使用 let 命令声明变量之前，该变量都是不可用的。这在语 法上，称为“暂时性死区”（temporal dead zone，简称 TDZ）。否则抛出`ReferenceError`
+
+```javascript
+var tmp = new Date();
+function f() {
+console.log(tmp);
+if (false) {
+//var 变量提升
+var tmp = 'hello world';
+}
+}
+f(); // undefined
+```
+
+不提升就会存在暂时性死区
+
+# 字符串的扩展
+
+## 码点CodePoint
+
+## 模板字符串Template String
+
+```javascript
+`In JavaScript this is
+not legal.`
+```
+
+如果使用模板字符串表示多行字符串，所有的空格和缩进都会被保留在输出之中。
+
+模板字符串中嵌入变量，需要将变量名写在 \${} 之中
+
+### 模板编译
+
+```javascript
+var template = `
+<ul>
+<% for(var i=0; i < data.supplies.length; i++) { %>
+<li><%= data.supplies[i] %></li>
+<% } %>
+</ul>
+`;
+```
+
+### 标签模板tagged template
+
+```javascript
+alert
+123
+//eq to
+alert(123)
+```
+
+标签模板其实不是模板，而是函数调用的一种特殊形式。“标签”指的就是函数，紧跟在后面的模板字符串就是它的参数。
+
+```javascript
+var a = 5;
+var b = 10;
+tag
+Hello ${ a + b } world ${ a * b }
+;
+// 等同于
+tag(['Hello ', ' world ', ''], 15, 50);
+```
+
+# 数字
+
+js所有数字都保存成64位浮点数. 决定了整数的精确程度只能到53个二进制位. 大于这个范围的数, js无法精确表示. 不适合做科学和金融方面的精确计算
+
+引入了新的数据类型`Interger` 解决这个问题.整数类型的数据中用来表示整数, 没有位数的限制, 任何位数的整数都可以精确表示
+
+为了和Number类型区别,Integer类型的数据必须使用后缀n表示
+
+```javascript
+1n + 2n = 3n
+```
+
+二进制
+
+```javascript
+0b111110111 === 503
+0o767 === 503
+```
+
+前缀字符串转换为十进制:
+
+```javascript
+Number('0b1110');
+```
+
+# Math
+
+`Math.trunc()`
+
+去掉小数部分,返回整数,非数字(数字字符串),返回`NaN`
+
+`Math.sign()`
+
+返回符号, 正数返回1,负数返回-1,0返回0,-0返回-0. 其他返回`NaN`
+
+`Math.clz32()`
+
+js的整数使用32位二进制形式表示. 返回一个数的32位无符号整数形式有多少个前导0
+
+`Math.hypot()`
+
+返回所有参数的平方和的平方根
+
+`Math.expm1(x)`\$\$e^x-\$\$
+
+`Math.log1p(x)`\$\$log(1+x\$\$
+
+# Function函数的扩展
+
+函数的length返回没有指定默认值的参数个数. 指定了默认值后, length将失真.
+
+如果默认值的参数不是尾参数,那么length属性也不再计入后面的参数了
+
+```javascript
+var x = 1;
+function f(x, y = x) {
+console.log(y);
+}
+f(2) // 2
+let x = 1;
+function f(y = x) {
+let x = 2;
+console.log(y);
+}
+f() // 1
+```
+
+# 箭头函数
+
+# 绑定this Bind this
+
+在 JavaScript 中，`call`、`apply` 和 `bind` 都是用来改变函数内部 ​​`this`​​ 指向的方法，它们允许开发者在运行时指定 `this` 的上下文。下面分别介绍它们的区别和用法：
+
+---
+
+3. call()
+
+`call` 方法用于​立即调用函数​，并且可以显式地传入 `this` 和参数。
+
+语法：
+
+```javascript
+func.call(thisArg, arg1, arg2, ...)
+```
+
+特点：
+
+- 立即执行函数。
+- 参数按顺序传入。
+
+示例：
+
+```javascript
+const person = { name: 'Alice' };
+function sayHello(greeting) {
+  console.log(
+${greeting}, I am ${this.name}
+);
+}
+sayHello.call(person, 'Hello'); // 输出: Hello, I am Alice
+```
+
+---
+
+4. apply()
+
+`apply` 与 `call` 类似，但传入参数时需要使用​数组​。
+
+语法：
+
+```javascript
+func.apply(thisArg, [arg1, arg2, ...])
+```
+
+特点：
+
+- 立即执行函数。
+- 参数以数组的形式传递。
+
+示例：
+
+```javascript
+const person = { name: 'Alice' };
+function sayHello(greeting, punctuation) {
+  console.log(
+${greeting}, I am ${this.name}${punctuation}
+);
+}
+sayHello.apply(person, ['Hello', '!']); // 输出: Hello, I am Alice!
+```
+
+---
+
+5. bind()
+
+`bind` 方法返回一个​新的函数​，并将 `this` 绑定到指定的对象，​不会立即执行​，而是在调用新函数时执行。
+
+语法：
+
+```javascript
+const newFunc = func.bind(thisArg, arg1, arg2, ...)
+```
+
+特点：
+
+- 不会立即执行，返回一个新函数。
+- 可以预设部分参数（称为函数​​柯里化​）。
+
+示例：
+
+```javascript
+const person = { name: 'Alice' };
+function sayHello(greeting) {
+  console.log(
+${greeting}, I am ${this.name}
+);
+}
+const boundSayHello = sayHello.bind(person, 'Hi');
+boundSayHello(); // 输出: Hi, I am Alice
+```
+
+---
+
+### 三者的区别总结
+
+| 方法  | 是否立即执行 | 参数传递方式 | 返回值   |
+| ----- | ------------ | ------------ | -------- |
+| call  | 立即执行     | 逐个传入     | 函数结果 |
+| apply | 立即执行     | 数组传入     | 函数结果 |
+| bind  | 不立即执行   | 逐个传入     | 新函数   |
+
+---
+
+### 何时使用它们？
+
+- ​`call`​：需要立即执行函数且参数已知时。
+- ​`apply`​：需要立即执行函数但参数是数组时（如 Math.max）。
+- ​`bind`​：需要在稍后调用函数，或用于函数柯里化（预设部分参数）。
+
+箭头函数可以绑定 this 对象，大大减少了显式绑定 this 对象的写法（ call 、 apply 、 bind ）。但是，箭头函数并不适用于所有场合，所以ES7提出了“函数绑定”（function bind）运算符，用来取代 call 、 apply 、 bind 调用。虽然该语法还是ES7的一个提案，但是Babel转码器已经支持。 函数绑定运算符是并排的两个冒号（::），双冒号左边是一个对象，右边是一个函数。该运算符会自动将左边的对象，作为上下文环境（即this对象），绑定到右边的函数上面。
+
+```javascript
+foo::bar;
+// 等同于
+bar.bind(foo);
+foo::bar(...arguments);
+// 等同于
+bar.apply(foo, arguments);
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+function hasOwn(obj, key) {
+return obj::hasOwnProperty(key);
+}
+```
+
+如果双冒号左边为空，右边是一个对象的方法，则等于将该方法绑定在该对象上 面。
+
+```javascript
+var method = obj::obj.foo;
+// 等同于
+var method = ::obj.foo;
+let log = ::console.log;
+// 等同于
+var log = console.log.bind(console);
+```
+
+由于双冒号运算符返回的还是原对象，因此可以采用链式写法。
+
+```javascript
+// 例一
+import { map, takeWhile, forEach } from "iterlib";
+getPlayers()
+::map(x => x.character())
+::takeWhile(x => x.strength > 100)
+::forEach(x => console.log(x));
+// 例二
+let { find, html } = jake;
+document.querySelectorAll("div.myClass")
+::find("p")
+::html("hahaha");
+```
+
+# 尾调用优化
+
+尾调用（Tail Call）是函数式编程的一个重要概念，本身非常简单，一句话就能说清楚，就是指某个函数的最后一步是调用另一个函数。
+
+```javascript
+function f(x){
+return g(x);
+}
+```
+
+```javascript
+function f() {
+let m = 1;
+let n = 2;
+return g(m + n);
+}
+f();
+// 等同于
+function f() {
+return g(3);
+}
+f();
+// 等同于
+g(3);
+```
+
+上面代码中，如果函数 g 不是尾调用，函数 f 就需要保存内部变量 m 和 n 的 值、 g 的调用位置等信息。但由于调用 g 之后，函数 f 就结束了，所以执行到 最后一步，完全可以删除 f(x) 的调用帧，只保留 g(3) 的调用帧。
+
+这就叫做“尾调用优化”（Tail call optimization），即只保留内层函数的调用帧。如果所有函数都是尾调用，那么完全可以做到每次执行时，调用帧只有一项，这将大大节省内存。这就是“尾调用优化”的意义。 注意，只有不再用到外层函数的内部变量，内层函数的调用帧才会取代外层函数的调用帧，否则就无法进行“尾调用优化”。
+
+ES6 的尾调用优化只在严格模式下开启，正常模式是无效的。
+
+尾递归优化只在严格模式下生效，那么正常模式下，或者那些不支持该功能的环境 中，有没有办法也使用尾递归优化呢？回答是可以的，就是自己实现尾递归优化。 它的原理非常简单。尾递归之所以需要优化，原因是调用栈太多，造成溢出，那么 只要减少调用栈，就不会溢出。怎么做可以减少调用栈呢？就是采用“循环”换掉“递 归”。
+
+# Array
+
+Array.from 方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（iterable）的对象（包括ES6新增的数据结构Set和Map）。
+
+```javascript
+let arrayLike = {
+'0': 'a',
+'1': 'b',
+'2': 'c',
+length: 3
+};
+// ES5的写法
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+// ES6的写法
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+```
+
+常见的类似数组的对象是DOM操作返回的NodeList集合，以及函数内部的 arguments 对象。 Array.from 都可以将它们转为真正的数组。
+
+```javascript
+// NodeList对象
+let ps = document.querySelectorAll('p');
+Array.from(ps).forEach(function (p) {
+console.log(p);
+});
+// arguments对象
+function foo() {
+var args = Array.from(arguments);
+// ...
+}
+```
+
+上面代码中， querySelectorAll 方法返回的是一个类似数组的对象，可以将这 个对象转为真正的数组，再使用 forEach 方法。
+
+只要是部署了Iterator接口的数据结构， Array.from 都能将其转为数组。
+
+```javascript
+[1,2,3].fill(6) //[6,6,6]
+```
+
+### 空位问题
+
+数组的空位指，数组的某一个位置没有任何值。比如， Array 构造函数返回的数组都是空位。
+
+上面代码说明，第一个数组的0号位置是有值的，第二个数组的0号位置没有值。ES5 对空位的处理，已经很不一致了，大多数情况下会忽略空位。
+
+```javascript
+Array(3) // [, , ,]
+```
+
+上面代码中， Array(3) 返回一个具有3个空位的数组。 注意，空位不是 undefined ，一个位置的值等于 undefined ，依然是有值的。空位是没有任何值， in 运算符可以说明这一点。
+
+```javascript
+0 in [undefined, undefined, undefined] // true
+0 in [, , ,] // false
+```
+
+上面代码说明，第一个数组的0号位置是有值的，第二个数组的0号位置没有值。
+
+ES5
+
+对空位的处理，已经很不一致了，大多数情况下会忽略空位。 `forEach()` , `filter()` , `every()` 和 `some()` 都会跳过空位。 `map()` 会跳过空位，但会保留这个值 `join()` 和 `toString()` 会将空位视为 `undefined` ， 而 `undefined` 和 `null` 会被处理成空字符串。
+
+```javascript
+// forEach方法
+[,'a'].forEach((x,i) => console.log(i)); // 1
+// filter方法
+['a',,'b'].filter(x => true) // ['a','b']
+// every方法
+[,'a'].every(x => x==='a') // true
+// some方法
+[,'a'].some(x => x !== 'a') // false
+// map方法
+[,'a'].map(x => 1) // [,1]
+// join方法
+[,'a',undefined,null].join('#') // "#a##"
+// toString方法
+[,'a',undefined,null].toString() // ",a,,"
+```
+
+ES6
+
+明确将空位转为 `undefined` 。 `Array.from` 方法会将数组的空位，转为 `undefined` ，也就是说，这个方法不会忽略空位。
+
+# 对象
+
+`Object.assign()`
+
+# Symbol
+
+# Set和Map
+
+# Proxy
+
+# Reflect

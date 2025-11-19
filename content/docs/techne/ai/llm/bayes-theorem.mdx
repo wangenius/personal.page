@@ -51,7 +51,7 @@ $$
 
 - 新市场数据（B）出现 → 更新你对“需求是否真实”（A）的信念；
 - 新客户反馈（B）到来 → 修正你对“产品是否有价值”（A）的判断；
-- 投资人说“不”（B） → 并不自动意味着 A 为假，只能说明 (P(B \\mid A)) 里存在噪声。
+- 投资人说“不”（B） → 并不自动意味着 A 为假，只能说明 (P(B mid A)) 里存在噪声。
 
 本质上，它要求我们：
 不要把任何既有认知当作“定论”，而是随着证据流不断动态更新。
@@ -259,7 +259,7 @@ $$
 
 2. 变分推断（VI）：
    - 给参数或隐变量假设一个近似分布 $q_\phi(\theta)$
-   - 优化 KL 距离：$\min_\phi \\mathrm{KL}\big(q_\phi(\theta) \\Vert P(\theta \mid \mathcal{D})\\big)$
+   - 优化 KL 距离：$\min_\phi mathrm{KL}\big(q_\phi(\theta) Vert P(\theta \mid \mathcal{D})big)$
 
 GPT 的标准训练更接近于 MAP；
 但你可以从 VI 的视角去看它的行为模式：

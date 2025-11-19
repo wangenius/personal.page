@@ -1,0 +1,139 @@
+---
+title: Docker Compose 联调场景
+---
+
+当服务数量从单个扩展到多个（Web、API、DB、缓存等），用裸 `docker run` 会变得混乱。Compose 提供了一份声明式的 `docker-compose.yml`，帮你描述整套开发栈。
+
+## 一个最小例子
+
+`docker-compose.yml`：
+
+```yaml
+version: "3.9"
+
+services:
+  app:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: ["npm", "run", "dev"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
+```
+
+启动与关闭：
+
+```bash
+docker compose up      # 前台运行，便于观察日志
+docker compose up -d   # 后台运行
+docker compose down    # 停止并移除容器
+```
+
+## Compose 文件的基本结构
+
+- `services`：核心部分，每个服务对应一个容器或容器组的配置。
+- `volumes`：命名卷定义，可在多个服务之间复用。
+- `networks`（可选）：自定义网络拓扑，未显式声明时会创建默认网络。
+
+与单独的 `docker run` 相比，Compose 提供了：
+
+- 更易读的配置文件。
+- 更方便的一键启动/关闭入口。
+- 更清晰的服务间依赖表达。
+
+## 本地开发的典型用法
+
+在上面的例子中，我们已经使用：
+
+- `volumes: ['./:/app']`：将当前项目目录挂载到容器的 `/app`。
+- `command: ['npm', 'run', 'dev']`：使用开发模式启动。
+
+这允许你在宿主机编辑代码，容器内的 Node 进程自动重载。常见组合：
+
+- Web：`next dev` / `vite dev`。
+- API：`nodemon` / `ts-node-dev` 等。
+
+## 用 override 文件区分环境
+
+避免在一份文件里堆满开发和 CI 的配置，可以使用多个 Compose 文件：
+
+- `docker-compose.yml`：基础配置。
+- `docker-compose.override.yml`：仅在开发机使用，例如挂载本地代码、使用不同端口等。
+
+示例 `docker-compose.override.yml`：
+
+```yaml
+services:
+  app:
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./:/app
+    command: ["npm", "run", "dev"]
+```
+
+本地启动时，Compose 会自动加载 override 文件：
+
+```bash
+docker compose up
+```
+
+在 CI 中，可以仅使用基础文件：
+
+```bash
+docker compose -f docker-compose.yml up --build
+```
+
+## 观测与健康检查
+
+日志与状态是联调时最常用的信息来源：
+
+- 查看所有服务日志：
+
+  ```bash
+  docker compose logs -f
+  ```
+
+- 限定某个服务：
+
+  ```bash
+  docker compose logs -f app
+  ```
+
+可以结合 `healthcheck` 与 `depends_on` 控制启动顺序与可用性：
+
+```yaml
+services:
+  db:
+    image: postgres:16
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "app"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    # ...
+    depends_on:
+      db:
+        condition: service_healthy
+```
+
+如此一来，`app` 只有在 `db` 健康之后才会尝试启动，减少“应用先启动却连不上数据库”的无效失败。
+
+掌握 Compose 之后，你可以为大多数本地开发场景搭一个“一键起停”的环境，后续在 Kubernetes 或云端实践时，也会频繁复用类似的服务编排思维。

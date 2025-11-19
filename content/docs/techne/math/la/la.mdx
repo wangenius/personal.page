@@ -5,27 +5,28 @@ title: 线性代数
 > 点击查看和下载：[线性代数公式大纲](/img/LA.png)
 
 > 线性代数的两种理解：
+>
 > - 由列向量张成的线性空间
 > - 将向量作为输入和输出的一类函数（线性变换、空间变换、空间伸展）
 
 ‍
 
-> 通设$A=\begin{bmatrix}a_{11} & a_{12} & a_{13}\\ a_{21} & a_{22} & a_{23}\\ a_{31} & a_{32} & a_{33}\end{bmatrix}$，$B=\begin{bmatrix}b_{11} & b_{12} & b_{13}\\ b_{21} & b_{22} & b_{23}\\ b_{31} & b_{32} & b_{33}\end{bmatrix}$,$\alpha=\left\lbrack a,b,c\right\rbrack^{T},\beta=\left\lbrack d,e,f\right\rbrack^{T},\gamma=\left\lbrack h,i,j\right\rbrack^{T}$
+> 通设$A=\begin{bmatrix}a_{11} & a_{12} & a_{13} a_{21} & a_{22} & a_{23} a_{31} & a_{32} & a_{33}\end{bmatrix}$，$B=\begin{bmatrix}b_{11} & b_{12} & b_{13} b_{21} & b_{22} & b_{23} b_{31} & b_{32} & b_{33}\end{bmatrix}$,$\alpha=\left\lbrack a,b,c\right\rbrack^{T},\beta=\left\lbrack d,e,f\right\rbrack^{T},\gamma=\left\lbrack h,i,j\right\rbrack^{T}$
 
-1.  同型矩阵：主空间和基向量数都相同的矩阵。 
-2.  正交矩阵：$A^T=A^{-1}(AA^T=E)$，矩阵由规范正交基组成 
-3.  初等矩阵：单位矩阵$E$经过一次初等变换得到的矩阵$E_{ij}$ 
-4.  可逆矩阵：$PP^{-1}=QQ^{-1}=E$，可逆矩阵一定可以通过单位矩阵进行有限次初等变换得到。 
-5.  等价矩阵（A可以通过有限次初等变换化为B）：$PAQ=B$ 
-   1. 充要条件：$AB$((20230929130221-mfuz6qu '同型矩阵'))且
-   2. $r(A)=r(B)=r(A|B)$
-6.  等价向量组：两个向量组相互可以线性表出 
-7.  相似矩阵：$P^{-1}AP=B$ 
-8.  正定矩阵：$\lambda_i>0$：必要条件：$a_{ii}>0$,$|A|>0$ 
-   1. 惯性指数全部为正
-   2. $A\simeq E$ 合同
-   3. 全部顺序主子式大于0
-   4. 特征值全部$>0$
+1.  同型矩阵：主空间和基向量数都相同的矩阵。
+2.  正交矩阵：$A^T=A^{-1}(AA^T=E)$，矩阵由规范正交基组成
+3.  初等矩阵：单位矩阵$E$经过一次初等变换得到的矩阵$E_{ij}$
+4.  可逆矩阵：$PP^{-1}=QQ^{-1}=E$，可逆矩阵一定可以通过单位矩阵进行有限次初等变换得到。
+5.  等价矩阵（A可以通过有限次初等变换化为B）：$PAQ=B$
+6.  充要条件：$AB$((20230929130221-mfuz6qu '同型矩阵'))且
+7.  $r(A)=r(B)=r(A|B)$
+8.  等价向量组：两个向量组相互可以线性表出
+9.  相似矩阵：$P^{-1}AP=B$
+10. 正定矩阵：$\lambda_i>0$：必要条件：$a_{ii}>0$,$|A|>0$
+11. 惯性指数全部为正
+12. $A\simeq E$ 合同
+13. 全部顺序主子式大于0
+14. 特征值全部$>0$
 
 > 矩阵行列式运算结果为互质饱和空间的基向量图形积。图形积为0，存在冗余向量或虚空间，因此线性相关。
 
@@ -48,35 +49,328 @@ title: 线性代数
 2. $AA^*=A^*A=|A|E$
 3. $|A^*|=|A|^{n-1}$
 4. $(A^T)^*=(A^*)^T$
-{/* 5. $\left(A^{-1}\right)^{\ast}=\left(A^{\ast}\right)^{-1}$ */}
-{/* 6. $(AB)^{*}=B^{*}A^{*}$ */}
-7. $(A^*)^*=|A|^{n-2}A$
+   {/* 5. $\left(A^{-1}\right)^{\ast}=\left(A^{\ast}\right)^{-1}$ */}
+   {/* 6. $(AB)^{*}=B^{*}A^{*}$ */}
+5. $(A^*)^*=|A|^{n-2}A$
 
 > 逆运算
 
-{/* 1. $A^{-1}=\dfrac{1}{\det A}A^*$ */}
-2. $(A^{-1})^{-1}=A$
-3. $(kA)^{-1}=\dfrac{1}{k}A^{-1}$
-4. $(AB)^{-1}=B^{-1}A^{-1}$
-5. $\left(A^{T}\right)^{-1}=\left(A^{-1}\right)^{T}$
-6. $\det A^{-1}=\left(\det A\right)^{-1}$
-7. $A^{-1},B^{-1}\;\not\!\!\!\implies (A+B)^{-1}$
+{/* 1. $A^{-1}=\dfrac{1}{\det A}A^*$ */} 2. $(A^{-1})^{-1}=A$ 3. $(kA)^{-1}=\dfrac{1}{k}A^{-1}$ 4. $(AB)^{-1}=B^{-1}A^{-1}$ 5. $\left(A^{T}\right)^{-1}=\left(A^{-1}\right)^{T}$ 6. $\det A^{-1}=\left(\det A\right)^{-1}$ 7. $A^{-1},B^{-1}\;\not\!\!\!\implies (A+B)^{-1}$
 
 > 其他
 
-1. 旋转：$A=\begin{bmatrix}\cos\theta & -\sin\theta\\ \sin\theta & \cos\theta\end{bmatrix}$将列向量逆时针旋转$\theta$度
-2. 镜像：$A=\begin{bmatrix}-1 & 0\\ 0 & 1\end{bmatrix}$
+1. 旋转：$A=\begin{bmatrix}\cos\theta & -\sin\theta \sin\theta & \cos\theta\end{bmatrix}$将列向量逆时针旋转$\theta$度
+2. 镜像：$A=\begin{bmatrix}-1 & 0 0 & 1\end{bmatrix}$
 
 > 分块运算
 
-{/* 1. 拉普拉斯：$\begin{cases}\det\begin{bmatrix}A & O\\ B & C\end{bmatrix}=\det A\cdot\det B\\ \det\begin{bmatrix}O & A\\ B & C\end{bmatrix}=\left(-1\right)^{mn}\det A\cdot\det B\end{cases}$ */}
+{/* 1. 拉普拉斯：$\begin{cases}\det\begin{bmatrix}A & O B & C\end{bmatrix}=\det A\cdot\det B \det\begin{bmatrix}O & A B & C\end{bmatrix}=\left(-1\right)^{mn}\det A\cdot\det B\end{cases}$ */} 2. 范德蒙德行列式：
+
+$\det\left\lbrack x_{j}^{i-1}\right\rbrack=\prod_{1\le i\le j\le n}^{}\left(x_{j}-x_{i}\right)$
+
+3. $\begin{bmatrix}A & O O & B\end{bmatrix}^{-1}=\begin{bmatrix}A^{-1} & O O & B^{-1}\end{bmatrix},\begin{bmatrix}O & A B & O\end{bmatrix}^{-1}=\begin{bmatrix}O^{} & B^{-1} A^{-1} & O\end{bmatrix},\begin{bmatrix}B & O D & C\end{bmatrix}^{-1}=\begin{bmatrix}B^{-1} & O -C^{-1}DB^{-1} & C^{-1}\end{bmatrix}$
+4. $\begin{bmatrix}A & B C & D\end{bmatrix}^{T}=\begin{bmatrix}A^{T} & C^{T} B^{T} & D^{T}\end{bmatrix}$
+5. $\begin{bmatrix}A & B C & D\end{bmatrix}\begin{bmatrix}E & F G & H\end{bmatrix}=\begin{bmatrix}AE+BG & AF+BH CE+DG & CF+DH\end{bmatrix}$
+6. $\begin{bmatrix}A &   & D\end{bmatrix}^{n}=\begin{bmatrix}A^{n} &   & D^{n}\end{bmatrix}$
+7. $\begin{bmatrix}A_1 &  &  &   & A_2 &  &   &  & \ddots &   &  &  & A_{n}\end{bmatrix}^{-1}=\begin{bmatrix}A_1^{-1} &  &  &   & A_2^{-1} &  &   &  & \ddots &   &  &  & A_{n}^{-1}\end{bmatrix}$
+8. $\begin{bmatrix} &  &  & A_1  &  & A_2 &   & \ddots &  &  A_{n} &  &  & \end{bmatrix}^{-1}=\begin{bmatrix} &  &  & A_{n}^{-1}  &  & \ddots &   & A_2^{-1} &  &  A_1^{-1} &  &  & \end{bmatrix}$
+
+![](https://cdn.nlark.com/yuque/0/2023/png/22397707/1702990601267-409e52af-4aca-4652-9dae-68b84f445795.png)
+
+> 线性代数的两种理解：
+>
+> - 由列向量张成的线性空间
+> - 将向量作为输入和输出的一类函数（线性变换、空间变换、空间伸展）
+
+# 向量
+
+1. 向量的模：$ \|\alpha\|=\sum a\_{i}^2 $
+2. 向量的内积：$ (\alpha,\beta)=\alpha^T\beta $
+
+# 向量组和空间
+
+> 基空间$ U $=极大无关列空间（互质列空间）=实空间=内空间=极大线性无关组组成的空间：$ S $，$ n $个向量张成的空间。
+>
+> 主空间$ M $=存在空间=最大行空间：$ S $的行的数目
+>
+> 虚空间$ V $=主空间-基空间
+>
+> 我主要采用主空间-基空间的命名方法，因为基这个字的密度很大，看起来就像里面充满了向量。主字则相反，刚好对应加上了一些虚空间后密度没有那么大的空间。
+>
+> 练习：
+>
+> 1. $ \begin{bmatrix}a & b & b e & f & f 0 & 0 & 0\end{bmatrix} $:基向量3个，基空间2d，主空间是3d，虚空间（非饱和度）是3-2=1d.  
+因为基向量>基空间，所以线性相关。现在这个向量空间状态是不饱和的相关向量组，存在冗余向量。因为基空间并没有主空间填满。称之为冗余不饱和态。$ rank=2 $
+> 2. $ \begin{bmatrix}a & b & c e & f & g\end{bmatrix} $：基向量3，基空间2d，主空间2d，虚空间0；  
+基向量>基空间，所以线性相关。现在这个向量空间的状态是饱和的相关向量组，存在冗余向量。基空间已经把主空间撑满。称之为冗余饱和态。$ rank=2 $
+> 3. $ \begin{bmatrix}a & b  e & f  0 & 0 \end{bmatrix} $：基向量2，基空间2d，主空间3d，虚空间3-2=1d  
+基向量=基空间，线性无关。现在者个向量空间的状态是不饱和的不相关向量组，没有冗余向量，成为互质向量，基向量所张成的基空间并没有把主空间撑满，所以互质不饱和态。$ rank=2 $
+> 4. $ \begin{bmatrix}a & b c & d\end{bmatrix} $：基向量2，基空间2d，主空间2d，虚空间0；  
+基向量=基空间，所以线性无关。现在这个向量空间的状态是饱和的相关向量组，不存在冗余向量。基空间已经把主空间撑满。称之为互质饱和态。$ rank=2 $
+>
+> 由上面几个例子可以看出，基空间始终是小于等于基向量数和主空间的较小值的，而此结论也可以很容易和直观地感受到。
+>
+> 另外冗余向量个数=基向量个数-基空间数，我们将其称之为冗余度。或者可以和虚空间对应成为虚向量，在实际空间生成过程中，虚向量也是要湮灭和塌陷的。虚空间的个数称之为非饱和度。
+>
+> 虚空间塌陷的方向：不同的行代表着主空间中不同的维度方向（后文中的等价向量组的定义相关：如果两个空间的虚空间塌陷方向不同，两个空间无法相互线性表出。即不是等价向量组）
+>
+> 关于互质向量的命名：在我自己看都比较勉强，只是从他们正交后一个向量代表一个方向来看，因为张成这个空间$n$个向量在正交化后的维度仍然是$n$个，所以这$n$个向量的简化的来看各代表一个方向，暂且称之为互质。
+>
+> 另外，我把主空间的基础上的虚空间称之为**塌陷**。而基空间在做空间变换时维度的减小称之为**坍缩**。
+>
+> 下面我们正式进入关于向量组的研究中。
+
+1.  标准正交基：向量两两正交的列向量组。对于任意的向量$ \alpha,\beta $都有$ \alpha^T\beta=0 $
+2.  规范正交基：两两正交的单位向量组。在标准正交基的基础上，对每个向量进行单位化。
+3.  线性相关：$ S $中至少有一个向量可以由其余向量线性表出(基向量个数>基空间或者存在冗余向量)
+    1.  $ S $无关， $ [S|\beta] $相关， $ \beta $线性表出的表示法唯一：冗余度ρ=1，线性表出法唯一。
+    2.  用$ n $维空间表示的无关向量组个数最多是$ n $个：基空间数\<主空间数
+    3.  $ Ax=0 $有非零解，$ S $线性相关；$ Ax=\beta $有解，则$ \beta $可以被$ \alpha_i $表出。
+
+> 这两个公式与矩阵的乘法相关。更深入的理解需要结合。$ Ax $可以理解为$ x $向量在$ A $空间中的坐标，但是用的是自然基$ E $表示或直接地，$ A $空间中的$ x $向量在自然基下的位置坐标。进一步可以简化的理解为$ x $向量为$ A $的每个基向量们分配了系数。即$ \sum x_i\alpha_i=0 $，显然，如果$ x $存在非零分量，那么$ S $线性相关。同理，$ Ax=\beta $的结论显然成立。
+
+4.  基向量无关（基向量=基空间），主空间升维后基向量一定无关。基向量相关，空间降维后一定也相关。
+
+> 即向量空间互质非饱和态的情况下，空间升维后，向量组仍然互质。实际可参考上文给出的4个例子，可以直观理解。
+
+> 相关性证明：
+
+4.  向量组三秩相等：$ r(S)=r(行向量)=r(列向量)=r(极大线性无关组) $（非冗余向量组）：矩阵的秩=基空间的值=主空间的值-虚空间的值
+5.  等价向量组：向量组中的向量都可以被另一个向量组线性表出。（基空间相同）
+
+> 基空间相同的意义在于其虚空间塌陷的方向是一样的。
+
+6.  $ PA=B $：$ A $生成的行向量组和$ B $生成的行向量组等价。
+
+> 即$ A^{T}\cong B^T $.注意是转置，因为初等行变换不会改变列向量的位置，即向量转置后的虚空间的塌缩维度不会变。所以等价。
+
+> 上一部分我们只是把向量空间$ S $的自有性质做了简单的了解。但是向量空间存在在哪里？或者说这些基向量所指或者存在的坐标系是哪里？又或者这些基向量是针对什么空间来讨论的？我们尚未可知。当两个向量空间$ A,B $存在时，如何确定他们的关系？下面我们解释和讨论这个问题。
+
+先告诉答案：在 $AB=C$ 的式子中，例如$ \begin{bmatrix}1 & 0 & 0 0 & 1 & 0\end{bmatrix}\begin{bmatrix}1 & 0 1 & 0 0 & 1\end{bmatrix}=\begin{bmatrix}1 & 0 1 & 0\end{bmatrix} $，表示的是$ B $的基向量的系数挂载在A空间的基向量。换句话说，B的基向量的参考坐标轴是A空间的基向量。直白点，B的基向量是数值，而A的基向量是单位。因为这个挂靠关系，所以B的主空间的个数（B的行数）=A的基向量的个数（A的列数）。因为系数对应。（这里是与基向量的个数对应，而不是基空间，当基向量大于基空间时，基空间会塌陷）生成了$ C $。$ C $空间的主空间继承A的主空间（容易理解），C空间的基向量继承B的基向量（容易理解），C空间的基空间可能会发生坍缩。坍缩度=？。而对于C而言，其实是默认使用自然基（简单化坐标系：根坐标系为自然基）。$ EC. $
+
+> 另一种解释，本质是相同的：**右矩阵中的列向量做左矩阵的线性变换（基向量相对自然基发生改变，乘法结果用自然基表示）因此左右有序，不满足交换律。** 任何一个向量被一个矩阵左乘（即线性变换），实际几何意义就是在这个向量所在的空间的坐标系被进行了更换！新的坐标系中，基向量就是这个矩阵的两个列向量！简单来说，线性变换的意义就是用新的基向量来表示原本向量。**矩阵的线性变换是一种对空间的操作，而非对空间内某一对象的操作。（@刘亚曦）**
+
+1.  $ Bx = Cy $ ：自然基下的坐标相等(固定参考系)
+2.  **基变换公式：**，$ A $空间变换右乘$ C $变成$ B $空间，$ C $称为过渡矩阵。过渡矩阵是可逆矩阵。$ C $的第$ i $列是新基的第$ i $个列向量在旧基下的坐标。
+
+> 由此总结出：每一个向量组或者矩阵实质代表n个列向量组成的一个空间，行数是这个空间的主空间维度。左乘代表这个空间的参考原空间。右乘代表这个向量的基经过变换，当然右乘的矩阵应该是方阵。
+
+3.  **坐标变换公式：**
+4.  如何对空间进行正交规范化：
+    1. 先进行标准正交化：$ \begin{cases}\beta_1=\alpha_1 \beta_2=\alpha_2-\dfrac{\left(\alpha_1,\beta_1\right)}{\left(\beta_1,\beta_1\right)}\beta_1\end{cases} $
+    2. 再进行规范化：$ \eta*{i}=\dfrac{\beta*{i}}{\|\beta\_{i}\|} $
+
+‍
+
+# 线性方程组的解
+
+> 线性方程组和向量组其实是一个问题，但考试中多以线性方程组的概念出现，我们单独理解一下。
+
+线性方程组求的$ Ax=b $中的$ x $，其含义是在空间$ A $中通过各个基向量参数生成$ b $向量。换句话说，自然基下的$ b $向量如何在$ A $空间中表达？
+
+这是一种映射问题：映射结构有三种：1对1，1对多，多对1.
+
+> 解空间
+
+对于齐次方程组：$ Ax=0 $所求x只有0解，$ A $没有冗余向量，没有线性无关解。换个方向理解，即除了0向量，A无法将任何向量映射为0向量。
+
+如果有非0解，意味着$ A $中的基向量线性相关，有$ A $空间有冗余向量。多一个冗余向量就多一个线性无关解。线性无关解的个数=冗余度。线性无关解代表一个解的方向，所有的线性无关解组成基础解系。方程组的所有解都可以通过基础解系线性表出。（在映射关系上，有冗余向量可以参与到变形中来，因此解有很多）
+
+解空间=基础解系作为基向量形成的空间。空间不一定饱和，但向量一定互质。
+
+通解：解空间\*系数向量=$ R\cdot k=\sum k*{i}\xi*{i} $
+
+> 如何理解线性无关解的个数等于冗余度？$ Ax $表示$ x $向量在$ A $空间中的基向量上的系数坐标。当$ A $空间存在冗余向量时，冗余向量对$ x $的定位没有任何作用。所以$ x $中对应冗余向量的值无意义（指向$ A $中的虚空间或直接被$ A $的主空间湮灭了）。例如：
+>
+> 1. $ \begin{bmatrix}1 & 0 & 0 0 & 1 & 0\end{bmatrix}\begin{bmatrix}a b c\end{bmatrix}=\begin{bmatrix}0 0\end{bmatrix} $中：$ A $对应1个冗余度，$ c $被$ A $的主空间湮灭了。所以有一个线性无关解$ \begin{bmatrix}0 0 1\end{bmatrix} $。
+> 2. $ \begin{bmatrix}1 & 0 & 0 0 & 1 & 0 0 & 0 & 0\end{bmatrix}\begin{bmatrix}a b c\end{bmatrix}=\begin{bmatrix}0 0 0\end{bmatrix} $中：$ A $对应1个冗余度，$ c $指向$ A $中的虚空间无意义。所以有一个线性无关解$ \begin{bmatrix}0 0 1\end{bmatrix} $。
+
+1.  初等变换将解化成同解方程组。
+    1. 行阶梯型：若有0行，全在下方，出现连续的0的个数自上向下严格单增。
+    2. 行最简阶梯型：台角位置都是1，台角正上方元素都是0
+
+对于非齐次方程组$ Ax=b $：与$ A $是否存在虚空间有关。
+
+若$ A $存在虚空间，意味着$ A $中的基向量无法对虚维向量进行表示，因此如果是在$ A $空间的虚维上时，是无解的。（$ r(A)\ne r([A|b]) $）；
+
+若$ A $不存在虚空间，且没有冗余向量：$ A $是互质饱和空间：方程组有唯一解。$ r(A)= r([A|b])=n $
+
+若$ A $不存在虚空间，有冗余向量：有无穷多解。因为一个冗余向量代表一个解向量。$ r(A)= r([A|b])<n $
+
+> 解的结构：
+>
+> 1. 齐次解的线性和仍是齐次解
+> 2. 齐次解+非齐次特解 = 非齐次通解
+> 3. 非齐次特解 - 非齐次特解 = 齐次解
+
+> 这与微积分学中微分方程的结构相关。
+
+公共解：满足$ \begin{bmatrix}A B\end{bmatrix}x=0 $的解。
+
+同解方程组： $ r(A)=r(B)=r(\begin{bmatrix}A B\end{bmatrix}) $
+
+‍
+
+# 矩阵
+
+> 通设$ A=\begin{bmatrix}a*{11} & a*{12} & a*{13} a*{21} & a*{22} & a*{23} a*{31} & a*{32} & a*{33}\end{bmatrix} $，$ B=\begin{bmatrix}b*{11} & b*{12} & b*{13} b*{21} & b*{22} & b*{23} b*{31} & b*{32} & b*{33}\end{bmatrix} $,$ \alpha=\left\lbrack a,b,c\right\rbrack^{T},\beta=\left\lbrack d,e,f\right\rbrack^{T},\gamma=\left\lbrack h,i,j\right\rbrack^{T} $
+
+1.  同型矩阵：主空间和基向量数都相同的矩阵。
+2.  正交矩阵：$ A^T=A^{-1}(AA^T=E) $，矩阵由规范正交基组成
+3.  初等矩阵：单位矩阵$ E $经过一次初等变换得到的矩阵$ E\_{ij} $
+4.  可逆矩阵：$ PP^{-1}=QQ^{-1}=E $，可逆矩阵一定可以通过单位矩阵进行有限次初等变换得到。
+5.  等价矩阵<sup>（A可以通过有限次初等变换化为B）</sup>：$ PAQ=B $
+    1. 充要条件：$ AB $((20230929130221-mfuz6qu '同型矩阵'))且
+    2. $ r(A)=r(B)=r(A|B) $
+6.  等价向量组：两个向量组相互可以线性表出
+7.  相似矩阵：$ P^{-1}AP=B $
+8.  正定矩阵：$ \lambda*i>0 $：必要条件：$ a*{ii}>0 $，$ |A|>0 $
+    1. 惯性指数全部为正
+    2. $ A\simeq E $ 合同
+    3. 全部顺序主子式大于0
+    4. 特征值全部$ >0 $
+
+# 矩阵运算
+
+> 矩阵行列式运算结果为互质饱和空间的基向量图形积。图形积为0，存在冗余向量或虚空间，因此线性相关。
+
+1. $ \det(AB)=\det(A)\cdot\det(B) $
+2. $ \det\left(kA\right)=k^{n}\det\left(A\right) $
+3. 行列式按某行展开：$ \det A=\sum _{j=1}^n a_{ij}A\_{ij} $
+4. 两行（列）互换，行列式反号。
+5. 某行的$ k $倍加到另一行上行列式不变。
+
+> 线性运算
+
+1. ((20230929130221-mfuz6qu '同型矩阵'))相等：$ a*{ij}=b*{ij} $
+2. ((20230929130221-mfuz6qu '同型矩阵'))相加：$ A+B=\left\lbrack a*{ij}+b*{ij}\right\rbrack $
+3. 数乘：$ kA=\left\lbrack ka\_{ij}\right\rbrack $，$ k(A+B)=kA+kB $，$ (k+l)A=kA+lA $：数乘空间是将空间的所有向量延展数倍。
+4. $ T $：$ (A^T)^T=A;(kA)^T=kA^T;(A+B)^T=A^T+B^T;(AB)^T=B^TA^T;\det(A^T)=\det(A) $
+
+> 伴随：
+
+1. 伴随：$ A^\*=\left\lbrack\left(-1\right)^{i+j}M\_{ij}\right\rbrack^T $
+2. $ AA^*=A^*A=|A|E $
+3. $ |A^\*|=|A|^{n-1} $
+4. $ (A^T)^_=(A^_)^T $
+5. $ \left(A^{-1}\right)^{\ast}=\left(A^{\ast}\right)^{-1} $
+6. $ (AB)^{_}=B^{_}A^{\*} $
+7. $ (A^_)^_=|A|^{n-2}A $
+
+> 逆运算
+
+1. $ A^{-1}=\dfrac{1}{\det A}A^\* $
+2. $ (A^{-1})^{-1}=A $
+3. $ (kA)^{-1}=\dfrac{1}{k}A^{-1} $
+4. $ (AB)^{-1}=B^{-1}A^{-1} $
+5. $ \left(A^{T}\right)^{-1}=\left(A^{-1}\right)^{T} $
+6. $ \det A^{-1}=\left(\det A\right)^{-1} $
+7. $ A^{-1},B^{-1}\;\not\!\!\!\implies (A+B)^{-1} $
+
+> 其他
+
+1. 旋转：$ A=\begin{bmatrix}\cos\theta & -\sin\theta \sin\theta & \cos\theta\end{bmatrix} $将列向量逆时针旋转$ \theta $度
+2. 镜像：$ A=\begin{bmatrix}-1 & 0 0 & 1\end{bmatrix} $
+
+> 分块运算
+
+1. 拉普拉斯：$ \begin{cases}\det\begin{bmatrix}A & O B & C\end{bmatrix}=\det A\cdot\det B \det\begin{bmatrix}O & A B & C\end{bmatrix}=\left(-1\right)^{mn}\det A\cdot\det B\end{cases} $
 2. 范德蒙德行列式：
 
-{/* $\det\left\lbrack x_{j}^{i-1}\right\rbrack=\prod_{1\le i\le j\le n}^{}\left(x_{j}-x_{i}\right)$ */}
+$ \det\left\lbrack x*{j}^{i-1}\right\rbrack=\prod*{1\le i\le j\le n}^{}\left(x*{j}-x*{i}\right)
+$
 
-3. $\begin{bmatrix}A & O\\ O & B\end{bmatrix}^{-1}=\begin{bmatrix}A^{-1} & O\\ O & B^{-1}\end{bmatrix},\begin{bmatrix}O & A\\ B & O\end{bmatrix}^{-1}=\begin{bmatrix}O^{} & B^{-1}\\ A^{-1} & O\end{bmatrix},\begin{bmatrix}B & O\\ D & C\end{bmatrix}^{-1}=\begin{bmatrix}B^{-1} & O\\ -C^{-1}DB^{-1} & C^{-1}\end{bmatrix}$
-4. $\begin{bmatrix}A & B\\ C & D\end{bmatrix}^{T}=\begin{bmatrix}A^{T} & C^{T}\\ B^{T} & D^{T}\end{bmatrix}$
-5. $\begin{bmatrix}A & B\\ C & D\end{bmatrix}\begin{bmatrix}E & F\\ G & H\end{bmatrix}=\begin{bmatrix}AE+BG & AF+BH\\ CE+DG & CF+DH\end{bmatrix}$
-6. $\begin{bmatrix}A & \\  & D\end{bmatrix}^{n}=\begin{bmatrix}A^{n} & \\  & D^{n}\end{bmatrix}$
-7. $\begin{bmatrix}A_1 &  &  & \\  & A_2 &  & \\  &  & \ddots & \\  &  &  & A_{n}\end{bmatrix}^{-1}=\begin{bmatrix}A_1^{-1} &  &  & \\  & A_2^{-1} &  & \\  &  & \ddots & \\  &  &  & A_{n}^{-1}\end{bmatrix}$
-8. $\begin{bmatrix} &  &  & A_1\\  &  & A_2 & \\  & \ddots &  & \\ A_{n} &  &  & \end{bmatrix}^{-1}=\begin{bmatrix} &  &  & A_{n}^{-1}\\  &  & \ddots & \\  & A_2^{-1} &  & \\ A_1^{-1} &  &  & \end{bmatrix}$
+3. $ \begin{bmatrix}A & O O & B\end{bmatrix}^{-1}=\begin{bmatrix}A^{-1} & O O & B^{-1}\end{bmatrix},\begin{bmatrix}O & A B & O\end{bmatrix}^{-1}=\begin{bmatrix}O^{} & B^{-1} A^{-1} & O\end{bmatrix},\begin{bmatrix}B & O D & C\end{bmatrix}^{-1}=\begin{bmatrix}B^{-1} & O -C^{-1}DB^{-1} & C^{-1}\end{bmatrix} $
+4. $ \begin{bmatrix}A & B C & D\end{bmatrix}^{T}=\begin{bmatrix}A^{T} & C^{T} B^{T} & D^{T}\end{bmatrix} $
+5. $ \begin{bmatrix}A & B C & D\end{bmatrix}\begin{bmatrix}E & F G & H\end{bmatrix}=\begin{bmatrix}AE+BG & AF+BH CE+DG & CF+DH\end{bmatrix} $
+6. $ \begin{bmatrix}A &  & D\end{bmatrix}^{n}=\begin{bmatrix}A^{n} &  & D^{n}\end{bmatrix} $
+7. $ \begin{bmatrix}A*1 & & &  & A_2 & &  & & \ddots &  & & & A*{n}\end{bmatrix}^{-1}=\begin{bmatrix}A*1^{-1} & & &  & A_2^{-1} & &  & & \ddots &  & & & A*{n}^{-1}\end{bmatrix} $
+8. $ \begin{bmatrix} & & & A*1 & & A_2 &  & \ddots & &  A*{n} & & & \end{bmatrix}^{-1}=\begin{bmatrix} & & & A\_{n}^{-1} & & \ddots &  & A_2^{-1} & &  A_1^{-1} & & & \end{bmatrix} $
+
+# 矩阵的初等变换
+
+初等行变换：空间$ S $左乘（挂靠）一个初等空间<sup>（初等空间指单位空间经过一次初等变换的得到的矩阵。）</sup>$ P $。相当于$ S $中的向量从自然基坐标系切换了成了$ P $基坐标系。$ P $有几种（即初等行变换有几类）：
+
+1. $ P $空间的所有基向量在该空间的某一个方向的维度进行非零倍的拉伸。所以$ S $空间不会发生坍缩。
+2. $ P $空间交换所有基向量的两个空间维度。所以$ S $空间不会发生坍缩。
+3. $ P $空间将所有基向量某个维度上的系数的若干倍加到另一个维度上。所以$ S $空间不会发生坍缩。
+
+> 综上：初等变换不改变空间的秩（即基空间的维度）。即初等变换不改变基空间的维度。即该初等变换不会发生空间坍缩。
+
+1.  $ B $在做非初等变换$ A $变换后可能发生空间坍缩。（初等空间不会伤害向量组，但是非初等空间会伤害向量组）
+2.  $ r(S=A+B)\le r(T=[A|B])\le r(A)+r(B) $：$ S $中的基向量均可由$ T $中的基向量线性表出。所以$ r(S)\le r(T) $
+3.  $ r(A^{\*})=\left\{\begin{array}{l}n& r\left(A\right)=n 1&r(A)=n-1 0&r(A)<n-1\end{array}\right. $：饱和态空间的伴随空间时饱和的。非饱和态空间的伴随矩阵含有延冗余向量或虚维度展开的向量，此时伴随矩阵的基空间维度仅存在1或0两种可能。
+
+# 矩阵的相似变换
+
+> 基本前提：$ A $的主空间和基向量数相等。（A是n阶矩阵）空间一致，不同基下的不同映射。
+>
+> 相似矩阵是同一线性变换在不同坐标系下的表达方式。因此相似矩阵的特征值相同，因为矩阵的本质不会改变，该伸缩的伸缩该倾斜的倾斜特征值必定相同。 合同是同一个二次曲线用二次型表示在不同基下的关系。 等价三维空间中的一个平面上的线性变换和二维空间中的一个平面的线性变换相同。
+>
+> 合同一定等价，但不一定相似。 若$ P $为正交矩阵，则合同和相似一致。
+
+$$
+A\xi=\lambda\xi
+$$
+
+$\lambda$特征值，$ \xi $特征向量，$ A^{\prime}=\lambda E-A $特征矩阵，特征多项式$ |A-\lambda E|=0 $：关于$ \lambda $的$ n $次方程。
+
+1. $ \sum \lambda =\sum a\_{ii}=tr(A) $
+2. $ \prod \lambda_i=|A| $
+
+> 对应不同特征值的特征向量线性无关。
+>
+> k重特征值至多有k个线性无关的特征向量
+>
+> 同一特征值对应的不同特征向量的线性和是该特征值的特征向量
+
+$$
+A\sim B\;\iff\;P^{-1}AP=B
+$$
+
+$$
+A\sim B\implies\begin{cases}A^{m}\sim B^{m} f\left(A\right)\sim f\left(B\right) A^{-1}\sim B^{-1} f\left(A^{-1}\right)\sim f\left(B^{-1}\right) A^{T}\sim B^{T} A^{\ast}\sim B^{\ast}\end{cases}
+$$
+
+**相似对角化**：（相似标准化，相似正交化）：$ P^{-1}AP=\Lambda $，其中$ P $是特征向量组成的列向量组，$ \Lambda $为对角线是特征向量对应特征值的对角矩阵。
+
+1.  $ A $可以相似对角化 $ \iff $ $ A $有$ n $个线性无关的特征向量组成$ P $
+2.  $ A $有n个不同的特征值$ \implies $$ A $可以相似对角化
+
+> 实对称矩阵属于不同特征值的特征向量相互正交。
+
+3.  $ A $是实对称矩阵$ \implies $$ A $可以相似对角化
+
+> 对称矩阵必有n个线性无关的特征向量。
+
+# 矩阵的合同变换
+
+> 可以把二次型简单的理解为实对称矩阵。
+
+$$
+f(x,y,z)=[x_1,x_2,x_3]\begin{bmatrix}a*{11} & a*{12} & a*{13} a*{21} & a*{22} & a*{23} a*{31} & a*{32} & a\_{33}\end{bmatrix}\begin{bmatrix}x_1 x_2 x_3\end{bmatrix}=x^{T}Ax
+$$
+
+> 正交矩阵的$ A^T=A^{-1} $
+
+$$
+x=Cy\implies x^TAx=(Cy)^TA(Cy)=y^TC^TACy=y^TBy=g(y)
+$$
+
+$$
+B=C^TAC
+$$
+
+> 可以看出：合同是从二次型得来的概念。经过非退化线性替换，二次型还是二次型（二次曲线还是二次曲线）只不过原来的基是x，现在是y。
+>
+> 可逆线性变换不会改变二次型的秩。 和对称矩阵合同的矩阵也必定是对称矩阵。 合同变换移动坐标轴，实现状态最佳的坐标系。实对称矩阵一定存在正交矩阵使得实对称矩阵化成标准型。
+>
+> 1. 标准型：只含有平方项系数（对角矩阵）没有交叉项的二次型。$f=\sum a_ix_i^2$
+> 2. 规范型：系数只有$ 1，-1，0 $三个数的标准型。
+
+1. 配方法：形成标准型和规范型。
+2. 正交变换法：形成标准型。
+3. 惯性指数$ p q $不变，合同矩阵变换后二次曲面的形态不会发生改变：$ r=p+q $
+4. 两个二次型或实对称矩阵合同的充要条件是有相同的正负惯性指数或有相同的秩和正（负）惯性指数。
+
+‍

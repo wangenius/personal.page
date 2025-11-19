@@ -1,0 +1,137 @@
+---
+title: 镜像与容器快速上手
+---
+
+本篇从概念到实践，帮助你理解“镜像 vs 容器”的关系，并通过几个小实验掌握基本命令。
+
+## 核心概念
+
+- **镜像（Image）**：一组只读的文件层 + 元数据，类似“可复制的系统快照模板”。
+- **容器（Container）**：基于镜像创建的运行实例，有自己的进程、网络和可写层。
+
+常用关系：
+
+- 一个镜像可以创建多个容器。
+- 删除容器不会影响镜像；删除镜像会导致未来无法再从该镜像创建新容器。
+
+## 常用命令速览
+
+```bash
+docker images               # 查看本地已有镜像
+docker ps                   # 查看运行中的容器
+docker ps -a                # 查看所有容器（包括已退出）
+docker pull alpine          # 从仓库拉取镜像
+docker rm <cid>             # 删除容器
+docker rmi <image>          # 删除镜像
+```
+
+## 第一个实验：进入 alpine 容器
+
+运行一个临时容器并进入交互式 shell：
+
+```bash
+docker run -it --rm alpine sh
+```
+
+- `-it`：交互模式 + 伪终端。
+- `--rm`：容器退出后自动删除。
+- `alpine`：使用 Alpine Linux 镜像。
+- `sh`：启动容器后执行的命令。
+
+在容器内部可以执行：
+
+```sh
+uname -a
+ls /
+exit
+```
+
+退出后再次运行 `docker ps`，你会发现容器已经不存在（因为使用了 `--rm`）。
+
+## 构建自己的镜像：Dockerfile 入门
+
+在一个新目录下（例如 `hello-docker/`）创建文件：
+
+`Dockerfile`：
+
+```dockerfile
+FROM node:22-alpine AS base
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --production
+
+FROM base AS runtime
+COPY . .
+
+CMD ["node", "index.js"]
+```
+
+`.dockerignore`：
+
+```text title=".dockerignore"
+node_modules
+npm-debug.log
+.git
+dist
+```
+
+构建镜像：
+
+```bash
+docker build -t hello-docker:dev .
+```
+
+再次执行构建时，如果 `Dockerfile` 中前几步没有变化，Docker 会重用缓存层，大幅缩短构建时间。
+
+## 数据持久化：卷与绑定目录
+
+容器默认的写入是在“可写层”中，容器删除后这些数据会一起消失。持久化数据通常有两种方式：
+
+1. **命名卷（Volume）**：由 Docker 管理的存储。
+
+   ```bash
+   docker volume create pgdata
+   docker run -d --name pg \
+     -v pgdata:/var/lib/postgresql/data \
+     postgres:16
+   ```
+
+   适合数据库这类对 IO 要求高且不关心具体路径位置的场景。
+
+2. **绑定目录（Bind Mount）**：把宿主机上的具体目录挂载到容器里。
+
+   ```bash
+   docker run --rm -it \
+     -v $(pwd):/app \
+     -w /app node:22-alpine sh
+   ```
+
+   常用于本地开发：容器使用宿主机的代码目录，实现热重载。
+
+选择建议：
+
+- 开发代码：用绑定目录，方便编辑。
+- 数据库 / Kafka / Redis 等数据存储：优先命名卷。
+
+## 常用调试技巧
+
+- 查看日志：
+
+  ```bash
+  docker logs -f <container-id-or-name>
+  ```
+
+- 进入运行中的容器：
+
+  ```bash
+  docker exec -it <cid> sh   # 或 bash
+  ```
+
+- 检查容器详细信息（包括网络、挂载、环境变量）：
+
+  ```bash
+  docker inspect <cid>
+  ```
+
+掌握这些基础动作后，你已经具备了用 Docker 运行与观察服务的能力，下一步可以进一步用 Compose 组织多服务联调。

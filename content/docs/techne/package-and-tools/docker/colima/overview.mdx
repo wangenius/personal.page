@@ -1,0 +1,43 @@
+---
+title: Colima 介绍
+---
+
+Colima 基于 Lima，在 macOS 上提供轻量级的 Linux 虚拟机，用来运行容器 Runtime（Docker 或 containerd）。它的目标是：
+
+- **完全本地、开源替代** Docker Desktop。
+- 兼容常见的 `docker` / `docker compose` 命令。
+- 在多架构镜像构建、Kubernetes 本地集群等场景下，更可控、可编程。
+
+## 适用场景
+
+- **日常开发环境**：只需要一个稳定的 Docker Daemon，不想装 Docker Desktop。
+- **多项目隔离**：不同项目需要不同 CPU/内存配置，或需要区分 x86_64 / arm64 架构。
+- **本地 K8s 实验**：搭配 k3s、k3d、kind 等做集群实验，希望底层虚拟机由自己掌控。
+- **资源敏感场景**：Laptop 性能有限，想要更轻的后台服务和更细粒度的资源设置。
+
+不适合（或暂不必用）Colima 的场景：
+
+- 团队统一使用 Docker Desktop 企业版，并强依赖其 GUI 功能与内置扩展。
+- 对底层环境几乎没有自定义需求，只是偶尔跑下容器任务。
+
+## 与 Docker Desktop 的对比
+
+- **安装与升级**：
+  - Docker Desktop：图形安装，升级时常伴随较大体积下载。
+  - Colima：`brew install colima` 即可；升级跟随 Homebrew。
+- **资源占用**：
+  - Docker Desktop：后台常驻进程较多，对内存与 CPU 占用相对更高。
+  - Colima：只在虚拟机运行时占用资源，可通过 profile 精细控制。
+- **开放性与脚本化**：
+  - Docker Desktop：偏向 GUI 管理，CLI 也有但与系统绑定紧密。
+  - Colima：所有操作走 CLI，更容易融入 dotfiles / shell 脚本。
+
+## 本模块结构
+
+本模块会围绕以下几个问题展开：
+
+1. *怎么装好 Colima 并配置成可用的本地环境？*（见《Colima 安装与配置》）
+2. *日常如何在不同项目间切换 profile、使用 Docker CLI？*（见《Colima 日常使用与 Docker 协作》）
+3. *遇到网络异常、磁盘不足、性能问题时如何排查？*（见《常见故障与优化》）
+
+读完这一组文档，你应该能够在 macOS 上完全依赖 Colima 搭建 Docker 环境，而无需 Docker Desktop。

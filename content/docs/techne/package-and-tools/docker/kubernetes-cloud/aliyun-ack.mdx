@@ -1,0 +1,7 @@
+---
+title: 阿里云 ACK 与托管集群
+---
+- 产品定位：ACK 托管控制面，Worker 可选按量/包年；支持弹性伸缩、弹性裸金属、Serverless（ASK）。
+- 准备工作：开通 RAM 权限、配置 `aliyun` CLI/`kubectl`，为镜像仓库（ACR）创建命名空间与登录凭证。
+- 部署流程占位：本地构建镜像推送至 ACR → `kubectl apply`/Helm 部署 → 使用 ACK 提供的 Ingress/SLB 暴露服务。
+- 运维要点：节点池伸缩、日志（阿里云日志服务）、监控（ARMS/Prometheus Operator）、策略（安全组/网络策略）。

@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,10 +15,18 @@ import Link from "next/link";
 import { TbLogout } from "react-icons/tb";
 import { cn } from "@/lib/utils";
 import { BiUser } from "react-icons/bi";
+import { dialog } from "@/components/custom/DialogModal";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
+  const [mounted, setMounted] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+
+  // Delay rendering anything that depends on client-only state (session, user image)
+  // so that the server and first client render stay in sync and avoid hydration drift.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setImageUrl(session?.user.image || undefined);
@@ -36,7 +43,7 @@ export function UserMenu() {
     }
   }, [session]);
 
-  if (isPending) {
+  if (!mounted || isPending) {
     return (
       <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
         <BiUser className="h-4 w-4" />
@@ -52,8 +59,17 @@ export function UserMenu() {
     );
   }
 
-  const handleSignOut = async () => {
-    await signOut();
+  const handleSignOut = () => {
+    dialog.confirm({
+      title: "确认退出登录",
+      content: "确定要退出当前账号吗？",
+      variants: "destructive",
+      okText: "退出登录",
+      cancelText: "取消",
+      onOk: async () => {
+        await signOut();
+      },
+    });
   };
 
   return (
@@ -81,10 +97,23 @@ export function UserMenu() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/subscribe"
+            className="flex w-full items-center text-sm font-medium"
+          >
+            <span className="mr-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/10 text-[10px] font-semibold text-emerald-500">
+              $
+            </span>
+            订阅
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={handleSignOut}
+          className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+        >
           <TbLogout className="mr-2 h-4 w-4" />
-          logout
+          <span className="text-sm font-medium">退出登录</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

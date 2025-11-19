@@ -1,0 +1,9 @@
+{
+  "title": "Colima 本地容器环境",
+  "pages": [
+    "overview",
+    "setup",
+    "usage",
+    "troubleshooting"
+  ]
+}

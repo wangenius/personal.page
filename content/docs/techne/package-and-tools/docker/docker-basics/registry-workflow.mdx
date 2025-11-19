@@ -1,0 +1,108 @@
+---
+title: 镜像仓库与分发流程
+---
+
+本篇介绍如何把本地构建好的镜像推送到远程仓库，并在不同环境（开发机、CI、服务器）之间复用。也会简要触及多架构构建与安全相关的注意点。
+
+## 选择与登录仓库
+
+常见选择：
+
+- 公有云镜像服务（如阿里云 ACR、AWS ECR、GCP Artifact Registry）。
+- Docker Hub 或 GitHub Container Registry。
+- 公司内部的私有 Registry。
+
+以 Docker Hub 为例：
+
+```bash
+docker login
+Username: <your-username>
+Password: <your-token-or-password>
+```
+
+登录成功后，后续的 `docker push` 会自动使用该凭据。
+
+## 打标签与推送镜像
+
+假设本地已有镜像 `hello-docker:dev`，需要推送到 `your-namespace/hello-docker:1.0.0`：
+
+```bash
+docker tag hello-docker:dev your-namespace/hello-docker:1.0.0
+docker push your-namespace/hello-docker:1.0.0
+```
+
+常见模式：
+
+- 使用语义化版本：`1.0.0`、`1.0.1` 等。
+- 同时维护一个 `latest` 或 `stable` 标签：
+
+  ```bash
+  docker tag hello-docker:dev your-namespace/hello-docker:latest
+  docker push your-namespace/hello-docker:latest
+  ```
+
+> 建议在生产中谨慎使用 `latest` 作唯一部署标签，最好明确指定版本，并把 `latest` 视为“方便手动拉取”的别名。
+
+## 拉取与运行镜像
+
+在其他环境（开发机、CI 机、服务器）上，只需：
+
+```bash
+docker pull your-namespace/hello-docker:1.0.0
+docker run --rm your-namespace/hello-docker:1.0.0
+```
+
+如果网络环境较差，可以：
+
+- 使用所在云厂商的镜像加速器或区域内 Registry。
+- 在 CI 中尽量复用缓存层（例如使用 `--cache-from`）。
+
+## 多架构镜像与 buildx
+
+在 Apple Silicon（arm64）上构建给 Linux x86_64 服务器使用的镜像时，推荐使用 `buildx`：
+
+```bash
+docker buildx create --name multiarch --use
+
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t your-namespace/hello-docker:1.0.0 \
+  -t your-namespace/hello-docker:latest \
+  --push .
+```
+
+要点：
+
+- `--platform` 指定多个目标架构。
+- 使用 `--push` 直接将多架构 manifest 与各架构镜像推送到仓库。
+
+之后在目标机器上直接：
+
+```bash
+docker pull your-namespace/hello-docker:1.0.0
+```
+
+Docker 会根据当前平台自动选择合适的镜像层。
+
+## 标签与版本管理建议
+
+常见实践：
+
+- 每次发布使用不可变标签（例如 `1.0.0`），方便回滚与审计。
+- 保持一个滚动标签（例如 `latest` 或 `prod`），指向当前线上版本。
+- 在 CI 流水线中使用构建号或 Git 提交 SHA 衍生标签，例如：`1.0.0-<commit>`。
+
+回滚思路：
+
+- 保留若干历史版本标签。
+- 需要回滚时，将部署指向上一个稳定版本对应的标签即可，无需重新构建。
+
+## 安全与合规（简要）
+
+在基础实践之上，可以逐步引入：
+
+- **镜像扫描**：使用 Trivy、Grype 或云厂商自带工具，在 CI 中扫描漏洞。
+- **镜像签名**：基于 Notary、Cosign 等机制，对镜像签名，并在生产环境只允许验证通过的镜像运行。
+- **最小化镜像**：在 `Dockerfile` 中使用精简基础镜像（如 `alpine` 或 distroless），减少攻击面。
+
+这些主题会在后续“原理与优化”或安全相关模块中进一步展开，这里先作为引导，为后续升级打下基础。

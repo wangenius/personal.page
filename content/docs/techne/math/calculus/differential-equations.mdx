@@ -7,9 +7,9 @@ title: 微分方程
 | --- | --- |
 | $y^{\prime}+p(x)y=q(x)$ | $y=e^{-\int p(x)dx}[\int e^{\int p(x)dx}\cdot q(x)dx+C].$ |
 | $y'=f(x)\cdot g(y)$ | $\int\dfrac{dy}{g(y)}=\int f(x)dx$ |
-| $y'=f(ax+by+c)$ | $u=ax+by+c\implies u'=a+bf(u)\\\int \dfrac{du}{a+bf(u)}=\int dx$ |
-| $y'=f(\dfrac{y}{x})$ | $u=\dfrac{y}{x}\implies y=ux\implies \dfrac{dy}{dx}=\dfrac{du}{dx}x+u \\ \int\dfrac{du}{f(u)-u}=\int\dfrac{dx}{x}$ |
-| $y^{\prime}+p(x)y=q(x)y^n\\(n\ne0,1)$ | $z=y^{1-n}\implies\dfrac{dz}{\mathrm{d}x}=\left(1-n\right)y^{-n}\dfrac{dy}{\mathrm{d}x}\\\dfrac{1}{1-n}\dfrac{dz}{\mathrm{d}x}+p\left(x\right)z=q\left(x\right)$ |
+| $y'=f(ax+by+c)$ | $u=ax+by+c\implies u'=a+bf(u)\int \dfrac{du}{a+bf(u)}=\int dx$ |
+| $y'=f(\dfrac{y}{x})$ | $u=\dfrac{y}{x}\implies y=ux\implies \dfrac{dy}{dx}=\dfrac{du}{dx}x+u  \int\dfrac{du}{f(u)-u}=\int\dfrac{dx}{x}$ |
+| $y^{\prime}+p(x)y=q(x)y^n(n\ne0,1)$ | $z=y^{1-n}\implies\dfrac{dz}{\mathrm{d}x}=\left(1-n\right)y^{-n}\dfrac{dy}{\mathrm{d}x}\dfrac{1}{1-n}\dfrac{dz}{\mathrm{d}x}+p\left(x\right)z=q\left(x\right)$ |
 | $y''=f(x,y')$ | $y'=p\implies y''=p'$ |
 | $y''=f(y,y')$ | $y'=p\implies p\dfrac{dp}{dy}=f(y,p)$ | */}
 
@@ -27,7 +27,7 @@ $y''+py'+q=f(x)$
 
 特征方程：$r^2+pr+q=0$
 {/* 
-齐次线性方程的通解$y=\left\{\begin{array}{llllllllll}C_1e_{}^{\lambda_1x}+C_2e_{}^{\lambda_2x}. & \Delta>0\\ \left(C_1+C_2x\right)e^{\lambda x}. & \Delta=0\\ e^{\alpha x}\left(C_1\cos\beta x+C_2\sin\beta x\right). & \Delta<0\end{array}\right.$ */}
+齐次线性方程的通解$y=\left\{\begin{array}{llllllllll}C_1e_{}^{\lambda_1x}+C_2e_{}^{\lambda_2x}. & \Delta>0 \left(C_1+C_2x\right)e^{\lambda x}. & \Delta=0 e^{\alpha x}\left(C_1\cos\beta x+C_2\sin\beta x\right). & \Delta<0\end{array}\right.$ */}
 
 > $\Delta$是特征方程的判别式，$\lambda$是特征方程的解。
 
@@ -37,7 +37,7 @@ $y''+py'+q=f(x)$
 
 > $k$是$\alpha$和$\lambda$相等的个数。
 
-{/* $f(x)=e^{\alpha x}[P_m(x)\cos \beta x+P_n(x)\sin \beta x]\\\implies y^*=e^{\alpha x}[Q_{\max(m,n)}\cos \beta x+Q^*_{\max(m,n)}\sin\beta x]x^k$ */}
+{/* $f(x)=e^{\alpha x}[P_m(x)\cos \beta x+P_n(x)\sin \beta x]\implies y^*=e^{\alpha x}[Q_{\max(m,n)}\cos \beta x+Q^*_{\max(m,n)}\sin\beta x]x^k$ */}
 
 > $\alpha\pm\beta\mathrm{i}$是特征根，$k=1$，否则$k=0$。
 
@@ -60,11 +60,11 @@ $x^2y''+pxy'+qy=f(x)$
 
 > 情况1：
 
-{/* $\left\{\begin{array}{l}y*=\dfrac{1}{F(D=\alpha)}e^{\alpha x}&F(D=\alpha)\ne0\\ y^{*}=\dfrac{1}{F^{\prime}\left(D=\alpha\right)}xe^{\alpha x}&F(D=\alpha)=0,F'(D=\alpha)\ne0\\y^*=\dfrac{1}{F''(D=\alpha)}x^2e^{\alpha x}&\cdots F''(D=\alpha)\end{array}\right.$ */}
+{/* $\left\{\begin{array}{l}y*=\dfrac{1}{F(D=\alpha)}e^{\alpha x}&F(D=\alpha)\ne0 y^{*}=\dfrac{1}{F^{\prime}\left(D=\alpha\right)}xe^{\alpha x}&F(D=\alpha)=0,F'(D=\alpha)\ne0y^*=\dfrac{1}{F''(D=\alpha)}x^2e^{\alpha x}&\cdots F''(D=\alpha)\end{array}\right.$ */}
 
 > 情况2：
 
-{/* $\left\{\begin{array}{l}y*=\dfrac{1}{F(D^2=-\beta)}\cos\beta x& F(D^2=-\beta)\ne0\\ y^{*}=\dfrac{1}{F^{\prime}\left(D^2=-\beta\right)}x\cos\beta x& F(D^2=-\beta)=0,F^{\prime}(D^2=-\beta)\ne0\end{array}\right.$ */}
+{/* $\left\{\begin{array}{l}y*=\dfrac{1}{F(D^2=-\beta)}\cos\beta x& F(D^2=-\beta)\ne0 y^{*}=\dfrac{1}{F^{\prime}\left(D^2=-\beta\right)}x\cos\beta x& F(D^2=-\beta)=0,F^{\prime}(D^2=-\beta)\ne0\end{array}\right.$ */}
 
 > 情况3：$Q_k(D)$是将$\dfrac1{F(D)}$泰勒展开到$D^k$项。
 

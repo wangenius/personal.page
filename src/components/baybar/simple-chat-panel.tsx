@@ -130,8 +130,7 @@ export function SimpleChatPanel() {
         <ConversationContent className="mx-auto flex w-full flex-col gap-1">
           {visibleMessages.map((message, index) => {
             const isLastMessage = index === visibleMessages.length - 1;
-            const isStreamingMessage =
-              isStreaming && isLastMessage && message.role === "assistant";
+            const isStreamingMessage = isStreaming && isLastMessage;
 
             return (
               <MessageRenderer

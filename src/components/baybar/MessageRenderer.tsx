@@ -107,6 +107,18 @@ export function parseQuote(text: string): ParsedQuote {
 
 type ThinkingPart = ReasoningUIPart | ToolUIPart;
 
+function LoadingDots() {
+  return (
+    <div className="flex w-full justify-start py-2 pl-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-1 rounded-full px-3 py-1">
+        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.2s]" />
+        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.1s]" />
+        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce" />
+      </div>
+    </div>
+  );
+}
+
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -244,6 +256,7 @@ interface MessageRendererProps {
 
 export function MessageRenderer({
   message,
+  isLastMessage,
   isStreaming,
   getTextFromMessage,
 }: MessageRendererProps) {
@@ -453,13 +466,17 @@ export function MessageRenderer({
                 );
               }
             )}
+            {isLastMessage && isStreaming && <LoadingDots />}
           </MessageContent>
         ) : (
           /* 用户消息 */
-          <UserMessageContent
-            parsedQuote={parsedQuote}
-            parsedFiles={parsedFiles}
-          />
+          <>
+            <UserMessageContent
+              parsedQuote={parsedQuote}
+              parsedFiles={parsedFiles}
+            />
+            {isLastMessage && isStreaming && <LoadingDots />}
+          </>
         )}
       </SelectField>
     </Message>

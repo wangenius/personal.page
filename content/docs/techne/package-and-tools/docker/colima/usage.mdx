@@ -1,0 +1,105 @@
+---
+title: Colima 日常使用与 Docker 协作
+---
+
+本篇聚焦“用起来”的体验：如何在 Colima 上自然使用 Docker CLI、在不同 profile 间切换，以及处理端口、卷与 Compose。
+
+## Docker CLI 的透明使用
+
+当 Colima 处于运行状态时，你可以直接使用：
+
+```bash
+docker ps
+docker build -t my-app:dev .
+docker run --rm -it my-app:dev bash
+```
+
+无需额外指定 Daemon 地址，Colima 会负责将 CLI 请求转发给虚拟机内的 Docker。
+
+如果你需要确认当前 `docker` 正在连接哪个 Daemon，可查看：
+
+```bash
+docker context ls
+docker info | grep -i "Docker Root Dir"
+```
+
+## 在不同 profile 间切换
+
+查看所有 profile：
+
+```bash
+colima list
+```
+
+启动某个 profile：
+
+```bash
+colima start --profile dev   # 常规开发
+colima start --profile k8s   # K8s / 集群实验
+```
+
+一次只能有一个 profile 在“当前上下文”中生效。切换 profile 的典型场景：
+
+- 白天在 `dev` profile 下做 Web 应用开发。
+- 需要调试集群与 Ingress 时，切换到 `k8s` profile，启动本地 k3s/k3d。
+
+切换前建议先在当前 profile 中停止对外服务容器，避免端口占用混乱。
+
+## 网络与端口转发
+
+Colima 默认支持将容器端口映射到宿主机，例如：
+
+```bash
+docker run --rm -p 8080:80 nginx
+```
+
+在浏览器访问 `http://localhost:8080` 即可访问容器中的 Nginx。
+
+如果你需要更细粒度的端口控制，可以在对应 profile 的 `colima.yaml` 中：
+
+- 固定暴露的一组端口。
+- 控制是否只绑定到 `127.0.0.1` 或对局域网可见。
+
+遇到端口冲突（例如 80 / 443 / 5432 已被其它进程占用）时：
+
+- 用 `lsof -i :PORT` 找到占用的进程。
+- 或调整 Docker 容器映射的宿主机端口，避开常用端口。
+
+## 卷与文件系统策略
+
+常见工作路径（如 `~/Projects`）通常会被默认共享到虚拟机，挂载方式类似：
+
+```bash
+docker run --rm -v ~/Projects/my-app:/app -w /app node:22 npm run dev
+```
+
+性能建议：
+
+- **读写频繁的代码目录**：保留共享即可，方便编辑与热重载。
+- **高 IO 的数据库 / 缓存数据**：尽量使用容器内部路径或专用卷，例如：
+
+  ```bash
+  docker volume create pgdata
+  docker run -d --name pg -v pgdata:/var/lib/postgresql/data postgres:16
+  ```
+
+需要调整共享目录时，可在 `colima.yaml` 中精简需要共享的路径，减少不必要的 FS 同步开销。
+
+## 与 Docker Compose 协作
+
+一旦 Colima 运行，`docker compose` 即可直接使用：
+
+```bash
+docker compose up          # 或 docker-compose up
+docker compose up -d
+docker compose logs -f
+docker compose down
+```
+
+常见实践：
+
+- 将一个项目的所有服务（Web、API、DB、Redis 等）写在一份 `docker-compose.yml` 中。
+- 内部通过服务名互联（如 `db:5432`），减少手动管理端口。
+- 对于需要特权或额外挂载内核模块的场景，为该项目单独创建一个 Colima profile，避免影响其他开发环境。
+
+通过上述方式，Colima 在日常开发中的存在感可以尽量“隐身”：你只需要记得在开发前 `colima start`，其余工作交给熟悉的 Docker 命令即可。

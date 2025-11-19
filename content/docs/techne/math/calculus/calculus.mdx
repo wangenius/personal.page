@@ -88,9 +88,9 @@ If $f(x)$ is continuous on $[a,b]$:
 9. Direction cosines: $\cos\alpha=v_x/|v|;\quad\cos\beta=v_y/|v|;\quad\cos\gamma=v_z/|v|$
 10. $a = (\cos \alpha,\cos \beta,\cos\gamma)$ The unit vector of vector $v$, representing direction
 11. Projection: $\Pi_uv = (v\cdot u)/|u| = |v|\cos \theta$
-12. $v\times u = \left| \begin{array} {ccc} i & j &k\\v_x&v_y&v_z\\u_x&u_y&u_z \end{array}\right|$
+12. $v\times u = \left| \begin{array} {ccc} i & j &kv_x&v_y&v_zu_x&u_y&u_z \end{array}\right|$
 13. $|v \times u| = |v||u|\sin \theta$: The right-hand rule determines the direction, used to calculate normal vectors and area
-14. Mixed product: $[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_z\\u_x&u_y&u_z\\w_x&w_y&w_z \end{array}\right|$, if the mixed product = 0, the three vectors are coplanar.
+14. Mixed product: $[vuw] = (v\times u)\cdot w =  \left| \begin{array} {ccc} v_x& v_y &v_zu_x&u_y&u_zw_x&w_y&w_z \end{array}\right|$, if the mixed product = 0, the three vectors are coplanar.
 
 ### Field Theory Basics
 
@@ -103,7 +103,7 @@ If $f(x)$ is continuous on $[a,b]$:
 2. Directional derivative: For a ternary function $u=u(x,y,z)$ defined at point $P_0=(x_0,y_0,z_0)$, the distance $t= \sqrt{(x-x_0)^2+(y-y_0)^2+(z-z_0)^2}$
 
 ```math
-\frac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\frac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\frac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}\\=\nabla u(P_0) \cdot l^o = u_x^{\prime}(P_0)\cos \alpha+u_y^{\prime}(P_0)\cos \beta + u_z^{\prime}(P_0)\cos \gamma = |\nabla||l^o|\cos \theta
+\frac{\partial u}{\partial l}|_{P_0} =  \lim_{t\to 0^+}\frac{u(P)-u(P_0)}{t} =\lim_{t\to 0^+}\frac{u(x_0+t\cos \alpha,y_0+t\cos\beta,z_0+t\cos\gamma)-u(P_0)}{t}=\nabla u(P_0) \cdot l^o = u_x^{\prime}(P_0)\cos \alpha+u_y^{\prime}(P_0)\cos \beta + u_z^{\prime}(P_0)\cos \gamma = |\nabla||l^o|\cos \theta
 ```
 
 3. Gradient:
@@ -121,7 +121,7 @@ If $f(x)$ is continuous on $[a,b]$:
 5. Curl:
 
 ```math
-\text{rot}\,A = \nabla\times A = \begin{vmatrix} i & j &k\\\frac{\partial}{\partial x}&\frac{\partial}{\partial y}&\frac{\partial}{\partial z}\\P&Q&R\end{vmatrix}
+\text{rot}\,A = \nabla\times A = \begin{vmatrix} i & j &k\frac{\partial}{\partial x}&\frac{\partial}{\partial y}&\frac{\partial}{\partial z}P&Q&R\end{vmatrix}
 ```
 
 ### Plane Geometry Formulas
@@ -129,13 +129,13 @@ If $f(x)$ is continuous on $[a,b]$:
 - Plane figure area:
 
 ```math
-S=\begin{cases}\int_{a}^{b}\left|y_1(x)-y_2(x)\right|\mathrm{d}x\\ \frac{1}{2}\int_{\alpha}^{\beta}\left|r_1^2(\theta)-r_2^2(\theta)\right|\mathrm{d}\theta\end{cases}
+S=\begin{cases}\int_{a}^{b}\left|y_1(x)-y_2(x)\right|\mathrm{d}x \frac{1}{2}\int_{\alpha}^{\beta}\left|r_1^2(\theta)-r_2^2(\theta)\right|\mathrm{d}\theta\end{cases}
 ```
 
 - Volume of revolution:
 
 ```math
-V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2(x)-y_2^2(x)\right|\mathrm{d}x\\ 2\pi\int_{a}^{b}x\left|y_1(x)-y_2(x)\right|\mathrm{d}x\end{cases}
+V=\begin{cases}\pi\int_{a}^{b}\left|y_1^2(x)-y_2^2(x)\right|\mathrm{d}x 2\pi\int_{a}^{b}x\left|y_1(x)-y_2(x)\right|\mathrm{d}x\end{cases}
 ```
 
 - Arc differential:
@@ -200,7 +200,7 @@ V=\iiint_{\Omega}\mathrm{d}v
 
 | Item | Space Surface $\Sigma$ | Space Curve $\Gamma$ |
 | ------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Equation | $F(x,y,z) = 0$ | $\begin{cases}F(x,y,z) = 0, \\ G(x,y,z) = 0,\end{cases}$ |
+| Equation | $F(x,y,z) = 0$ | $\begin{cases}F(x,y,z) = 0,  G(x,y,z) = 0,\end{cases}$ |
 | Normal/Tangent Vector | Normal vector: $n = (F_x, F_y, F_z)$ partial derivatives at point $P_0$ | Tangent vector: $\tau = (A,B,C)$, obtained by cross product of gradient vectors. Under parametric equation: $\tau = (x_t, y_t, z_t)$ derivatives |
 | Tangent plane/Normal plane | Tangent plane: $F_x(x-x_0)+F_y(y-y_0)+F_z(z-z_0)=0$ | Normal plane: $x_t(x-x_0)+ y_t(y-y_0)+z_t(z-z_0)=0$ |
 | Normal/Tangent line | Normal line: $(x-x_0)/F_x=(y-y_0)/F_y=(z-z_0)/F_z$ | Tangent line: $(x-x_0)/x_t=(y-y_0)/y_t=(z-z_0)/z_t$ |

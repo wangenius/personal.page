@@ -1,0 +1,7 @@
+---
+title: 网络与存储深入
+---
+- 网络驱动：bridge、host、macvlan 的适用场景与配置要点。
+- 端口规划：避免冲突的策略，`docker network inspect` 观察容器互通。
+- 存储选型：overlay2 与 aufs 差异，占位说明如何调优 `overlay2`。
+- 数据卷性能：选择合适的挂载方式、启用 `:cached`/`:delegated`（在支持的虚拟化平台上）降低 I/O 抖动。

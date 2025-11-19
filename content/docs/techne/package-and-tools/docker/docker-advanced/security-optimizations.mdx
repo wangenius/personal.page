@@ -1,0 +1,7 @@
+---
+title: 安全与性能优化
+---
+- Least privilege：使用非 root 用户、`--cap-drop`、只读文件系统等方式减少攻击面。
+- 资源限制：`--cpus`、`--memory`、`--pids-limit` 控制容器占用，结合 Compose/Swarm/K8s 配置。
+- 镜像瘦身：基础镜像选型、`--squash`（实验性）与多阶段构建，减少 CVE 暴露面。
+- 观测与日志：`docker stats`、`docker events`、`docker inspect` 结合，补充后续可接入 Prometheus/ELK 的位置。

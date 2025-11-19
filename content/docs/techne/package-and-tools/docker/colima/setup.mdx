@@ -1,0 +1,119 @@
+---
+title: Colima 安装与配置
+---
+
+本篇帮助你在 macOS 上从零搭建 Colima 环境，并完成基础配置，使 `docker` / `docker compose` 可以直接使用。
+
+## 前置要求
+
+- macOS（Apple Silicon 或 Intel 均可）。
+- 安装 Homebrew。
+- 磁盘预留至少 40–60 GB 用于镜像与卷。
+
+## 安装 Colima 与 Docker CLI
+
+1. 安装 Colima：
+
+   ```bash
+   brew install colima
+   ```
+
+2. 安装 Docker CLI（若尚未安装）：
+
+   ```bash
+   brew install docker docker-compose
+   ```
+
+   之后你将通过 `docker` / `docker compose` 命令与 Colima 提供的 Daemon 通信。
+
+## 首次启动：创建默认虚拟机
+
+推荐从一个资源相对充足的默认配置开始：
+
+```bash
+colima start --cpu 4 --memory 8 --disk 60
+```
+
+- `--cpu`：分配给虚拟机的 vCPU 数量。
+- `--memory`：虚拟机可用内存（GiB）。
+- `--disk`：虚拟磁盘大小（GiB），影响可存储镜像与数据卷的空间。
+
+首次启动会自动创建 `default` profile 并拉起 Docker Daemon。完成后，可通过：
+
+```bash
+colima status
+docker version
+docker info
+```
+
+确认 Daemon 已连接成功。
+
+## 多 profile 管理
+
+不同项目对资源和架构可能有不同诉求，推荐按用途创建 profile：
+
+- 常规开发：
+
+  ```bash
+  colima start --profile dev --cpu 4 --memory 8 --disk 80
+  ```
+
+- Kubernetes / 多节点实验（示例）：
+
+  ```bash
+  colima start --profile k8s --arch x86_64 --cpu 6 --memory 12 --disk 120
+  ```
+
+查看当前所有 profile：
+
+```bash
+colima list
+```
+
+切换使用某个 profile 时，只需对它执行 `start`，Colima 会自动将 Docker 上下文指向对应 Daemon。
+
+## 配置文件位置与常用项
+
+每个 profile 对应的配置目录大致如下：
+
+- 默认 profile：`~/.colima/default/`，配置文件 `colima.yaml`。
+- 其它 profile：`~/.colima/<profile-name>/colima.yaml`。
+
+常见可调选项：
+
+- **共享目录**：指定 macOS 与虚拟机共享的路径，减少不必要的同步目录。
+- **DNS 设置**：为容器访问外网指定 DNS，例如 `8.8.8.8`、`1.1.1.1`。
+- **Runtime 类型**：在 `docker` 与 `containerd` 之间选择，视项目需求而定。
+
+修改配置后，可通过：
+
+```bash
+colima stop
+colima start
+```
+
+让变更生效。
+
+## 停止、重启与清理
+
+- 暂停使用（保留镜像与数据）：
+
+  ```bash
+  colima stop
+  ```
+
+- 重启服务：
+
+  ```bash
+  colima restart
+  ```
+
+- 删除虚拟机（会删除其镜像与卷，谨慎使用）：
+
+  ```bash
+  colima delete
+  ```
+
+在执行 `delete` 之前，如果有重要的数据卷或镜像，建议先通过 `docker save` / `docker export` 或卷备份的方式导出到宿主机再清理。
+
+完成以上步骤后，你已经拥有一个可用的 Colima + Docker CLI 本地环境，接下来可以进入日常使用与项目协作的实践。

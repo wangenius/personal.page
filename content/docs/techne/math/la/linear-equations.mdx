@@ -22,8 +22,8 @@ slug : 线性方程组的解
 
 > 如何理解线性无关解的个数等于冗余度？$Ax$表示$x$向量在$A$空间中的基向量上的系数坐标。当$A$空间存在冗余向量时，冗余向量对$x$的定位没有任何作用。所以$x$中对应冗余向量的值无意义（指向$A$中的虚空间或直接被$A$的主空间湮灭了）。例如：
 >  
-> 1. $\begin{bmatrix}1 & 0 & 0\\ 0 & 1 & 0\end{bmatrix}\begin{bmatrix}a\\ b\\ c\end{bmatrix}=\begin{bmatrix}0\\ 0\end{bmatrix}$中：$A$对应1个冗余度，$c$被$A$的主空间湮灭了。所以有一个线性无关解$\begin{bmatrix}0\\ 0\\ 1\end{bmatrix}$。
-> 2. $\begin{bmatrix}1 & 0 & 0\\ 0 & 1 & 0\\ 0 & 0 & 0\end{bmatrix}\begin{bmatrix}a\\ b\\ c\end{bmatrix}=\begin{bmatrix}0\\ 0\\ 0\end{bmatrix}$中：$A$对应1个冗余度，$c$指向$A$中的虚空间无意义。所以有一个线性无关解$\begin{bmatrix}0\\ 0\\ 1\end{bmatrix}$。
+> 1. $\begin{bmatrix}1 & 0 & 0 0 & 1 & 0\end{bmatrix}\begin{bmatrix}a b c\end{bmatrix}=\begin{bmatrix}0 0\end{bmatrix}$中：$A$对应1个冗余度，$c$被$A$的主空间湮灭了。所以有一个线性无关解$\begin{bmatrix}0 0 1\end{bmatrix}$。
+> 2. $\begin{bmatrix}1 & 0 & 0 0 & 1 & 0 0 & 0 & 0\end{bmatrix}\begin{bmatrix}a b c\end{bmatrix}=\begin{bmatrix}0 0 0\end{bmatrix}$中：$A$对应1个冗余度，$c$指向$A$中的虚空间无意义。所以有一个线性无关解$\begin{bmatrix}0 0 1\end{bmatrix}$。
 
 1.  初等变换将解化成同解方程组。 
    1. 行阶梯型：若有0行，全在下方，出现连续的0的个数自上向下严格单增。
@@ -45,8 +45,8 @@ slug : 线性方程组的解
 
 > 这与微积分学中微分方程的结构相关。
 
-公共解：满足$\begin{bmatrix}A\\ B\end{bmatrix}x=0$的解。
+公共解：满足$\begin{bmatrix}A B\end{bmatrix}x=0$的解。
 
-同解方程组： $r(A)=r(B)=r(\begin{bmatrix}A\\ B\end{bmatrix})$
+同解方程组： $r(A)=r(B)=r(\begin{bmatrix}A B\end{bmatrix})$
 
 ‍

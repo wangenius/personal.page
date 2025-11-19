@@ -13,10 +13,10 @@ title: 级数
 ## 正向级数的收敛原则
 
 1. $S \Longleftrightarrow m\le S\le M$
-{/* 2. 比较判别法：$u_{n}<v_{n}\implies\begin{cases}T\implies S\\ !S\implies!T\end{cases}$ */}
-{/* 3. 分式比较法：$\lim_{n\to\infty}\dfrac{u_{n}}{v_{n}}=A\implies\left\{\begin{array}{l}A=0&T\implies S\\ A=\infty&!T\implies!S\\ A\ne0\left|\right|\infty& S\thickapprox T\end{array}\right.$ */}
-{/* 4. 比值判别法：$\lim_{n\to\infty}\dfrac{u_{n+1}}{u_{n}}=\rho\implies\begin{cases}\rho<1\implies S\\ \rho>1\implies!S\\ \rho=1\implies\mathrm{noworking}\end{cases}$ */}
-{/* 5. 根值判别法：$\lim_{n\to\infty}\sqrt[n]{u_{n}}=\rho\implies\begin{cases}\rho<1\implies S\\ \rho>1\implies!S\\ \rho=1\implies\mathrm{noworking}\end{cases}$ */}
+{/* 2. 比较判别法：$u_{n}<v_{n}\implies\begin{cases}T\implies S !S\implies!T\end{cases}$ */}
+{/* 3. 分式比较法：$\lim_{n\to\infty}\dfrac{u_{n}}{v_{n}}=A\implies\left\{\begin{array}{l}A=0&T\implies S A=\infty&!T\implies!S A\ne0\left|\right|\infty& S\thickapprox T\end{array}\right.$ */}
+{/* 4. 比值判别法：$\lim_{n\to\infty}\dfrac{u_{n+1}}{u_{n}}=\rho\implies\begin{cases}\rho<1\implies S \rho>1\implies!S \rho=1\implies\mathrm{noworking}\end{cases}$ */}
+{/* 5. 根值判别法：$\lim_{n\to\infty}\sqrt[n]{u_{n}}=\rho\implies\begin{cases}\rho<1\implies S \rho>1\implies!S \rho=1\implies\mathrm{noworking}\end{cases}$ */}
 
 {/* 积分判别法：$u_n=f(n)$函数是连续、非负、单调减少。则$S=\sum_{n=a}^\infin u_n\approx\int_{a}^{+\infty}f(x)dx$ */}
 ## 交错级数的收敛判别
@@ -50,19 +50,19 @@ title: 级数
 ## 常见级数？
 > 相关：反常积分
 
-{/* 1. 几何级数$\sum aq^{n-1}\begin{cases}\left|p\right|<1\implies A=\dfrac{a}{1-q}\\ \left|p\right|\ge1\implies D\end{cases}$ */}
+{/* 1. 几何级数$\sum aq^{n-1}\begin{cases}\left|p\right|<1\implies A=\dfrac{a}{1-q} \left|p\right|\ge1\implies D\end{cases}$ */}
 2. 调和级数：$\sum \dfrac1n\implies D$
 3. 交错调和级数：$\sum (-1)^{n-1}\cdot\dfrac1n\implies A$
 4. 广义调和级数：$\sum \dfrac1{an+b}\implies D$
-5. $p$级数：$\sum\dfrac{1}{n^{p}}\begin{cases}p>1\implies A\\ p\le1\implies D\end{cases}$
-{/* 6. 广义$p$级数：$\sum\dfrac{1}{n\ln^{p}{n}}\begin{cases}p>1\implies A\\ p\le1\implies D\end{cases}$ */}
+5. $p$级数：$\sum\dfrac{1}{n^{p}}\begin{cases}p>1\implies A p\le1\implies D\end{cases}$
+{/* 6. 广义$p$级数：$\sum\dfrac{1}{n\ln^{p}{n}}\begin{cases}p>1\implies A p\le1\implies D\end{cases}$ */}
 
 > 函数项级数：$\sum u_n(x)$,$n$为变量，$x$为参变量，收敛于一个函数，$x$取确定的值$x_0$时，函数项级数确定为常数项级数。
 > 给定$x_0\in I$，此时函数项级数收敛，$x_0$称为收敛点。函数项级数的所有收敛点的集合称为它的收敛域。
 
 ## 阿贝尔定理
 {/* $\sum a_nx^n$在$x=x_1$处收敛，对于满足$|x|<|x_1|$的一切$x$，幂级数绝对收敛；在$x=x_2$处发散，对于满足$|x|>|x_2|$的一切$x$，幂级数发散。 */}
-{/* $\lim_{n\to\infty}\left|\dfrac{a_{n+1}}{a_{n}}\right|=\rho\implies R=\left\{\begin{array}{l}\dfrac{1}{\rho} & \rho\ne0\\ +\infty & \rho=0\\ 0& \rho=+\infin\end{array}\right.$ */}
+{/* $\lim_{n\to\infty}\left|\dfrac{a_{n+1}}{a_{n}}\right|=\rho\implies R=\left\{\begin{array}{l}\dfrac{1}{\rho} & \rho\ne0 +\infty & \rho=0 0& \rho=+\infin\end{array}\right.$ */}
 > 以上确定了收敛半径，然后单独确定$x=\pm R$的敛散性。
 
 ## 幂级数的和函数？

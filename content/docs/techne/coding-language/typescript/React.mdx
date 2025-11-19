@@ -6,13 +6,11 @@ title: React
 
 ## useContext
 
-The 这[useContext Hook钩](https://react.dev/reference/react/useContext) is a technique for passing data down the component tree without having to pass props through components. It is used by creating a provider component and often by creating a Hook to consume the value in a child component.是一种在组件树中传递数据而无需通过组件传递 props 的技术。它通过创建提供者组件来使用，并且通常通过创建 Hook 来使用子组件中的值来使用。
+The [useContext Hook钩](https://react.dev/reference/react/useContext) is a technique for passing data down the component tree without having to pass props through components. It is used by creating a provider component and often by creating a Hook to consume the value in a child component.是一种在组件树中传递数据而无需通过组件传递 props 的技术。它通过创建提供者组件来使用，并且通常通过创建 Hook 来使用子组件中的值来使用。
 
-The type of the value provided by the context is inferred from the value passed to the上下文提供的值的类型是从传递给的值推断出来的createContext call:称呼：
+The type of the value provided by the context is inferred from the value passed to the上下文提供的值的类型是从传递给的值推断出来的createContext call
 
-The
-
-```rust
+```ts
 import { createContext, useContext, useState } from 'react';
 
 type Theme = "light" | "dark" | "system";
@@ -49,9 +47,9 @@ createRef 它可以用在类组件和函数组件中，声明时不能给初始�
 
 useRef 它只能使用在函数组件中，useRef 它可以在声明时给初始值
 
-```rust
-const usernameCreateRef = createRef()
-const usernameUseRef = useRef(null)
+```ts
+const usernameCreateRef = createRef();
+const usernameUseRef = useRef(null);
 ```
 
 createRef 每次重新渲染时都会创建一个新的 ref 对象，但是类组件中由于生命周期的存在，所以它可以不重新创建（可以将 createRef 写在类组件的构造函数中），但是它在函数组件中就没有这种效果了，它会被重复创建，由此导致性能低下。
@@ -62,7 +60,7 @@ createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会�
 
 useRef returns a mutable ref object whose .current property is initialized to the passed argument (initialValue). The returned object will persist(坚持) for the full lifetime of the component(组件).
 
-When you want a component to “remember” some information, but you don’t want that information to [trigger(触发) new renders](https://react.dev/learn/render-and-commit), you can use a *ref*.
+When you want a component to “remember” some information, but you don’t want that information to [trigger(触发) new renders](https://react.dev/learn/render-and-commit), you can use a `_ref_`.
 
 ## useImperativeHandle
 
@@ -70,14 +68,14 @@ When you want a component to “remember” some information, but you don’t wa
 
 useImperativeHandle 集合 useRef 和 forwardRef 来模拟给函数组件绑定ref对象来得到子组件中对外暴露出来的方法或数据。
 
-```rust
+```ts
 import React, { useRef, forwardRef, useState, useImperativeHandle } from 'react'
 
 const Child = forwardRef((props, _ref) => {
   // 值
   let [name, setName] = useState('张三')
   // 方法
-  const setNameFn = name => setName(name)
+  const setNameFn = (name: string) => setName(name)
 
   // 对象
   const userRef = useRef()
@@ -126,15 +124,13 @@ const App = () => {
 export default App
 ```
 
-## forwardRef
-
 ## useMemo和useCallback
 
 ### useMemo
 
 The 这[useMemo](https://react.dev/reference/react/useMemo) Hooks will create/re-access a memorized value from a function call, re-running the function only when dependencies passed as the 2nd parameter are changed. The result of calling the Hook is inferred from the return value from the function in the first parameter. You can be more explicit(显式) by providing a type argument to the Hook.挂钩将创建/重新访问函数调用中存储的值，仅当作为第二个参数传递的依赖项发生更改时才重新运行该函数。调用 Hook 的结果是根据第一个参数中函数的返回值推断出来的。您可以通过向 Hook 提供类型参数来更加明确。
 
-```rust
+```js
 // The type of visibleTodos is inferred from the return value of filterTodos
 
 const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
@@ -148,13 +144,13 @@ const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
 
 像上一节所说的，useCallBack的作用不是阻止函数创建，而是在依赖不变的情况下返回旧函数地址（保持地址不变）。
 
-React.memo()，是一种缓存技术。能看到这里的笔友我想都不需要我详细解释React.memo是干什么的。
+`React.memo()`，是一种缓存技术。能看到这里的笔友我想都不需要我详细解释`React.memo`是干什么的。
 
-简单说，React.memo()是通过校验props中的数据是否改变的来决定组件是否需要重新渲染的一种缓存技术，具体点说React.memo()其实是通过校验Props中的数据的内存地址是否改变来决定组件是否重新渲染组件的一种技术。
+简单说，`React.memo()`是通过校验props中的数据是否改变的来决定组件是否需要重新渲染的一种缓存技术，具体点说`React.memo()`其实是通过校验Props中的数据的内存地址是否改变来决定组件是否重新渲染组件的一种技术。
 
-假设我们往子组件（假设子组件为Child组件）传入一个函数呢？当父组件的其他State（与Child组件无关的state）改变的时候。那么，因为状态的改变，父组件需要重新渲染，那被React.memo保护的子组件（Child组件）是否会被重新构建？
+假设我们往子组件（假设子组件为Child组件）传入一个函数呢？当父组件的其他State（与Child组件无关的state）改变的时候。那么，因为状态的改变，父组件需要重新渲染，那被`React.memo()`保护的子组件（Child组件）是否会被重新构建？
 
-```rust
+```js
 import {useCallBack,memo} from 'react';
 /父组件/
 const Parent = () => {
@@ -181,9 +177,9 @@ const Child = memo(() => {
     })
 ```
 
-问:当我点击父组件中的Button改变父组件中的state。子组件会不会重新渲染。乍一看，改变的是parentState这个变量，和子组件半毛钱关系没有，子组件还被React.memo保护着，好像是不会被重新渲染。但这里的问题是，你要传个其他变量进去这也就走的通了。但是传入的是函数，不行，走不通。会重新渲染。
+问, 当我点击父组件中的Button改变父组件中的state。子组件会不会重新渲染。乍一看，改变的是parentState这个变量，和子组件半毛钱关系没有，子组件还被 `React.memo()` 保护着，好像是不会被重新渲染。但这里的问题是，你要传个其他变量进去这也就走的通了。但是传入的是函数，不行，走不通。会重新渲染。
 
-React.memo检测的是props中数据的栈地址是否改变。而父组件重新构建的时候，会重新构建父组件中的所有函数（旧函数销毁，新函数创建，等于更新了函数地址）,新的函数地址传入到子组件中被props检测到栈地址更新。也就引发了子组件的重新渲染。
+`React.memo`检测的是props中数据的栈地址是否改变。而父组件重新构建的时候，会重新构建父组件中的所有函数（旧函数销毁，新函数创建，等于更新了函数地址）,新的函数地址传入到子组件中被props检测到栈地址更新。也就引发了子组件的重新渲染。
 
 所以，在上面的代码示例里面，子组件是要被重新渲染的。
 
@@ -193,3 +189,299 @@ React.memo检测的是props中数据的栈地址是否改变。而父组件重�
 
 ## useLayoutEffect
 
+# 将 UI 视为树
+
+![](/img/image_ui.png)
+
+树是项目和 UI 之间的关系模型，通常使用树结构来表示 UI。例如，浏览器使用树结构来建模 HTML（[DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model/Introduction)）与CSS（[CSSOM](https://developer.mozilla.org/docs/Web/API/CSS_Object_Model)）。移动平台也使用树来表示其视图层次结构。
+
+记住 对 ​​React​​ 来说重要的是组件在 ​​UI​​ 树中的位置,而不是在 ​​JSX​​ 中的位置！
+
+你可能以为当你勾选复选框的时候 state 会被重置，但它并没有！这是因为 ​两个 ​​`<Counter />`​​ 标签被渲染在了相同的位置。 React 不知道你的函数里是如何进行条件判断的，它只会“看到”你返回的树。
+
+在这两种情况下，`App` 组件都会返回一个包裹着 `<Counter />` 作为第一个子组件的 `div`。这就是 React 认为它们是 同一个`<Counter />` 的原因。你可以认为它们有相同的“地址”：根组件的第一个子组件的第一个子组件。不管你的逻辑是怎么组织的，这就是 React 在前后两次渲染之间将它们进行匹配的方式。
+
+```js
+import { useState } from "react";
+
+export default function App() {
+  const [isFancy, setIsFancy] = useState(false);
+  if (isFancy) {
+    return (
+      <div>
+        <Counter isFancy={true} />
+        <label>
+          <input
+            type="checkbox"
+            checked={isFancy}
+            onChange={(e) => {
+              setIsFancy(e.target.checked);
+            }}
+          />
+          使用好看的样式
+        </label>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <Counter isFancy={false} />
+      <label>
+        <input
+          type="checkbox"
+          checked={isFancy}
+          onChange={(e) => {
+            setIsFancy(e.target.checked);
+          }}
+        />
+        使用好看的样式
+      </label>
+    </div>
+  );
+}
+
+function Counter({ isFancy }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = "counter";
+  if (hover) {
+    className += " hover";
+  }
+  if (isFancy) {
+    className += " fancy";
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>加一</button>
+    </div>
+  );
+}
+```
+
+## 保留State
+
+```js
+import { useState } from "react";
+
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA ? <Counter person="Taylor" /> : <Counter person="Sarah" />}
+      <button
+        onClick={() => {
+          setIsPlayerA(!isPlayerA);
+        }}
+      >
+        下一位玩家！
+      </button>
+    </div>
+  );
+}
+
+function Counter({ person }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = "counter";
+  if (hover) {
+    className += " hover";
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>
+        {person} 的分数：{score}
+      </h1>
+      <button onClick={() => setScore(score + 1)}>加一</button>
+    </div>
+  );
+}
+```
+
+目前当你切换玩家时，分数会被保留下来。这两个 `Counter` 出现在相同的位置，所以 React 会认为它们是 同一个`Counter`，只是传了不同的 `person` prop。
+
+但是从概念上讲，这个应用中的两个计数器应该是各自独立的。虽然它们在 UI 中的位置相同，但是一个是 Taylor 的计数器，一个是 Sarah 的计数器。
+
+有两个方法可以在它们相互切换时重置 state：
+
+1. 将组件渲染在不同的位置
+2. 使用 `key` 赋予每个组件一个明确的身份
+
+### 方法一：将组件渲染在不同的位置
+
+你如果想让两个 Counter 各自独立的话，可以将它们渲染在不同的位置：
+
+```js
+import { useState } from "react";
+
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA && <Counter person="Taylor" />}
+      {!isPlayerA && <Counter person="Sarah" />}
+      <button
+        onClick={() => {
+          setIsPlayerA(!isPlayerA);
+        }}
+      >
+        下一位玩家！
+      </button>
+    </div>
+  );
+}
+
+function Counter({ person }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = "counter";
+  if (hover) {
+    className += " hover";
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>
+        {person} 的分数：{score}
+      </h1>
+      <button onClick={() => setScore(score + 1)}>加一</button>
+    </div>
+  );
+}
+```
+
+- 起初 `isPlayerA` 的值是 `true`。所以第一个位置包含了 `Counter` 的 state，而第二个位置是空的。
+- 当你点击“下一位玩家”按钮时，第一个位置会被清空，而第二个位置现在包含了一个 `Counter`。
+
+每当 `Counter` 组件从 DOM 中移除时，它的 state 会被销毁。这就是每次点击按钮它们就会被重置的原因。
+
+这个解决方案在你只有少数几个独立的组件渲染在相同的位置时会很方便。这个例子中只有 2 个组件，所以在 JSX 里将它们分开进行渲染并不麻烦。
+
+### 方法二：使用 key 来重置 state
+
+还有另一种更通用的重置组件 state 的方法。
+
+你可能在 渲染列表 时见到过 key。但 key 不只可以用于列表！你可以使用 key 来让 React 区分任何组件。默认情况下，React 使用父组件内部的顺序（“第一个计数器”、“第二个计数器”）来区分组件。但是 key 可以让你告诉 React 这不仅仅是 第一个 或者 第二个 计数器，而且还是一个特定的计数器——例如，Taylor 的 计数器。这样无论它出现在树的任何位置， React 都会知道它是 Taylor 的 计数器！
+
+在这个例子中，即使两个 `<Counter />` 会出现在 JSX 中的同一个位置，它们也不会共享 state：
+
+指定一个 `key` 能够让 React 将 `key` 本身而非它们在父组件中的顺序作为位置的一部分。这就是为什么尽管你用 JSX 将组件渲染在相同位置，但在 React 看来它们是两个不同的计数器。因此它们永远都不会共享 state。每当一个计数器出现在屏幕上时，它的 state 会被创建出来。每当它被移除时，它的 state 就会被销毁。在它们之间切换会一次又一次地使它们的 state 重置。
+
+```js
+import { useState } from "react";
+
+export default function Scoreboard() {
+  const [isPlayerA, setIsPlayerA] = useState(true);
+  return (
+    <div>
+      {isPlayerA ? (
+        <Counter key="Taylor" person="Taylor" />
+      ) : (
+        <Counter key="Sarah" person="Sarah" />
+      )}
+      <button
+        onClick={() => {
+          setIsPlayerA(!isPlayerA);
+        }}
+      >
+        下一位玩家！
+      </button>
+    </div>
+  );
+}
+
+function Counter({ person }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = "counter";
+  if (hover) {
+    className += " hover";
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>
+        {person} 的分数：{score}
+      </h1>
+      <button onClick={() => setScore(score + 1)}>加一</button>
+    </div>
+  );
+}
+```
+
+### 注意
+
+请记住 key 不是全局唯一的。它们只能指定 父组件内部 的顺序。
+
+useReducer和useImmerReducer
+
+1. react
+
+react 基础包, 只提供定义 react 组件(ReactElement)的必要函数, 一般来说需要和渲染器(react-dom,react-native)一同使用. 在编写react应用的代码时, 大部分都是调用此包的 `api.`
+
+2. react-dom
+
+react 渲染器之一, 是 react 与 web 平台连接的桥梁(可以在浏览器和 nodejs 环境中使用), 将react-reconciler中的运行结果输出到 web 界面上. 在编写react应用的代码时,大多数场景下, 能用到此包的就是一个入口函数 `ReactDOM.render(<App/>, document.getElementById('root'))`, 其余使用的 api, 基本是react包提供的.
+
+3. react-reconciler
+
+react 得以运行的核心包(综合协调react-dom,react,scheduler各包之间的调用与配合).管理 react 应用状态的输入和结果的输出. 将输入信号最终转换成输出信号传递给渲染器. 1. 接受输入(`scheduleUpdateOnFiber`), 将`fiber`树生成逻辑封装到一个回调函数中(涉及`fiber`树形结构, `fiber.updateQueue`队列, 调和算法等), 2. 把此回调函数(`performSyncWorkOnRoot`或`performConcurrentWorkOnRoot`)送入`scheduler`进行调度3. `scheduler`会控制回调函数执行的时机, 回调函数执行完成后得到全新的 fiber 树 4. 再调用渲染器(如`react-dom`, `react-native`等)将 fiber 树形结构最终反映到界面上
+
+4. scheduler
+
+调度机制的核心实现, 控制由react-reconciler送入的回调函数的执行时机, 在concurrent模式下可以实现任务分片. 在编写react应用的代码时, 同样几乎不会直接用到此包提供的 api. 1. 核心任务就是执行回调(回调函数由`react-reconciler`提供) 2. 通过控制回调函数的执行时机, 来达到任务分片的目的, 实现可中断渲染(`concurrent`模式下才有此特性)
+
+# 架构
+
+### 架构分层
+
+为了便于理解, 可将 react 应用整体结构分为接口层(api)和内核层(core)2 个部分
+
+1. 接口层(api)
+2. `react`包, 平时在开发过程中使用的绝大部分`api`均来自此包(不是所有). 在`react`启动之后, 正常可以改变渲染的基本操作有 3 个.
+   1. class 组件中使用`setState()`
+   2. function 组件里面使用 hook,并发起`dispatchAction`去改变 hook 对象
+   3. 改变 context(其实也需要`setState`或`dispatchAction`的辅助才能改变)
+3. 以上`setState`和`dispatchAction`都由`react`包直接暴露. 所以要想 react 工作, 基本上是调用`react`包的 api 去与其他包进行交互.
+4. 内核层(core)
+5. 整个内核部分, 由 3 部分构成：
+   1. 调度器`scheduler`包, 核心职责只有 1 个, 就是执行回调.
+      1. 把`react-reconciler`提供的回调函数, 包装到一个任务对象中.
+      2. 在内部维护一个任务队列, 优先级高的排在最前面.
+      3. 循环消费任务队列, 直到队列清空.
+   2. 构造器`react-reconciler`包, 有 3 个核心职责：
+      1. 装载渲染器, 渲染器必须实现`<a href="https://github.com/facebook/react/blob/v17.0.2/packages/react-reconciler/README.md#practical-examples" data-lark-is-custom="true">HostConfig协议</a>`(如： `react-dom`), 保证在需要的时候, 能够正确调用渲染器的 api, 生成实际节点(如: `dom`节点).
+      2. 接收`react-dom`包(初次`render`)和`react`包(后续更新`setState`)发起的更新请求.
+      3. 将`fiber`树的构造过程包装在一个回调函数中, 并将此回调函数传入到`scheduler`包等待调度.
+   3. 渲染器`react-dom`包, 有 2 个核心职责：
+      1. 引导`react`应用的启动(通过`ReactDOM.render`).
+      2. 实现`<a href="https://github.com/facebook/react/blob/v17.0.2/packages/react-reconciler/README.md#practical-examples" data-lark-is-custom="true">HostConfig协议</a>`([源码在 ReactDOMHostConfig.js 中](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/client/ReactDOMHostConfig.js)), 能够将`react-reconciler`包构造出来的`fiber`树表现出来, 生成 dom 节点(浏览器中), 生成字符串(ssr).
+
+注意:
+
+- 此处分层的标准并非官方说法, 因为官方没有`架构分层`这样的术语.
+- 本文只是为了深入理解 react, 在官方标准之外, 对其进行分解和剖析, 方便我们理解 react 架构。
+
+![](/img/react_architecture.png)

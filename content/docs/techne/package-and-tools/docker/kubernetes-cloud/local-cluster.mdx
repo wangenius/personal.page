@@ -1,0 +1,7 @@
+---
+title: 本地 Kubernetes 集群
+---
+- 方案比较：k3d（基于 Docker）、Kind（基于容器节点）、Minikube（虚拟机）与 Colima+k3s 的搭配思路。
+- 快速启动占位：`k3d cluster create dev --servers 1 --agents 1 --port "8080:80@loadbalancer"`。
+- 开发者关心：镜像加载（`k3d image import`/`kind load docker-image`）、端口暴露、持久卷与 Ingress 插件。
+- 兼容性提示：Colima 默认 bridge 网络下对负载均衡端口的转发，必要时在 profile 中显式开启。

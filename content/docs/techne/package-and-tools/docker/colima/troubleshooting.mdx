@@ -1,0 +1,140 @@
+---
+title: 常见故障与优化
+---
+
+本篇按“症状”分类整理 Colima 常见问题及处理思路，方便排查与日常优化。
+
+## Daemon 未响应或 CLI 卡住
+
+**典型表现**：
+
+- `docker ps` 长时间无响应或报错 `Cannot connect to the Docker daemon`。
+- `colima status` 显示错误状态。
+
+**排查步骤**：
+
+1. 检查 Colima 状态：
+
+   ```bash
+   colima status
+   ```
+
+2. 如状态异常或长时间卡住，可尝试重启：
+
+   ```bash
+   colima stop
+   colima start
+   ```
+
+3. 如果问题持续，可在重建虚拟机时刷新基础镜像：
+
+   ```bash
+   colima stop
+   colima start --refresh
+   ```
+
+> 注意：`--refresh` 会重新拉取基础镜像，但不会自动清理已有 profile 的数据卷和镜像，必要时配合备份与清理。
+
+## 网络异常与镜像拉取失败
+
+**典型表现**：
+
+- `docker pull` 超时或报 DNS 解析错误。
+- 容器内无法访问外网（如 `curl` 无法访问公共站点）。
+
+**处理建议**：
+
+1. 在对应 profile 的 `colima.yaml` 中，显式指定公共 DNS，例如：
+
+   ```yaml
+   dns:
+     - 8.8.8.8
+     - 1.1.1.1
+   ```
+
+2. 修改后重启 Colima：
+
+   ```bash
+   colima stop
+   colima start
+   ```
+
+3. 如果使用公司代理或 VPN：
+
+   - 确认系统网络代理是否需要在容器内配置。
+   - 避免同时开启多个 VPN / 代理工具导致路由混乱。
+
+## 磁盘空间不足
+
+**典型表现**：
+
+- `docker build` 报错磁盘写入失败。
+- `df -h`（容器内）显示磁盘使用率 100%。
+
+**排查与清理**：
+
+1. 查看当前虚拟机磁盘大小：
+
+   ```bash
+   colima status
+   ```
+
+2. 使用 Docker 自带清理命令删除未使用的镜像、容器与卷：
+
+   ```bash
+   docker system df
+   docker system prune -f
+   docker volume prune -f
+   ```
+
+3. 如果空间依旧紧张，考虑：
+
+   - 备份重要数据卷。
+   - 删除并重建 profile 时增大 `--disk`：
+
+     ```bash
+     colima delete
+     colima start --disk 120   # 示例：增大到 120 GiB
+     ```
+
+> 提醒：删除 profile 会清空其虚拟机内的镜像与卷，请务必提前备份重要数据。
+
+## 性能问题与构建缓慢
+
+**典型表现**：
+
+- `docker build` 过程非常缓慢，CPU 占用高。
+- 容器内文件读写延迟大。
+
+**优化方向**：
+
+- 减少共享目录数量，仅共享必要的项目路径。
+- 将高 IO 的数据库数据放在容器内部或 Docker 卷，而不是宿主机共享目录。
+- 构建多架构镜像时，为该用途单独创建 profile，例如：
+
+  ```bash
+  colima start --profile buildx --arch x86_64 --cpu 8 --memory 16
+  ```
+
+  避免在同一个 profile 内同时承担日常开发与重度构建任务。
+
+## 与 Kubernetes 本地集群冲突
+
+**典型表现**：
+
+- 启动 k3s/k3d/kind 时端口（如 6443、10250、30000+）被占用。
+- K8s 节点无法正常启动或加入集群。
+
+**处理建议**：
+
+1. 为 K8s 单独使用一个 Colima profile，例如 `k8s`，避免与普通开发 profile 端口互相干扰。
+2. 在创建集群前，确保无不必要的容器占用这些端口：
+
+   ```bash
+   docker ps
+   lsof -i :6443
+   ```
+
+3. 如端口冲突无法避免，可在集群工具（k3d/kind 等）的配置中修改用于 API Server / NodePort 的端口范围。
+
+通过以上排查思路，大部分 Colima 相关的问题都可以在本地快速解决，避免陷入“重装一切”的低效循环。
