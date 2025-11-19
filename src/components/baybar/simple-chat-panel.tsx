@@ -123,7 +123,7 @@ export function SimpleChatPanel() {
   return (
     <div
       id="simple-chat-panel"
-      className="h-full w-full md:w-[400px] flex flex-col overflow-hidden"
+      className="h-full w-full md:w-[480px] flex flex-col overflow-hidden"
     >
       {/* 对话内容 */}
       <Conversation className="flex-1 bg-transparent">

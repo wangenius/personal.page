@@ -53,7 +53,7 @@ export function Chatbar() {
     <motion.div
       initial={false}
       animate={{
-        width: isBayBarOpen ? "400px" : "0px",
+        width: isBayBarOpen ? "480px" : "0px",
         opacity: isBayBarOpen ? 1 : 0,
       }}
       transition={{

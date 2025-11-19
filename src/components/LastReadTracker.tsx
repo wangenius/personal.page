@@ -10,12 +10,8 @@ export function LastReadTracker() {
 
   useEffect(() => {
     if (!pathname) return;
-    try {
-      if (typeof window === "undefined") return;
-      window.localStorage.setItem(STORAGE_KEY, pathname);
-    } catch {
-      // ignore storage errors
-    }
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(STORAGE_KEY, pathname);
   }, [pathname]);
 
   return null;

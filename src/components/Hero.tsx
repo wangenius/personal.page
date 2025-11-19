@@ -23,7 +23,6 @@ export const Hero = () => {
     heroSignals,
     personaStages,
     personaTags,
-    closing,
     mission,
   } = hero;
 
