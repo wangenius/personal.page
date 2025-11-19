@@ -111,9 +111,9 @@ function LoadingDots() {
   return (
     <div className="flex w-full justify-start py-2 pl-2 text-xs text-muted-foreground">
       <div className="flex items-center gap-1 rounded-full px-3 py-1">
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.2s]" />
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.1s]" />
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/70 animate-bounce" />
+        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.2s]" />
+        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.1s]" />
+        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce" />
       </div>
     </div>
   );

@@ -8,21 +8,27 @@ importers:
 
   .:
     dependencies:
+      '@302ai/ai-sdk':
+        specifier: ^0.1.0
+        version: 0.1.0(zod@4.1.12)
       '@ai-sdk/deepseek':
         specifier: ^1.0.28
-        version: 1.0.28(zod@3.25.76)
+        version: 1.0.28(zod@4.1.12)
+      '@ai-sdk/google':
+        specifier: ^2.0.36
+        version: 2.0.36(zod@4.1.12)
       '@ai-sdk/openai':
         specifier: ^2.0.43
-        version: 2.0.65(zod@3.25.76)
+        version: 2.0.65(zod@4.1.12)
       '@ai-sdk/openai-compatible':
         specifier: ^1.0.27
-        version: 1.0.27(zod@3.25.76)
+        version: 1.0.27(zod@4.1.12)
       '@ai-sdk/react':
         specifier: ^2.0.60
-        version: 2.0.93(react@19.2.0)(zod@3.25.76)
+        version: 2.0.93(react@19.2.0)(zod@4.1.12)
       '@ai-sdk/xai':
         specifier: ^2.0.31
-        version: 2.0.32(zod@3.25.76)
+        version: 2.0.32(zod@4.1.12)
       '@fumadocs/mdx-remote':
         specifier: ^1.4.0
         version: 1.4.3(@types/react@19.2.4)(fumadocs-core@16.0.11(@types/react@19.2.4)(lucide-react@0.540.0(react@19.2.0))(next@16.0.3(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
@@ -118,7 +124,7 @@ importers:
         version: 12.9.3(@types/react@19.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ai:
         specifier: ^5.0.60
-        version: 5.0.93(zod@3.25.76)
+        version: 5.0.93(zod@4.1.12)
       better-auth:
         specifier: ^1.3.34
         version: 1.3.34(next@16.0.3(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -164,9 +170,6 @@ importers:
       lucide-react:
         specifier: ^0.540.0
         version: 0.540.0(react@19.2.0)
-      mandarin:
-        specifier: link:@orama/tokenizers/mandarin
-        version: link:@orama/tokenizers/mandarin
       mermaid:
         specifier: ^11.12.1
         version: 11.12.1
@@ -200,6 +203,9 @@ importers:
       react-syntax-highlighter:
         specifier: ^15.6.6
         version: 15.6.6(react@19.2.0)
+      rehype-harden:
+        specifier: ^1.1.5
+        version: 1.1.5
       rehype-katex:
         specifier: ^7.0.1
         version: 7.0.1
@@ -219,8 +225,8 @@ importers:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       streamdown:
-        specifier: ^1.3.0
-        version: 1.4.0(@types/react@19.2.4)(react@19.2.0)
+        specifier: ^1.5.1
+        version: 1.5.1(@types/mdast@4.0.4)(@types/react@19.2.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(react@19.2.0)(unified@11.0.5)
       stripe:
         specifier: ^19.3.0
         version: 19.3.1(@types/node@24.3.0)
@@ -240,8 +246,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.4))(@types/react@19.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       zod:
-        specifier: ^3.23.8
-        version: 3.25.76
+        specifier: ^4.1.12
+        version: 4.1.12
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.2.4)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
@@ -265,7 +271,7 @@ importers:
         specifier: ^15.5.13
         version: 15.5.13
       eslint:
-        specifier: ^8
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-config-next:
         specifier: 15.4.6
@@ -288,6 +294,12 @@ importers:
 
 packages:
 
+  '@302ai/ai-sdk@0.1.0':
+    resolution: {integrity: sha512-Za0N9Wulm/DEeqmRwJVGB0pshE9+haBdUHFywoVPXOBKekeHZEARFndDpqMhzFKKKU4d5sO2AVhkXajuHTF91g==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^4.1.12
+
   '@ai-sdk/deepseek@1.0.28':
     resolution: {integrity: sha512-tnlo8Trx8g6vmDnMttjU+hLIROxgpX5gqQ/NxFI4gNUrHdfflUSCxL8rJ3Irf0XsPR4B+lk/Z6RIeK1m8Izwtw==}
     engines: {node: '>=18'}
@@ -300,6 +312,12 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/google@2.0.36':
+    resolution: {integrity: sha512-1Z2tV6A4PobK+zTKDd9NqqlDPh0lwF8yf8+FcOLCjHzyDB498iyiBFwKQ6lhQT8YYhY60jVsmsSvSTm+TOyazw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
   '@ai-sdk/openai-compatible@1.0.27':
     resolution: {integrity: sha512-bpYruxVLhrTbVH6CCq48zMJNeHu6FmHtEedl9FXckEgcIEAi036idFhJlcRwC1jNCwlacbzb8dPD7OAH1EKJaQ==}
     engines: {node: '>=18'}
@@ -308,6 +326,12 @@ packages:
 
   '@ai-sdk/openai@2.0.65':
     resolution: {integrity: sha512-Wqo4iNCsxUYJFmEAzAHO0XDnnS76rqvPRX2AUhEAOX3cgL9UEfouFmiNQS2jM9AZhMdWj5GIG41hgr4YOr20tA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider-utils@3.0.12':
+    resolution: {integrity: sha512-ZtbdvYxdMoria+2SlNarEk6Hlgyf+zzcznlD55EAl+7VZvJaSg2sqPvwArY7L6TfDEDJsnCq0fdhBSkYo0Xqdg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3233,6 +3257,10 @@ packages:
     resolution: {integrity: sha512-SFdFmIJi+ybC0vjlHN0ZGVGHc3lgE0DxPAT0djjVg+kjOnSqclqmj0KQ7ykTOLP6YxoqOvuAODGdcHJn+43q3g==}
     engines: {node: '>= 0.4'}
 
+  get-east-asian-width@1.4.0:
+    resolution: {integrity: sha512-QZjmEOC+IT1uk6Rx0sX22V6uHWVwbdbxf1faPqJ1QhLdGgsRGCZoyaQBm/piRdJy/D2um6hM1UP7ZEeQ4EkP+Q==}
+    engines: {node: '>=18'}
+
   get-intrinsic@1.3.0:
     resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
     engines: {node: '>= 0.4'}
@@ -3868,6 +3896,35 @@ packages:
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
 
+  micromark-extension-cjk-friendly-gfm-strikethrough@1.2.3:
+    resolution: {integrity: sha512-gSPnxgHDDqXYOBvQRq6lerrq9mjDhdtKn+7XETuXjxWcL62yZEfUdA28Ml1I2vDIPfAOIKLa0h2XDSGkInGHFQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      micromark: ^4.0.0
+      micromark-util-types: ^2.0.0
+    peerDependenciesMeta:
+      micromark-util-types:
+        optional: true
+
+  micromark-extension-cjk-friendly-util@2.1.1:
+    resolution: {integrity: sha512-egs6+12JU2yutskHY55FyR48ZiEcFOJFyk9rsiyIhcJ6IvWB6ABBqVrBw8IobqJTDZ/wdSr9eoXDPb5S2nW1bg==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      micromark-util-types: '*'
+    peerDependenciesMeta:
+      micromark-util-types:
+        optional: true
+
+  micromark-extension-cjk-friendly@1.2.3:
+    resolution: {integrity: sha512-gRzVLUdjXBLX6zNPSnHGDoo+ZTp5zy+MZm0g3sv+3chPXY7l9gW+DnrcHcZh/jiPR6MjPKO4AEJNp4Aw6V9z5Q==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      micromark: ^4.0.0
+      micromark-util-types: ^2.0.0
+    peerDependenciesMeta:
+      micromark-util-types:
+        optional: true
+
   micromark-extension-directive@4.0.0:
     resolution: {integrity: sha512-/C2nqVmXXmiseSSuCdItCMho7ybwwop6RrrRPk0KbOHW21JKoCldC+8rFOaundDoRBUWBnJJcxeA/Kvi34WQXg==}
 
@@ -4387,6 +4444,26 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
+  remark-cjk-friendly-gfm-strikethrough@1.2.3:
+    resolution: {integrity: sha512-bXfMZtsaomK6ysNN/UGRIcasQAYkC10NtPmP0oOHOV8YOhA2TXmwRXCku4qOzjIFxAPfish5+XS0eIug2PzNZA==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      '@types/mdast': ^4.0.0
+      unified: ^11.0.0
+    peerDependenciesMeta:
+      '@types/mdast':
+        optional: true
+
+  remark-cjk-friendly@1.2.3:
+    resolution: {integrity: sha512-UvAgxwlNk+l9Oqgl/9MWK2eWRS7zgBW/nXX9AthV7nd/3lNejF138E7Xbmk9Zs4WjTJGs721r7fAEc7tNFoH7g==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      '@types/mdast': ^4.0.0
+      unified: ^11.0.0
+    peerDependenciesMeta:
+      '@types/mdast':
+        optional: true
+
   remark-directive@4.0.0:
     resolution: {integrity: sha512-7sxn4RfF1o3izevPV1DheyGDD6X4c9hrGpfdUpm7uC++dqrnJxIZVkk7CoKqcLm0VUMAuOol7Mno3m6g8cfMuA==}
 
@@ -4575,8 +4652,8 @@ packages:
     resolution: {integrity: sha512-eLoXW/DHyl62zxY4SCaIgnRhuMr6ri4juEYARS8E6sCEqzKpOiE521Ucofdx+KnDZl5xmvGYaaKCk5FEOxJCoQ==}
     engines: {node: '>= 0.4'}
 
-  streamdown@1.4.0:
-    resolution: {integrity: sha512-ylhDSQ4HpK5/nAH9v7OgIIdGJxlJB2HoYrYkJNGrO8lMpnWuKUcrz/A8xAMwA6eILA27469vIavcOTjmxctrKg==}
+  streamdown@1.5.1:
+    resolution: {integrity: sha512-Nt75cjPvtWwqBcII96RNw/qzW370C0w9AW+1NVlCFGe1VRxPQeX2EOq5tU1u4jEOHiLKVCVee5+ypPcpOLiztA==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -4920,9 +4997,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
   zod@4.1.12:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
@@ -4964,59 +5038,80 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/deepseek@1.0.28(zod@3.25.76)':
+  '@302ai/ai-sdk@0.1.0(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/openai-compatible': 1.0.27(zod@3.25.76)
+      '@ai-sdk/openai-compatible': 1.0.27(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.12(zod@4.1.12)
+      sharp: 0.34.5
+      zod: 4.1.12
 
-  '@ai-sdk/gateway@2.0.9(zod@3.25.76)':
+  '@ai-sdk/deepseek@1.0.28(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 1.0.27(zod@4.1.12)
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      zod: 4.1.12
+
+  '@ai-sdk/gateway@2.0.9(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
       '@vercel/oidc': 3.0.3
-      zod: 3.25.76
+      zod: 4.1.12
 
-  '@ai-sdk/openai-compatible@1.0.27(zod@3.25.76)':
+  '@ai-sdk/google@2.0.36(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/openai@2.0.65(zod@3.25.76)':
+  '@ai-sdk/openai-compatible@1.0.27(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/provider-utils@3.0.17(zod@3.25.76)':
+  '@ai-sdk/openai@2.0.65(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      zod: 4.1.12
+
+  '@ai-sdk/provider-utils@3.0.12(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.6
-      zod: 3.25.76
+      zod: 4.1.12
+
+  '@ai-sdk/provider-utils@3.0.17(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.6
+      zod: 4.1.12
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@2.0.93(react@19.2.0)(zod@3.25.76)':
+  '@ai-sdk/react@2.0.93(react@19.2.0)(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
-      ai: 5.0.93(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      ai: 5.0.93(zod@4.1.12)
       react: 19.2.0
       swr: 2.3.6(react@19.2.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.1.12
 
-  '@ai-sdk/xai@2.0.32(zod@3.25.76)':
+  '@ai-sdk/xai@2.0.32(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/openai-compatible': 1.0.27(zod@3.25.76)
+      '@ai-sdk/openai-compatible': 1.0.27(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
+      zod: 4.1.12
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -5330,8 +5425,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@img/colour@1.0.0':
-    optional: true
+  '@img/colour@1.0.0': {}
 
   '@img/sharp-darwin-arm64@0.34.5':
     optionalDependencies:
@@ -6851,13 +6945,13 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ai@5.0.93(zod@3.25.76):
+  ai@5.0.93(zod@4.1.12):
     dependencies:
-      '@ai-sdk/gateway': 2.0.9(zod@3.25.76)
+      '@ai-sdk/gateway': 2.0.9(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.17(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.17(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.1.12
 
   ajv@6.12.6:
     dependencies:
@@ -8078,6 +8172,8 @@ snapshots:
 
   generator-function@2.0.1: {}
 
+  get-east-asian-width@1.4.0: {}
+
   get-intrinsic@1.3.0:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -8953,6 +9049,38 @@ snapshots:
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
 
+  micromark-extension-cjk-friendly-gfm-strikethrough@1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2):
+    dependencies:
+      devlop: 1.1.0
+      get-east-asian-width: 1.4.0
+      micromark: 4.0.2
+      micromark-extension-cjk-friendly-util: 2.1.1(micromark-util-types@2.0.2)
+      micromark-util-character: 2.1.1
+      micromark-util-chunked: 2.0.1
+      micromark-util-resolve-all: 2.0.1
+      micromark-util-symbol: 2.0.1
+    optionalDependencies:
+      micromark-util-types: 2.0.2
+
+  micromark-extension-cjk-friendly-util@2.1.1(micromark-util-types@2.0.2):
+    dependencies:
+      get-east-asian-width: 1.4.0
+      micromark-util-character: 2.1.1
+      micromark-util-symbol: 2.0.1
+    optionalDependencies:
+      micromark-util-types: 2.0.2
+
+  micromark-extension-cjk-friendly@1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2):
+    dependencies:
+      devlop: 1.1.0
+      micromark: 4.0.2
+      micromark-extension-cjk-friendly-util: 2.1.1(micromark-util-types@2.0.2)
+      micromark-util-chunked: 2.0.1
+      micromark-util-resolve-all: 2.0.1
+      micromark-util-symbol: 2.0.1
+    optionalDependencies:
+      micromark-util-types: 2.0.2
+
   micromark-extension-directive@4.0.0:
     dependencies:
       devlop: 1.1.0
@@ -9683,6 +9811,26 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  remark-cjk-friendly-gfm-strikethrough@1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
+    dependencies:
+      micromark-extension-cjk-friendly-gfm-strikethrough: 1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2)
+      unified: 11.0.5
+    optionalDependencies:
+      '@types/mdast': 4.0.4
+    transitivePeerDependencies:
+      - micromark
+      - micromark-util-types
+
+  remark-cjk-friendly@1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
+    dependencies:
+      micromark-extension-cjk-friendly: 1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2)
+      unified: 11.0.5
+    optionalDependencies:
+      '@types/mdast': 4.0.4
+    transitivePeerDependencies:
+      - micromark
+      - micromark-util-types
+
   remark-directive@4.0.0:
     dependencies:
       '@types/mdast': 4.0.4
@@ -9891,7 +10039,6 @@ snapshots:
       '@img/sharp-win32-arm64': 0.34.5
       '@img/sharp-win32-ia32': 0.34.5
       '@img/sharp-win32-x64': 0.34.5
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:
@@ -9967,7 +10114,7 @@ snapshots:
       es-errors: 1.3.0
       internal-slot: 1.1.0
 
-  streamdown@1.4.0(@types/react@19.2.4)(react@19.2.0):
+  streamdown@1.5.1(@types/mdast@4.0.4)(@types/react@19.2.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(react@19.2.0)(unified@11.0.5):
     dependencies:
       clsx: 2.1.1
       katex: 0.16.25
@@ -9979,13 +10126,19 @@ snapshots:
       rehype-harden: 1.1.5
       rehype-katex: 7.0.1
       rehype-raw: 7.0.0
+      remark-cjk-friendly: 1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
+      remark-cjk-friendly-gfm-strikethrough: 1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
       remark-gfm: 4.0.1
       remark-math: 6.0.0
       shiki: 3.15.0
       tailwind-merge: 3.4.0
     transitivePeerDependencies:
+      - '@types/mdast'
       - '@types/react'
+      - micromark
+      - micromark-util-types
       - supports-color
+      - unified
 
   string.prototype.includes@2.0.1:
     dependencies:
@@ -10393,8 +10546,6 @@ snapshots:
   xtend@4.0.2: {}
 
   yocto-queue@0.1.0: {}
-
-  zod@3.25.76: {}
 
   zod@4.1.12: {}
 

@@ -39,6 +39,9 @@ export async function POST(request: Request) {
     },
     temperature: 0.7,
     stopWhen: stepCountIs(20),
+    onChunk: (chunk) => {
+      console.log(chunk);
+    },
   });
 
   return result.toUIMessageStreamResponse();
