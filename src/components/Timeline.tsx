@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/components/language-provider";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { motion, Variants, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 type Experience = Dictionary["timeline"]["experiences"][number];
 
@@ -38,6 +40,7 @@ const normalizePeriod = (period: string) => {
     endYear: normalizedEnd,
   };
 };
+
 export const Timeline = () => {
   const { dictionary } = useLanguage();
   const timeline = dictionary.timeline;
@@ -81,46 +84,8 @@ export const Timeline = () => {
       .sort((a, b) => b.year - a.year);
   }, [timelineEntries]);
 
-  const earliestYear = useMemo(() => {
-    return timelineItems.reduce(
-      (min, item) => Math.min(min, item.startYear),
-      Math.min(CAREER_START_YEAR, currentYear)
-    );
-  }, [timelineItems]);
-
-  const totalSpan = Math.max(1, currentYear - earliestYear);
-
-  const yearMarks = useMemo(() => {
-    const years = new Set<number>();
-    timelineItems.forEach((item) => {
-      years.add(item.startYear);
-      years.add(item.endYear);
-    });
-    years.add(CAREER_START_YEAR);
-    years.add(currentYear);
-    return Array.from(years).sort((a, b) => b - a);
-  }, [timelineItems]);
-
-  const getPosition = useCallback(
-    (year: number) => {
-      const clamped = Math.min(Math.max(year, earliestYear), currentYear);
-      const offset = currentYear - clamped;
-      return (offset / totalSpan) * 100;
-    },
-    [earliestYear, totalSpan]
-  );
-
-  const rowSpacing = 220;
-  const timelineHeight = Math.max(
-    totalSpan * rowSpacing || rowSpacing,
-    timelineRows.length * rowSpacing || rowSpacing
-  );
-
   const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null);
-  const [hoveredItem, setHoveredItem] = useState<TimelineItem | null>(null);
-  const handleCardClick = useCallback((item: TimelineItem) => {
-    setSelectedItem(item);
-  }, []);
+  const [hoveredRange, setHoveredRange] = useState<{ start: number; end: number } | null>(null);
   const closeModal = useCallback(() => {
     setSelectedItem(null);
   }, []);
@@ -135,207 +100,229 @@ export const Timeline = () => {
     return () => window.removeEventListener("keydown", handleKey);
   }, [closeModal]);
 
-  const activeRange = hoveredItem
-    ? {
-        top: `${getPosition(hoveredItem.endYear)}%`,
-        height: `${Math.max(2, getPosition(hoveredItem.startYear) - getPosition(hoveredItem.endYear))}%`,
-      }
-    : null;
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
 
   return (
-    <section className="space-y-20 pb-24 mb-16">
-      <div className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+    <section className="space-y-12 mb-24">
+      <div className="space-y-4">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground"
+        >
           {timeline.section.label}
-        </p>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+        </motion.p>
+        <div className="flex items-baseline justify-between border-b border-fd-border pb-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-medium text-fd-foreground"
+          >
             {timeline.section.title}
-          </h2>
+          </motion.h2>
           <Link
             href="/products"
-            className="text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+            className="text-sm text-fd-muted-foreground hover:text-fd-foreground transition-colors"
           >
             {timeline.section.viewProducts}
           </Link>
         </div>
       </div>
 
-      <div className="hidden gap-10 md:grid md:grid-cols-[100px_1fr]">
-        <div className="relative" style={{ minHeight: timelineHeight }}>
-          <div className="absolute inset-0">
-            <div className="absolute right-2 top-0 bottom-0 w-px  to-transparent" />
-            {activeRange ? (
-              <div
-                className="absolute right-1.5 w-1.5 rounded-full bg-slate-900/25 transition-all duration-300"
-                style={activeRange}
-              />
-            ) : null}
-            <span className="absolute right-8 top-0 -translate-y-1/2 text-sm font-semibold uppercase tracking-[0.35em] text-slate-900">
-              {timeline.section.now}
-            </span>
-            {yearMarks
-              .filter((year) => year !== currentYear)
-              .map((year) => (
-                <div
-                  key={year}
-                  className="absolute right-8 -translate-y-1/2 text-xs uppercase tracking-[0.35em] text-slate-400"
-                  style={{ top: `${getPosition(year)}%` }}
-                >
-                  {year}
-                </div>
-              ))}
-          </div>
-        </div>
-
-        <div className="relative" style={{ minHeight: timelineHeight }}>
-          {timelineRows.map((row) => (
-            <div
-              key={row.year}
-              className="absolute flex flex-wrap gap-6"
-              style={{ top: `calc(${getPosition(row.year)}% - 32px)` }}
-            >
+      <motion.div
+        className="space-y-12"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        {timelineRows.map((row) => (
+          <div key={row.year} className="grid md:grid-cols-[100px_1fr] gap-8">
+            <div className="pt-2">
+              <span className={cn(
+                "text-2xl font-medium font-mono transition-colors duration-300",
+                hoveredRange && row.year >= hoveredRange.start && row.year <= hoveredRange.end ? "text-fd-foreground animate-pulse" : "text-fd-muted-foreground/40"
+              )}>
+                {row.year}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-4">
               {row.items.map((item) => (
-                <button
+                <motion.button
                   key={item.nodeLabel}
+                  variants={itemVariants}
                   type="button"
-                  onClick={() => handleCardClick(item)}
-                  onMouseEnter={() => setHoveredItem(item)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  className={`group box-border flex aspect-square w-64 flex-col justify-between rounded-2xl border p-5 text-left transition hover:-translate-y-1 ${
+                  onClick={() => setSelectedItem(item)}
+                  onMouseEnter={() => setHoveredRange({ start: item.startYear, end: item.endYear })}
+                  onMouseLeave={() => setHoveredRange(null)}
+                  className={cn(
+                    "group flex aspect-square w-[300px] max-w-full flex-col items-start justify-between rounded-xl border p-6 text-left transition-all hover:-translate-y-1 hover:shadow-md",
                     item.type === "product"
-                      ? "border-slate-800 bg-slate-950 text-white shadow-[0_25px_65px_-45px_rgba(15,23,42,0.85)] hover:border-amber-200/70 hover:shadow-[0_30px_85px_-45px_rgba(15,23,42,0.9)]"
-                      : "border-slate-200 bg-white text-slate-900 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)] hover:border-slate-400 hover:shadow-[0_25px_65px_-45px_rgba(15,23,42,0.55)]"
-                  }`}
+                      ? "bg-fd-foreground text-fd-background border-fd-foreground hover:bg-fd-foreground/90"
+                      : "bg-fd-card border-fd-border hover:border-fd-foreground/50"
+                  )}
                 >
-                  <div>
-                    <h3
-                      className={`text-lg font-semibold ${
-                        item.type === "product"
-                          ? "text-white"
-                          : "text-slate-900"
-                      }`}
-                    >
-                      {item.title}
-                    </h3>
-                    {item.company ? (
-                      <p
-                        className={`text-sm ${
+                  <div className="space-y-4 w-full">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        {item.type === "product" && (
+                          <span className="inline-flex shrink-0 rounded-full border border-fd-background/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                            Product
+                          </span>
+                        )}
+                        {item.company && (
+                          <span className={cn(
+                            "text-xs font-medium uppercase tracking-wider",
+                            item.type === "product" ? "text-fd-background/70" : "text-fd-muted-foreground"
+                          )}>
+                            {item.company}
+                          </span>
+                        )}
+                      </div>
+                      <h3
+                        className={cn(
+                          "text-xl font-bold tracking-tight leading-tight",
                           item.type === "product"
-                            ? "text-slate-300"
-                            : "text-slate-500"
-                        }`}
+                            ? "text-fd-background"
+                            : "text-fd-foreground"
+                        )}
                       >
-                        @ {item.company}
-                      </p>
-                    ) : null}
+                        {item.title}
+                      </h3>
+                    </div>
                   </div>
                   <p
-                    className={`text-sm line-clamp-4 ${
+                    className={cn(
+                      "text-sm leading-relaxed line-clamp-4",
                       item.type === "product"
-                        ? "text-slate-300/90"
-                        : "text-slate-500"
-                    }`}
+                        ? "text-fd-background/80"
+                        : "text-fd-muted-foreground"
+                    )}
                   >
                     {item.description}
                   </p>
-                </button>
+                </motion.button>
               ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-2 md:hidden">
-        {timelineEntries.map((item) => (
-          <button
-            key={item.nodeLabel}
-            type="button"
-            onClick={() => handleCardClick(item)}
-            className={`flex aspect-square flex-col justify-between rounded-2xl border p-5 text-left ${
-              item.type === "product"
-                ? "border-slate-800 bg-slate-950 text-white shadow-[0_25px_65px_-45px_rgba(15,23,42,0.85)]"
-                : "border-slate-200 bg-white text-slate-900 shadow-[0_20px_55px_-45px_rgba(15,23,42,0.65)]"
-            }`}
-          >
-            <div>
-              <h3
-                className={`text-lg font-semibold ${
-                  item.type === "product" ? "text-white" : "text-slate-900"
-                }`}
-              >
-                {item.title}
-              </h3>
-              {item.company ? (
-                <p
-                  className={`text-sm ${
-                    item.type === "product"
-                      ? "text-slate-300"
-                      : "text-slate-500"
-                  }`}
-                >
-                  @ {item.company}
-                </p>
-              ) : null}
-            </div>
-            <p
-              className={`text-sm line-clamp-4 ${
-                item.type === "product" ? "text-slate-300/90" : "text-slate-500"
-              }`}
-            >
-              {item.description}
-            </p>
-          </button>
-        ))}
-      </div>
-
-      {selectedItem ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4 py-10"
-          role="dialog"
-          aria-modal="true"
-          aria-label={selectedItem.title}
-          onClick={closeModal}
-        >
-          <div
-            className="relative w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 text-slate-900 shadow-2xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={closeModal}
-              className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-700"
-              aria-label={timeline.section.close}
-            >
-              &times;
-            </button>
-            <h3 className="text-2xl font-semibold">{selectedItem.title}</h3>
-            {selectedItem.company ? (
-              <p className="text-sm text-slate-500">@ {selectedItem.company}</p>
-            ) : null}
-            <p className="mt-4 text-sm leading-relaxed text-slate-700">
-              {selectedItem.description}
-            </p>
-            {selectedItem.context ? (
-              <p className="mt-3 border-l-2 border-dashed border-slate-200 pl-3 text-xs italic text-slate-500">
-                {selectedItem.context}
-              </p>
-            ) : null}
-            {selectedItem.skills?.length ? (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {selectedItem.skills.map((skill) => (
-                  <span
-                    key={`${selectedItem.nodeLabel}-${skill}`}
-                    className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[12px] text-slate-600"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            ) : null}
           </div>
-        </div>
-      ) : null}
+        ))}
+      </motion.div>
+
+      <AnimatePresence>
+        {selectedItem ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-fd-background/80 backdrop-blur-sm px-4 py-10"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className={cn(
+                "relative w-full max-w-[600px] border p-8 shadow-2xl rounded-2xl overflow-hidden",
+                selectedItem.type === "product"
+                  ? "bg-fd-foreground text-fd-background border-fd-foreground"
+                  : "bg-fd-card border-fd-border"
+              )}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={closeModal}
+                className={cn(
+                  "absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors",
+                  selectedItem.type === "product"
+                    ? "bg-fd-background/10 text-fd-background hover:bg-fd-background/20"
+                    : "bg-fd-muted/50 text-fd-muted-foreground hover:text-fd-foreground"
+                )}
+              >
+                &times;
+              </button>
+
+              <div className="space-y-6 relative">
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3
+                      className={cn(
+                        "text-2xl font-bold",
+                        selectedItem.type === "product"
+                          ? "text-fd-background"
+                          : "text-fd-foreground"
+                      )}
+                    >
+                      {selectedItem.title}
+                    </h3>
+                    {selectedItem.type === "product" && (
+                      <span className="rounded-full border border-fd-background/30 bg-fd-background/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fd-background">
+                        Product
+                      </span>
+                    )}
+                  </div>
+                  {selectedItem.company && (
+                    <p className={cn(
+                      "uppercase tracking-wider text-xs font-medium",
+                      selectedItem.type === "product" ? "text-fd-background/70" : "text-fd-muted-foreground"
+                    )}>
+                      @ {selectedItem.company}
+                    </p>
+                  )}
+                </div>
+
+                <div className={cn(
+                  "text-base leading-relaxed",
+                  selectedItem.type === "product" ? "text-fd-background/80" : "text-fd-muted-foreground"
+                )}>
+                  {selectedItem.description}
+                </div>
+
+                {selectedItem.context && (
+                  <div className={cn(
+                    "pl-4 border-l-2 italic text-sm",
+                    selectedItem.type === "product"
+                      ? "border-fd-background/50 text-fd-background/80"
+                      : "border-fd-border/50 text-fd-muted-foreground/80"
+                  )}>
+                    {selectedItem.context}
+                  </div>
+                )}
+
+                {selectedItem.skills && (
+                  <div className="flex flex-wrap gap-2 pt-4">
+                    {selectedItem.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className={cn(
+                          "text-xs border rounded-md px-2 py-1",
+                          selectedItem.type === "product"
+                            ? "border-fd-background/20 bg-fd-background/10 text-fd-background/90"
+                            : "border-fd-border text-fd-muted-foreground bg-fd-muted/20"
+                        )}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        ) : null}
+      </AnimatePresence>
     </section>
   );
 };

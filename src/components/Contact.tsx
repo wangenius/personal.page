@@ -1,106 +1,148 @@
 "use client";
 
-import Link from "next/link";
-import { Mail, Twitter, Github, ExternalLink } from "lucide-react";
+import {
+  Mail,
+  Twitter,
+  Github,
+  MessageCircle,
+  AtSign,
+  Box,
+} from "lucide-react";
+import Image from "next/image";
 import { useLanguage } from "@/components/language-provider";
 
 export const Contact = () => {
   const { dictionary } = useLanguage();
   const contact = dictionary.contact;
 
+  const links = [
+    {
+      icon: Mail,
+      label: contact.email.label,
+      value: "wangenius.os@gmail.com",
+      href: "mailto:wangenius.os@gmail.com",
+      type: "link"
+    },
+    {
+      icon: Twitter,
+      label: contact.twitter.label,
+      value: "@iamwangenius",
+      href: "https://x.com/iamwangenius",
+      type: "link"
+    },
+    {
+      icon: Github,
+      label: contact.github.label,
+      value: "github.com/wangenius",
+      href: "https://github.com/wangenius",
+      type: "link"
+    },
+    {
+      icon: Box,
+      label: contact.bento.label,
+      value: "bento.me/wangenius",
+      href: "https://bento.me/wangenius",
+      type: "link"
+    },
+    {
+      icon: MessageCircle,
+      label: contact.wechat.label,
+      value: "wzdoing",
+      href: null,
+      type: "qr",
+      qrCode: "/img/sponsor/wechat.png"
+    },
+     {
+      icon: AtSign,
+      label: contact.wechatOfficial.label,
+      value: "wangenius",
+      href: null,
+      type: "text"
+    }
+  ];
+
   return (
-    <section id="contact" className="mt-16 space-y-6">
-      <div className="space-y-2">
-        <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+    <section id="contact" className="mb-32 space-y-12">
+      <div className="space-y-4">
+        <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
           {contact.section.label}
         </p>
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 md:text-3xl">
+        
+        <h2 className="text-2xl font-medium text-fd-foreground border-b border-fd-border pb-4">
           {contact.section.title}
         </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          {contact.section.description}
-        </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            {contact.wechat.label}
-          </p>
-          <p className="font-medium">wzdoing</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {contact.wechat.note}
-          </p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+         {links.map((link) => (
+            <div key={link.label}>
+               {link.type === 'link' ? (
+                  <a 
+                     href={link.href!} 
+                     target={link.href!.startsWith('http') ? "_blank" : undefined}
+                     rel={link.href!.startsWith('http') ? "noopener noreferrer" : undefined}
+                     className="group flex items-center gap-4 p-2 -ml-2 rounded-lg hover:bg-fd-muted/30 transition-colors"
+                  >
+                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground group-hover:text-fd-foreground transition-colors">
+                        <link.icon className="h-5 w-5" />
+                     </div>
+                     <div className="overflow-hidden">
+                        <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                           {link.label}
+                        </p>
+                        <p className="text-sm font-medium text-fd-foreground truncate group-hover:underline underline-offset-4 decoration-fd-border">
+                           {link.value}
+                        </p>
+                     </div>
+                  </a>
+               ) : link.type === 'qr' ? (
+                  <div className="group relative flex items-center gap-4 p-2 -ml-2 rounded-lg hover:bg-fd-muted/30 transition-colors cursor-pointer">
+                     {/* QR Code Popover */}
+                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 pointer-events-none z-10">
+                        <div className="bg-fd-popover p-2 rounded-xl shadow-xl border border-fd-border">
+                          <div className="relative w-32 h-32 bg-white rounded-lg overflow-hidden">
+                             <Image 
+                               src={link.qrCode!} 
+                               alt={link.label}
+                               fill
+                               className="object-contain"
+                             />
+                          </div>
+                        </div>
+                        {/* Arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1.5 border-8 border-transparent border-t-fd-popover drop-shadow-sm"></div>
+                     </div>
 
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            <Mail className="h-3 w-3" />
-            <span>{contact.email.label}</span>
-          </div>
-          <Link
-            href="mailto:iamwangenius@gmail.com"
-            className="font-medium underline-offset-2 hover:underline"
-          >
-            iamwangenius@gmail.com
-          </Link>
-        </div>
-
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            <Twitter className="h-3 w-3" />
-            <span>{contact.twitter.label}</span>
-          </div>
-          <Link
-            href="https://x.com/iamwangenius"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline"
-          >
-            <span>@iamwangenius</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
-        </div>
-
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            <Github className="h-3 w-3" />
-            <span>{contact.github.label}</span>
-          </div>
-          <Link
-            href="https://github.com/wangenius"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline"
-          >
-            <span>github.com/wangenius</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
-        </div>
-
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            {contact.bento.label}
-          </p>
-          <Link
-            href="https://bento.me/wangenius"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-medium underline-offset-2 hover:underline"
-          >
-            <span>bento.me/wangenius</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
-        </div>
-
-        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-200">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-slate-400">
-            {contact.wechatOfficial.label}
-          </p>
-          <p className="font-medium">wangenius</p>
-        </div>
+                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground group-hover:text-fd-foreground transition-colors">
+                        <link.icon className="h-5 w-5" />
+                     </div>
+                     <div>
+                         <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                           {link.label}
+                        </p>
+                        <p className="text-sm font-medium text-fd-foreground">
+                           {link.value}
+                        </p>
+                     </div>
+                  </div>
+               ) : (
+                  <div className="flex items-center gap-4 p-2 -ml-2">
+                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground">
+                        <link.icon className="h-5 w-5" />
+                     </div>
+                     <div>
+                         <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                           {link.label}
+                        </p>
+                        <p className="text-sm font-medium text-fd-foreground">
+                           {link.value}
+                        </p>
+                     </div>
+                  </div>
+               )}
+            </div>
+         ))}
       </div>
     </section>
   );
 };
-

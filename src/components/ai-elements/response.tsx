@@ -8,6 +8,8 @@ import {
   defaultRemarkPlugins,
 } from "streamdown";
 import { harden } from "rehype-harden";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 type ResponseProps = ComponentProps<typeof Streamdown>;
 
@@ -16,7 +18,6 @@ export const Response = memo(
     <Streamdown
       rehypePlugins={[
         defaultRehypePlugins.raw,
-        defaultRehypePlugins.katex,
         [
           harden,
           {
@@ -28,8 +29,9 @@ export const Response = memo(
             allowedImagePrefixes: ["/", "http:", "https:"],
           },
         ],
+        rehypeKatex,
       ]}
-      remarkPlugins={[defaultRemarkPlugins.gfm, defaultRemarkPlugins.math]}
+      remarkPlugins={[defaultRemarkPlugins.gfm, remarkMath]}
       className={cn(
         "size-full [&>*:first-child]:mt-0 *:mb-0 space-y-0",
         className
