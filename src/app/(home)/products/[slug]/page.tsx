@@ -20,7 +20,7 @@ export default async function Page(props: {
   return (
     <>
       <LastReadTracker />
-      <article className="flex flex-col mx-auto w-full max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
+      <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
         <div className="prose min-w-0 flex-1 p-4">
           <InlineTOC items={toc} />
           <Mdx components={getMDXComponents()} />
