@@ -8,7 +8,7 @@ title: Event
 
 ---
 
-1. **什么是事件循环？**
+1. 什么是事件循环？
 
 事件循环是一种调度机制，用来管理程序的执行顺序。它使得非阻塞 I/O 和异步任务得以实现，通过以下步骤工作：
 
@@ -20,18 +20,18 @@ title: Event
 
 ---
 
-4. **事件循环的工作模型**
+4. 事件循环的工作模型
 
 以下是事件循环的几个关键组成部分：
 
-### **任务队列（Task Queue）**
+### 任务队列（Task Queue）
 
 存放需要执行的任务。任务可以分为：
 
-- **​宏任务（​**​**Macro**​​**​ Task）**​：主程序、`setTimeout`、`setInterval`、`I/O`。
-- ​**微任务（Micro Task）**​：`Promise.then`、`queueMicrotask`。
+- ​宏任务（​​Macro​​​ Task）​：主程序、`setTimeout`、`setInterval`、`I/O`。
+- ​微任务（Micro Task）​：`Promise.then`、`queueMicrotask`。
 
-### **事件循环的步骤**
+### 事件循环的步骤
 
 1. 执行一个宏任务（如主线程代码）。
 2. 检查微任务队列，执行所有微任务。
@@ -40,7 +40,7 @@ title: Event
 
 ---
 
-5. **​事件循环的代码实例（​**​​**JavaScript**​**）**
+5. ​事件循环的代码实例（​​​JavaScript​）
 
 以下是一个例子，演示任务队列的顺序：
 
@@ -57,7 +57,7 @@ Promise.resolve().then(() => {
 console.log("结束");
 ```
 
-**输出顺序：**
+输出顺序：
 
 ```javascript
 开始
@@ -66,7 +66,7 @@ Promise.then
 setTimeout
 ```
 
-**解析：**
+解析：
 
 1. 主线程首先执行同步代码。
 2. `setTimeout`的回调被放入宏任务队列。
@@ -75,7 +75,7 @@ setTimeout
 
 ---
 
-5. **在浏览器环境中的事件循环**
+5. 在浏览器环境中的事件循环
 
 浏览器的事件循环还涉及到渲染过程：
 
@@ -96,7 +96,7 @@ Promise.resolve().then(() => {
 });
 ```
 
-**输出顺序：**
+输出顺序：
 
 ```javascript
 Promise
@@ -106,16 +106,16 @@ setTimeout
 
 ---
 
-6. **在 Node.js 中的事件循环**
+6. 在 Node.js 中的事件循环
 
 Node.js 的事件循环分为六个阶段：
 
-1. ​**timers**​：执行 `setTimeout` 和 `setInterval` 的回调。
-2. ​**I/O callbacks**​：处理一些系统操作的回调，如文件 I/O。
-3. ​**idle, prepare**​：仅供内部使用。
-4. ​**poll**​：检索新的 I/O 事件。
-5. ​**check**​：执行 `setImmediate` 的回调。
-6. ​**close callbacks**​：执行 `close` 事件的回调。
+1. ​timers​：执行 `setTimeout` 和 `setInterval` 的回调。
+2. ​I/O callbacks​：处理一些系统操作的回调，如文件 I/O。
+3. ​idle, prepare​：仅供内部使用。
+4. ​poll​：检索新的 I/O 事件。
+5. ​check​：执行 `setImmediate` 的回调。
+6. ​close callbacks​：执行 `close` 事件的回调。
 
 ### 示例
 
@@ -128,7 +128,7 @@ setImmediate(() => {
 });
 ```
 
-**输出顺序：**
+输出顺序：
 
 ```javascript
 setTimeout
@@ -142,21 +142,21 @@ setImmediate
 setTimeout
 ```
 
-**解析：**
+解析：
 
 - 顺序可能取决于事件循环进入 `timers` 还是 `check` 阶段。
 
 ---
 
-7. **应用场景**
+7. 应用场景
 
-- ​**非阻塞 I/O**​：处理网络请求、文件操作。
-- ​**动画更新**​：在浏览器中，通过 `requestAnimationFrame` 和微任务队列。
-- ​**任务调度**​：使用 `setTimeout`、`Promise` 来控制代码执行的先后顺序。
+- ​非阻塞 I/O​：处理网络请求、文件操作。
+- ​动画更新​：在浏览器中，通过 `requestAnimationFrame` 和微任务队列。
+- ​任务调度​：使用 `setTimeout`、`Promise` 来控制代码执行的先后顺序。
 
 ---
 
-8. **进阶：自定义事件循环**
+8. 进阶：自定义事件循环
 
 你可以通过代码实现一个简单的事件循环：
 
@@ -181,7 +181,7 @@ loop.add(() => console.log("Task 2"));
 loop.run();
 ```
 
-**输出：**
+输出：
 
 ```javascript
 Task 1
@@ -194,7 +194,7 @@ Task 2
 
 # EventTarget 接口
 
-**事件的本质是程序各个组成部分之间的一种通信方式，也是异步编程的一种实现。DOM 支持大量的事件，本章开始介绍 DOM 的事件编程。**
+事件的本质是程序各个组成部分之间的一种通信方式，也是异步编程的一种实现。DOM 支持大量的事件，本章开始介绍 DOM 的事件编程。
 
 介绍具体的事件之前，先来看看如何让 DOM 节点监听事件。
 

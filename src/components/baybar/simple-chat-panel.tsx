@@ -15,7 +15,10 @@ import {
   type ChatInputProps,
   type ChatInputRef,
 } from "@/components/baybar/ChatInput";
-import { MessageRenderer } from "@/components/baybar/MessageRenderer";
+import {
+  MessageRenderer,
+  ErrorMessage,
+} from "@/components/baybar/MessageRenderer";
 import { useChatStore } from "@/lib/chatStore";
 import { dialog } from "../custom/DialogModal";
 import { TbTrash } from "react-icons/tb";
@@ -112,7 +115,33 @@ export function SimpleChatPanel() {
     });
   }, [clearStoredMessages, setMessages]);
 
-  const visibleMessages = messages.filter((msg) => msg.role !== "system");
+  const visibleMessages = useMemo(() => {
+    // 过滤掉 system 消息
+    const baseMessages = messages.filter((msg) => msg.role !== "system");
+
+    const lastMessage = baseMessages[baseMessages.length - 1];
+
+    const shouldShowAssistantPlaceholder =
+      (status === "submitted" || status === "streaming") &&
+      lastMessage?.role === "user";
+
+    if (!shouldShowAssistantPlaceholder) return baseMessages;
+
+    // 在前端列表中追加一条占位的 assistant 消息，用于展示 loading 状态
+    return [
+      ...baseMessages,
+      {
+        id: "assistant-loading-placeholder",
+        role: "assistant" as const,
+        parts: [
+          {
+            type: "text" as const,
+            text: "",
+          },
+        ],
+      },
+    ];
+  }, [messages, status]);
 
   const handleOptionSelect = useCallback((formattedText: string) => {
     if (!formattedText) return;
@@ -145,11 +174,7 @@ export function SimpleChatPanel() {
               />
             );
           })}
-          {error ? (
-            <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive-foreground">
-              <div>生成出错：{error.message || "未知错误"}</div>
-            </div>
-          ) : null}
+          {error ? <ErrorMessage error={error} /> : null}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>

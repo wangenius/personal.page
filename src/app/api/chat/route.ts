@@ -5,6 +5,7 @@ import {
   stepCountIs,
 } from "ai";
 import { MAIN_MODEL } from "@/lib/Model";
+import { getServerSession } from "@/lib/server-session";
 import {
   get_blog_content,
   get_blog_list,
@@ -20,6 +21,11 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
+  const session = await getServerSession();
+  if (!session) {
+    return new Response("请先登录", { status: 401 });
+  }
+
   const { messages = [] }: { messages?: UIMessage[] } = await request.json();
 
   const msgs = convertToModelMessages(messages);

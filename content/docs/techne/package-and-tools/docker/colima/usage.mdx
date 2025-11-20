@@ -75,8 +75,8 @@ docker run --rm -v ~/Projects/my-app:/app -w /app node:22 npm run dev
 
 性能建议：
 
-- **读写频繁的代码目录**：保留共享即可，方便编辑与热重载。
-- **高 IO 的数据库 / 缓存数据**：尽量使用容器内部路径或专用卷，例如：
+- 读写频繁的代码目录：保留共享即可，方便编辑与热重载。
+- 高 IO 的数据库 / 缓存数据：尽量使用容器内部路径或专用卷，例如：
 
   ```bash
   docker volume create pgdata

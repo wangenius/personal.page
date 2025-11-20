@@ -1,14 +1,30 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { SelectField } from "@/components/docs/selection-quote";
 import { type ReasoningUIPart, type ToolUIPart, type UIMessage } from "ai";
-import { FileText, CornerDownRight, Copy, Check } from "lucide-react";
+import {
+  FileText,
+  CornerDownRight,
+  Copy,
+  Check,
+  ChevronRight,
+  Loader2,
+  Terminal,
+  AlertCircle,
+  X,
+} from "lucide-react";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
 import { dialog } from "@/components/custom/DialogModal";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 /**
  * 解析消息中的文件标记
@@ -119,7 +135,7 @@ function LoadingDots() {
   );
 }
 
-function CopyButton({ text }: { text: string }) {
+function CopyButton({ text, className }: { text: string; className?: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -150,7 +166,10 @@ function CopyButton({ text }: { text: string }) {
       onClick={handleCopy}
       variant="ghost"
       size="icon"
-      className="size-5 invisible group-hover:visible"
+      className={cn(
+        "size-6 transition-opacity hover:bg-background/20 rounded-full",
+        className
+      )}
     >
       {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
     </Button>
@@ -158,7 +177,7 @@ function CopyButton({ text }: { text: string }) {
 }
 
 /**
- * 文件显示组件
+ * 文件显示组件 - 极简风格
  */
 function FileDisplay({ file }: { file: ParsedFile }) {
   return (
@@ -172,10 +191,10 @@ function FileDisplay({ file }: { file: ParsedFile }) {
           },
         });
       }}
-      className="inline-flex select-none items-center gap-2 px-3 py-2 rounded-lg border border-border/60 bg-background/80 hover:bg-muted/60 transition-colors group w-fit ml-auto"
+      className="inline-flex select-none items-center gap-2 px-3 py-1.5 rounded-md border border-border/40 bg-background/50 hover:bg-muted/50 transition-colors group w-fit cursor-pointer"
     >
-      <FileText className="h-4 w-4 text-blue-500 shrink-0" />
-      <span className="text-xs text-foreground/80 truncate max-w-[200px]">
+      <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+      <span className="text-xs text-foreground/70 truncate max-w-[200px]">
         {file.name}
       </span>
     </div>
@@ -183,7 +202,7 @@ function FileDisplay({ file }: { file: ParsedFile }) {
 }
 
 /**
- * 用户消息内容组件
+ * 用户消息内容组件 - 极简风格
  */
 function UserMessageContent({
   parsedQuote,
@@ -208,17 +227,17 @@ function UserMessageContent({
     <div className="flex flex-col items-end w-full gap-2">
       {/* 引用内容显示 - 最上面 */}
       {parsedQuote.hasQuote && (
-        <div className="text-sm text-foreground/60 pr-6 max-h-24 overflow-y-auto max-w-[80%]">
-          <CornerDownRight className="h-4 w-4 inline mr-2 text-foreground/60" />
-          {parsedQuote.quote.length > 60
-            ? parsedQuote.quote.slice(0, 60) + "..."
+        <div className="text-xs text-muted-foreground/70 pr-3 border-r-2 border-muted pl-2 mb-1 max-w-[90%]">
+          <CornerDownRight className="h-3 w-3 inline mr-1.5 text-muted-foreground/50" />
+          {parsedQuote.quote.length > 80
+            ? parsedQuote.quote.slice(0, 80) + "..."
             : parsedQuote.quote}
         </div>
       )}
 
-      {/* 文件显示区域 - 在 MessageContent 外面、中间 */}
+      {/* 文件显示区域 */}
       {hasFiles && (
-        <div className="flex flex-col gap-1.5 w-full">
+        <div className="flex flex-wrap justify-end gap-2 w-full">
           {parsedFilesFromMessage.parts
             .filter((p) => p.type === "file")
             .map((part, idx) => {
@@ -228,10 +247,10 @@ function UserMessageContent({
         </div>
       )}
 
-      {/* 文本内容 - 最下面 */}
+      {/* 文本内容 */}
       {hasText && (
         <MessageContent
-          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl px-2 py-1 rounded-lg bg-muted-foreground/10!"
+          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl px-4 py-3 rounded-2xl rounded-tr-sm bg-primary text-primary-foreground"
           variant="flat"
         >
           {textParts.map((part, idx) => {
@@ -241,6 +260,139 @@ function UserMessageContent({
         </MessageContent>
       )}
     </div>
+  );
+}
+
+/**
+ * 思考过程组件 - 极简折叠风格
+ */
+function ThinkingProcess({
+  reasoningTexts,
+  toolParts,
+  isStreaming,
+}: {
+  reasoningTexts: string[];
+  toolParts: ToolUIPart[];
+  isStreaming: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(isStreaming);
+
+  useEffect(() => {
+    if (isStreaming) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [isStreaming]);
+
+  if (reasoningTexts.length === 0 && toolParts.length === 0) return null;
+
+  const hasActiveToolCall = toolParts.some(
+    (part) => part.state !== "output-available" && part.state !== "output-error"
+  );
+
+  return (
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="w-full group/thinking"
+    >
+      <div className="flex items-center gap-2">
+        <CollapsibleTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground gap-1.5 transition-colors"
+          >
+            {isStreaming || hasActiveToolCall ? (
+              <Loader2 className="size-3 animate-spin" />
+            ) : (
+              <Terminal className="size-3" />
+            )}
+            <span>思考过程</span>
+            <ChevronRight
+              className={cn(
+                "size-3 transition-transform duration-200",
+                isOpen ? "rotate-90" : ""
+              )}
+            />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+
+      <CollapsibleContent className="pl-2 mt-1">
+        <div className="border-l border-border/40 pl-3 py-1 space-y-3">
+          {/* 推理内容 */}
+          {reasoningTexts.length > 0 && (
+            <div className="space-y-2 text-muted-foreground/80 text-[13px] leading-relaxed font-light">
+              {reasoningTexts.map((text, idx) => (
+                <div key={idx} className="whitespace-pre-wrap">
+                  {text}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 工具调用 */}
+          {toolParts.length > 0 && (
+            <div className="space-y-1.5">
+              {toolParts.map((toolPart, idx) => {
+                const methodName = toolPart.type.split("-").slice(1).join("_");
+
+                const isComplete = toolPart.state === "output-available";
+                const isError = toolPart.state === "output-error";
+
+                return (
+                  <div key={idx} className="flex items-center gap-2 text-xs">
+                    <div
+                      className={cn(
+                        "size-4 flex items-center justify-center rounded-full border",
+                        isComplete
+                          ? "border-green-500/30 bg-green-500/10 text-green-600"
+                          : isError
+                            ? "border-destructive/30 bg-destructive/10 text-destructive"
+                            : "border-muted bg-muted/50 text-muted-foreground"
+                      )}
+                    >
+                      {isComplete ? (
+                        <Check className="size-2.5" />
+                      ) : isError ? (
+                        <X className="size-2.5" />
+                      ) : (
+                        <Loader2 className="size-2.5 animate-spin" />
+                      )}
+                    </div>
+                    <code className="font-mono text-[11px] text-foreground/60 bg-muted/50 rounded px-1.5 py-0.5">
+                      {methodName}
+                    </code>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+/**
+ * 错误消息组件
+ */
+export function ErrorMessage({ error }: { error: Error | string }) {
+  const errorMessage = typeof error === "string" ? error : error.message;
+  return (
+    <Message className="w-full" from="assistant">
+      <div className="flex w-full gap-2">
+        <div className="size-8 shrink-0 flex items-center justify-center rounded-full bg-destructive/10 self-end mb-1">
+          <AlertCircle className="size-5 text-destructive" />
+        </div>
+        <div className="flex-1 rounded-2xl rounded-tl-sm border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive-foreground max-w-[90%]">
+          <p className="font-medium mb-1">生成出错</p>
+          <p className="opacity-90">{errorMessage || "发生了未知错误"}</p>
+        </div>
+      </div>
+    </Message>
   );
 }
 
@@ -276,47 +428,6 @@ export function MessageRenderer({
       ? parseQuote(messageText)
       : { hasQuote: false, quote: "", message: messageText };
   }, [messageText, message.role]);
-
-  // 过滤出 reasoning 和 tool parts（用于整体状态判断）
-  const thinkingParts = parts.filter(
-    (part): part is ReasoningUIPart | ToolUIPart =>
-      part.type === "reasoning" || part.type.startsWith("tool-")
-  );
-
-  // 确定思维链标题
-  const getChainTitle = () => {
-    // 检查是否有工具调用正在执行
-    const hasActiveToolCall = thinkingParts.some(
-      (part) =>
-        part.type.startsWith("tool-") &&
-        (part as ToolUIPart).state !== "output-available" &&
-        (part as ToolUIPart).state !== "output-error"
-    );
-
-    // 检查是否所有步骤都完成
-    const allCompleted = thinkingParts.every((part) => {
-      if (part.type === "reasoning") {
-        return (part as ReasoningUIPart).state === "done";
-      }
-      if (part.type.startsWith("tool-")) {
-        const toolPart = part as ToolUIPart;
-        return (
-          toolPart.state === "output-available" ||
-          toolPart.state === "output-error"
-        );
-      }
-      return true;
-    });
-
-    // 根据状态返回标题
-    if (allCompleted && !isStreaming) {
-      return "思考过程";
-    } else if (hasActiveToolCall) {
-      return "执行中...";
-    } else {
-      return "思考中...";
-    }
-  };
 
   const segments = useMemo(() => {
     if (message.role !== "assistant")
@@ -363,110 +474,81 @@ export function MessageRenderer({
     flushThinking();
     flushText();
 
+    // 方案 A：如果正在流式且还没有任何真实片段，注入一个空文本 segment
+    if (isStreaming && result.length === 0) {
+      return [{ kind: "text" as const, text: "" }];
+    }
+
     return result;
-  }, [message.role, parts]);
+  }, [message.role, parts, isStreaming]);
 
   return (
-    <Message className={"w-full"} key={message.id} from={message.role}>
+    <Message className={"w-full py-2"} key={message.id} from={message.role}>
       <SelectField
         onSelect={(text) => ({
           text,
         })}
       >
         {message.role === "assistant" ? (
-          <MessageContent variant="flat" className="w-full">
-            {segments.map(
-              (
-                segment:
-                  | { kind: "thinking"; parts: ThinkingPart[] }
-                  | { kind: "text"; text: string },
-                segmentIndex: number
-              ) => {
-                if (segment.kind === "thinking") {
-                  const segmentThinkingParts = segment.parts;
-                  const reasoningTexts = segmentThinkingParts
-                    .filter((part: ThinkingPart) => part.type === "reasoning")
-                    .map((part: ThinkingPart) =>
-                      (part as ReasoningUIPart).text?.trim()
-                    )
-                    .filter((text): text is string => Boolean(text));
+          <MessageContent variant="flat" className="w-full gap-1">
+            <div
+              className={cn(
+                "bg-secondary/50 px-4 py-3 rounded-2xl rounded-tl-sm w-[90%] space-y-2 border border-border/50",
+                isStreaming && segments.length === 0 && "animate-pulse"
+              )}
+            >
+              {segments.map(
+                (
+                  segment:
+                    | { kind: "thinking"; parts: ThinkingPart[] }
+                    | { kind: "text"; text: string },
+                  segmentIndex: number
+                ) => {
+                  if (segment.kind === "thinking") {
+                    const segmentThinkingParts = segment.parts;
+                    const reasoningTexts = segmentThinkingParts
+                      .filter((part: ThinkingPart) => part.type === "reasoning")
+                      .map((part: ThinkingPart) =>
+                        (part as ReasoningUIPart).text?.trim()
+                      )
+                      .filter((text): text is string => Boolean(text));
 
-                  const toolParts = segmentThinkingParts.filter((part) =>
-                    part.type.startsWith("tool-")
-                  ) as ToolUIPart[];
+                    const toolParts = segmentThinkingParts.filter((part) =>
+                      part.type.startsWith("tool-")
+                    ) as ToolUIPart[];
 
-                  if (reasoningTexts.length === 0 && toolParts.length === 0)
-                    return null;
+                    return (
+                      <ThinkingProcess
+                        key={`${message.id}-thinking-${segmentIndex}`}
+                        reasoningTexts={reasoningTexts}
+                        toolParts={toolParts}
+                        isStreaming={isStreaming}
+                      />
+                    );
+                  }
+
+                  // 文本片段
+                  const text = segment.text ?? "";
+                  const hasText = text.trim().length > 0;
 
                   return (
                     <div
-                      key={`${message.id}-thinking-${segmentIndex}`}
-                      className="space-y-0.5 text-xs text-muted-foreground"
+                      key={`${message.id}-text-${segmentIndex}`}
+                      className="text-sm leading-relaxed group relative"
                     >
-                      {reasoningTexts.length > 0 && (
-                        <div className="rounded-md bg-muted/40 px-3 py-2">
-                          <div className="text-[11px] font-medium text-muted-foreground/80">
-                            {getChainTitle()}
-                          </div>
-                          <div className="space-y-1">
-                            {reasoningTexts.map((text, idx) => (
-                              <p
-                                key={`${message.id}-reasoning-${segmentIndex}-${idx}`}
-                                className="whitespace-pre-wrap leading-relaxed"
-                              >
-                                {text}
-                              </p>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {toolParts.map((toolPart, idx) => {
-                        const methodName = toolPart.type
-                          .split("-")
-                          .slice(1)
-                          .join("_");
-
-                        let statusText = "调用中";
-                        if (toolPart.state === "output-available") {
-                          statusText = "完成";
-                        } else if (toolPart.state === "output-error") {
-                          statusText = "出错";
-                        }
-
-                        return (
-                          <div
-                            key={`${message.id}-tool-${segmentIndex}-${idx}`}
-                            className="flex items-center gap-2 pl-1"
-                          >
-                            <code className="font-mono text-[11px] text-foreground/70 bg-muted rounded px-1.5 py-0.5">
-                              {methodName}
-                            </code>
-                            <span className="text-[11px] text-muted-foreground/80">
-                              {statusText}
-                            </span>
-                          </div>
-                        );
-                      })}
+                      {hasText && <Response>{text}</Response>}
+                      <div className="flex items-center justify-start gap-2 mt-1 select-none">
+                        {isLastMessage && isStreaming ? (
+                          <LoadingDots />
+                        ) : (
+                          <CopyButton text={text} />
+                        )}
+                      </div>
                     </div>
                   );
                 }
-
-                // 文本片段
-                return (
-                  <div
-                    key={`${message.id}-text-${segmentIndex}`}
-                    className="text-sm leading-relaxed group"
-                  >
-                    <Response>{segment.text}</Response>
-                    {segmentIndex === segments.length - 1 && (
-                      <CopyButton text={segment.text} />
-                    )}
-                  </div>
-                );
-              }
-            )}
-            {isLastMessage && isStreaming && <LoadingDots />}
+              )}
+            </div>
           </MessageContent>
         ) : (
           /* 用户消息 */
@@ -475,7 +557,6 @@ export function MessageRenderer({
               parsedQuote={parsedQuote}
               parsedFiles={parsedFiles}
             />
-            {isLastMessage && isStreaming && <LoadingDots />}
           </>
         )}
       </SelectField>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { InlineTOC } from "fumadocs-ui/components/inline-toc";
 import { products } from "@/lib/source";
 import { createMetadata } from "@/lib/metadata";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
@@ -15,14 +14,13 @@ export default async function Page(props: {
 
   if (!page) notFound();
   const data = page.data as any;
-  const { body: Mdx, toc } = await data.load();
+  const { body: Mdx } = await data.load();
 
   return (
     <>
       <LastReadTracker />
       <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
         <div className="prose min-w-0 flex-1 p-4">
-          <InlineTOC items={toc} />
           <Mdx components={getMDXComponents()} />
         </div>
         <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">

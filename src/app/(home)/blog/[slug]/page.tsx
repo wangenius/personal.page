@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { InlineTOC } from "fumadocs-ui/components/inline-toc";
 import { blogs } from "@/lib/source";
 import { createMetadata } from "@/lib/metadata";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
@@ -17,7 +16,7 @@ export default async function Page(props: {
 
   if (!page) notFound();
   const data = page.data as any;
-  const { body: Mdx, toc } = await data.load();
+  const { body: Mdx } = await data.load();
 
   return (
     <>
@@ -26,7 +25,6 @@ export default async function Page(props: {
         <SelectionQuote>
           <AnnotationHighlights path={page.url}>
             <div className="prose min-w-0 flex-1 p-4">
-              <InlineTOC items={toc} />
               <Mdx components={getMDXComponents()} />
             </div>
           </AnnotationHighlights>
@@ -44,6 +42,7 @@ export default async function Page(props: {
                 : "Date to be announced"}
             </p>
           </div>
+
           <Control url={page.url} />
         </div>
       </article>
