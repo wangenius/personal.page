@@ -19,10 +19,10 @@ export default async function Page(props: {
   const { body: Mdx } = await data.load();
 
   return (
-    <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
+    <article className="flex flex-col mx-auto flex-1 max-w-fd-container lg:flex-row overflow-hidden px-8">
       <SelectionQuote>
         <AnnotationHighlights path={page.url}>
-          <div className="prose min-w-0 flex-1 p-4">
+          <div className="prose min-w-0 flex-1 p-4 py-12 overflow-auto h-full">
             <Mdx components={getMDXComponents()} />
           </div>
         </AnnotationHighlights>

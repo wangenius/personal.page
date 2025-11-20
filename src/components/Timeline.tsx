@@ -188,7 +188,7 @@ export const Timeline = () => {
                     "group flex aspect-square w-[280px] max-w-full flex-col items-start justify-between p-6 text-left transition-all rounded-xl",
                     item.type === "product"
                       ? "bg-fd-foreground/5 hover:bg-fd-foreground/10"
-                      : "hover:bg-fd-muted/20"
+                      : "hover:bg-fd-muted"
                   )}
                 >
                   <div className="space-y-4 w-full">

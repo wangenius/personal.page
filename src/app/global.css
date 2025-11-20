@@ -46,12 +46,41 @@
   --animate-collapse-up: collapse-up 0.2s ease-out;
 
   @keyframes collapse-down {
-    from { height: 0 }
-    to { height: var(--radix-collapsible-content-height) }
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
   }
   @keyframes collapse-up {
-    from { height: var(--radix-collapsible-content-height) }
-    to { height: 0 }
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  --animate-marquee: marquee var(--duration) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
   }
 }
 
@@ -226,7 +255,7 @@
 }
 
 #nd-page > article {
-  @apply flex-1 min-w-0 overflow-auto relative py-0 px-8;
+  @apply flex-1 min-w-0 overflow-auto relative py-0 px-8 pt-12;
 }
 
 #nd-page > article > p {

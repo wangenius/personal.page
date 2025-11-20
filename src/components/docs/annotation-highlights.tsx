@@ -15,14 +15,19 @@ type AnnotationHighlightsProps = {
   children: React.ReactNode;
 };
 
-export function AnnotationHighlights({ path, children }: AnnotationHighlightsProps) {
+export function AnnotationHighlights({
+  path,
+  children,
+}: AnnotationHighlightsProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [notes, setNotes] = useState<HighlightNote[]>([]);
 
   const clearHighlights = useCallback((root: HTMLElement | null) => {
     if (!root) return;
     const spans = Array.from(
-      root.querySelectorAll<HTMLElement>("span[data-annotation-highlight='true']")
+      root.querySelectorAll<HTMLElement>(
+        "span[data-annotation-highlight='true']"
+      )
     );
     spans.forEach((span) => {
       const parent = span.parentNode;
@@ -53,7 +58,8 @@ export function AnnotationHighlights({ path, children }: AnnotationHighlightsPro
         const selectionStr =
           typeof note.selection === "string" ? note.selection : "";
         const patternStr =
-          typeof note.selectorRegex === "string" && note.selectorRegex.length > 0
+          typeof note.selectorRegex === "string" &&
+          note.selectorRegex.length > 0
             ? note.selectorRegex
             : selectionStr;
         if (!patternStr) return;
@@ -77,7 +83,8 @@ export function AnnotationHighlights({ path, children }: AnnotationHighlightsPro
 
         let currentNode = walker.currentNode as Text | null;
         while (currentNode) {
-          const text = typeof currentNode.data === "string" ? currentNode.data : "";
+          const text =
+            typeof currentNode.data === "string" ? currentNode.data : "";
           if (!text) {
             currentNode = walker.nextNode() as Text | null;
             continue;
@@ -98,7 +105,6 @@ export function AnnotationHighlights({ path, children }: AnnotationHighlightsPro
     },
     [clearHighlights]
   );
-  
 
   useEffect(() => {
     let canceled = false;
@@ -119,7 +125,8 @@ export function AnnotationHighlights({ path, children }: AnnotationHighlightsPro
           const selection =
             typeof item?.selection === "string" ? item.selection : "";
           const selectorRegex =
-            typeof item?.selectorRegex === "string" && item.selectorRegex.length > 0
+            typeof item?.selectorRegex === "string" &&
+            item.selectorRegex.length > 0
               ? item.selectorRegex
               : null;
           const key = `${item?.path ?? ""}::${selectorRegex ?? selection}`;
@@ -151,7 +158,7 @@ export function AnnotationHighlights({ path, children }: AnnotationHighlightsPro
   }, [highlightNotes, notes, clearHighlights]);
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div ref={containerRef} className="w-full h-full">
       {children}
     </div>
   );

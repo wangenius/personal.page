@@ -1,8 +1,7 @@
 "use client";
 import { Contact } from "@/components/Contact";
-import {
-  SelectField
-} from "@/components/docs/selection-quote";
+import { AboutMe } from "@/components/AboutMe";
+import { SelectField } from "@/components/docs/selection-quote";
 import { Hero } from "@/components/Hero";
 import { Timeline } from "@/components/Timeline";
 
@@ -16,6 +15,7 @@ export default function HomePage() {
           })}
         >
           <Hero />
+          <AboutMe />
           <Timeline />
           <Contact />
         </SelectField>
