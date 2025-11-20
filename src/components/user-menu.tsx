@@ -8,11 +8,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { TbLogout } from "react-icons/tb";
+import { TbLogout, TbCreditCard } from "react-icons/tb";
 import { cn } from "@/lib/utils";
 import { BiUser } from "react-icons/bi";
 import { dialog } from "@/components/custom/DialogModal";
@@ -45,27 +46,37 @@ export function UserMenu() {
 
   if (!mounted || isPending) {
     return (
-      <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
-        <BiUser className="h-4 w-4" />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 rounded-full"
+        disabled
+      >
+        <BiUser className="h-[18px] w-[18px]" />
       </Button>
     );
   }
 
   if (!session) {
     return (
-      <Button variant="ghost" size="sm" className="h-8 gap-2" asChild>
-        <Link href="/signin">login</Link>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-9 px-4 text-sm font-medium"
+        asChild
+      >
+        <Link href="/signin">Login</Link>
       </Button>
     );
   }
 
   const handleSignOut = () => {
     dialog.confirm({
-      title: "确认退出登录",
-      content: "确定要退出当前账号吗？",
+      title: "Sign out",
+      content: "Are you sure you want to sign out?",
       variants: "destructive",
-      okText: "退出登录",
-      cancelText: "取消",
+      okText: "Sign out",
+      cancelText: "Cancel",
       onOk: async () => {
         await signOut();
       },
@@ -74,22 +85,27 @@ export function UserMenu() {
 
   return (
     <DropdownMenu>
-      <div className="flex items-center gap-2">
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-            <Avatar className={cn("h-7 w-7")}>
-              <AvatarImage src={imageUrl} alt={session.user.name} />
-              <AvatarFallback className="text-xs">
-                {session.user.name?.[0]?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-      </div>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 rounded-full ring-2 ring-transparent hover:ring-border/50 transition-all duration-200"
+        >
+          <Avatar className="h-8 w-8 border border-border/50">
+            <AvatarImage src={imageUrl} alt={session.user.name} />
+            <AvatarFallback className="text-xs bg-muted text-muted-foreground">
+              {session.user.name?.[0]?.toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="w-60 p-1 border-border/40 bg-background/95 backdrop-blur-xl shadow-xl"
+      >
+        <DropdownMenuLabel className="p-2 font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-sm font-medium leading-none text-foreground">
               {session.user.name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
@@ -97,23 +113,26 @@ export function UserMenu() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuItem asChild>
-          <Link
-            href="/subscribe"
-            className="flex w-full items-center text-sm font-medium"
-          >
-            <span className="mr-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/10 text-[10px] font-semibold text-emerald-500">
-              $
+        <DropdownMenuSeparator className="bg-border/40" />
+        <DropdownMenuItem
+          asChild
+          className="p-2 cursor-pointer focus:bg-accent/50"
+        >
+          <Link href="/subscribe" className="flex w-full items-center text-sm">
+            <TbCreditCard className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span>Subscription</span>
+            <span className="ml-auto inline-flex h-4 items-center justify-center rounded-full bg-emerald-500/10 px-1.5 text-[10px] font-medium text-emerald-500">
+              PRO
             </span>
-            订阅
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-border/40" />
         <DropdownMenuItem
           onClick={handleSignOut}
-          className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+          className="p-2 cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
         >
           <TbLogout className="mr-2 h-4 w-4" />
-          <span className="text-sm font-medium">退出登录</span>
+          <span className="text-sm">Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

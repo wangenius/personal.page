@@ -11,7 +11,7 @@ const BAYBAR_TOGGLE_EVENT = "baybar-toggle";
 export const toggleBayBar = (open?: boolean) => {
   const currentState = localStorage.getItem("isBayBarOpen") === "true";
   const newState = open !== undefined ? open : !currentState;
-  
+
   localStorage.setItem("isBayBarOpen", String(newState));
   window.dispatchEvent(new CustomEvent(BAYBAR_TOGGLE_EVENT, { detail: newState }));
 };
@@ -27,9 +27,9 @@ export const getBayBarOpen = (): boolean => {
 /**
  * Hook: 监听和管理 Baybar 打开状态
  */
-export function useViewManager(): { isBayBarOpen: boolean };
-export function useViewManager<T>(selector: (state: { isBayBarOpen: boolean }) => T): T;
-export function useViewManager<T>(selector?: (state: { isBayBarOpen: boolean }) => T) {
+export function useView(): { isBayBarOpen: boolean };
+export function useView<T>(selector: (state: { isBayBarOpen: boolean }) => T): T;
+export function useView<T>(selector?: (state: { isBayBarOpen: boolean }) => T) {
   // 初始化为 false 避免 hydration 错误
   const [isBayBarOpen, setIsBayBarOpen] = useState(false);
 

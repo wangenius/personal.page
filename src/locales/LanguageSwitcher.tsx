@@ -1,9 +1,9 @@
 "use client";
 
-import { useLanguage } from "@/components/language-provider";
-import type { Locale } from "@/lib/i18n/dictionaries";
+import { useLanguage } from "@/locales/LanguageProvider";
+import type { Locale } from "@/locales/dictionaries";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "../components/ui/button";
 
 interface LanguageSwitcherProps {
   variant?: "compact" | "full";

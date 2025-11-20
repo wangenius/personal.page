@@ -9,7 +9,7 @@ import {
   Box,
 } from "lucide-react";
 import Image from "next/image";
-import { useLanguage } from "@/components/language-provider";
+import { useLanguage } from "@/locales/LanguageProvider";
 
 export const Contact = () => {
   const { dictionary } = useLanguage();
@@ -64,16 +64,16 @@ export const Contact = () => {
   return (
     <section id="contact" className="mb-32 space-y-12">
       <div className="space-y-4">
-        <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+        <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-fd-muted-foreground/60">
           {contact.section.label}
         </p>
 
-        <h2 className="text-2xl font-medium text-fd-foreground border-b border-fd-border pb-4">
+        <h2 className="text-3xl font-light tracking-tight text-fd-foreground">
           {contact.section.title}
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
         {links.map((link) => (
           <div key={link.label}>
             {link.type === "link" ? (
@@ -85,25 +85,25 @@ export const Contact = () => {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="group flex items-center gap-4 p-2 -ml-2 rounded-lg hover:bg-fd-muted/30 transition-colors"
+                className="group flex items-start gap-4 transition-colors"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground group-hover:text-fd-foreground transition-colors">
-                  <link.icon className="h-5 w-5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fd-muted/10 text-fd-muted-foreground/60 group-hover:text-fd-foreground group-hover:bg-fd-muted/20 transition-colors">
+                  <link.icon className="h-4 w-4" />
                 </div>
-                <div className="overflow-hidden">
-                  <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                <div className="overflow-hidden pt-1">
+                  <p className="text-[10px] font-medium text-fd-muted-foreground/60 uppercase tracking-wider mb-1">
                     {link.label}
                   </p>
-                  <p className="text-sm font-medium text-fd-foreground truncate group-hover:underline underline-offset-4 decoration-fd-border">
+                  <p className="text-sm font-medium text-fd-foreground truncate group-hover:text-fd-foreground/80 transition-colors">
                     {link.value}
                   </p>
                 </div>
               </a>
             ) : link.type === "qr" ? (
-              <div className="group relative flex items-center gap-4 p-2 -ml-2 rounded-lg hover:bg-fd-muted/30 transition-colors cursor-pointer">
+              <div className="group relative flex items-start gap-4 cursor-pointer">
                 {/* QR Code Popover */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 pointer-events-none z-10">
-                  <div className="bg-fd-popover p-2 rounded-xl shadow-xl border border-fd-border">
+                <div className="absolute bottom-full left-0 mb-2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 pointer-events-none z-10 origin-bottom-left">
+                  <div className="bg-background p-2 rounded-xl shadow-xl border border-border/10">
                     <div className="relative w-32 h-32 bg-white rounded-lg overflow-hidden">
                       <Image
                         src={link.qrCode!}
@@ -113,15 +113,13 @@ export const Contact = () => {
                       />
                     </div>
                   </div>
-                  {/* Arrow */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1.5 border-8 border-transparent border-t-fd-popover drop-shadow-sm"></div>
                 </div>
 
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground group-hover:text-fd-foreground transition-colors">
-                  <link.icon className="h-5 w-5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fd-muted/10 text-fd-muted-foreground/60 group-hover:text-fd-foreground group-hover:bg-fd-muted/20 transition-colors">
+                  <link.icon className="h-4 w-4" />
                 </div>
-                <div>
-                  <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                <div className="pt-1">
+                  <p className="text-[10px] font-medium text-fd-muted-foreground/60 uppercase tracking-wider mb-1">
                     {link.label}
                   </p>
                   <p className="text-sm font-medium text-fd-foreground">
@@ -130,12 +128,12 @@ export const Contact = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-4 p-2 -ml-2">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fd-muted/50 text-fd-muted-foreground">
-                  <link.icon className="h-5 w-5" />
+              <div className="flex items-start gap-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fd-muted/10 text-fd-muted-foreground/60">
+                  <link.icon className="h-4 w-4" />
                 </div>
-                <div>
-                  <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider mb-0.5">
+                <div className="pt-1">
+                  <p className="text-[10px] font-medium text-fd-muted-foreground/60 uppercase tracking-wider mb-1">
                     {link.label}
                   </p>
                   <p className="text-sm font-medium text-fd-foreground">

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, Variants } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { useLanguage } from "@/components/language-provider";
+import { useLanguage } from "@/locales/LanguageProvider";
 import { useSession } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 
@@ -82,66 +82,66 @@ export const Hero = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
   return (
     <section
-      className="relative mb-32 pt-20 md:pt-32"
+      className="relative mb-32 pt-24 md:pt-40"
       aria-labelledby="profile-hero-heading"
     >
       <motion.div
-        className="grid gap-12 lg:grid-cols-[1.2fr,0.8fr] lg:gap-24"
+        className="grid gap-16 lg:grid-cols-[1.2fr,0.8fr] lg:gap-32"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Left Column: Narrative */}
         <div className="flex flex-col justify-between">
-          <div className="space-y-8">
+          <div className="space-y-10">
             <motion.div
               variants={itemVariants}
-              className="flex items-center gap-4"
+              className="flex items-center gap-5"
             >
               <Image
                 src={profile.avatar}
                 alt={profile.name}
-                width={64}
-                height={64}
-                className="rounded-full"
+                width={72}
+                height={72}
+                className="rounded-full grayscale hover:grayscale-0 transition-all duration-500"
                 priority
               />
-              <span className="h-px w-16 bg-fd-foreground/20" />
-              <span className="text-xs font-medium uppercase tracking-[0.2em] text-fd-muted-foreground">
+              <span className="h-px w-12 bg-fd-foreground/10" />
+              <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-fd-muted-foreground/80">
                 {introLabel}
               </span>
             </motion.div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <motion.h1
                 id="profile-hero-heading"
                 variants={itemVariants}
-                className="text-5xl font-medium tracking-tighter sm:text-7xl text-fd-foreground"
+                className="text-6xl font-medium tracking-tighter sm:text-8xl text-fd-foreground"
               >
                 {profile.name}
               </motion.h1>
 
               <motion.p
                 variants={itemVariants}
-                className="text-xl sm:text-2xl text-fd-muted-foreground font-light tracking-tight max-w-xl"
+                className="text-xl sm:text-2xl text-fd-muted-foreground font-light tracking-wide max-w-xl leading-relaxed"
               >
                 {profile.tagline}
               </motion.p>
 
               <motion.div
                 variants={itemVariants}
-                className="space-y-4 max-w-lg pt-4"
+                className="space-y-6 max-w-lg pt-2"
               >
-                <p className="text-base leading-relaxed text-fd-muted-foreground/80">
+                <p className="text-base leading-loose text-fd-muted-foreground/80 font-light">
                   {profile.description}
                 </p>
-                <p className="text-sm text-fd-muted-foreground/60 italic font-serif">
+                <p className="text-sm text-fd-muted-foreground/50 italic font-serif tracking-wide">
                   &ldquo;{mission}&rdquo;
                 </p>
               </motion.div>
@@ -150,15 +150,15 @@ export const Hero = () => {
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-wrap items-center gap-8 pt-12"
+            className="flex flex-wrap items-center gap-10 pt-16"
           >
             {/* Primary CTA */}
             {(!session || !isSubscribed) && (
               <Link
                 href="/subscription"
-                className="group flex items-center gap-2 text-sm font-medium text-fd-foreground transition-all hover:opacity-70"
+                className="group flex items-center gap-3 text-sm font-medium text-fd-foreground transition-all hover:opacity-60"
               >
-                <span className="border-b border-fd-foreground pb-0.5">
+                <span className="border-b border-transparent group-hover:border-fd-foreground/50 transition-colors pb-0.5">
                   {cta.secondary}
                 </span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -196,53 +196,48 @@ export const Hero = () => {
         </div>
 
         {/* Right Column: Data & Context (Minimalist/Editorial) */}
-        <div className="flex flex-col gap-0 pt-4 lg:pt-0">
+        <div className="flex flex-col gap-12 pt-8 lg:pt-0">
           {/* Lab Status */}
-          <motion.div
-            variants={itemVariants}
-            className="border-t border-fd-border py-6"
-          >
-            <div className="flex items-baseline justify-between mb-3">
-              <h3 className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+          <motion.div variants={itemVariants} className="py-2">
+            <div className="flex items-baseline justify-between mb-4">
+              <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-fd-muted-foreground/60">
                 Current Focus
               </h3>
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-fd-foreground"></span>
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500/50 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
-                <span className="text-[10px] uppercase tracking-wider text-fd-foreground">
+                <span className="text-[9px] uppercase tracking-widest text-fd-foreground/80">
                   {lab.statusLabel}
                 </span>
               </div>
             </div>
-            <p className="text-lg font-medium text-fd-foreground">
+            <p className="text-lg font-normal text-fd-foreground leading-normal">
               {lab.description}
             </p>
-            <div className="mt-4 flex justify-between items-end">
-              <p className="text-2xl font-mono tracking-tight">
+            <div className="mt-6 flex justify-between items-end">
+              <p className="text-3xl font-light tracking-tighter text-fd-foreground">
                 {lab.statusValue}
               </p>
-              <p className="text-xs text-fd-muted-foreground text-right max-w-[150px]">
+              <p className="text-[10px] text-fd-muted-foreground/60 text-right max-w-[150px] leading-tight">
                 {lab.statusMeta}
               </p>
             </div>
           </motion.div>
 
           {/* Metrics Grid */}
-          <motion.div
-            variants={itemVariants}
-            className="border-t border-fd-border py-6"
-          >
-            <h3 className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground mb-6">
+          <motion.div variants={itemVariants} className="py-2">
+            <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-fd-muted-foreground/60 mb-8">
               Trajectory
             </h3>
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-12">
               {personaStages.map((stage) => (
                 <div key={stage.label}>
-                  <p className="text-2xl font-mono font-medium text-fd-foreground">
+                  <p className="text-3xl font-light tracking-tighter text-fd-foreground">
                     {stage.value}
                   </p>
-                  <p className="text-xs text-fd-muted-foreground mt-1">
+                  <p className="text-[10px] text-fd-muted-foreground/60 mt-2 uppercase tracking-wider">
                     {stage.label}
                   </p>
                 </div>
@@ -250,41 +245,13 @@ export const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Signals */}
-          <motion.div
-            variants={itemVariants}
-            className="border-t border-fd-border py-6"
-          >
-            <h3 className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground mb-6">
-              Signals
-            </h3>
-            <div className="space-y-4">
-              {heroSignals.map((signal) => (
-                <div
-                  key={signal.label}
-                  className="flex justify-between items-baseline group"
-                >
-                  <span className="text-sm text-fd-muted-foreground group-hover:text-fd-foreground transition-colors">
-                    {signal.label}
-                  </span>
-                  <span className="font-mono text-sm text-fd-foreground">
-                    {signal.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
           {/* Tags */}
-          <motion.div
-            variants={itemVariants}
-            className="border-t border-fd-border py-6"
-          >
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <motion.div variants={itemVariants} className="py-2">
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
               {personaTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs font-medium text-fd-muted-foreground hover:text-fd-foreground transition-colors cursor-default"
+                  className="text-[11px] font-medium text-fd-muted-foreground/40 hover:text-fd-foreground transition-colors cursor-default tracking-wide"
                 >
                   #{tag}
                 </span>

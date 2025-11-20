@@ -5,7 +5,7 @@ import { createMetadata } from "@/lib/metadata";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
 import { getMDXComponents } from "@/mdx-components";
 import { SelectionQuote } from "@/components/docs/selection-quote";
-import { LastReadTracker } from "@/components/LastReadTracker";
+
 import { AnnotationHighlights } from "@/components/docs/annotation-highlights";
 
 export default async function Page(props: {
@@ -19,34 +19,31 @@ export default async function Page(props: {
   const { body: Mdx } = await data.load();
 
   return (
-    <>
-      <LastReadTracker />
-      <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
-        <SelectionQuote>
-          <AnnotationHighlights path={page.url}>
-            <div className="prose min-w-0 flex-1 p-4">
-              <Mdx components={getMDXComponents()} />
-            </div>
-          </AnnotationHighlights>
-        </SelectionQuote>
-        <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
-          <div>
-            <p className="mb-1 text-fd-muted-foreground">Written by</p>
-            <p className="font-medium">{data.author ?? "Anonymous"}</p>
+    <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
+      <SelectionQuote>
+        <AnnotationHighlights path={page.url}>
+          <div className="prose min-w-0 flex-1 p-4">
+            <Mdx components={getMDXComponents()} />
           </div>
-          <div>
-            <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
-            <p className="font-medium">
-              {data.date
-                ? new Date(data.date).toDateString()
-                : "Date to be announced"}
-            </p>
-          </div>
-
-          <Control url={page.url} />
+        </AnnotationHighlights>
+      </SelectionQuote>
+      <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
+        <div>
+          <p className="mb-1 text-fd-muted-foreground">Written by</p>
+          <p className="font-medium">{data.author ?? "Anonymous"}</p>
         </div>
-      </article>
-    </>
+        <div>
+          <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
+          <p className="font-medium">
+            {data.date
+              ? new Date(data.date).toDateString()
+              : "Date to be announced"}
+          </p>
+        </div>
+
+        <Control url={page.url} />
+      </div>
+    </article>
   );
 }
 

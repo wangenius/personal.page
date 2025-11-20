@@ -11,7 +11,7 @@ import {
   dictionaries,
   type Dictionary,
   type Locale,
-} from "@/lib/i18n/dictionaries";
+} from "@/locales/dictionaries";
 
 const LANGUAGE_STORAGE_KEY = "preferred-language";
 
@@ -47,6 +47,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * 
+ * @returns 使用 LanguageProvider 包裹的组件中，可以使用这个 hook 来获取当前语言状态
+ */
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {

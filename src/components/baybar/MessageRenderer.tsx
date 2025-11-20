@@ -7,12 +7,11 @@ import {
   FileText,
   CornerDownRight,
   Copy,
-  Check,
   ChevronRight,
   Loader2,
-  Terminal,
+  Sparkles,
+  Check,
   AlertCircle,
-  X,
 } from "lucide-react";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
@@ -125,12 +124,8 @@ type ThinkingPart = ReasoningUIPart | ToolUIPart;
 
 function LoadingDots() {
   return (
-    <div className="flex w-full justify-start py-2 pl-2 text-xs text-muted-foreground">
-      <div className="flex items-center gap-1 rounded-full px-3 py-1">
-        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.2s]" />
-        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce [animation-delay:-0.1s]" />
-        <span className="size-1 rounded-full bg-muted-foreground/70 animate-bounce" />
-      </div>
+    <div className="flex w-full justify-start py-2 pl-1">
+      <div className="size-2 rounded-full bg-foreground/50 animate-pulse" />
     </div>
   );
 }
@@ -250,7 +245,7 @@ function UserMessageContent({
       {/* 文本内容 */}
       {hasText && (
         <MessageContent
-          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl px-4 py-3 rounded-2xl rounded-tr-sm bg-primary text-primary-foreground"
+          className="whitespace-pre-wrap wrap-break-words text-sm leading-relaxed w-fit max-w-2xl px-5 py-3 rounded-3xl rounded-tr-sm bg-primary text-primary-foreground"
           variant="flat"
         >
           {textParts.map((part, idx) => {
@@ -277,6 +272,7 @@ function ThinkingProcess({
 }) {
   const [isOpen, setIsOpen] = useState(isStreaming);
 
+  // 监听流式状态，开始时自动打开，结束时自动关闭
   useEffect(() => {
     if (isStreaming) {
       setIsOpen(true);
@@ -295,38 +291,46 @@ function ThinkingProcess({
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="w-full group/thinking"
+      className="w-full group/thinking my-2"
     >
-      <div className="flex items-center gap-2">
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground gap-1.5 transition-colors"
-          >
-            {isStreaming || hasActiveToolCall ? (
-              <Loader2 className="size-3 animate-spin" />
-            ) : (
-              <Terminal className="size-3" />
-            )}
-            <span>思考过程</span>
+      <CollapsibleTrigger asChild>
+        <div
+          className={cn(
+            "inline-flex items-center gap-1.5 cursor-pointer select-none transition-colors duration-200",
+            isOpen
+              ? "text-muted-foreground/80"
+              : "text-muted-foreground/40 hover:text-muted-foreground/80"
+          )}
+        >
+          {isStreaming || hasActiveToolCall ? (
+            <Loader2 className="size-3 animate-spin" />
+          ) : (
+            <Sparkles className="size-3" />
+          )}
+          <span className="text-[11px] font-medium tracking-wide">
+            {isStreaming ? "THINKING" : "PROCESS"}
+          </span>
+          {!isStreaming && (
             <ChevronRight
               className={cn(
-                "size-3 transition-transform duration-200",
+                "size-3 transition-transform duration-200 opacity-50",
                 isOpen ? "rotate-90" : ""
               )}
             />
-          </Button>
-        </CollapsibleTrigger>
-      </div>
+          )}
+        </div>
+      </CollapsibleTrigger>
 
-      <CollapsibleContent className="pl-2 mt-1">
-        <div className="border-l border-border/40 pl-3 py-1 space-y-3">
+      <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
+        <div className="mt-3 mb-1 ml-1 space-y-4">
           {/* 推理内容 */}
           {reasoningTexts.length > 0 && (
-            <div className="space-y-2 text-muted-foreground/80 text-[13px] leading-relaxed font-light">
+            <div className="text-muted-foreground/60 text-[13px] leading-relaxed font-light space-y-2">
               {reasoningTexts.map((text, idx) => (
-                <div key={idx} className="whitespace-pre-wrap">
+                <div
+                  key={idx}
+                  className="whitespace-pre-wrap animate-in fade-in duration-500 pl-3 border-l border-border/30"
+                >
                   {text}
                 </div>
               ))}
@@ -335,34 +339,17 @@ function ThinkingProcess({
 
           {/* 工具调用 */}
           {toolParts.length > 0 && (
-            <div className="space-y-1.5">
+            <div className="space-y-2 pl-3 border-l border-border/30">
               {toolParts.map((toolPart, idx) => {
                 const methodName = toolPart.type.split("-").slice(1).join("_");
 
-                const isComplete = toolPart.state === "output-available";
-                const isError = toolPart.state === "output-error";
-
                 return (
-                  <div key={idx} className="flex items-center gap-2 text-xs">
-                    <div
-                      className={cn(
-                        "size-4 flex items-center justify-center rounded-full border",
-                        isComplete
-                          ? "border-green-500/30 bg-green-500/10 text-green-600"
-                          : isError
-                            ? "border-destructive/30 bg-destructive/10 text-destructive"
-                            : "border-muted bg-muted/50 text-muted-foreground"
-                      )}
-                    >
-                      {isComplete ? (
-                        <Check className="size-2.5" />
-                      ) : isError ? (
-                        <X className="size-2.5" />
-                      ) : (
-                        <Loader2 className="size-2.5 animate-spin" />
-                      )}
-                    </div>
-                    <code className="font-mono text-[11px] text-foreground/60 bg-muted/50 rounded px-1.5 py-0.5">
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 text-xs animate-in fade-in slide-in-from-left-1 duration-300 text-muted-foreground/50"
+                  >
+                    <Check className="size-3" />
+                    <code className="font-mono text-[10px]">
                       {methodName}
                     </code>
                   </div>
@@ -483,7 +470,7 @@ export function MessageRenderer({
   }, [message.role, parts, isStreaming]);
 
   return (
-    <Message className={"w-full py-2"} key={message.id} from={message.role}>
+    <Message className={"w-full py-4"} key={message.id} from={message.role}>
       <SelectField
         onSelect={(text) => ({
           text,
@@ -493,7 +480,7 @@ export function MessageRenderer({
           <MessageContent variant="flat" className="w-full gap-1">
             <div
               className={cn(
-                "bg-secondary/50 px-4 py-3 rounded-2xl rounded-tl-sm w-[90%] space-y-2 border border-border/50",
+                "px-5 py-3.5 rounded-3xl rounded-tl-sm bg-secondary/40 w-fit max-w-[90%] space-y-4",
                 isStreaming && segments.length === 0 && "animate-pulse"
               )}
             >
@@ -534,14 +521,14 @@ export function MessageRenderer({
                   return (
                     <div
                       key={`${message.id}-text-${segmentIndex}`}
-                      className="text-sm leading-relaxed group relative"
+                      className="text-[15px] leading-7 group relative text-foreground/90"
                     >
                       {hasText && <Response>{text}</Response>}
-                      <div className="flex items-center justify-start gap-2 mt-1 select-none">
+                      <div className="flex items-center justify-start gap-2 mt-2 select-none min-h-[24px]">
                         {isLastMessage && isStreaming ? (
                           <LoadingDots />
                         ) : (
-                          <CopyButton text={text} />
+                          <CopyButton text={text} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                         )}
                       </div>
                     </div>
@@ -551,13 +538,11 @@ export function MessageRenderer({
             </div>
           </MessageContent>
         ) : (
-          /* 用户消息 */
-          <>
-            <UserMessageContent
-              parsedQuote={parsedQuote}
-              parsedFiles={parsedFiles}
-            />
-          </>
+          <UserMessageContent
+            parsedQuote={parsedQuote}
+            parsedFiles={parsedFiles}
+          />
+
         )}
       </SelectField>
     </Message>

@@ -4,7 +4,7 @@ import { products } from "@/lib/source";
 import { createMetadata } from "@/lib/metadata";
 import { Control } from "@/app/(home)/blog/[slug]/page.client";
 import { getMDXComponents } from "@/mdx-components";
-import { LastReadTracker } from "@/components/LastReadTracker";
+
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -17,29 +17,27 @@ export default async function Page(props: {
   const { body: Mdx } = await data.load();
 
   return (
-    <>
-      <LastReadTracker />
-      <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
-        <div className="prose min-w-0 flex-1 p-4">
-          <Mdx components={getMDXComponents()} />
+
+    <article className="flex flex-col mx-auto flex-1 max-w-fd-container py-8 lg:flex-row overflow-auto px-8">
+      <div className="prose min-w-0 flex-1 p-4">
+        <Mdx components={getMDXComponents()} />
+      </div>
+      <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
+        <div>
+          <p className="mb-1 text-fd-muted-foreground">Written by</p>
+          <p className="font-medium">{data.author ?? "Unknown"}</p>
         </div>
-        <div className="flex flex-col gap-4 border-l p-4 text-sm lg:w-[250px]">
-          <div>
-            <p className="mb-1 text-fd-muted-foreground">Written by</p>
-            <p className="font-medium">{data.author ?? "Unknown"}</p>
-          </div>
-          <div>
-            <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
-            <p className="font-medium">
-              {data.date
-                ? new Date(data.date).toDateString()
-                : "Date to be announced"}
-            </p>
-          </div>
-          <Control url={page.url} />
+        <div>
+          <p className="mb-1 text-sm text-fd-muted-foreground">At</p>
+          <p className="font-medium">
+            {data.date
+              ? new Date(data.date).toDateString()
+              : "Date to be announced"}
+          </p>
         </div>
-      </article>
-    </>
+        <Control url={page.url} />
+      </div>
+    </article>
   );
 }
 

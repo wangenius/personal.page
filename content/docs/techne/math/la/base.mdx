@@ -1,8 +1,9 @@
 ---
-title: 线性代数
+title: 基础知识
+slug: base
 ---
 
-> 点击查看和下载：[线性代数公式大纲](/img/LA.png)
+[线性代数公式大纲](/img/LA.png)
 
 > 线性代数的两种理解：
 >
@@ -11,14 +12,14 @@ title: 线性代数
 
 ‍
 
-> 通设$A=\begin{bmatrix}a_{11} & a_{12} & a_{13} a_{21} & a_{22} & a_{23} a_{31} & a_{32} & a_{33}\end{bmatrix}$，$B=\begin{bmatrix}b_{11} & b_{12} & b_{13} b_{21} & b_{22} & b_{23} b_{31} & b_{32} & b_{33}\end{bmatrix}$,$\alpha=\left\lbrack a,b,c\right\rbrack^{T},\beta=\left\lbrack d,e,f\right\rbrack^{T},\gamma=\left\lbrack h,i,j\right\rbrack^{T}$
+通设 $A=\begin{bmatrix}a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \\ a_{31} & a_{32} & a_{33}\end{bmatrix}$，$B=\begin{bmatrix}b_{11} & b_{12} & b_{13} \\ b_{21} & b_{22} & b_{23} \\ b_{31} & b_{32} & b_{33}\end{bmatrix}$,$\alpha=\left\lbrack a,b,c\right\rbrack^{T},\beta=\left\lbrack d,e,f\right\rbrack^{T},\gamma=\left\lbrack h,i,j\right\rbrack^{T}$
 
 1.  同型矩阵：主空间和基向量数都相同的矩阵。
 2.  正交矩阵：$A^T=A^{-1}(AA^T=E)$，矩阵由规范正交基组成
 3.  初等矩阵：单位矩阵$E$经过一次初等变换得到的矩阵$E_{ij}$
 4.  可逆矩阵：$PP^{-1}=QQ^{-1}=E$，可逆矩阵一定可以通过单位矩阵进行有限次初等变换得到。
 5.  等价矩阵（A可以通过有限次初等变换化为B）：$PAQ=B$
-6.  充要条件：$AB$((20230929130221-mfuz6qu '同型矩阵'))且
+6.  充要条件：$AB$同型矩阵且
 7.  $r(A)=r(B)=r(A|B)$
 8.  等价向量组：两个向量组相互可以线性表出
 9.  相似矩阵：$P^{-1}AP=B$
@@ -75,8 +76,6 @@ $\det\left\lbrack x_{j}^{i-1}\right\rbrack=\prod_{1\le i\le j\le n}^{}\left(x_{j
 7. $\begin{bmatrix}A_1 &  &  &   & A_2 &  &   &  & \ddots &   &  &  & A_{n}\end{bmatrix}^{-1}=\begin{bmatrix}A_1^{-1} &  &  &   & A_2^{-1} &  &   &  & \ddots &   &  &  & A_{n}^{-1}\end{bmatrix}$
 8. $\begin{bmatrix} &  &  & A_1  &  & A_2 &   & \ddots &  &  A_{n} &  &  & \end{bmatrix}^{-1}=\begin{bmatrix} &  &  & A_{n}^{-1}  &  & \ddots &   & A_2^{-1} &  &  A_1^{-1} &  &  & \end{bmatrix}$
 
-![](https://cdn.nlark.com/yuque/0/2023/png/22397707/1702990601267-409e52af-4aca-4652-9dae-68b84f445795.png)
-
 > 线性代数的两种理解：
 >
 > - 由列向量张成的线性空间
@@ -103,7 +102,7 @@ $\det\left\lbrack x_{j}^{i-1}\right\rbrack=\prod_{1\le i\le j\le n}^{}\left(x_{j
 因为基向量>基空间，所以线性相关。现在这个向量空间状态是不饱和的相关向量组，存在冗余向量。因为基空间并没有主空间填满。称之为冗余不饱和态。$ rank=2 $
 > 2. $ \begin{bmatrix}a & b & c e & f & g\end{bmatrix} $：基向量3，基空间2d，主空间2d，虚空间0；  
 基向量>基空间，所以线性相关。现在这个向量空间的状态是饱和的相关向量组，存在冗余向量。基空间已经把主空间撑满。称之为冗余饱和态。$ rank=2 $
-> 3. $ \begin{bmatrix}a & b  e & f  0 & 0 \end{bmatrix} $：基向量2，基空间2d，主空间3d，虚空间3-2=1d  
+> 3. $ \begin{bmatrix}a & b e & f 0 & 0 \end{bmatrix} $：基向量2，基空间2d，主空间3d，虚空间3-2=1d  
 基向量=基空间，线性无关。现在者个向量空间的状态是不饱和的不相关向量组，没有冗余向量，成为互质向量，基向量所张成的基空间并没有把主空间撑满，所以互质不饱和态。$ rank=2 $
 > 4. $ \begin{bmatrix}a & b c & d\end{bmatrix} $：基向量2，基空间2d，主空间2d，虚空间0；  
 基向量=基空间，所以线性无关。现在这个向量空间的状态是饱和的相关向量组，不存在冗余向量。基空间已经把主空间撑满。称之为互质饱和态。$ rank=2 $
@@ -283,9 +282,9 @@ $
 3. $ \begin{bmatrix}A & O O & B\end{bmatrix}^{-1}=\begin{bmatrix}A^{-1} & O O & B^{-1}\end{bmatrix},\begin{bmatrix}O & A B & O\end{bmatrix}^{-1}=\begin{bmatrix}O^{} & B^{-1} A^{-1} & O\end{bmatrix},\begin{bmatrix}B & O D & C\end{bmatrix}^{-1}=\begin{bmatrix}B^{-1} & O -C^{-1}DB^{-1} & C^{-1}\end{bmatrix} $
 4. $ \begin{bmatrix}A & B C & D\end{bmatrix}^{T}=\begin{bmatrix}A^{T} & C^{T} B^{T} & D^{T}\end{bmatrix} $
 5. $ \begin{bmatrix}A & B C & D\end{bmatrix}\begin{bmatrix}E & F G & H\end{bmatrix}=\begin{bmatrix}AE+BG & AF+BH CE+DG & CF+DH\end{bmatrix} $
-6. $ \begin{bmatrix}A &  & D\end{bmatrix}^{n}=\begin{bmatrix}A^{n} &  & D^{n}\end{bmatrix} $
-7. $ \begin{bmatrix}A*1 & & &  & A_2 & &  & & \ddots &  & & & A*{n}\end{bmatrix}^{-1}=\begin{bmatrix}A*1^{-1} & & &  & A_2^{-1} & &  & & \ddots &  & & & A*{n}^{-1}\end{bmatrix} $
-8. $ \begin{bmatrix} & & & A*1 & & A_2 &  & \ddots & &  A*{n} & & & \end{bmatrix}^{-1}=\begin{bmatrix} & & & A\_{n}^{-1} & & \ddots &  & A_2^{-1} & &  A_1^{-1} & & & \end{bmatrix} $
+6. $ \begin{bmatrix}A & & D\end{bmatrix}^{n}=\begin{bmatrix}A^{n} & & D^{n}\end{bmatrix} $
+7. $ \begin{bmatrix}A*1 & & & & A_2 & & & & \ddots & & & & A*{n}\end{bmatrix}^{-1}=\begin{bmatrix}A*1^{-1} & & & & A_2^{-1} & & & & \ddots & & & & A*{n}^{-1}\end{bmatrix} $
+8. $ \begin{bmatrix} & & & A*1 & & A_2 & & \ddots & & A*{n} & & & \end{bmatrix}^{-1}=\begin{bmatrix} & & & A\_{n}^{-1} & & \ddots & & A_2^{-1} & & A_1^{-1} & & & \end{bmatrix} $
 
 # 矩阵的初等变换
 

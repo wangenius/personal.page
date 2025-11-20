@@ -13,8 +13,8 @@ import {
   SubscriptionStatusResponse,
 } from "@/lib/subscription";
 import { PlanKey } from "@/lib/plans";
-import { useLanguage } from "@/components/language-provider";
-import type { Locale } from "@/lib/i18n/dictionaries";
+import { useLanguage } from "@/locales/LanguageProvider";
+import type { Locale } from "@/locales/dictionaries";
 
 type BenefitTierKey = "free" | "monthly" | "yearly" | "lifetime";
 
@@ -517,7 +517,7 @@ function SubscriptionPageContent() {
               <h3 className="mb-12 text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
                 Feature Comparison
               </h3>
-              
+
               <div className="overflow-x-auto">
                 <div className="min-w-[800px]">
                   {/* Header Row */}
@@ -561,7 +561,7 @@ function SubscriptionPageContent() {
           </motion.section>
 
           {/* Footer Info */}
-          <motion.section 
+          <motion.section
             variants={itemVariants}
             className="border-t border-fd-border pt-12 flex flex-col gap-6 text-sm text-fd-muted-foreground md:flex-row md:justify-between"
           >

@@ -3,11 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { SimpleChatPanel } from "@/components/baybar/simple-chat-panel";
 import { cn } from "@/lib/utils";
-import { useViewManager } from "@/lib/viewManager";
+import { useView } from "@/hook/useView";
 import { useEffect, useState } from "react";
 
 export function Chatbar() {
-  const { isBayBarOpen } = useViewManager();
+  const { isBayBarOpen } = useView();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

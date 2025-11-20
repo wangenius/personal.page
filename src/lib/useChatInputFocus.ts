@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { toggleBayBar, getBayBarOpen } from "./viewManager";
+import { toggleBayBar, getBayBarOpen } from "../hook/useView";
 
 /**
  * 处理 Command+I 聚焦到 ChatInput 的逻辑

@@ -10,7 +10,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { openAnnotationDialog } from "@/components/docs/annotation-sheet";
-import { getBayBarOpen, toggleBayBar } from "@/lib/viewManager";
+import { getBayBarOpen, toggleBayBar } from "@/hook/useView";
 
 interface SelectionQuoteState {
   text: string;
