@@ -1,17 +1,10 @@
 {
     "title": "Agent 设计与原理",
-    "description": "Agent 是能够感知环境、制定计划并自主执行行动以达成目标的智能体。它结合记忆、工具使用、规划与反思等能力，在复杂任务中以循环的感知-思考-行动-反馈过程中持续改进表现，可用于自动化信息检索、任务编排、工作流协同与决策支持等场景。",
+    "description": "Agent 是能够感知环境、制定计划并自主执行行动以达成目标的智能体。",
     "pages": [
         "overview",
-        "agentic-problem-solving-process",
-        "a-taxonomy-of-agentic-systems",
-        "core-agent-architecture",
-        "multi-agent-systems-and-patterns",
-        "agent-deployment-and-runtime-services",
-        "orchestration-layer-design-choices",
-        "interoperability",
-        "agent-modalities",
-        "evaluation",
-        "memory"
+        "core",
+        "patterns",
+        "ops"
     ]
 }

@@ -1,6 +1,11 @@
 {
     "title": "LLM",
     "pages": [
-        "..."
+        "overview",
+        "foundations",
+        "architecture",
+        "training",
+        "engineering",
+        "inference"
     ]
 }

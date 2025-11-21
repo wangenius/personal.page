@@ -57,16 +57,16 @@ const planMeta: Record<
   { price: string; href: string; isPopular?: boolean }
 > = {
   monthly: {
-    price: "¥59",
+    price: "¥19",
     href: "/api/checkout?plan=monthly",
   },
   yearly: {
-    price: "¥399",
+    price: "¥99",
     href: "/api/checkout?plan=yearly",
     isPopular: true,
   },
   lifetime: {
-    price: "¥1,199",
+    price: "¥299",
     href: "/api/checkout?plan=lifetime",
   },
 };

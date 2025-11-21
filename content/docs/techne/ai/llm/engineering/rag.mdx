@@ -1,0 +1,52 @@
+---
+title: RAG (检索增强生成)
+---
+
+**RAG (Retrieval-Augmented Generation)** 是一种将 LLM 与外部知识库相结合的技术架构。它解决了 LLM 的两大痛点：**幻觉（Hallucination）**和**知识过时**。
+
+## 为什么需要 RAG？
+
+LLM 的知识被“冻结”在预训练的权重中（Parametric Memory）。
+
+- **无法访问私有数据**: LLM 不知道你公司的内部文档。
+- **知识截止**: LLM 不知道昨天发生的新闻。
+- **幻觉**: 当 LLM 不知道答案时，它倾向于一本正经地胡说八道。
+
+RAG 允许模型在回答之前，先去外部数据库“翻书”，找到相关信息后再回答。
+
+## RAG 的标准流程
+
+一个典型的 RAG 系统包含三个阶段：
+
+### 1. 索引 (Indexing)
+
+- **Chunking**: 将长文档切分成小的文本块（Chunks）。
+- **Embedding**: 使用 Embedding 模型（如 OpenAI text-embedding-3）将文本块转化为向量（Vectors）。
+- **Storage**: 将向量和原文存入向量数据库（Vector DB，如 Pinecone, Milvus, Chroma）。
+
+### 2. 检索 (Retrieval)
+
+- 当用户提问时，将用户的 Query 也转化为向量。
+- 在向量数据库中进行**语义搜索（Semantic Search）**，找到与 Query 向量距离最近的 Top-K 个文本块。
+
+### 3. 生成 (Generation)
+
+- 将检索到的文本块作为“上下文（Context）”拼接到 Prompt 中。
+- Prompt 模板通常长这样：
+  ```text
+  基于以下已知信息回答用户的问题：
+  [Context 1]
+  [Context 2]
+  ...
+  用户问题：[Query]
+  ```
+- LLM 根据提供的上下文生成准确的回答。
+
+## Advanced RAG (进阶技术)
+
+为了提高 RAG 的效果，业界发展出了许多优化技术：
+
+- **Hybrid Search (混合检索)**: 结合向量检索（语义匹配）和关键词检索（BM25，精确匹配）。
+- **Re-ranking (重排序)**: 先粗排检索出 50 个文档，再用高精度的 Cross-Encoder 模型对这 50 个文档进行精细打分排序，取 Top 5 给 LLM。
+- **Query Rewriting (查询重写)**: 将用户的模糊提问改写为更适合检索的形式。
+- **Graph RAG**: 利用知识图谱增强检索的逻辑关联性。

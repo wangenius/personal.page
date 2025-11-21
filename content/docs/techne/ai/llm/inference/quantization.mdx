@@ -1,0 +1,46 @@
+---
+title: 量化 (Quantization)
+---
+
+**量化（Quantization）** 是一种通过降低模型参数精度来减少显存占用和加速推理的技术。它是让大模型在消费级硬件（甚至手机、笔记本）上运行的关键。
+
+## 精度格式
+
+- **FP32 (Full Precision)**: 32位浮点数，训练时的默认精度。每个参数占 4 Bytes。
+- **FP16 / BF16 (Half Precision)**: 16位浮点数。每个参数占 2 Bytes。显存减半，精度几乎无损。
+- **INT8**: 8位整数。每个参数占 1 Byte。
+- **INT4**: 4位整数。每个参数占 0.5 Byte。
+
+## 为什么量化有效？
+
+神经网络具有很强的鲁棒性，参数中包含大量冗余信息。研究发现，即使将参数精度大幅降低（如从 FP16 降到 INT4），模型的性能下降也非常微小，但显存占用可以减少 3-4 倍。
+
+## 常见量化方法
+
+### Post-Training Quantization (PTQ, 训练后量化)
+
+在模型训练完成后，直接对权重进行量化。
+
+- **GPTQ**: 针对 GPT 模型的逐层量化算法，速度快，效果好。
+- **AWQ (Activation-aware Weight Quantization)**: 考虑到激活值分布的权重量化，通常比 GPTQ 效果更好，泛化性更强。
+- **GGUF (llama.cpp)**: 专为 CPU 推理设计的量化格式（k-quants），支持 Apple Silicon 硬件加速。
+
+### Quantization-Aware Training (QAT, 感知量化训练)
+
+在训练过程中就模拟量化带来的误差，让模型适应低精度。效果最好，但成本高，通常用于闭源商业模型。
+
+## 显存计算公式
+
+估算加载一个模型需要的显存（VRAM）：
+
+$$
+\text{VRAM (GB)} \approx \text{参数量 (Billion)} \times \text{每参数字节数}
+$$
+
+例如，一个 7B (70亿参数) 的模型：
+
+- **FP16**: $7 \times 2 = 14$ GB
+- **INT8**: $7 \times 1 = 7$ GB
+- **INT4**: $7 \times 0.5 = 3.5$ GB
+
+加上 KV Cache 的开销，实际占用会稍大一些。这就是为什么 7B 模型经过 4-bit 量化后，可以在 6GB/8GB 显存的显卡上流畅运行。

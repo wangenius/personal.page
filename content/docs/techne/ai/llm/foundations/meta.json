@@ -1,0 +1,20 @@
+{
+    "title": "理论基石",
+    "pages": [
+        "neural-networks",
+        "deep-learning",
+        "convolutional-neural-networks",
+        "introduction-to-reinforcement-learning",
+        "bayes-theorem",
+        "optimization-algorithms",
+        "model-evaluation",
+        "datasets-and-training-sets",
+        "feature-engineering",
+        "clustering-and-dimensionality-reduction",
+        "decision-trees",
+        "knn-algorithm",
+        "logistic-regression",
+        "regression-and-curve-fitting",
+        "support-vector-machines"
+    ]
+}

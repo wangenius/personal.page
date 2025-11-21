@@ -1,0 +1,51 @@
+---
+title: 注意力机制 (Attention)
+---
+
+**注意力机制 (Attention Mechanism)** 是现代大语言模型（Transformer 架构）的灵魂。简而言之，它是一种让模型在处理数据时，能够动态地关注输入中不同部分的机制。
+
+## 为什么需要 Attention？
+
+在 Transformer 出现之前，RNN (循环神经网络) 和 LSTM 是处理序列数据的主流。但它们有两个致命弱点：
+
+1. **长距离遗忘**: 随着序列变长，早期的信息在传递过程中会逐渐丢失。
+2. **无法并行**: 必须处理完第 $t$ 个词才能处理第 $t+1$ 个词，训练效率低。
+
+Attention 机制通过让模型"一眼看全"整个序列，并计算词与词之间的关联度，完美解决了这两个问题。
+
+## 核心原理：Scaled Dot-Product Attention
+
+Attention 的计算可以被比喻为数据库查询：
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V
+$$
+
+- **Query (Q)**: 查询向量。代表"我想在这个序列中找什么信息"。
+- **Key (K)**: 键向量。代表"我这个位置有什么特征"。
+- **Value (V)**: 值向量。代表"如果匹配上了，我包含的具体信息内容"。
+
+**过程**:
+1. 计算 $Q$ 和所有 $K$ 的点积（Dot Product），得到相似度分数。
+2. 除以 $\sqrt{d_k}$ 进行缩放（防止数值过大导致梯度消失）。
+3. 通过 Softmax 归一化，得到权重（概率分布）。
+4. 用这些权重对 $V$ 进行加权求和。
+
+## 多头注意力 (Multi-Head Attention)
+
+如果只用一组 Q、K、V，模型可能只能关注到一种类型的关联（比如语法关系）。Multi-Head Attention 就像是让模型有"多只眼睛"，可以从不同的子空间（Subspaces）同时捕捉信息。
+
+- Head 1 可能关注指代关系（"it" 指的是 "cat"）。
+- Head 2 可能关注句法结构（主谓宾）。
+- Head 3 可能关注语义关联（"king" 和 "queen"）。
+
+最后将所有 Head 的结果拼接（Concat）起来，经过线性变换输出。
+
+## Self-Attention vs Cross-Attention
+
+- **Self-Attention (自注意力)**: Q, K, V 都来自同一个序列。例如在 Encoder 中，每个词都看句子中的其他词，以理解上下文。
+- **Cross-Attention (交叉注意力)**: Q 来自解码器（Decoder），K, V 来自编码器（Encoder）。这常用于机器翻译任务（Decoder 生成译文时，回看 Encoder 的原文）。
+
+## 意义
+
+Attention 机制让模型具备了**全局感受野**。无论两个词在句子中相距多远，计算它们之间关联的路径长度都是 1（直接相连）。这使得 LLM 能够真正理解长文本的深层语境。

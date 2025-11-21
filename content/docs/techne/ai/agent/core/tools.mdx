@@ -1,0 +1,70 @@
+---
+title: 工具使用 (Tool Use)
+---
+
+**工具使用（Tool Use）**，也称为 **Function Calling**，是 Agent 区别于普通 Chatbot 的核心能力。它赋予了 LLM “手”和“脚”，使其能够与外部世界交互。
+
+## 为什么 LLM 需要工具？
+
+LLM 本质上是一个文本处理引擎，它无法：
+
+- 直接访问互联网。
+- 执行数学运算（大数计算容易出错）。
+- 查询实时天气。
+- 操作数据库。
+
+通过工具使用，LLM 可以生成“调用工具的指令”，由外部程序执行后，再将结果反馈给 LLM。
+
+## Function Calling 流程
+
+以 OpenAI 的 Function Calling 格式为例，一个完整的工具调用循环如下：
+
+1.  **定义工具 (Define)**:
+    开发者在 System Prompt 或 API 参数中向 LLM 描述可用工具的 Schema（名称、描述、参数）。
+
+    ```json
+    {
+      "name": "get_weather",
+      "description": "Get current weather",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": { "type": "string" },
+          "unit": { "type": "string", "enum": ["celsius", "fahrenheit"] }
+        }
+      }
+    }
+    ```
+
+2.  **模型决策 (Plan)**:
+    用户提问：“北京今天多少度？”
+    LLM 分析后发现需要使用工具，于是返回一个特殊的结构化输出（而不是普通文本）：
+
+    ```json
+    {
+      "tool_calls": [
+        {
+          "name": "get_weather",
+          "arguments": "{\"location\": \"Beijing\", \"unit\": \"celsius\"}"
+        }
+      ]
+    }
+    ```
+
+3.  **执行工具 (Execute)**:
+    客户端代码（Runtime）拦截到这个请求，执行实际的 API 调用（如调用天气服务接口），获得结果：`"25°C, Sunny"`。
+
+4.  **反馈结果 (Observe)**:
+    客户端将工具的执行结果作为一条新的 Message（Role 为 `tool`）发送回 LLM。
+
+5.  **最终生成 (Generate)**:
+    LLM 结合工具返回的结果，生成最终回答：“北京今天天气晴朗，气温 25 摄氏度。”
+
+## 常见工具类型
+
+- **Web Search**: Google Search, Bing Search。
+- **Code Interpreter**: Python 解释器，用于数据分析、绘图、复杂计算。
+- **Retrieval**: 访问私有知识库（RAG）。
+- **API**: 发送邮件、创建日历、查询数据库。
+
+工具使用能力是构建 Agentic Workflow 的基础。

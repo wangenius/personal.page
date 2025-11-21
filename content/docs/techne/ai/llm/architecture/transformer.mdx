@@ -1,0 +1,57 @@
+---
+title: Transformer 架构
+---
+
+Transformer 是现代大语言模型（LLM）的基石。自 2017 年 Google 团队在论文《Attention Is All You Need》中提出以来，它彻底改变了自然语言处理（NLP）领域，并最终催生了 GPT 系列等生成式 AI 的爆发。
+
+## 核心机制：Self-Attention (自注意力)
+
+Transformer 的核心突破在于抛弃了传统的循环神经网络（RNN）和长短期记忆网络（LSTM）的顺序处理方式，转而使用**自注意力机制（Self-Attention）**并行处理整个序列。
+
+### Q, K, V 的直观理解
+
+自注意力机制通过三个向量来计算词与词之间的关联：
+
+- **Query (Q)**: 查询向量。当前词在寻找什么？
+- **Key (K)**: 键向量。当前词包含什么特征？
+- **Value (V)**: 值向量。当前词的具体内容是什么？
+
+计算过程可以类比为数据库查询：
+
+1.  拿当前词的 $Q$ 去和所有词的 $K$ 计算相似度（点积），得到注意力分数（Attention Score）。
+2.  对分数进行 Softmax 归一化，得到权重。
+3.  用这些权重对所有词的 $V$ 进行加权求和。
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V
+$$
+
+这种机制让模型能够捕捉长距离依赖，无论两个词在句子中相距多远，它们之间的“距离”在注意力机制下都是 1。
+
+## 架构变体
+
+Transformer 架构主要衍生出了三大流派：
+
+### 1. Encoder-only (编码器架构)
+
+- **代表模型**: BERT, RoBERTa
+- **特点**: 双向注意力（Bidirectional Attention），能同时看到上下文。
+- **适用场景**: 文本理解任务，如分类、命名实体识别（NER）、情感分析。
+- **局限**: 不擅长生成文本。
+
+### 2. Decoder-only (解码器架构)
+
+- **代表模型**: GPT 系列, LLaMA, Claude
+- **特点**: 单向注意力（Causal Attention），只能看到上文（左侧的词），看不到下文。
+- **适用场景**: 文本生成（Next Token Prediction）。
+- **地位**: 目前 GenAI 领域的主流架构。
+
+### 3. Encoder-Decoder (编解码器架构)
+
+- **代表模型**: T5, BART, 原始 Transformer
+- **特点**: 结合了编码器的双向理解能力和解码器的生成能力。
+- **适用场景**: 序列到序列（Seq2Seq）任务，如机器翻译、文本摘要。
+
+## 为什么 Decoder-only 赢了？
+
+虽然 Encoder-Decoder 看起来更全面，但在大规模预训练时代，Decoder-only 架构展现出了惊人的**Scaling Law（缩放定律）**优势。通过简单的“预测下一个词”任务，配合海量数据和算力，Decoder-only 模型涌现出了强大的零样本（Zero-shot）通用能力。

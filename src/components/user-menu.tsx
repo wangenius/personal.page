@@ -118,7 +118,10 @@ export function UserMenu() {
           asChild
           className="p-2 cursor-pointer focus:bg-accent/50"
         >
-          <Link href="/subscribe" className="flex w-full items-center text-sm">
+          <Link
+            href="/subscription"
+            className="flex w-full items-center text-sm"
+          >
             <TbCreditCard className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>Subscription</span>
             <span className="ml-auto inline-flex h-4 items-center justify-center rounded-full bg-emerald-500/10 px-1.5 text-[10px] font-medium text-emerald-500">
