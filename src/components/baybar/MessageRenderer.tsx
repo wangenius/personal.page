@@ -524,7 +524,7 @@ export function MessageRenderer({
                       className="text-[15px] leading-7 group relative text-foreground/90"
                     >
                       {hasText && <Response>{text}</Response>}
-                      <div className="flex items-center justify-start gap-2 mt-2 select-none min-h-[24px]">
+                      <div className="flex items-center justify-start gap-2 mt-2 select-none min-h-6">
                         {isLastMessage && isStreaming ? (
                           <LoadingDots />
                         ) : (

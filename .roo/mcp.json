@@ -7,7 +7,7 @@
         "@upstash/context7-mcp"
       ],
       "env": {
-        "DEFAULT_MINIMUM_TOKENS": ""
+        "DEFAULT_MINIMUM_TOKENS": "ctx7sk-dc04d715-3235-42bb-a121-bdb405201b58"
       }
     }
   }
